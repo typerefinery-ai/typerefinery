@@ -1,0 +1,153 @@
+.window-wrapper {
+  width: 100%;
+  height: calc(100% - 48px);
+  display: flex;
+  flex-direction: column;
+
+  &.hidden {
+    display: none;
+  }
+
+  .content-tools-wrapper {
+    background: white;
+    border-bottom: 1px solid;
+    padding: 5px 10px;
+    position: relative;
+    height: 86px;
+    transition: all 0.2s ease-out;
+
+    /* &.hidden {
+						height: 0;
+						padding: 0;
+						overflow: hidden;
+					} */
+
+    .query-bar {
+      display: flex;
+
+      input {
+        width: calc(100% - 35px);
+        border: 1px solid;
+        outline: none;
+        box-shadow: none;
+        padding: 0 10px;
+      }
+
+      button {
+        border: 1px solid;
+        display: block;
+        width: 35px;
+      }
+    }
+
+    .content-tools {
+      margin: 7px 0 2px 0;
+      display: flex;
+
+      .content-tool {
+        cursor: pointer;
+        width: 45px;
+        height: 30px;
+        border: 1px solid;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 5px;
+
+        &.active {
+          background: rgb(var(--v-theme-primary));
+        }
+      }
+    }
+
+    .icon-wrapper {
+      width: 25px;
+      height: 25px;
+      border: 1px solid;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: absolute;
+      right: 1px;
+      bottom: 1px;
+    }
+  }
+
+  .content-area-window {
+    position: relative;
+    height: 100%;
+    display: none;
+
+    &.show {
+      display: block;
+    }
+
+    .data-window-container,
+    .query-window-container {
+      text-align: center;
+    }
+
+    .graph-toolbar {
+      display: flex;
+      flex-direction: column;
+      border-left: 1px solid;
+      border-bottom: 1px solid;
+      position: absolute;
+      right: 0;
+      padding: 5px;
+
+      &-button {
+        width: 30px;
+        height: 25px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid;
+
+        &:not(:last-of-type) {
+          margin-bottom: 5px;
+        }
+      }
+    }
+  }
+
+  .content-area-properties {
+    .tab-3-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
+      border-bottom: 1px solid #000;
+
+      .tab-3-item {
+        cursor: pointer;
+        width: 45px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid;
+
+        &.active {
+          background: rgb(var(--v-theme-primary));
+        }
+
+        &:not(:last-of-type) {
+          margin-right: 10px;
+        }
+      }
+    }
+    .tab-3-content {
+      display: block;
+      text-align: center;
+
+      .tab-3-content-item {
+        display: none;
+
+        &.show {
+          display: block;
+        }
+      }
+    }
+  }
+}

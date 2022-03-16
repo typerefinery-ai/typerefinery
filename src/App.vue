@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app :theme="theme">
     <v-main>
       <router-view />
     </v-main>
@@ -7,15 +7,27 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+  import Theme from "./store/Modules/Theme"
+  import { getModule } from "vuex-module-decorators"
+  const themeModule = getModule(Theme)
+  import { defineComponent } from "vue"
 
-export default defineComponent({
-  name: "App",
+  export default defineComponent({
+    name: "App",
 
-  data() {
-    return {
-      //
-    };
-  },
-});
+    data() {
+      return {
+        // theme: themeModule.theme,
+      }
+    },
+    computed: {
+      theme() {
+        return themeModule.theme
+      },
+    },
+  })
 </script>
+
+<style lang="scss">
+  @import "./styles/_main.scss";
+</style>
