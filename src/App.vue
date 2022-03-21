@@ -7,9 +7,9 @@
 </template>
 
 <script lang="ts">
-  import Theme from "./store/Modules/Theme"
+  import AppSettings from "@/store/Modules/AppSettings"
   import { getModule } from "vuex-module-decorators"
-  const themeModule = getModule(Theme)
+  const appSettings = getModule(AppSettings)
   import { defineComponent } from "vue"
 
   export default defineComponent({
@@ -22,7 +22,7 @@
     },
     computed: {
       theme() {
-        return themeModule.theme
+        return appSettings.theme
       },
     },
   })

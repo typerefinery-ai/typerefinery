@@ -3,14 +3,14 @@
     <div class="tabs-wrapper">
       <div class="tab-2-container" :class="{ 'focus-mode': focus }">
         <div
-          v-for="tab in tabs"
+          v-for="(tab, i) in tabs"
           :key="tab.id"
           class="tab-2-item"
           :class="{ active: activeTab === tab.id && paneId === 'pane1' }"
           @click.ctrl="splitView(tab.id)"
           @click.exact="handleTab(tab.id)"
         >
-          <span>{{ tab.name }}</span>
+          <span>{{ $t("components.project.tab") + " " + ++i }}</span>
           <span
             v-if="paneId !== 'pane1'"
             class="close"
@@ -28,13 +28,7 @@
         </div>
       </div>
 
-      <div v-if="focus" class="menu-bar">
-        <div class="menu-item" @click="$emit('toggle-theme')">T</div>
-        <div class="menu-item" @click="$emit('toggle-focus')">F</div>
-        <div class="menu-item">-</div>
-        <div class="menu-item">o</div>
-        <div class="menu-item">x</div>
-      </div>
+      <menu-bar v-if="focus" />
     </div>
 
     <!-- tab 1 -->
@@ -68,11 +62,13 @@
 </template>
 
 <script>
+  import MenuBar from "@/components/MenuBar.vue"
   import ContentTab from "../ContentTab"
   export default {
     name: "ContentView",
     components: {
       ContentTab,
+      MenuBar,
     },
 
     props: {
@@ -80,7 +76,7 @@
       tabs: { type: Array, required: true },
       paneId: { type: String, required: true },
     },
-    emits: ["toggle-focus", "toggle-theme", "split-view", "close-split-view"],
+    emits: ["split-view", "close-split-view"],
     data() {
       return {
         activeTab: this.tabs[0].id,

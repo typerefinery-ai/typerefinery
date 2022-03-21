@@ -85,9 +85,9 @@
 
 <script lang="ts">
   import { defineComponent } from "vue"
+  import AppSettings from "@/store/Modules/AppSettings"
   import { getModule } from "vuex-module-decorators"
-  import Language from "../store/Modules/Language"
-  const langModule = getModule(Language)
+  const appSettings = getModule(AppSettings)
 
   export default defineComponent({
     name: "HelloWorld",
@@ -99,10 +99,10 @@
     },
     data() {
       return {
-        selectedLang: langModule.language,
+        selectedLang: appSettings.language,
         options: [
           { text: "English", value: "en" },
-          { text: "हिन्दी", value: "hn" },
+          { text: "हिन्दी", value: "hi" },
         ],
         frameworks: [
           {
@@ -178,7 +178,7 @@
       handleChange(event: any) {
         const value = event.target.value
         this.selectedLang = value
-        langModule.setLanguage(value)
+        appSettings.setLanguage(value)
         this.$i18n.locale = value
       },
     },
