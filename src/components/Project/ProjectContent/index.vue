@@ -15,8 +15,6 @@
           :tabs="pane.tabs"
           :pane-id="pane.id"
           :focus="focus"
-          @toggle-theme="$emit('toggle-theme')"
-          @toggle-focus="$emit('toggle-focus')"
           @split-view="splitView"
           @close-split-view="closeSplitView"
         />
@@ -44,7 +42,6 @@
         required: true,
       },
     },
-    emits: ["toggle-focus", "toggle-theme"],
     data() {
       return {
         pane1Size: 20,
@@ -53,9 +50,9 @@
           {
             id: "pane1",
             tabs: [
-              { id: "tab1", name: "Tab 1" },
-              { id: "tab2", name: "Tab 2" },
-              { id: "tab3", name: "Tab 3" },
+              { id: "tab1", name: "Tab" },
+              { id: "tab2", name: "Tab" },
+              { id: "tab3", name: "Tab" },
             ],
           },
         ],

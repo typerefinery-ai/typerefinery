@@ -9,13 +9,15 @@
       <div class="filter-wrapper">
         <input type="text" />
       </div>
-      <div class="content-title">Connections</div>
+      <div class="content-title">
+        {{ $t("components.project.connections") }}
+      </div>
       <ul>
         <li>Connection 1</li>
         <li>Connection 2</li>
       </ul>
 
-      <div class="content-title">Queries</div>
+      <div class="content-title">{{ $t("components.project.queries") }}</div>
       <ul>
         <li>Query 1</li>
         <li>Query 2</li>

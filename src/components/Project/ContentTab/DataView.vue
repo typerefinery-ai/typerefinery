@@ -4,8 +4,8 @@
       <template #default>
         <thead>
           <tr>
-            <th class="text-left">Name</th>
-            <th class="text-left">Calories</th>
+            <th class="text-left">{{ $t("components.project.name") }}</th>
+            <th class="text-left">{{ $t("components.project.calories") }}</th>
           </tr>
         </thead>
         <tbody>

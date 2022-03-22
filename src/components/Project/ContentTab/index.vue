@@ -76,10 +76,10 @@
           </div>
           <div class="tab-3-content">
             <div class="tab-3-content-item" :class="{ show: activeTab3 === 1 }">
-              Properties
+              {{ $t("components.project.properties") }}
             </div>
             <div class="tab-3-content-item" :class="{ show: activeTab3 === 2 }">
-              Data
+              {{ $t("components.project.data") }}
             </div>
           </div>
         </div>

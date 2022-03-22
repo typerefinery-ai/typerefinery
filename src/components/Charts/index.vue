@@ -7,30 +7,34 @@
     >
       <div class="tab-1-container">
         <div class="tab-1-item">
-          <router-link to="/home/project"> Project</router-link>
+          <router-link to="/home/project">
+            {{ $t("components.project.project") }}</router-link
+          >
         </div>
         <div class="tab-1-item active" @mouseover="openMainMenu">
-          <router-link to="/home/charts"> Charts</router-link>
+          <router-link to="/home/charts">
+            {{ $t("components.project.charts") }}</router-link
+          >
         </div>
         <div class="tab-1-item">
-          <router-link to="/home/maps"> Maps</router-link>
+          <router-link to="/home/maps">
+            {{ $t("components.project.maps") }}</router-link
+          >
         </div>
         <div
           v-if="!mainMenuVisible"
           class="main-menu overlay"
           :class="{ show: showMainOverlayMenu }"
         >
-          <div class="main-menu-item">Load Data</div>
-          <div class="main-menu-item">Load Links</div>
+          <div class="main-menu-item">
+            {{ $t("components.project.load-data") }}
+          </div>
+          <div class="main-menu-item">
+            {{ $t("components.project.load-links") }}
+          </div>
         </div>
       </div>
-      <div class="menu-bar">
-        <div class="menu-item" @click="toggleTheme">T</div>
-        <div class="menu-item">F</div>
-        <div class="menu-item">-</div>
-        <div class="menu-item">o</div>
-        <div class="menu-item">x</div>
-      </div>
+      <menu-bar />
       <div
         v-if="!mainMenuVisible"
         class="icon-wrapper-down"
@@ -40,8 +44,12 @@
       </div>
 
       <div v-if="mainMenuVisible" class="main-menu">
-        <div class="main-menu-item">Load Data</div>
-        <div class="main-menu-item">Load Links</div>
+        <div class="main-menu-item">
+          {{ $t("components.project.load-data") }}
+        </div>
+        <div class="main-menu-item">
+          {{ $t("components.project.load-links") }}
+        </div>
         <div class="icon-wrapper" @click="toggleMainMenu">
           <v-icon large color="darken-2"> mdi-chevron-up </v-icon>
         </div>
@@ -57,12 +65,10 @@
 </template>
 
 <script>
-  import Theme from "@/store/Modules/Theme"
-  import { getModule } from "vuex-module-decorators"
-  const themeModule = getModule(Theme)
+  import MenuBar from "@/components/MenuBar.vue"
   export default {
     name: "Charts",
-
+    components: { MenuBar },
     data() {
       return {
         showMainOverlayMenu: false,
@@ -83,15 +89,6 @@
       closeMainMenu() {
         if (this.showMainOverlayMenu) {
           this.showMainOverlayMenu = false
-        }
-      },
-
-      toggleTheme() {
-        const theme = themeModule.theme
-        if (theme === "greenTheme") {
-          themeModule.setTheme("redTheme")
-        } else {
-          themeModule.setTheme("greenTheme")
         }
       },
     },

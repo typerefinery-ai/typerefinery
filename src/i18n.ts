@@ -1,17 +1,17 @@
 import { createI18n } from "vue-i18n"
 import en from "./locales/en.json"
-import hn from "./locales/hn.json"
+import hi from "./locales/hi.json"
+import AppSettings from "@/store/Modules/AppSettings"
 import { getModule } from "vuex-module-decorators"
-import Language from "./store/Modules/Language"
-const langModule = getModule(Language)
+const appSettings = getModule(AppSettings)
 
 const messages = {
   en,
-  hn,
+  hi,
 }
 
 const i18n = createI18n({
-  locale: langModule.language || "en",
+  locale: appSettings.language || "en",
   fallbackLocale: process.env.VUE_APP_I18N_FALLBACK_LOCALE || "en",
   messages,
 })

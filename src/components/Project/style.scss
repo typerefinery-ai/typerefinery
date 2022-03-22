@@ -48,31 +48,6 @@
       }
     }
 
-    .menu-bar {
-      display: flex;
-      position: absolute;
-      right: 0;
-      top: 0;
-      padding: 5px;
-      border-bottom: 1px solid;
-      border-left: 1px solid;
-
-      .menu-item {
-        cursor: pointer;
-        width: 25px;
-        height: 25px;
-        border: 1px solid;
-
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        &:not(:last-of-type) {
-          margin-right: 2px;
-        }
-      }
-    }
-
     .icon-wrapper-down {
       width: 25px;
       height: 20px;

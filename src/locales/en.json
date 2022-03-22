@@ -14,6 +14,24 @@
         "Prettier",
         "ESLint"
       ]
+    },
+    "project": {
+      "project": "Project",
+      "charts": "Charts",
+      "maps": "Maps",
+      "new-project": "New Project",
+      "new-query": "New Query",
+      "new-connection": "New Connection",
+      "load-data": "Load Data",
+      "load-links": "Load Links",
+      "connections": "Connections",
+      "queries": "Queries",
+      "tab": "Tab",
+      "name": "Name",
+      "query": "Query",
+      "calories": "Calories",
+      "properties": "Properties",
+      "data": "Data"
     }
   }
 }
