@@ -1,4 +1,4 @@
-.main {
+.app-main {
   flex: 1;
   display: flex;
   width: 100%;
@@ -17,53 +17,6 @@
 
     .splitpanes__splitter {
       display: block;
-    }
-
-    .tab-2-container {
-      background: white;
-      display: flex;
-      border-bottom: 1px solid;
-      padding: 5px;
-      position: relative;
-
-      &.focus-mode {
-        padding: 15px 5px;
-      }
-
-      .tab-2-item {
-        cursor: pointer;
-        padding: 5px 10px;
-        border: 1px solid;
-        display: flex;
-        align-items: center;
-
-        span.close {
-          margin-left: 10px;
-          font-size: 20px;
-          line-height: 1;
-          color: #333;
-        }
-
-        &.active {
-          background: rgb(var(--v-theme-primary));
-        }
-
-        &:not(:last-child) {
-          margin-right: 5px;
-        }
-      }
-
-      .icon-wrapper-down {
-        width: 25px;
-        height: 25px;
-        border: 1px solid;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        position: absolute;
-        right: 1px;
-        bottom: 1px;
-      }
     }
   }
 }

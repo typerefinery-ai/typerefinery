@@ -1,9 +1,5 @@
 <template>
-  <v-app :theme="theme">
-    <v-main>
-      <router-view />
-    </v-main>
-  </v-app>
+  <router-view />
 </template>
 
 <script lang="ts">

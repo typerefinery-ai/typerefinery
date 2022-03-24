@@ -1,70 +1,42 @@
 <template>
   <div class="data-view-wrapper">
-    <v-table theme="light" fixed-header height="400px">
-      <template #default>
-        <thead>
-          <tr>
-            <th class="text-left">{{ $t("components.project.name") }}</th>
-            <th class="text-left">{{ $t("components.project.calories") }}</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="item in desserts" :key="item.name">
-            <td>{{ item.name }}</td>
-            <td>{{ item.calories }}</td>
-          </tr>
-        </tbody>
-      </template>
-    </v-table>
+    <DataTable
+      :value="data"
+      striped-rows
+      responsive-layout="scroll"
+      :scrollable="true"
+      scroll-height="415px"
+    >
+      <Column field="year" header="Year"></Column>
+      <Column field="brand" header="Brand"></Column>
+      <Column field="color" header="Color"></Column>
+    </DataTable>
   </div>
 </template>
 
 <script>
+  import DataTable from "primevue/datatable"
+  import Column from "primevue/column"
   export default {
     name: "DataView",
+    components: { DataTable, Column },
     data() {
       return {
-        desserts: [
+        data: [
           {
-            name: "Frozen Yogurt",
-            calories: 159,
+            brand: "Volkswagen",
+            year: 2012,
+            color: "Orange",
+            vin: "dsad231ff",
           },
-          {
-            name: "Ice cream sandwich",
-            calories: 237,
-          },
-          {
-            name: "Eclair",
-            calories: 262,
-          },
-          {
-            name: "Cupcake",
-            calories: 305,
-          },
-          {
-            name: "Gingerbread",
-            calories: 356,
-          },
-          {
-            name: "Jelly bean",
-            calories: 375,
-          },
-          {
-            name: "Lollipop",
-            calories: 392,
-          },
-          {
-            name: "Honeycomb",
-            calories: 408,
-          },
-          {
-            name: "Donut",
-            calories: 452,
-          },
-          {
-            name: "KitKat",
-            calories: 518,
-          },
+          { brand: "Audi", year: 2011, color: "Black", vin: "gwregre345" },
+          { brand: "Renault", year: 2005, color: "Gray", vin: "h354htr" },
+          { brand: "BMW", year: 2003, color: "Blue", vin: "j6w54qgh" },
+          { brand: "Mercedes", year: 1995, color: "Orange", vin: "hrtwy34" },
+          { brand: "Volvo", year: 2005, color: "Black", vin: "jejtyj" },
+          { brand: "Honda", year: 2012, color: "Yellow", vin: "g43gr" },
+          { brand: "Jaguar", year: 2013, color: "Orange", vin: "greg34" },
+          { brand: "Ford", year: 2000, color: "Black", vin: "h54hw5" },
         ],
       }
     },
