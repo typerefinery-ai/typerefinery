@@ -1,15 +1,19 @@
 <template>
-  <HelloWorld title="Welcome to Vue3 + Vite + Vuetify Electron app." />
+  <maps v-if="$route.params.id === 'maps'" />
+  <charts v-else-if="$route.params.id === 'charts'" />
+  <project v-else />
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
-import HelloWorld from "@/components/HelloWorld.vue"; // @ is an alias to /src
+<script>
+  import Project from "@/components/Project"
+  import Charts from "@/components/Charts"
+  import Maps from "@/components/Maps"
+  export default {
+    name: "Home",
+    components: { Project, Charts, Maps },
 
-export default defineComponent({
-  name: "HomeView",
-  components: {
-    HelloWorld,
-  },
-});
+    data() {
+      return {}
+    },
+  }
 </script>
