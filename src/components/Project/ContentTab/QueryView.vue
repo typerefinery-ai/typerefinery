@@ -1,34 +1,41 @@
 <template>
   <div class="query-view-wrapper">
-    <v-form ref="form">
-      <v-text-field
-        v-model="name"
-        :label="$t('components.project.name')"
-      ></v-text-field>
-      <v-textarea
-        v-model="query"
-        :label="$t('components.project.query')"
-      ></v-textarea>
-    </v-form>
+    <div class="card">
+      <div class="card-container">
+        <div class="block p-4 pb-2">
+          <span class="p-float-label">
+            <InputText id="name" v-model="name" class="w-full" type="text" />
+            <label for="name">Name</label>
+          </span>
+        </div>
+
+        <div class="block p-4 pt-3 pb-0">
+          <span class="p-float-label">
+            <Textarea
+              id="query"
+              v-model="query"
+              :auto-resize="true"
+              rows="17"
+              cols="30"
+              class="w-full"
+            />
+            <label for="query">Query</label>
+          </span>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
+  import InputText from "primevue/inputtext"
+  import Textarea from "primevue/textarea"
   export default {
     name: "QueryView",
+    components: { InputText, Textarea },
     data: () => ({
       query: "",
       name: "",
     }),
   }
 </script>
-
-<style lang="scss">
-  .query-view-wrapper {
-    padding: 20px;
-
-    .v-field__field {
-      border: 1px solid;
-    }
-  }
-</style>
