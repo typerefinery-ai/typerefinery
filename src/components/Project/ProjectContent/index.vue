@@ -1,5 +1,5 @@
 <template>
-  <div class="main">
+  <div class="app-main">
     <splitpanes>
       <pane v-if="!focus" class="sidbar-pane" :size="pane1Size" max-size="25">
         <sidebar />
@@ -44,8 +44,8 @@
     },
     data() {
       return {
-        pane1Size: 20,
-        panesSize: 50,
+        pane1Size: 25,
+        panesSize: 75,
         panes: [
           {
             id: "pane1",
