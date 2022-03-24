@@ -2,13 +2,13 @@
   <div class="sidebar-container">
     <div class="sidebar-fixed">
       <div class="sidebar-fixed-items text-indigo-500">
-        <file-icon v-tooltip="'Project'" :size="20" />
+        <file-icon v-tooltip="$t(`tooltips.project`)" :size="20" />
       </div>
       <div class="sidebar-fixed-items hover:text-indigo-500">
-        <magnify-icon v-tooltip="'Search'" :size="20" />
+        <magnify-icon v-tooltip="$t(`tooltips.search`)" :size="20" />
       </div>
       <div class="sidebar-fixed-items hover:text-indigo-500">
-        <logout-icon v-tooltip="'Logout'" :size="25" />
+        <logout-icon v-tooltip="$t(`tooltips.logout`)" :size="25" />
       </div>
     </div>
     <div id="sidebar-draggable" class="sidebar-draggable">
@@ -18,7 +18,15 @@
         :filter="true"
         filter-mode="lenient"
         :expanded-keys="expandedKeys"
-      ></Tree>
+      >
+        <template #default="slotProps">
+          {{
+            slotProps.node.id
+              ? $t(`components.project.${slotProps.node.id}`)
+              : slotProps.node.label
+          }}
+        </template>
+      </Tree>
     </div>
   </div>
 </template>

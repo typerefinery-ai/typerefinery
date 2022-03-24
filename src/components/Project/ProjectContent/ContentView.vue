@@ -51,7 +51,7 @@
 
       <div
         v-show="!contentToolsVisible && !focus"
-        v-tooltip="'Show Content Tools'"
+        v-tooltip="$t(`tooltips.show-content-tools`)"
         class="icon-wrapper-down hover:text-indigo-500"
         @click="toggleContentTools"
       >

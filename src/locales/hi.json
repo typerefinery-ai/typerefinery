@@ -1,20 +1,5 @@
 {
   "components": {
-    "helloworld": {
-      "heading": "Vue3 + Vite + Vuetify इलेक्ट्रॉन ऐप में आपका स्वागत है।",
-      "sub-heading": "बढ़िया ऐप्स बनाने के लिए आपका टेम्प्लेट।",
-      "frameworks-heading": "फ़्रेमवर्क",
-      "frameworks": ["Electron", "Vue3", "Vite2", "Vuex4", "Vuetify3"],
-      "tools-heading": "उपकरण",
-      "tools": [
-        "Cypress",
-        "Github Actions",
-        "JsDom",
-        "TypeScript",
-        "Prettier",
-        "ESLint"
-      ]
-    },
     "project": {
       "project": "परियोजना",
       "charts": "चार्ट",
@@ -31,7 +16,23 @@
       "query": "प्रश्न",
       "calories": "कैलोरी",
       "properties": "प्रोपर्टीज",
-      "data": "आंकड़े"
+      "data": "आंकड़े",
+      "graph": "ग्राफ"
     }
+  },
+  "tooltips": {
+    "hide-menu-bar": "मेनू बार छुपाएं",
+    "show-menu-bar": "मेनू बार दिखाएँ",
+    "change-language": "भाषा बदलें",
+    "toggle-theme": "थीम टॉगल करें",
+    "toggle-focus": "फोकस टॉगल करें",
+    "minimize": "छोटा करें",
+    "maximize": "अधिकतम करें",
+    "close": "बंद करें",
+    "hide-content-tools": "कोंटेंट टूल्स छुपाएं",
+    "show-content-tools": "कोंटेंट टूल्स दिखाएं",
+    "project": "परियोजना",
+    "search": "खोजें",
+    "logout": "लॉग आउट"
   }
 }

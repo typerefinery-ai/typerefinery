@@ -1,20 +1,5 @@
 {
   "components": {
-    "helloworld": {
-      "heading": "Welcome to Vue3 + Vite + Vuetify Electron app.",
-      "sub-heading": "Your template for making great apps.",
-      "frameworks-heading": "Frameworks",
-      "frameworks": ["Electron", "Vue3", "Vite2", "Vuex4", "Vuetify3"],
-      "tools-heading": "Tools",
-      "tools": [
-        "Cypress",
-        "Github Actions",
-        "JsDom",
-        "TypeScript",
-        "Prettier",
-        "ESLint"
-      ]
-    },
     "project": {
       "project": "Project",
       "charts": "Charts",
@@ -31,7 +16,23 @@
       "query": "Query",
       "calories": "Calories",
       "properties": "Properties",
-      "data": "Data"
+      "data": "Data",
+      "graph": "Graph"
     }
+  },
+  "tooltips": {
+    "hide-menu-bar": "Hide Menu Bar",
+    "show-menu-bar": "Show Menu Bar",
+    "change-language": "Change Language",
+    "toggle-theme": "Toggle Theme",
+    "toggle-focus": "Toggle Focus",
+    "minimize": "Minimize",
+    "maximize": "Maximize",
+    "close": "Close",
+    "hide-content-tools": "Hide Content Tools",
+    "show-content-tools": "Show Content Tools",
+    "project": "Project",
+    "search": "Search",
+    "logout": "Logout"
   }
 }
