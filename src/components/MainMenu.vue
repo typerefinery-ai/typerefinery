@@ -18,7 +18,7 @@
       <!-- icon -->
       <div
         v-if="mainMenuVisible"
-        v-tooltip="'Hide Menu Bar'"
+        v-tooltip="$t(`tooltips.hide-menu-bar`)"
         class="icon-wrapper hover:text-indigo-500"
         @click="$emit('toggle')"
       >

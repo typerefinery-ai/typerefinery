@@ -2,6 +2,7 @@
   "root": [
     {
       "key": "0",
+      "id": "connections",
       "label": "Connections",
       "data": "Connections Folder",
       "icon": "pi pi-fw pi-server",
@@ -22,6 +23,7 @@
     },
     {
       "key": "1",
+      "id": "queries",
       "label": "Queries",
       "data": "Queries Folder",
       "icon": "pi pi-fw pi-database",

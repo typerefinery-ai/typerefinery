@@ -4,14 +4,14 @@
       <div class="grid">
         <div class="col-12">
           <div class="p-inputgroup">
-            <InputText placeholder="Query" />
+            <InputText :placeholder="$t(`components.project.query`)" />
             <Button icon="pi pi-search" class="p-button-primary" />
           </div>
         </div>
       </div>
       <div class="content-tools">
         <Button
-          label="Query"
+          :label="$t(`components.project.query`)"
           class="p-button-raised"
           :class="{
             'p-button-text p-button-plain': activeView !== 'Q',
@@ -19,7 +19,7 @@
           @click="handleView('Q')"
         />
         <Button
-          label="Data"
+          :label="$t(`components.project.data`)"
           class="p-button-raised"
           :class="{
             'p-button-text p-button-plain': activeView !== 'D',
@@ -27,7 +27,7 @@
           @click="handleView('D')"
         />
         <Button
-          label="Graph"
+          :label="$t(`components.project.graph`)"
           class="p-button-raised"
           :class="{
             'p-button-text p-button-plain': activeView !== 'G',
@@ -36,7 +36,7 @@
         />
       </div>
       <div
-        v-tooltip="'Hide Content Tools'"
+        v-tooltip="$t(`tooltips.hide-content-tools`)"
         class="icon-wrapper hover:text-indigo-500"
         @click="$emit('toggle')"
       >
@@ -71,7 +71,7 @@
         <div class="content-area-properties">
           <div class="tab-3-container">
             <Button
-              label="Properties"
+              :label="$t(`components.project.properties`)"
               class="p-button-raised"
               :class="{
                 'p-button-text p-button-plain': activeTab3 !== 1,
@@ -79,7 +79,7 @@
               @click="handleTab3(1)"
             />
             <Button
-              label="Data"
+              :label="$t(`components.project.data`)"
               class="p-button-raised"
               :class="{
                 'p-button-text p-button-plain': activeTab3 !== 2,
