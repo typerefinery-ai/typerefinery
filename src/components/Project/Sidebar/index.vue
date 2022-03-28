@@ -1,13 +1,13 @@
 <template>
   <div class="sidebar-container">
     <div class="sidebar-fixed">
-      <div class="sidebar-fixed-items text-indigo-500">
+      <div class="sidebar-fixed-items text-primary">
         <file-icon v-tooltip="$t(`tooltips.project`)" :size="20" />
       </div>
-      <div class="sidebar-fixed-items hover:text-indigo-500">
+      <div class="sidebar-fixed-items hover:text-primary">
         <magnify-icon v-tooltip="$t(`tooltips.search`)" :size="20" />
       </div>
-      <div class="sidebar-fixed-items hover:text-indigo-500">
+      <div class="sidebar-fixed-items hover:text-primary">
         <logout-icon v-tooltip="$t(`tooltips.logout`)" :size="25" />
       </div>
     </div>

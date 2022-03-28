@@ -3,47 +3,52 @@
     <div
       v-if="!menuBarVisible"
       v-tooltip.bottom="$t(`tooltips.show-menu-bar`)"
-      class="menu-item hover:text-indigo-600 hover:border-indigo-600"
+      class="menu-item hover:text-primary hover:border-primary"
       @click="$emit('toggle')"
     >
       <chevron-down :size="18" />
     </div>
     <div
       v-tooltip.bottom="$t(`tooltips.change-language`)"
-      class="menu-item hover:text-indigo-600 hover:border-indigo-600"
-      @click="toggle"
+      class="menu-item hover:text-primary hover:border-primary"
+      @click="toggleMenu"
     >
-      <globe-icon :size="18" />
+      <i class="pi pi-globe"></i>
     </div>
     <div
       v-tooltip.bottom="$t(`tooltips.toggle-theme`)"
-      class="menu-item hover:text-indigo-600 hover:border-indigo-600"
+      class="menu-item hover:text-primary hover:border-primary"
       @click="toggleTheme"
     >
-      <palette-icon :size="18" />
+      <i
+        v-if="theme === 'light'"
+        class="pi pi-sun"
+        style="font-weight: bold;"
+      ></i>
+      <i v-else class="pi pi-moon"></i>
     </div>
     <div
       v-tooltip.bottom="$t(`tooltips.toggle-focus`)"
-      class="menu-item hover:text-indigo-600 hover:border-indigo-600"
+      class="menu-item hover:text-primary hover:border-primary"
       @click="toggleFocus"
     >
       <focus-icon :size="18" />
     </div>
     <div
       v-tooltip.bottom="$t(`tooltips.minimize`)"
-      class="menu-item hover:text-indigo-600 hover:border-indigo-600"
+      class="menu-item hover:text-primary hover:border-primary"
     >
-      <minus-icon :size="18" />
+      <i class="pi pi-minus"></i>
     </div>
     <div
       v-tooltip.bottom="$t(`tooltips.maximize`)"
-      class="menu-item hover:text-indigo-600 hover:border-indigo-600"
+      class="menu-item hover:text-primary hover:border-primary"
     >
       <max-icon :size="18" />
     </div>
     <div
       v-tooltip.left="$t(`tooltips.close`)"
-      class="menu-item hover:text-indigo-600 hover:border-indigo-600"
+      class="menu-item hover:text-primary hover:border-primary"
     >
       <close-icon :size="18" />
     </div>
@@ -65,33 +70,28 @@
   import Menu from "primevue/menu"
   import ChevronDown from "vue-material-design-icons/ChevronDoubleDown.vue"
   import FocusIcon from "vue-material-design-icons/BullseyeArrow.vue"
-  import PaletteIcon from "vue-material-design-icons/PaletteOutline.vue"
   import CloseIcon from "vue-material-design-icons/Close.vue"
-  import MinusIcon from "vue-material-design-icons/Minus.vue"
   import MaxIcon from "vue-material-design-icons/CheckboxMultipleBlankOutline.vue"
-  import GlobeIcon from "vue-material-design-icons/Web.vue"
-
   import AppSettings from "@/store/Modules/AppSettings"
   import { getModule } from "vuex-module-decorators"
   const appSettings = getModule(AppSettings)
 
-  console.log(appSettings)
   export default {
     name: "MenuBar",
     components: {
       ChevronDown,
       FocusIcon,
-      PaletteIcon,
       CloseIcon,
-      MinusIcon,
       MaxIcon,
-      GlobeIcon,
       Menu,
     },
+
     props: {
       menuBarVisible: { type: Boolean, required: true },
     },
+
     emits: ["toggle"],
+
     data() {
       return {
         langs: [
@@ -112,11 +112,20 @@
         ],
       }
     },
+
     computed: {
       focus() {
         return appSettings.focus
       },
+      theme() {
+        return appSettings.theme
+      },
     },
+
+    created() {
+      this.setThemeURL()
+    },
+
     methods: {
       toggleLanguage(value) {
         appSettings.setLanguage(value)
@@ -125,18 +134,30 @@
       },
 
       toggleTheme() {
-        const theme = appSettings.theme
-        if (theme === "greenTheme") {
-          appSettings.setTheme("redTheme")
+        this.theme === "light"
+          ? appSettings.setTheme("dark")
+          : appSettings.setTheme("light")
+        this.setThemeURL()
+      },
+
+      setThemeURL() {
+        const lightURL =
+          "/node_modules/primevue/resources/themes/mdc-light-indigo/theme.css"
+        const darkURL = lightURL.replace("light", "dark")
+        let themeElement = document.getElementById("theme-link")
+
+        if (this.theme === "light") {
+          themeElement?.setAttribute("href", darkURL)
         } else {
-          appSettings.setTheme("greenTheme")
+          themeElement?.setAttribute("href", lightURL)
         }
       },
 
       toggleFocus() {
         appSettings.toggleFocus()
       },
-      toggle(event) {
+
+      toggleMenu(event) {
         this.$refs.menu.toggle(event)
       },
     },
@@ -149,10 +170,6 @@
     position: absolute;
     right: 5px;
     top: 5px;
-    /* padding: 5px; */
-    /* border-bottom: 1px solid #dee2e6;
-    border-left: 1px solid #dee2e6; */
-    color: #495057;
 
     &.focus {
       right: 6px;
@@ -163,7 +180,7 @@
       cursor: pointer;
       width: 25px;
       height: 25px;
-      border: 1px solid #dee2e6;
+      border: 1px solid var(--surface-border);
 
       display: flex;
       align-items: center;
@@ -180,6 +197,6 @@
   }
 
   .p-menuitem-link.active {
-    background: rgba(0, 0, 0, 0.04);
+    background: var(--surface-c);
   }
 </style>

@@ -10,7 +10,7 @@
         <div
           v-for="item in subItems"
           :key="item.id"
-          class="main-submenu--item hover:text-indigo-600 cursor-pointer"
+          class="main-submenu--item hover:text-primary cursor-pointer"
         >
           {{ $t(`components.project.${item.id}`) }}
         </div>
@@ -19,7 +19,7 @@
       <div
         v-if="mainMenuVisible"
         v-tooltip="$t(`tooltips.hide-menu-bar`)"
-        class="icon-wrapper hover:text-indigo-500"
+        class="icon-wrapper hover:text-primary"
         @click="$emit('toggle')"
       >
         <i class="pi pi-angle-double-up"></i>
@@ -109,7 +109,7 @@
       left: 0;
       right: 0;
       width: 100%;
-      background: white;
+      background: var(--surface-a);
       z-index: 2;
       box-shadow: 1px 3px 4px rgb(0 0 0 / 10%);
 
@@ -124,13 +124,12 @@
     }
 
     &--item {
-      color: #495057;
       line-height: 1;
       font-size: 15px;
       padding: 0 15px;
 
       &:not(:last-of-type) {
-        border-right: 1px solid #dee2e6;
+        border-right: 1px solid var(--surface-border);
       }
     }
 
