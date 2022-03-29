@@ -18,7 +18,7 @@ jobs:
         uses: deepakputhraya/action-branch-name@master
         if: "!startsWith(github.ref, 'refs/tags/')"
         with:
-          regex: '([a-z])+\/([a-z])+' # Regex the branch should match. This example enforces grouping
+          regex: '([a-z])+\/([#0-9a-z-])+' # Regex the branch should match. This example enforces grouping
           allowed_prefixes: "feature,stable,fix" # All branches should start with the given prefix
           ignore: master,develop # Ignore exactly matching branch names from convention
           min_length: 5 # Min length of the branch name
