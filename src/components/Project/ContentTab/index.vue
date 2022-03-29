@@ -37,7 +37,7 @@
       </div>
       <div
         v-tooltip="$t(`tooltips.hide-content-tools`)"
-        class="icon-wrapper hover:text-indigo-500"
+        class="icon-wrapper hover:text-primary"
         @click="$emit('toggle')"
       >
         <i class="pi pi-angle-double-up"></i>
@@ -58,7 +58,7 @@
         </div>
 
         <div class="content-area-window" :class="{ show: activeView === 'G' }">
-          <div class="graph-toolbar">
+          <div class="graph-toolbar shadow-4">
             <div class="graph-toolbar-button"><full-icon :size="15" /></div>
             <div class="graph-toolbar-button"><plus-icon :size="15" /></div>
             <div class="graph-toolbar-button"><minus-icon :size="15" /></div>
@@ -156,7 +156,6 @@
         this.activeTab3 = index
       },
       handleSplitterClick(toRight) {
-        console.log("clicked")
         if (toRight) {
           document.getElementById(
             `content-area-window-${this.tabId}-${this.paneId}`

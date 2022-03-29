@@ -1,7 +1,7 @@
 .splitpanes--vertical > .splitpanes__splitter {
   width: 4px;
   transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
-  background: rgba(0, 0, 0, 0.04);
+  background: var(--surface-c);
   position: relative;
 
   &::after {
@@ -9,7 +9,7 @@
     width: 4px;
     height: 24px;
     transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
-    background: rgba(0, 0, 0, 0.12);
+    background: var(--surface-d);
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
@@ -19,7 +19,7 @@
 .splitpanes--horizontal > .splitpanes__splitter {
   height: 4px;
   transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
-  background: rgba(0, 0, 0, 0.04);
+  background: var(--surface-c);
   position: relative;
 
   &::after {
@@ -27,7 +27,7 @@
     height: 4px;
     width: 24px;
     transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
-    background: rgba(0, 0, 0, 0.12);
+    background: var(--surface-d);
     position: absolute;
     left: 50%;
   }

@@ -14,7 +14,7 @@ export default class AppSettings extends VuexModule {
     this.language = text
   }
 
-  theme = "redTheme"
+  theme = "light"
   @Mutation
   setTheme(text: string) {
     this.theme = text

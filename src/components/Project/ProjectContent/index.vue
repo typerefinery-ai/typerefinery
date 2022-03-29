@@ -14,6 +14,7 @@
         <content-view
           :tabs="pane.tabs"
           :pane-id="pane.id"
+          :panes="panes"
           :focus="focus"
           @split-view="splitView"
           @close-split-view="closeSplitView"

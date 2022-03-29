@@ -52,14 +52,14 @@
       <div
         v-show="!contentToolsVisible && !focus"
         v-tooltip="$t(`tooltips.show-content-tools`)"
-        class="icon-wrapper-down hover:text-indigo-500"
+        class="icon-wrapper-down hover:text-primary"
         @click="toggleContentTools"
       >
         <i class="pi pi-angle-double-down"></i>
       </div>
 
       <menu-bar
-        v-if="focus"
+        v-if="focus && paneId === panes[panes.length - 1].id"
         :menu-bar-visible="contentToolsVisible"
         @toggle="toggleContentTools"
       />
@@ -93,6 +93,7 @@
       focus: { type: Boolean, required: true },
       tabs: { type: Array, required: true },
       paneId: { type: String, required: true },
+      panes: { type: Array, required: true },
     },
     emits: ["split-view", "close-split-view"],
     data() {
@@ -111,7 +112,6 @@
 
     methods: {
       onTabClick(e) {
-        console.log(e)
         const ctrl = e.originalEvent?.ctrlKey
         if (ctrl) {
           this.splitView(`tab${++e.index}`)
@@ -125,7 +125,6 @@
       },
 
       splitView(id) {
-        console.log("clicked")
         this.$emit("split-view", id)
       },
 
@@ -147,7 +146,6 @@
 
       .pi-times {
         margin-left: 10px;
-        color: #495057;
         font-size: 90%;
         position: relative;
         top: 1px;
@@ -173,25 +171,6 @@
 
       .p-tabview-panel {
         height: 100%;
-      }
-
-      .p-tabview-nav {
-        .p-tabview-ink-bar {
-          display: none;
-        }
-
-        li.p-highlight {
-          position: relative;
-
-          &::after {
-            content: "";
-            width: 100%;
-            height: 2px;
-            background: #3f51b5;
-            position: absolute;
-            bottom: 0;
-          }
-        }
       }
     }
   }
