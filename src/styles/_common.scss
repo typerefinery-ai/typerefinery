@@ -35,3 +35,13 @@
     }
   }
 }
+
+.p-tabmenu-nav,
+.p-tabview-nav {
+  -webkit-app-region: drag;
+}
+
+.p-tabmenuitem,
+.p-tabview-nav-link {
+  -webkit-app-region: no-drag;
+}

@@ -23,7 +23,7 @@
       <i
         v-if="theme === 'light'"
         class="pi pi-sun"
-        style="font-weight: bold;"
+        style="font-weight: bold"
       ></i>
       <i v-else class="pi pi-moon"></i>
     </div>
@@ -170,6 +170,7 @@
     position: absolute;
     right: 5px;
     top: 5px;
+    -webkit-app-region: no-drag;
 
     &.focus {
       right: 6px;
