@@ -37,18 +37,21 @@
     <div
       v-tooltip.bottom="$t(`tooltips.minimize`)"
       class="menu-item hover:text-primary hover:border-primary"
+      @click="handleMenu('min')"
     >
       <i class="pi pi-minus"></i>
     </div>
     <div
       v-tooltip.bottom="$t(`tooltips.maximize`)"
       class="menu-item hover:text-primary hover:border-primary"
+      @click="handleMenu('max')"
     >
       <max-icon :size="18" />
     </div>
     <div
       v-tooltip.left="$t(`tooltips.close`)"
       class="menu-item hover:text-primary hover:border-primary"
+      @click="handleMenu('close')"
     >
       <close-icon :size="18" />
     </div>
@@ -159,6 +162,10 @@
 
       toggleMenu(event) {
         this.$refs.menu.toggle(event)
+      },
+
+      handleMenu(e) {
+        window.api?.request("menu-click", e)
       },
     },
   }

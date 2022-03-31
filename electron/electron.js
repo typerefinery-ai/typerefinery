@@ -1,14 +1,15 @@
-// electron/electron.js
 const path = require("path")
-const { app, BrowserWindow } = require("electron")
+const { app, BrowserWindow, ipcMain } = require("electron")
+require("dotenv").config()
 
 const isDev = process.env.NODE_ENV == "dev"
+let mainWindow
 
 function createWindow() {
   // Create the browser window.
-  const mainWindow = new BrowserWindow({
-    width: 1366,
-    height: 768,
+  mainWindow = new BrowserWindow({
+    width: +process.env.APP_WIDTH,
+    height: +process.env.APP_HEIGHT,
     frame: false,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
@@ -26,7 +27,7 @@ function createWindow() {
   )
   // Open the DevTools.
   if (isDev) {
-    // mainWindow.webContents.openDevTools()
+    mainWindow.webContents.openDevTools()
   }
 }
 
@@ -39,6 +40,16 @@ app.whenReady().then(() => {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
+  })
+
+  ipcMain.on("menu-click", (e, action) => {
+    if (action === "min") {
+      mainWindow.minimize()
+    } else if (action === "max") {
+      mainWindow.maximize()
+    } else if (action === "close") {
+      mainWindow.close()
+    }
   })
 })
 
