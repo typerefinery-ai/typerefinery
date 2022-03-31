@@ -33,6 +33,7 @@
     "show-content-tools": "Show Content Tools",
     "project": "Project",
     "search": "Search",
-    "logout": "Logout"
+    "logout": "Logout",
+    "help": "Help"
   }
 }
