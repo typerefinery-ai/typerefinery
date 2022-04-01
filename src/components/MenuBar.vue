@@ -71,12 +71,13 @@
 
 <script>
   import Menu from "primevue/menu"
+  import { getModule } from "vuex-module-decorators"
   import ChevronDown from "vue-material-design-icons/ChevronDoubleDown.vue"
   import FocusIcon from "vue-material-design-icons/BullseyeArrow.vue"
   import CloseIcon from "vue-material-design-icons/Close.vue"
   import MaxIcon from "vue-material-design-icons/CheckboxMultipleBlankOutline.vue"
   import AppSettings from "@/store/Modules/AppSettings"
-  import { getModule } from "vuex-module-decorators"
+  import { setThemeURL } from "@/utils/theme"
   const appSettings = getModule(AppSettings)
 
   export default {
@@ -126,7 +127,8 @@
     },
 
     created() {
-      this.setThemeURL()
+      const theme = appSettings?.theme || "light"
+      setThemeURL(theme)
     },
 
     methods: {
@@ -137,23 +139,9 @@
       },
 
       toggleTheme() {
-        this.theme === "light"
-          ? appSettings.setTheme("dark")
-          : appSettings.setTheme("light")
-        this.setThemeURL()
-      },
-
-      setThemeURL() {
-        const lightURL =
-          "/node_modules/primevue/resources/themes/mdc-light-indigo/theme.css"
-        const darkURL = lightURL.replace("light", "dark")
-        let themeElement = document.getElementById("theme-link")
-
-        if (this.theme === "light") {
-          themeElement?.setAttribute("href", darkURL)
-        } else {
-          themeElement?.setAttribute("href", lightURL)
-        }
+        const theme = this.theme === "dark" ? "light" : "dark"
+        appSettings.setTheme(theme)
+        setThemeURL(theme)
       },
 
       toggleFocus() {
