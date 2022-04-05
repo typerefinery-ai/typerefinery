@@ -6,9 +6,6 @@ import App from "./App.vue"
 import router from "./router"
 import store from "./store"
 import { loadFonts } from "./plugins/webfontloader"
-import "primevue/resources/primevue.min.css"
-import "primeicons/primeicons.css"
-import "primeflex/primeflex.css"
 
 loadFonts()
 

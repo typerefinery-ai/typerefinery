@@ -7,7 +7,7 @@
         :active-index="activeIndex"
         @tab-click="onTabClick($event)"
       >
-        <TabPanel v-for="(tab, i) in tabs" :key="tab.id" class="ankit-vats">
+        <TabPanel v-for="(tab, i) in tabs" :key="tab.id">
           <template #header>
             <div class="tab-item" :class="{ active: activeIndex === i }">
               <span>{{

@@ -46,9 +46,10 @@
 
     <splitpanes
       :dbl-click-splitter="false"
-      @splitter-click="handleSplitterClick(true)"
+      :push-other-panes="false"
+      @splitter-click="handleSplitterClick"
     >
-      <pane :id="`content-area-window-${tabId}-${paneId}`">
+      <pane :ref="`w-${tabId}-${paneId}`">
         <div class="content-area-window" :class="{ show: activeView === 'D' }">
           <data-view />
         </div>
@@ -67,7 +68,7 @@
         </div>
       </pane>
 
-      <pane :id="`content-area-properties-${tabId}-${paneId}`" max-size="30">
+      <pane :ref="`p-${tabId}-${paneId}`" max-size="30">
         <div class="content-area-properties">
           <div class="tab-3-container">
             <Button
@@ -145,7 +146,7 @@
     },
     watch: {
       focus(isTrue) {
-        if (isTrue) this.handleSplitterClick(true)
+        if (isTrue) this.handleSplitterClick()
       },
     },
     methods: {
@@ -155,14 +156,13 @@
       handleTab3(index) {
         this.activeTab3 = index
       },
-      handleSplitterClick(toRight) {
-        if (toRight) {
-          document.getElementById(
-            `content-area-window-${this.tabId}-${this.paneId}`
-          ).style.width = "100%"
-          document.getElementById(
-            `content-area-properties-${this.tabId}-${this.paneId}`
-          ).style.width = 0
+      handleSplitterClick() {
+        const rightPanel = this.$refs[`p-${this.tabId}-${this.paneId}`]
+        if (rightPanel.style.width == "0") {
+          rightPanel.style.width = "30%"
+        } else {
+          this.$refs[`w-${this.tabId}-${this.paneId}`].style.width = "100%"
+          rightPanel.style.width = 0
         }
       },
     },

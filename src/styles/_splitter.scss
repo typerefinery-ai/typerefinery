@@ -1,15 +1,16 @@
 .splitpanes--vertical > .splitpanes__splitter {
-  width: 4px;
+  width: 8px;
+  min-width: 8px;
   transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
   background: var(--surface-c);
   position: relative;
 
   &::after {
     content: "";
-    width: 4px;
+    width: 8px;
     height: 24px;
     transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
-    background: var(--surface-d);
+    background: var(--surface-400);
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
