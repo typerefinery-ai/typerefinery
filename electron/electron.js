@@ -4,6 +4,7 @@ require("dotenv").config()
 
 const isDev = process.env.NODE_ENV == "dev"
 let mainWindow
+let tray
 
 function createWindow() {
   // Create the browser window.
