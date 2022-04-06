@@ -192,57 +192,59 @@
 </script>
 
 <style lang="scss">
-  .menu-bar {
-    display: flex;
-    position: absolute;
-    right: 5px;
-    top: 5px;
-    -webkit-app-region: no-drag;
-
-    &.focus {
-      right: 6px;
-      top: 6px;
-    }
-
-    .menu-item {
-      cursor: pointer;
-      width: 25px;
-      height: 25px;
-      border: 1px solid var(--surface-border);
-
+  #body {
+    .menu-bar {
       display: flex;
-      align-items: center;
-      justify-content: center;
+      position: absolute;
+      right: 5px;
+      top: 5px;
+      -webkit-app-region: no-drag;
 
-      &:not(:last-of-type) {
-        margin-right: 2px;
+      &.focus {
+        right: 6px;
+        top: 6px;
       }
 
-      .material-design-icon {
+      .menu-item {
+        cursor: pointer;
+        width: 25px;
+        height: 25px;
+        border: 1px solid var(--surface-border);
+
         display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &:not(:last-of-type) {
+          margin-right: 2px;
+        }
+
+        .material-design-icon {
+          display: flex;
+        }
       }
     }
-  }
 
-  .help-menu.p-menu {
-    width: auto;
-    font-size: 14px;
+    .help-menu.p-menu {
+      width: auto;
+      font-size: 14px;
+
+      .p-menuitem-link {
+        width: 8rem;
+
+        i {
+          margin-left: 5px;
+          font-size: 10px;
+          position: relative;
+          top: 1px;
+        }
+      }
+    }
 
     .p-menuitem-link {
-      width: 8rem;
-
-      i {
-        margin-left: 5px;
-        font-size: 10px;
-        position: relative;
-        top: 1px;
+      &.active {
+        background: var(--surface-c);
       }
-    }
-  }
-
-  .p-menuitem-link {
-    &.active {
-      background: var(--surface-c);
     }
   }
 </style>
