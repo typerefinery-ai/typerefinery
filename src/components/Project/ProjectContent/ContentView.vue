@@ -3,10 +3,11 @@
     <div class="tabs-wrapper">
       <TabView
         class="tab-view-wrapper"
+        :class="{ draggable: focus }"
         :active-index="activeIndex"
         @tab-click="onTabClick($event)"
       >
-        <TabPanel v-for="(tab, i) in tabs" :key="tab.id">
+        <TabPanel v-for="(tab, i) in tabs" :key="tab.id" class="ankit-vats">
           <template #header>
             <div class="tab-item" :class="{ active: activeIndex === i }">
               <span>{{

@@ -9,6 +9,13 @@
       <chevron-down :size="18" />
     </div>
     <div
+      v-tooltip.bottom="$t(`tooltips.help`)"
+      class="menu-item hover:text-primary hover:border-primary"
+      @click="toggleHelp"
+    >
+      <i class="pi pi-info-circle"></i>
+    </div>
+    <div
       v-tooltip.bottom="$t(`tooltips.change-language`)"
       class="menu-item hover:text-primary hover:border-primary"
       @click="toggleMenu"
@@ -67,6 +74,13 @@
       </div>
     </template>
   </Menu>
+  <Menu ref="help" class="help-menu" :model="helpMenu" :popup="true">
+    <template #item="{ item }">
+      <div class="p-menuitem-link" @click="openLink(item.value)">
+        {{ item.label }} <i class="pi pi-external-link"></i>
+      </div>
+    </template>
+  </Menu>
 </template>
 
 <script>
@@ -114,6 +128,16 @@
             },
           },
         ],
+        helpMenu: [
+          {
+            label: "Docs",
+            value: "https://typerefinery.ai/",
+          },
+          {
+            label: "Github",
+            value: "https://github.com/innovolve-ai/typerefinery",
+          },
+        ],
       }
     },
 
@@ -152,8 +176,16 @@
         this.$refs.menu.toggle(event)
       },
 
+      toggleHelp(event) {
+        this.$refs.help.toggle(event)
+      },
+
       handleMenu(e) {
         window.api?.request("menu-click", e)
+      },
+
+      openLink(url) {
+        window.open(url, "_blank")
       },
     },
   }
@@ -192,7 +224,25 @@
     }
   }
 
-  .p-menuitem-link.active {
-    background: var(--surface-c);
+  .help-menu.p-menu {
+    width: auto;
+    font-size: 14px;
+
+    .p-menuitem-link {
+      width: 8rem;
+
+      i {
+        margin-left: 5px;
+        font-size: 10px;
+        position: relative;
+        top: 1px;
+      }
+    }
+  }
+
+  .p-menuitem-link {
+    &.active {
+      background: var(--surface-c);
+    }
   }
 </style>

@@ -36,12 +36,25 @@
   }
 }
 
-.p-tabmenu-nav,
-.p-tabview-nav {
+.p-tabmenu-nav {
   -webkit-app-region: drag;
 }
 
 .p-tabmenuitem,
 .p-tabview-nav-link {
+  -webkit-app-region: no-drag;
+}
+
+.material-design-icon {
+  display: flex;
+}
+
+.draggable {
+  .p-tabview-nav {
+    -webkit-app-region: drag;
+  }
+}
+
+.not-draggable {
   -webkit-app-region: no-drag;
 }
