@@ -1,9 +1,10 @@
 const path = require("path")
-const { app, BrowserWindow, ipcMain } = require("electron")
+const { app, BrowserWindow, ipcMain, Tray } = require("electron")
 require("dotenv").config()
 
 const isDev = process.env.NODE_ENV == "dev"
 let mainWindow
+let tray
 
 function createWindow() {
   // Create the browser window.
@@ -25,6 +26,13 @@ function createWindow() {
       ? "http://localhost:3000"
       : `file://${path.join(__dirname, "../dist/index.html")}`
   )
+  tray = new Tray(path.join(__dirname, "./assets/icon.png"))
+
+  tray.setToolTip("Innovolve app")
+
+  tray.on("click", () => {
+    mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show()
+  })
   // Open the DevTools.
   if (isDev) {
     mainWindow.webContents.openDevTools()
