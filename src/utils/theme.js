@@ -1,13 +1,11 @@
-// Replace css file based on theme
 export const setThemeURL = (theme) => {
-  const lightURL =
-    "/node_modules/primevue/resources/themes/mdc-light-indigo/theme.css"
-  const darkURL = lightURL.replace("light", "dark")
-  let themeElement = document.getElementById("theme-link")
+  let rootElement = document.documentElement
 
   if (theme === "light") {
-    themeElement?.setAttribute("href", darkURL)
+    rootElement.classList.add("t-light")
+    rootElement.classList.remove("t-dark")
   } else {
-    themeElement?.setAttribute("href", lightURL)
+    rootElement.classList.add("t-dark")
+    rootElement.classList.remove("t-light")
   }
 }

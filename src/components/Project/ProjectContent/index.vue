@@ -1,7 +1,17 @@
 <template>
   <div class="app-main">
-    <splitpanes>
-      <pane v-if="!focus" class="sidbar-pane" :size="pane1Size" max-size="25">
+    <splitpanes
+      :dbl-click-splitter="false"
+      :push-other-panes="false"
+      @splitter-click="handleSplitterClick"
+    >
+      <pane
+        v-if="!focus"
+        ref="sidebarPane"
+        class="sidebar-pane"
+        :size="pane1Size"
+        max-size="25"
+      >
         <sidebar />
       </pane>
       <pane
@@ -26,7 +36,6 @@
 
 <script>
   import { Splitpanes, Pane } from "splitpanes"
-  import "splitpanes/dist/splitpanes.css"
   import Sidebar from "../Sidebar"
   import ContentView from "./ContentView.vue"
   export default {
@@ -75,6 +84,13 @@
       },
       closeSplitView() {
         this.panes.pop()
+      },
+      handleSplitterClick(e) {
+        if (e.index !== 1) return
+        const pane = this.$refs.sidebarPane
+        pane.style.width == "0"
+          ? (pane.style.width = "25%")
+          : (pane.style.width = 0)
       },
     },
   }

@@ -7,7 +7,7 @@
         :active-index="activeIndex"
         @tab-click="onTabClick($event)"
       >
-        <TabPanel v-for="(tab, i) in tabs" :key="tab.id" class="ankit-vats">
+        <TabPanel v-for="(tab, i) in tabs" :key="tab.id">
           <template #header>
             <div class="tab-item" :class="{ active: activeIndex === i }">
               <span>{{
@@ -137,41 +137,45 @@
 </script>
 
 <style lang="scss">
-  .tabs-wrapper {
-    position: relative;
-    height: 100%;
-
-    .tab-item {
-      display: flex;
-      align-items: center;
-
-      .pi-times {
-        margin-left: 10px;
-        font-size: 90%;
+  #body {
+    .content-area {
+      .tabs-wrapper {
         position: relative;
-        top: 1px;
-      }
-    }
-
-    .icon-wrapper-down {
-      position: absolute;
-      top: 12px;
-      right: 10px;
-      cursor: pointer;
-    }
-
-    .tab-view-wrapper {
-      height: 100%;
-    }
-
-    .p-tabview {
-      .p-tabview-panels {
-        height: calc(100% - 39px);
-        padding: 0;
-      }
-
-      .p-tabview-panel {
         height: 100%;
+
+        .tab-item {
+          display: flex;
+          align-items: center;
+
+          .pi-times {
+            margin-left: 10px;
+            font-size: 90%;
+            position: relative;
+            top: 1px;
+          }
+        }
+
+        .icon-wrapper-down {
+          position: absolute;
+          top: 12px;
+          right: 10px;
+          cursor: pointer;
+        }
+
+        .tab-view-wrapper {
+          height: 100%;
+        }
+
+        .p-tabview {
+          .p-tabview-panels {
+            height: calc(100% - 39px);
+            padding: 0;
+          }
+
+          .p-tabview-panel {
+            height: 100%;
+          }
+        }
       }
     }
   }

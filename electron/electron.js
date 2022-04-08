@@ -9,8 +9,8 @@ let tray
 function createWindow() {
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    width: +process.env.APP_WIDTH,
-    height: +process.env.APP_HEIGHT,
+    width: +process.env.APP_WIDTH || 1366,
+    height: +process.env.APP_HEIGHT || 768,
     frame: false,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
