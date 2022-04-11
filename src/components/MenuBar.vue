@@ -42,6 +42,7 @@
       <focus-icon :size="18" />
     </div>
     <div
+      v-if="isElectron"
       v-tooltip.bottom="$t(`tooltips.minimize`)"
       class="menu-item hover:text-primary hover:border-primary"
       @click="handleMenu('min')"
@@ -49,6 +50,7 @@
       <i class="pi pi-minus"></i>
     </div>
     <div
+      v-if="isElectron"
       v-tooltip.bottom="$t(`tooltips.maximize`)"
       class="menu-item hover:text-primary hover:border-primary"
       @click="handleMenu('max')"
@@ -56,6 +58,7 @@
       <max-icon :size="18" />
     </div>
     <div
+      v-if="isElectron"
       v-tooltip.left="$t(`tooltips.close`)"
       class="menu-item hover:text-primary hover:border-primary"
       @click="handleMenu('close')"
@@ -92,6 +95,7 @@
   import MaxIcon from "vue-material-design-icons/CheckboxMultipleBlankOutline.vue"
   import AppSettings from "@/store/Modules/AppSettings"
   import { setThemeURL } from "@/utils/theme"
+  import isElectron from "@/utils/is-electron"
   const appSettings = getModule(AppSettings)
 
   export default {
@@ -147,6 +151,9 @@
       },
       theme() {
         return appSettings.theme
+      },
+      isElectron() {
+        return isElectron()
       },
     },
 
