@@ -1,0 +1,81 @@
+.p-checkbox {
+  width: 18px;
+  height: 18px;
+}
+.p-checkbox .p-checkbox-box {
+  border: 2px solid rgba(255, 255, 255, 0.7);
+  background: #1e1e1e;
+  width: 18px;
+  height: 18px;
+  color: rgba(255, 255, 255, 0.87);
+  border-radius: 4px;
+  transition: background-color 0.2s, border-color 0.2s, color 0.2s,
+    box-shadow 0.2s, background-size 0.2s cubic-bezier(0.64, 0.09, 0.08, 1);
+}
+.p-checkbox .p-checkbox-box .p-checkbox-icon {
+  transition-duration: 0.2s;
+  color: #121212;
+  font-size: 14px;
+}
+.p-checkbox .p-checkbox-box.p-highlight {
+  border-color: #9fa8da;
+  background: #9fa8da;
+}
+.p-checkbox:not(.p-checkbox-disabled) .p-checkbox-box:hover {
+  border-color: rgba(255, 255, 255, 0.6);
+}
+.p-checkbox:not(.p-checkbox-disabled) .p-checkbox-box.p-focus {
+  outline: 0 none;
+  outline-offset: 0;
+  box-shadow: none;
+  border-color: #9fa8da;
+}
+.p-checkbox:not(.p-checkbox-disabled) .p-checkbox-box.p-highlight:hover {
+  border-color: #9fa8da;
+  background: #9fa8da;
+  color: #121212;
+}
+.p-checkbox.p-invalid > .p-checkbox-box {
+  border-color: #f44435;
+}
+.p-checkbox {
+  border-radius: 50%;
+  transition: box-shadow 0.2s;
+}
+.p-checkbox .p-checkbox-box {
+  border-color: rgba(255, 255, 255, 0.7);
+  border-radius: 2px;
+  position: relative;
+}
+.p-checkbox .p-checkbox-box:not(.p-disabled):hover {
+  border-color: rgba(255, 255, 255, 0.7);
+}
+.p-checkbox .p-checkbox-box:not(.p-disabled).p-focus {
+  border-color: rgba(255, 255, 255, 0.7);
+}
+.p-checkbox .p-checkbox-box.p-highlight:not(.p-disabled).p-focus {
+  border-color: #9fa8da;
+}
+.p-checkbox .p-checkbox-box.p-highlight .p-checkbox-icon.pi-check:before {
+  content: "";
+  position: absolute;
+  top: 6px;
+  left: 1px;
+  border-right: 2px solid transparent;
+  border-bottom: 2px solid transparent;
+  transform: rotate(45deg);
+  transform-origin: 0% 100%;
+  animation: checkbox-check 125ms 50ms linear forwards;
+}
+.p-checkbox:not(.p-checkbox-disabled):hover {
+  box-shadow: 0 0 1px 10px rgba(255, 255, 255, 0.04);
+}
+.p-checkbox:not(.p-checkbox-disabled).p-checkbox-focused {
+  box-shadow: 0 0 1px 10px rgba(255, 255, 255, 0.12);
+}
+.p-checkbox.p-checkbox-checked:not(.p-checkbox-disabled):hover {
+  box-shadow: 0 0 1px 10px rgba(159, 168, 218, 0.04);
+}
+.p-checkbox.p-checkbox-checked:not(.p-checkbox-disabled).p-checkbox-focused {
+  box-shadow: 0 0 1px 10px rgba(159, 168, 218, 0.12);
+}

@@ -1,62 +1,60 @@
-#body {
-  .p-tabmenu,
-  .p-tabview {
-    .p-tabmenu-nav,
-    .p-tabview-nav {
-      .p-tabmenu-ink-bar,
-      .p-tabview-ink-bar {
-        display: none;
+.p-tabmenu,
+.p-tabview {
+  .p-tabmenu-nav,
+  .p-tabview-nav {
+    .p-tabmenu-ink-bar,
+    .p-tabview-ink-bar {
+      display: none;
+    }
+
+    li.p-highlight {
+      position: relative;
+
+      &::after {
+        content: "";
+        width: 100%;
+        height: 2px;
+        background: var(--primary-color);
+        position: absolute;
+        bottom: 0;
       }
+    }
 
-      li.p-highlight {
-        position: relative;
-
-        &::after {
-          content: "";
-          width: 100%;
-          height: 2px;
-          background: var(--primary-color);
-          position: absolute;
-          bottom: 0;
-        }
+    li.p-tabmenuitem {
+      a.p-menuitem-link {
+        margin: 0;
+        border: 0;
       }
+    }
 
-      li.p-tabmenuitem {
-        a.p-menuitem-link {
-          margin: 0;
-          border: 0;
-        }
-      }
-
-      li {
-        a.p-tabview-nav-link {
-          margin: 0;
-          border: 0;
-        }
+    li {
+      a.p-tabview-nav-link {
+        margin: 0;
+        border: 0;
       }
     }
   }
+}
 
-  .p-tabmenu-nav {
+.p-tabmenu-nav {
+  -webkit-app-region: drag;
+}
+
+.p-tabmenuitem,
+.p-tabview-nav-link {
+  -webkit-app-region: no-drag;
+}
+
+.material-design-icon {
+  display: flex;
+}
+
+.draggable {
+  .p-tabview-nav {
     -webkit-app-region: drag;
   }
+}
 
-  .p-tabmenuitem,
-  .p-tabview-nav-link {
-    -webkit-app-region: no-drag;
-  }
-
-  .material-design-icon {
-    display: flex;
-  }
-
-  .draggable {
-    .p-tabview-nav {
-      -webkit-app-region: drag;
-    }
-  }
-
-  .not-draggable {
-    -webkit-app-region: no-drag;
-  }
+.not-draggable {
+  -webkit-app-region: no-drag;
 }
