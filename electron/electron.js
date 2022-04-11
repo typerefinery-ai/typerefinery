@@ -1,5 +1,5 @@
 const path = require("path")
-const { app, BrowserWindow, ipcMain, Tray } = require("electron")
+const { app, BrowserWindow, ipcMain, Tray, dialog } = require("electron")
 require("dotenv").config()
 
 const isDev = process.env.NODE_ENV == "dev"
@@ -26,6 +26,7 @@ function createWindow() {
       ? "http://localhost:3000"
       : `file://${path.join(__dirname, "../dist/index.html")}`
   )
+
   tray = new Tray(path.join(__dirname, "./assets/icon.png"))
 
   tray.setToolTip("Innovolve app")
@@ -33,6 +34,7 @@ function createWindow() {
   tray.on("click", () => {
     mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show()
   })
+
   // Open the DevTools.
   if (isDev) {
     mainWindow.webContents.openDevTools()
@@ -57,6 +59,19 @@ app.whenReady().then(() => {
       mainWindow.maximize()
     } else if (action === "close") {
       mainWindow.close()
+    }
+  })
+
+  mainWindow.on("close", function (e) {
+    const choice = dialog.showMessageBoxSync(this, {
+      type: "question",
+      buttons: ["Yes quit", "No just minimize"],
+      title: "Confirm",
+      message: "Are you sure you want to quit?",
+    })
+    if (choice === 1) {
+      e.preventDefault()
+      mainWindow.hide()
     }
   })
 })
