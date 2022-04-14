@@ -1,20 +1,41 @@
----
 name: Feature request
-about: Suggest an idea for this project
-title: ''
-labels: ''
-assignees: ''
+description: Let us know anything that we can do better or that could benefit typerefinery
+title: "Feature request: <short description>"
+labels: ["request: feature"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for suggesting an idea to make it better.
 
----
-
-**Is your feature request related to a problem? Please describe.**
-A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
-
-**Describe the solution you'd like**
-A clear and concise description of what you want to happen.
-
-**Describe alternatives you've considered**
-A clear and concise description of any alternative solutions or features you've considered.
-
-**Additional context**
-Add any other context or screenshots about the feature request here.
+        Please complete the below form to ensure we have all the details to get things started.
+  - type: textarea
+    id: solution
+    attributes:
+      label: 💡 Idea
+      description: |
+        Please describe the desired behavior, pitch your idea, or suggest improvements
+    validations:
+      required: true
+  - type: input
+    id: bugrelation
+    attributes:
+      label: Is your feature related to a bug
+      description: |
+        Refer to a an existing bug, you can use `#bugid`
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives
+      description: |
+        Have you considered alternative solutions or implementations? Do you have an idea on how this should be implemented? Let us know!
+  - type: textarea
+    id: info
+    attributes:
+      label: Additional Info
+      description: |
+        Provide additional information or links to resources that can help with the creation of this command.
+    validations:
+      required: false
