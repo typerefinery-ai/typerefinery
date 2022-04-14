@@ -1,0 +1,76 @@
+.p-disabled,
+.p-component:disabled {
+  opacity: 0.38;
+}
+
+.p-error {
+  color: #f44435;
+}
+
+.p-text-secondary {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.pi {
+  font-size: 1rem;
+}
+
+@keyframes p-component-overlay-enter-animation {
+  from {
+    background-color: transparent;
+  }
+  to {
+    background-color: var(--maskbg);
+  }
+}
+@keyframes p-component-overlay-leave-animation {
+  from {
+    background-color: var(--maskbg);
+  }
+  to {
+    background-color: transparent;
+  }
+}
+
+@media screen and (max-width: 769px) {
+  .p-datepicker table th,
+  .p-datepicker table td {
+    padding: 0;
+  }
+}
+
+::-webkit-input-placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+:-moz-placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+::-moz-placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+:-ms-input-placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+@keyframes checkbox-check {
+  0% {
+    width: 0;
+    height: 0;
+    border-color: #121212;
+    transform: translate3d(0, 0, 0) rotate(45deg);
+  }
+  33% {
+    width: 4px;
+    height: 0;
+    transform: translate3d(0, 0, 0) rotate(45deg);
+  }
+  100% {
+    width: 4px;
+    height: 10px;
+    border-color: #121212;
+    transform: translate3d(0, -10px, 0) rotate(45deg);
+  }
+}

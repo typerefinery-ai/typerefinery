@@ -1,0 +1,91 @@
+.p-paginator {
+  background: #1e1e1e;
+  color: rgba(255, 255, 255, 0.87);
+  border: solid #404040;
+  border-width: 0;
+  padding: 0.375rem 0.75rem;
+  border-radius: 4px;
+}
+.p-paginator .p-paginator-first,
+.p-paginator .p-paginator-prev,
+.p-paginator .p-paginator-next,
+.p-paginator .p-paginator-last {
+  background-color: transparent;
+  border: 0 none;
+  color: rgba(255, 255, 255, 0.6);
+  min-width: 3rem;
+  height: 3rem;
+  margin: 0.143rem;
+  transition: none;
+  border-radius: 50%;
+}
+.p-paginator .p-paginator-first:not(.p-disabled):not(.p-highlight):hover,
+.p-paginator .p-paginator-prev:not(.p-disabled):not(.p-highlight):hover,
+.p-paginator .p-paginator-next:not(.p-disabled):not(.p-highlight):hover,
+.p-paginator .p-paginator-last:not(.p-disabled):not(.p-highlight):hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: transparent;
+  color: rgba(255, 255, 255, 0.6);
+}
+.p-paginator .p-paginator-first {
+  border-top-left-radius: 50%;
+  border-bottom-left-radius: 50%;
+}
+.p-paginator .p-paginator-last {
+  border-top-right-radius: 50%;
+  border-bottom-right-radius: 50%;
+}
+.p-paginator .p-dropdown {
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+  height: 3rem;
+}
+.p-paginator .p-dropdown .p-dropdown-label {
+  padding-right: 0;
+}
+.p-paginator .p-paginator-page-input {
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+}
+.p-paginator .p-paginator-page-input .p-inputtext {
+  max-width: 3rem;
+}
+.p-paginator .p-paginator-current {
+  background-color: transparent;
+  border: 0 none;
+  color: rgba(255, 255, 255, 0.6);
+  min-width: 3rem;
+  height: 3rem;
+  margin: 0.143rem;
+  padding: 0 0.5rem;
+}
+.p-paginator .p-paginator-pages .p-paginator-page {
+  background-color: transparent;
+  border: 0 none;
+  color: rgba(255, 255, 255, 0.6);
+  min-width: 3rem;
+  height: 3rem;
+  margin: 0.143rem;
+  transition: none;
+  border-radius: 50%;
+}
+.p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
+  background: rgba(159, 168, 218, 0.16);
+  border-color: rgba(159, 168, 218, 0.16);
+  color: #9fa8da;
+}
+.p-paginator .p-paginator-pages .p-paginator-page:not(.p-highlight):hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: transparent;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.p-paginator {
+  justify-content: flex-end;
+}
+.p-paginator .p-paginator-element:focus {
+  background: rgba(255, 255, 255, 0.12);
+}
+.p-paginator .p-paginator-element:focus.p-highlight {
+  background: rgba(159, 168, 218, 0.24);
+}
