@@ -237,7 +237,7 @@
 }
 
 html.t-light {
-  @import "./light";
+  @import "./themes/light/light.scss";
 }
 
 html.t-dark {

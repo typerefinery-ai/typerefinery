@@ -1,0 +1,199 @@
+.p-panelmenu .p-panelmenu-header > a {
+  padding: 1.25rem;
+  border: 0 none;
+  color: rgba(0, 0, 0, 0.87);
+  background: #ffffff;
+  font-weight: 400;
+  border-radius: 4px;
+  transition: none;
+}
+.p-panelmenu .p-panelmenu-header > a .p-panelmenu-icon {
+  margin-right: 0.5rem;
+}
+.p-panelmenu .p-panelmenu-header > a .p-menuitem-icon {
+  margin-right: 0.5rem;
+}
+.p-panelmenu .p-panelmenu-header > a:focus {
+  outline: 0 none;
+  outline-offset: 0;
+  box-shadow: none;
+}
+.p-panelmenu .p-panelmenu-header:not(.p-highlight):not(.p-disabled) > a:hover {
+  background: #f6f6f6;
+  border-color: transparent;
+  color: rgba(0, 0, 0, 0.87);
+}
+.p-panelmenu .p-panelmenu-header.p-highlight {
+  margin-bottom: 0;
+}
+.p-panelmenu .p-panelmenu-header.p-highlight > a {
+  background: #ffffff;
+  border-color: transparent;
+  color: rgba(0, 0, 0, 0.87);
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.p-panelmenu .p-panelmenu-header.p-highlight:not(.p-disabled) > a:hover {
+  border-color: transparent;
+  background: #ffffff;
+  color: rgba(0, 0, 0, 0.87);
+}
+.p-panelmenu .p-panelmenu-content {
+  padding: 0.5rem 0;
+  border: 0 none;
+  background: #ffffff;
+  color: rgba(0, 0, 0, 0.87);
+  margin-bottom: 0;
+  border-top: 0;
+  border-top-right-radius: 0;
+  border-top-left-radius: 0;
+  border-bottom-right-radius: 4px;
+  border-bottom-left-radius: 4px;
+}
+.p-panelmenu .p-panelmenu-content .p-menuitem .p-menuitem-link {
+  padding: 0.75rem 0.75rem;
+  color: rgba(0, 0, 0, 0.87);
+  border-radius: 0;
+  transition: none;
+  user-select: none;
+}
+.p-panelmenu
+  .p-panelmenu-content
+  .p-menuitem
+  .p-menuitem-link
+  .p-menuitem-text {
+  color: rgba(0, 0, 0, 0.87);
+}
+.p-panelmenu
+  .p-panelmenu-content
+  .p-menuitem
+  .p-menuitem-link
+  .p-menuitem-icon {
+  color: rgba(0, 0, 0, 0.6);
+  margin-right: 0.5rem;
+}
+.p-panelmenu .p-panelmenu-content .p-menuitem .p-menuitem-link .p-submenu-icon {
+  color: rgba(0, 0, 0, 0.6);
+}
+.p-panelmenu
+  .p-panelmenu-content
+  .p-menuitem
+  .p-menuitem-link:not(.p-disabled):hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+.p-panelmenu
+  .p-panelmenu-content
+  .p-menuitem
+  .p-menuitem-link:not(.p-disabled):hover
+  .p-menuitem-text {
+  color: rgba(0, 0, 0, 0.87);
+}
+.p-panelmenu
+  .p-panelmenu-content
+  .p-menuitem
+  .p-menuitem-link:not(.p-disabled):hover
+  .p-menuitem-icon {
+  color: rgba(0, 0, 0, 0.6);
+}
+.p-panelmenu
+  .p-panelmenu-content
+  .p-menuitem
+  .p-menuitem-link:not(.p-disabled):hover
+  .p-submenu-icon {
+  color: rgba(0, 0, 0, 0.6);
+}
+.p-panelmenu .p-panelmenu-content .p-menuitem .p-menuitem-link:focus {
+  outline: 0 none;
+  outline-offset: 0;
+  box-shadow: none;
+}
+.p-panelmenu
+  .p-panelmenu-content
+  .p-menuitem
+  .p-menuitem-link
+  .p-panelmenu-icon {
+  margin-right: 0.5rem;
+}
+.p-panelmenu
+  .p-panelmenu-content
+  .p-submenu-list:not(.p-panelmenu-root-submenu) {
+  padding: 0 0 0 1rem;
+}
+.p-panelmenu .p-panelmenu-panel {
+  margin-bottom: 0;
+}
+.p-panelmenu .p-panelmenu-panel .p-panelmenu-header > a {
+  border-radius: 0;
+}
+.p-panelmenu .p-panelmenu-panel .p-panelmenu-content {
+  border-radius: 0;
+}
+.p-panelmenu .p-panelmenu-panel:not(:first-child) .p-panelmenu-header > a {
+  border-top: 0 none;
+}
+.p-panelmenu
+  .p-panelmenu-panel:not(:first-child)
+  .p-panelmenu-header:not(.p-highlight):not(.p-disabled):hover
+  > a,
+.p-panelmenu
+  .p-panelmenu-panel:not(:first-child)
+  .p-panelmenu-header:not(.p-disabled).p-highlight:hover
+  > a {
+  border-top: 0 none;
+}
+.p-panelmenu .p-panelmenu-panel:first-child .p-panelmenu-header > a {
+  border-top-right-radius: 4px;
+  border-top-left-radius: 4px;
+}
+.p-panelmenu
+  .p-panelmenu-panel:last-child
+  .p-panelmenu-header:not(.p-highlight)
+  > a {
+  border-bottom-right-radius: 4px;
+  border-bottom-left-radius: 4px;
+}
+.p-panelmenu .p-panelmenu-panel:last-child .p-panelmenu-content {
+  border-bottom-right-radius: 4px;
+  border-bottom-left-radius: 4px;
+}
+
+.p-panelmenu .p-panelmenu-panel {
+  box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14),
+    0 1px 5px 0 rgba(0, 0, 0, 0.12);
+  margin-bottom: 0;
+  border-radius: 0;
+  position: relative;
+  transition: margin-bottom 225ms;
+}
+.p-panelmenu .p-panelmenu-panel:first-child {
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+}
+.p-panelmenu .p-panelmenu-panel:last-child {
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+}
+.p-panelmenu .p-panelmenu-panel .p-panelmenu-header .p-panelmenu-icon {
+  order: 1;
+  margin-left: auto;
+  margin-right: 0;
+}
+.p-panelmenu .p-panelmenu-panel .p-panelmenu-header.p-disabled {
+  opacity: 1;
+}
+.p-panelmenu
+  .p-panelmenu-panel
+  .p-panelmenu-header.p-disabled
+  .p-panelmenu-header-link
+  > * {
+  opacity: 0.38;
+}
+.p-panelmenu
+  .p-panelmenu-panel
+  .p-panelmenu-header
+  .p-panelmenu-header-link:focus {
+  background: #f6f6f6;
+}
+.p-panelmenu .p-panelmenu-panel .p-menuitem .p-menuitem-link:focus {
+  background: rgba(0, 0, 0, 0.12);
+}

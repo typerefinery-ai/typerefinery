@@ -1,0 +1,48 @@
+.p-carousel .p-carousel-content .p-carousel-prev,
+.p-carousel .p-carousel-content .p-carousel-next {
+  width: 2rem;
+  height: 2rem;
+  color: rgba(0, 0, 0, 0.6);
+  border: 0 none;
+  background: transparent;
+  border-radius: 50%;
+  transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
+  margin: 0.5rem;
+}
+.p-carousel .p-carousel-content .p-carousel-prev:enabled:hover,
+.p-carousel .p-carousel-content .p-carousel-next:enabled:hover {
+  color: rgba(0, 0, 0, 0.6);
+  border-color: transparent;
+  background: rgba(0, 0, 0, 0.04);
+}
+.p-carousel .p-carousel-content .p-carousel-prev:focus,
+.p-carousel .p-carousel-content .p-carousel-next:focus {
+  outline: 0 none;
+  outline-offset: 0;
+  box-shadow: none;
+}
+.p-carousel .p-carousel-indicators {
+  padding: 1rem;
+}
+.p-carousel .p-carousel-indicators .p-carousel-indicator {
+  margin-right: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+.p-carousel .p-carousel-indicators .p-carousel-indicator button {
+  background-color: #dcdcdc;
+  width: 2rem;
+  height: 0.5rem;
+  transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
+  border-radius: 0;
+}
+.p-carousel .p-carousel-indicators .p-carousel-indicator button:hover {
+  background: #ececec;
+}
+.p-carousel .p-carousel-indicators .p-carousel-indicator.p-highlight button {
+  background: rgba(63, 81, 181, 0.12);
+  color: #3f51b5;
+}
+.p-carousel .p-carousel-indicators .p-carousel-indicator.p-highlight button {
+  background: #ff4081;
+  color: #ffffff;
+}

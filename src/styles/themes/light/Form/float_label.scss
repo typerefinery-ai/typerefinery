@@ -1,0 +1,40 @@
+.p-float-label .p-chips-multiple-container .p-chips-token {
+  padding: 0.25rem 1rem;
+}
+.p-float-label > label {
+  left: 0.75rem;
+  color: rgba(0, 0, 0, 0.6);
+  transition-duration: 0.2s;
+}
+
+.p-float-label input:focus ~ label,
+.p-float-label input.p-filled ~ label,
+.p-float-label textarea:focus ~ label,
+.p-float-label textarea.p-filled ~ label,
+.p-float-label .p-inputwrapper-focus ~ label,
+.p-float-label .p-inputwrapper-filled ~ label {
+  top: -0.5rem !important;
+  background-color: #ffffff;
+  padding: 2px 4px;
+  margin-left: -4px;
+  margin-top: 0;
+}
+
+.p-float-label textarea ~ label {
+  margin-top: 0;
+}
+
+.p-float-label input:focus ~ label,
+.p-float-label .p-inputwrapper-focus ~ label {
+  color: #3f51b5;
+}
+.p-float-label .p-treeselect-label .p-treeselect-token {
+  padding: 0.25rem 1rem;
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
+}
+.p-float-label .p-multiselect-label .p-multiselect-token {
+  padding: 0.25rem 1rem;
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
+}
