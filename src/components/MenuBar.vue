@@ -152,13 +152,16 @@
 
     created() {
       const theme = appSettings?.theme || "light"
+      const lang = appSettings?.language || "en"
       setThemeURL(theme)
+      window.api?.request("lang-change", lang)
     },
 
     methods: {
       toggleLanguage(value) {
         appSettings.setLanguage(value)
         this.$i18n.locale = value
+        window.api?.request("lang-change", value)
         this.$refs.menu.toggle()
       },
 

@@ -1,0 +1,12 @@
+{
+  "app": {
+    "name": "Innovolve App",
+    "title": "Innovolve App"
+  },
+  "prompt": {
+    "confirm": "Confirm",
+    "quit": "Yes, Quit",
+    "minimize": "No, Just Minimize",
+    "msg": "Are you sure you want to quit?"
+  }
+}
