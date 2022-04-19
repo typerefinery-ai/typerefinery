@@ -1,7 +1,7 @@
 {
   "name": "template-electron-vuex-vuetify",
   "description": "Description",
-  "productName": "TypeRefinery",
+  "productName": "Innovolve App",
   "productAppId": "appId",
   "electronWindowTitle": "Electron App",
   "author": "Max Barrass <max.barrass@gmail.com>",
