@@ -1,5 +1,7 @@
 const path = require("path")
 const { app, BrowserWindow, ipcMain, Tray, dialog } = require("electron")
+const i18n = require("./i18next.config")
+const config = require("../package.json")
 require("dotenv").config()
 
 const isDev = process.env.NODE_ENV == "dev"
@@ -9,14 +11,13 @@ let tray
 function createWindow() {
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    width: +process.env.APP_WIDTH || 1366,
-    height: +process.env.APP_HEIGHT || 768,
+    width: +config.appWidth,
+    height: +config.appHeight,
     frame: false,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
       nodeIntegration: true,
     },
-    title: require("../package.json").electronWindowTitle,
   })
 
   // and load the index.html of the app.
@@ -62,12 +63,17 @@ app.whenReady().then(() => {
     }
   })
 
+  ipcMain.on("lang-change", (e, lang) => {
+    i18n.changeLanguage(lang)
+    mainWindow.setTitle(i18n.t("app.title"))
+  })
+
   mainWindow.on("close", function (e) {
     const choice = dialog.showMessageBoxSync(this, {
       type: "question",
-      buttons: ["Yes quit", "No just minimize"],
-      title: "Confirm",
-      message: "Are you sure you want to quit?",
+      buttons: [i18n.t("prompt.quit"), i18n.t("prompt.minimize")],
+      title: i18n.t("prompt.confirm"),
+      message: i18n.t("prompt.msg"),
     })
     if (choice === 1) {
       e.preventDefault()
