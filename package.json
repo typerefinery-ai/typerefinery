@@ -1,10 +1,10 @@
 {
-  "name": "template-electron-vuex-vuetify",
-  "description": "Description",
-  "productName": "Innovolve App",
+  "name": "typerefinery",
+  "description": "Visualisation workbench for TypeDB",
+  "productName": "TypeRefinery",
   "productAppId": "appId",
-  "electronWindowTitle": "Electron App",
-  "author": "Max Barrass <max.barrass@gmail.com>",
+  "electronWindowTitle": "TypeRefinery",
+  "author": "TypeRefinery.ai",
   "version": "2022.3.24",
   "appWidth": 1366,
   "appHeight": 768,
@@ -123,7 +123,7 @@
     "pre-commit": "npx lint-staged"
   },
   "build": {
-    "appId": "foundation.governance.template-electron-vuex-vuetify",
+    "appId": "ai.typerfinery",
     "copyright": "Copyright © 2022 ${author}",
     "mac": {
       "category": "public.app-category.utilities"
