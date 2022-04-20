@@ -14,6 +14,7 @@ function createWindow() {
     width: +config.appWidth,
     height: +config.appHeight,
     frame: false,
+    icon: path.join(__dirname, "./assets/icon.png"),
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
       nodeIntegration: true,
