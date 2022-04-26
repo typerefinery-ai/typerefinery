@@ -57,7 +57,7 @@ app.whenReady().then(() => {
     if (action === "min") {
       mainWindow.minimize()
     } else if (action === "max") {
-      mainWindow.maximize()
+      mainWindow.isMaximized() ? mainWindow.unmaximize() : mainWindow.maximize()
     } else if (action === "close") {
       mainWindow.close()
     }
