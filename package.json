@@ -142,6 +142,9 @@
     "directories": {
       "buildResources": "electron/assets",
       "output": "dist_electron"
-    }
+    },
+    "extraFiles": [
+      "services/**/*"
+    ]
   }
 }
