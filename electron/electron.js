@@ -1,3 +1,8 @@
+const spawn = require('child_process').spawn
+const exec = require('child_process').exec
+const controller = new AbortController();
+const { signal } = controller;
+
 const path = require("path")
 const { app, BrowserWindow, ipcMain, Tray, dialog } = require("electron")
 const i18n = require("./i18next.config")
@@ -7,6 +12,130 @@ require("dotenv").config()
 const isDev = process.env.NODE_ENV == "dev"
 let mainWindow
 let tray
+
+const pathServices = "services"
+const pathFastAPI = "fastapi"
+const pathFastAPIModule = "main" // without .py suffix
+const pathTypeDB = "typedb"
+const pathJava = "java/jre17/bin"
+const pathPython = "python"
+
+
+let procFastAPI = null
+let portFastAPI = null
+let procTypeDB = null
+let portTypeDB = null
+
+function selectFastAPIPort() {
+  port = 8000
+  return port
+}
+
+function selectTypeDBPort() {
+  port = 1729
+  return port
+}
+
+function exitTypeDBProc() {
+  if (procTypeDB != null) {
+    procTypeDB.kill()
+    procTypeDB = null
+    portTypeDB = null
+  }
+}
+
+function exitFastAPIProc() {
+  if (procFastAPI != null) {
+    procFastAPI.kill()
+    procFastAPI = null
+    portFastAPI = null
+  }
+}
+
+function createFastAPIProc() {
+  let services = path.join(process.resourcesPath, "..", pathServices)
+  let appDir = path.join(process.resourcesPath, "..", pathServices, pathFastAPI)
+  let python = path.join(process.resourcesPath, "..", pathServices, "python", "python.exe")
+  let port = '' + selectFastAPIPort()
+
+  console.log("starting:"+ python)
+
+  procFastAPI = spawn(python, ["-m","uvicorn","main:app","--host","localhost","--app-dir",appDir], {cwd: services, signal: signal});
+
+  procFastAPI.stdout.on('data', function (data) {
+    console.log('fastapi-stdout: ' + data);
+  });
+
+  procFastAPI.stderr.on('data', function (data) {
+    console.log('fastapi-stderr: ' + data);
+  });
+
+  procFastAPI.on('exit', function (code) {
+    console.log('fastapi-child process exited with code ' + code);
+  });
+
+  procFastAPI.on('close', function (code) {
+    console.log('fastapi-child process closed with code ' + code);
+  });
+
+  if (procFastAPI != null) {
+    //console.log(procFastAPI)
+    console.log('fastapi-child process running on port ' + port)
+  }
+}
+
+function createTypeDBProc() {
+
+  let services = path.join(process.resourcesPath, "..", pathServices)
+  let appDir = path.join(process.resourcesPath, "..", pathServices, pathTypeDB)
+  let java = path.join(process.resourcesPath, "..", pathServices, pathJava, "java.exe")
+  let port = '' + selectTypeDBPort()
+  let SERVER_JAVAOPTS = ""
+  let G_CP = "\"" + appDir + "\\server\\conf\\;" + appDir + "\\server\\lib\\common\\*;" + appDir + "\\server\\lib\\prod\\*\""
+
+  console.log("starting:"+ java)
+  console.log("starting:"+ [SERVER_JAVAOPTS, "-cp", G_CP, "-Dtypedb.dir=\""+appDir+"\"", "com.vaticle.typedb.core.server.TypeDBServer"])
+
+// java %SERVER_JAVAOPTS% -cp "%G_CP%" -Dtypedb.dir="%TYPEDB_HOME%" com.vaticle.typedb.core.server.TypeDBServer
+//  procTypeDB = exec(script + " server", {cwd: services, signal: signal, shell: true});
+  procTypeDB = spawn(java, [SERVER_JAVAOPTS, "-cp", G_CP, "-Dtypedb.dir=\""+appDir+"\"", "com.vaticle.typedb.core.server.TypeDBServer"], {cwd: appDir, signal: signal, windowsVerbatimArguments: true});
+
+  procTypeDB.stdout.on('data', function (data) {
+    console.log('typedb-stdout: ' + data);
+  });
+
+  procTypeDB.stderr.on('data', function (data) {
+    console.log('typedb-stderr: ' + data);
+  });
+
+  procTypeDB.on('exit', function (code) {
+    console.log('typedb-child process exited with code ' + code);
+  });
+
+  procTypeDB.on('close', function (code) {
+    console.log('typedb-child process closed with code ' + code);
+  });
+
+
+  if (procTypeDB != null) {
+    //console.log(procTypeDB)
+    console.log('typedb-child process running on port ' + port)
+  }
+}
+
+function stopServices() {
+  console.log('fastapi-closing')
+  exitFastAPIProc()
+  console.log('typedb-closing')
+  exitTypeDBProc()
+  console.log('services-aborting')
+  controller.abort();
+}
+function startServices() {
+  createFastAPIProc()
+  createTypeDBProc()
+}
+
 
 function createWindow() {
   // Create the browser window.
@@ -79,14 +208,20 @@ app.whenReady().then(() => {
     if (choice === 1) {
       e.preventDefault()
       mainWindow.hide()
+    } else {
+      console.log('exiting:close')
+      stopServices()
     }
   })
+  startServices()
 })
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
 app.on("window-all-closed", () => {
+  console.log('exiting:window-all-closed')
+  stopServices()
   if (process.platform !== "darwin") {
     app.quit()
   }
