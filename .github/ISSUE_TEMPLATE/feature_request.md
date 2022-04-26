@@ -1,41 +1,19 @@
-name: Feature request
-description: Let us know anything that we can do better or that could benefit typerefinery
-title: "Feature request: <short description>"
-labels: ["request: feature"]
-body:
-  - type: markdown
-    attributes:
-      value: |
-        Thank you for suggesting an idea to make it better.
+---
+name: 🚀 Feature Request
+about: I have a suggestion (and I could even submit a PR 🤘🏼)!
+---
 
-        Please complete the below form to ensure we have all the details to get things started.
-  - type: textarea
-    id: solution
-    attributes:
-      label: 💡 Idea
-      description: |
-        Please describe the desired behavior, pitch your idea, or suggest improvements
-    validations:
-      required: true
-  - type: input
-    id: bugrelation
-    attributes:
-      label: Is your feature related to a bug
-      description: |
-        Refer to a an existing bug, you can use `#bugid`
-    validations:
-      required: true
-  - type: textarea
-    id: alternatives
-    attributes:
-      label: Alternatives
-      description: |
-        Have you considered alternative solutions or implementations? Do you have an idea on how this should be implemented? Let us know!
-  - type: textarea
-    id: info
-    attributes:
-      label: Additional Info
-      description: |
-        Provide additional information or links to resources that can help with the creation of this command.
-    validations:
-      required: false
+## Feature Request
+
+**Is your feature request related to a problem? Please describe.**
+A clear and concise description of what the problem is. Ex. I have an issue when [...]
+
+**Describe the solution you'd like**
+A clear and concise description of what you want to happen. Add any considered drawbacks.
+
+**Are there alternatives?**
+A clear and concise description of any alternative solutions or features you've considered.
+
+**Documentation**
+If you can, explain how users will be able to use this and possibly write out a version of the docs.
+Maybe a screenshot or design?

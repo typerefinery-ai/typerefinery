@@ -1,5 +1,5 @@
 <template>
-  <div style="height: 100vh">
+  <div style="height: 100vh;">
     <splitpanes
       :dbl-click-splitter="false"
       :push-other-panes="false"
