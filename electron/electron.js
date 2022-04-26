@@ -1,5 +1,6 @@
 const spawn = require('child_process').spawn
 const exec = require('child_process').exec
+const execSync = require('child_process').execSync
 const controller = new AbortController();
 const { signal } = controller;
 
@@ -25,6 +26,21 @@ let procFastAPI = null
 let portFastAPI = null
 let procTypeDB = null
 let portTypeDB = null
+
+function os_func() {
+    this.execCommand = function(cmd, options, callback) {
+        exec(cmd, options, (error, stdout, stderr) => {
+            if (error) {
+                console.error(`exec error: ${error}`);
+                return;
+            }
+
+            callback(stdout);
+        });
+    }
+}
+var os = new os_func();
+
 
 function selectFastAPIPort() {
   port = 8000
@@ -52,10 +68,36 @@ function exitFastAPIProc() {
   }
 }
 
+function setupPython() {
+
+  let services = path.join(process.resourcesPath, "..", pathServices)
+  let appDir = path.join(process.resourcesPath, "..", pathServices, pathFastAPI)
+  let pythonHome = path.join(process.resourcesPath, "..", pathServices, pathPython)
+  let python = path.join(process.resourcesPath, "..", pathServices, pathPython, "python.exe")
+  let requirements = path.join(process.resourcesPath, "..", pathServices, pathFastAPI, "requirements.txt")
+  let port = '' + selectFastAPIPort()
+  let pythonPyGet = "python get-pip.py --no-warn-script-location"
+  let pythonPiInstall = "python -m pip install -r " + requirements
+
+  console.log("starting:"+ pythonPyGet)
+
+  os.execCommand(pythonPyGet, {cwd: pythonHome, signal: signal}, function (returnvalue) {
+      console.log(`Output: ${returnvalue}`);
+      console.log("starting:"+ pythonPiInstall)
+      os.execCommand(pythonPiInstall, {cwd: pythonHome, signal: signal}, function (returnvalue) {
+          console.log(`Output: ${returnvalue}`);
+          createFastAPIProc()
+      });
+  });
+
+
+}
+
 function createFastAPIProc() {
   let services = path.join(process.resourcesPath, "..", pathServices)
   let appDir = path.join(process.resourcesPath, "..", pathServices, pathFastAPI)
-  let python = path.join(process.resourcesPath, "..", pathServices, "python", "python.exe")
+  let pythonHome = path.join(process.resourcesPath, "..", pathServices, pathPython)
+  let python = path.join(process.resourcesPath, "..", pathServices, pathPython, "python.exe")
   let port = '' + selectFastAPIPort()
 
   console.log("starting:"+ python)
@@ -137,7 +179,8 @@ function stopServices() {
 }
 function startServices() {
   if (process.platform == "win32") {
-    createFastAPIProc()
+    setupPython()
+    //createFastAPIProc()
     createTypeDBProc()
   } else {
     console.log("embedded services are not yet available on your os.")
