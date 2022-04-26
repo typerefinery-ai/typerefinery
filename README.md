@@ -1,11 +1,11 @@
-# template-electron-vuex-vuetify
+# TypeRefinery
 
-[![build_status](https://github.com/governance-foundation/template-electron-vuex-vuetify/workflows/build-release/badge.svg)](https://github.com/governance-foundation/template-electron-vuex-vuetify/actions?workflow=Build/release)
-[![Coverage Status](https://coveralls.io/repos/github/governance-foundation/template-electron-vuex-vuetify/badge.svg?branch=master)](https://coveralls.io/github/governance-foundation/template-electron-vuex-vuetify?branch=master)
-[![github license](https://img.shields.io/github/license/governance-foundation/template-electron-vuex-vuetify)](https://github.com/governance-foundation/template-electron-vuex-vuetify)
-[![github issues](https://img.shields.io/github/issues/governance-foundation/template-electron-vuex-vuetify)](https://github.com/governance-foundation/template-electron-vuex-vuetify)
-[![github last commit](https://img.shields.io/github/last-commit/governance-foundation/template-electron-vuex-vuetify)](https://github.com/governance-foundation/template-electron-vuex-vuetify)
-[![github repo size](https://img.shields.io/github/repo-size/governance-foundation/template-electron-vuex-vuetify)](https://github.com/governance-foundation/template-electron-vuex-vuetify)
+[![build_status](https://github.com/innovolve-ai/typerefinery/workflows/build-release/badge.svg)](https://github.com/innovolve-ai/typerefinery/actions?workflow=Build/release)
+[![Coverage Status](https://coveralls.io/repos/github/innovolve-ai/typerefinery/badge.svg?branch=master)](https://coveralls.io/github/innovolve-ai/typerefinery?branch=master)
+[![github license](https://img.shields.io/github/license/innovolve-ai/typerefinery)](https://github.com/innovolve-ai/typerefinery)
+[![github issues](https://img.shields.io/github/issues/innovolve-ai/typerefinery)](https://github.com/innovolve-ai/typerefinery)
+[![github last commit](https://img.shields.io/github/last-commit/innovolve-ai/typerefinery)](https://github.com/innovolve-ai/typerefinery)
+[![github repo size](https://img.shields.io/github/repo-size/innovolve-ai/typerefinery)](https://github.com/innovolve-ai/typerefinery)
 [![Gitter](https://badges.gitter.im/governance-foundation/community.svg)](https://gitter.im/governance-foundation/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 [![Gitter](https://img.shields.io/badge/forum-Google-orange)](https://groups.google.com/forum/#!forum/governance-foundation)
 
@@ -15,16 +15,16 @@ This template should help get you started developing `Electron` app using `Vue 3
 
 ## Main Window
 
-<img width="400px" src="https://raw.githubusercontent.com/governance-foundation/template-electron-vuex-vuetify/master/public/assets/electron-app.png" />
+<img width="400px" src="https://raw.githubusercontent.com/innovolve-ai/typerefinery/master/public/assets/electron-app.png" />
 
 ## Run Setup
 
 ```sh
 # clone the project
-git clone https://github.com/governance-foundation/template-electron-vuex-vuetify.git
+git clone https://github.com/innovolve-ai/typerefinery.git
 
 # enter the project directory
-cd template-electron-vuex-vuetify
+cd typerefinery
 
 # install dependency
 npm install
@@ -130,71 +130,7 @@ Following pipleines exist for compiling code as its commited
 
 When you want to create a new release, follow these steps:
 
-1. Update the version in your project's package.json file (e.g. `2022.02.20`)
-2. Commit and sign that change (`git commit -s -a -m "chore: release v2022.02.20"`)
-3. Tag and sign your commit (`git tag -s -a v2022.02.20 -m "v2022.02.20"`). Make sure your tag name's format is `v{YYYY}.{MM}.{DD}`. Your workflow will use this tag to detect when to create a release
+1. Update the version in your project's package.json file (e.g. `2022.3.24`)
+2. Commit and sign that change (`git commit -s -a -m "chore: release v2022.3.24"`)
+3. Tag and sign your commit (`git tag -s -a 2022.3.24 -m "2022.3.24"`). Make sure your tag name's format is `{YYYY}.{M}.{DD}`. Your workflow will use this tag to detect when to create a release
 4. Push your changes to GitHub (git push && git push --tags)
-
-## App Generation
-
-To generate this app from sratch run the following:
-
-### Part 1 - Automated
-
-- Install Vue globally - `npm install -g @vue/cli`
-- Create Vue App `vue create template-electron-vuex-vuetify`
-  - Please pick a preset:
-    - Manually select features
-  - Features (All Yes)
-  - Babel
-    - TypeScript
-    - Progressive Web App (PWA) Support
-    - Router
-    - Vuex
-    - CSS Pre-processors
-    - Linter / Formatter
-    - Unit Testing
-    - E2E Testing
-  - Use class-style component syntax?
-    - Yes
-  - Use Babel alongside TypeScript?
-    - Yes
-  - Use history mode for router?
-    - Yes
-  - Pick a CSS pre-processor:
-    - Sass/SCSS (with dart-sass)
-  - Pick a linter / formatter config:
-    - ESLint + Prettier
-- Pick additional lint features: \* Lint on save
-  - Pick a unit testing solution:
-    - Jest
-  - Pick an E2E testing solution:
-    Cypress
-  - Where do you prefer placing config:
-    - In dedicated config files
-- Add Vuetify UI framework `vue add vuetify`
-  - use `Default`
-
-### Part 2 - Manual steps
-
-- Remove Jest, will be replaced by [Vitest](https://vitest.dev/)
-  - remove test folder
-  - remove dependencies
-
-```sh
-npm remove @types/jest jest ts-jest @vue/vue3-jest @vue/cli-plugin-unit-jest babel-jest @vue/cli-plugin-babel
-```
-
-- Create [Vite template](https://vitejs.dev/guide/#trying-vite-online) for copying Vite config
-
-  - create blank vite-vue app `npm create vite@latest my-vue-app -- --template vue`
-  - copy accross folders `cypress` and `.vscode`
-  - copy acresss all the conig files
-
-- Add Electron, Vitest and Vite
-  - add configs `package.json`, `vite.config.ts`, `electron.js` and `electron/preload.js` follow this [Vite + Vue 3 + electron + TypeScript](https://dev.to/brojenuel/vite-vue-3-electron-5h4o)
-  - add dependencies
-
-```sh
-npm install vitest vue-tsc jsdom start-server-and-test @types/jsdom @types/node @vue/tsconfig @rushstack/eslint-patch @vitejs/plugin-vue concurrently cross-env electron electron-builder wait-on @types/electron-devtools-installer vite --save-dev
-```

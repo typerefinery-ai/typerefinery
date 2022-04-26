@@ -1,10 +1,10 @@
 {
-  "name": "template-electron-vuex-vuetify",
-  "description": "Description",
-  "productName": "Innovolve App",
+  "name": "typerefinery",
+  "description": "Visualisation workbench for TypeDB",
+  "productName": "TypeRefinery",
   "productAppId": "appId",
-  "electronWindowTitle": "Electron App",
-  "author": "Max Barrass <max.barrass@gmail.com>",
+  "electronWindowTitle": "TypeRefinery",
+  "author": "TypeRefinery.ai",
   "version": "2022.3.24",
   "appWidth": 1366,
   "appHeight": 768,
@@ -15,6 +15,7 @@
     "lint:script": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
     "lint:style": "stylelint src/**/*.{css,scss,vue}",
     "dev": "vite",
+    "dev2": "vite --host localhost",
     "electron": "wait-on tcp:3000 && cross-env NODE_ENV=dev electron .",
     "electron:pack": "electron-builder --dir",
     "electron:dev": "concurrently -k \"cross-env BROWSER=none npm run dev\" \"npm run electron\"",
@@ -25,16 +26,18 @@
     "postuninstall": "electron-builder install-app-deps",
     "preview": "vite preview --port 8080 --host localhost",
     "test:e2e:ci2": "start-server-and-test preview 8080 'cypress run'",
+    "test:e2e:ci3": "start-server-and-test dev2 http-get://localhost:3000 test",
     "test:e2e:ci": "concurrently -k \"cross-env BROWSER=none npm run preview\" \"wait-on --verbose http://localhost:8080 && cypress run\"",
     "typecheck": "vue-tsc --noEmit && vue-tsc --noEmit -p tsconfig.vitest.json --composite false",
     "cypress": "cypress run || true",
     "test": "npm run report:clean && npm run cypress",
-    "report:clean": "rm -rf cypress/results cypress/screenshots cypress/reports || true",
+    "report:clean": "rm -rf cypress/results cypress/screenshots cypress/videos cypress/reports || true",
     "report:merge": "mochawesome-merge cypress/results/*.json -o cypress/reports/report.json",
     "report:generate": "marge cypress/reports/report.json -f report -o cypress/reports",
-    "report:copyScreenshots": "cp -r cypress/screenshots cypress/reports/screenshots || true",
-    "report:copyVideos": "cp -r cypress/videos cypress/reports/videos || true",
-    "posttest": "npm run report:merge && npm run report:generate && npm run report:copyScreenshots && npm run report:copyVideos"
+    "report:moveScreenshots": "mv cypress/screenshots cypress/reports/screenshots 2>/dev/null || true",
+    "report:moveVideos": "mv cypress/videos cypress/reports/videos 2>/dev/null || true",
+    "report:moveData": "mv cypress/results/data cypress/reports/data 2>/dev/null || true",
+    "posttest": "npm run report:merge && npm run report:generate && npm run report:moveScreenshots && npm run report:moveVideos && npm run report:moveData"
   },
   "main": "electron/electron.js",
   "dependencies": {
@@ -120,7 +123,7 @@
     "pre-commit": "npx lint-staged"
   },
   "build": {
-    "appId": "foundation.governance.template-electron-vuex-vuetify",
+    "appId": "ai.typerfinery",
     "copyright": "Copyright © 2022 ${author}",
     "mac": {
       "category": "public.app-category.utilities"
