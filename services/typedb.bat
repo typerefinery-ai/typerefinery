@@ -4,9 +4,9 @@ SET "TYPEDB_HOME=%cd%\typedb"
 SET "JAVA_HOME=%cd%\java\jre17"
 SET "PATH=%JAVA_HOME%\bin"
 
-echo TYPEDB_HOME=%TYPEDB_HOME%
-echo JAVA_HOME=%JAVA_HOME%
-echo PATH=%PATH%
+echo TYPEDB - TYPEDB_HOME=%TYPEDB_HOME%
+echo TYPEDB - JAVA_HOME=%JAVA_HOME%
+echo TYPEDB - PATH=%PATH%
 
 java --version
 
