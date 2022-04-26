@@ -124,16 +124,24 @@ function createTypeDBProc() {
 }
 
 function stopServices() {
-  console.log('fastapi-closing')
-  exitFastAPIProc()
-  console.log('typedb-closing')
-  exitTypeDBProc()
-  console.log('services-aborting')
-  controller.abort();
+  if (process.platform == "win32") {
+    console.log('fastapi-closing')
+    exitFastAPIProc()
+    console.log('typedb-closing')
+    exitTypeDBProc()
+    console.log('services-aborting')
+    controller.abort();
+  } else {
+    console.log("embedded services are not yet available on your os.")
+  }
 }
 function startServices() {
-  createFastAPIProc()
-  createTypeDBProc()
+  if (process.platform == "win32") {
+    createFastAPIProc()
+    createTypeDBProc()
+  } else {
+    console.log("embedded services are not yet available on your os.")
+  }
 }
 
 
