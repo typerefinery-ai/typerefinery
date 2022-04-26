@@ -11,4 +11,5 @@
 *.jfc binary
 *.pyd binary
 *.cat binary
+*.zip binary
 
