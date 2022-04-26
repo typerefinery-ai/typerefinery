@@ -1,0 +1,14 @@
+# Autodetect text files
+* text=auto
+
+# keep binaries
+*.dll binary
+*.exe binary
+*.bfc binary
+*.lib binary
+*.jar binary
+*.dat binary
+*.jfc binary
+*.pyd binary
+*.cat binary
+
