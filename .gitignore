@@ -40,5 +40,5 @@ lerna-debug.log*
 /dist_electron
 
 public/services/typedb/data
-public/services/python/Libs
+public/services/python/Lib
 public/services/python/Scripts
