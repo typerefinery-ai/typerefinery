@@ -44,7 +44,7 @@ if exist %SERVER_HOME% (
 :startfastapi
 
 if exist %SERVER_HOME% (
-  python -m uvicorn main:app --host localhost --app-dir %SERVER_HOME%
+  python -m uvicorn main:app --reload --host localhost --app-dir %SERVER_HOME%
   goto exit
 ) else (
   echo Can't find server^.
