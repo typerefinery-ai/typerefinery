@@ -39,6 +39,6 @@ lerna-debug.log*
 #Electron-builder output
 /dist_electron
 
-services/typedb/data
+services/typedb/server/data/**/*
 services/python/Lib
 services/python/Scripts
