@@ -1,3 +1,4 @@
+const fs = require('fs')
 const spawn = require('child_process').spawn
 const exec = require('child_process').exec
 const execSync = require('child_process').execSync
@@ -68,100 +69,119 @@ function exitFastAPIProc() {
   }
 }
 
+function isPathExist(path) {
+  try {
+    return fs.existsSync(path)
+  } catch(err) {
+    console.error(err)
+  }
+  return false
+}
+
 function setupPython() {
 
   let services = path.join(process.resourcesPath, "..", pathServices)
-  let appDir = path.join(process.resourcesPath, "..", pathServices, pathFastAPI)
-  let pythonHome = path.join(process.resourcesPath, "..", pathServices, pathPython)
-  let python = path.join(process.resourcesPath, "..", pathServices, pathPython, "python.exe")
-  let requirements = path.join(process.resourcesPath, "..", pathServices, pathFastAPI, "requirements.txt")
-  let port = '' + selectFastAPIPort()
-  let pythonPyGet = "python get-pip.py --no-warn-script-location"
-  let pythonPiInstall = "python -m pip install -r " + requirements
 
-  console.log("starting:"+ pythonPyGet)
+  if (isPathExist(services)) {
+    let appDir = path.join(process.resourcesPath, "..", pathServices, pathFastAPI)
+    let pythonHome = path.join(process.resourcesPath, "..", pathServices, pathPython)
+    let python = path.join(process.resourcesPath, "..", pathServices, pathPython, "python.exe")
+    let requirements = path.join(process.resourcesPath, "..", pathServices, pathFastAPI, "requirements.txt")
+    let port = '' + selectFastAPIPort()
+    let pythonPyGet = "python get-pip.py --no-warn-script-location"
+    let pythonPiInstall = "python -m pip install -r " + requirements
 
-  os.execCommand(pythonPyGet, {cwd: pythonHome, signal: signal}, function (returnvalue) {
-      console.log(`Output: ${returnvalue}`);
-      console.log("starting:"+ pythonPiInstall)
-      os.execCommand(pythonPiInstall, {cwd: pythonHome, signal: signal}, function (returnvalue) {
-          console.log(`Output: ${returnvalue}`);
-          createFastAPIProc()
-      });
-  });
+    console.log("starting:"+ pythonPyGet)
 
+    os.execCommand(pythonPyGet, {cwd: pythonHome, signal: signal}, function (returnvalue) {
+        console.log(`Output: ${returnvalue}`);
+        console.log("starting:"+ pythonPiInstall)
+        os.execCommand(pythonPiInstall, {cwd: pythonHome, signal: signal}, function (returnvalue) {
+            console.log(`Output: ${returnvalue}`);
+            createFastAPIProc()
+        });
+    });
+
+  }
 
 }
 
 function createFastAPIProc() {
   let services = path.join(process.resourcesPath, "..", pathServices)
-  let appDir = path.join(process.resourcesPath, "..", pathServices, pathFastAPI)
-  let pythonHome = path.join(process.resourcesPath, "..", pathServices, pathPython)
-  let python = path.join(process.resourcesPath, "..", pathServices, pathPython, "python.exe")
-  let port = '' + selectFastAPIPort()
 
-  console.log("starting:"+ python)
+  if (isPathExist(services)) {
+    let appDir = path.join(process.resourcesPath, "..", pathServices, pathFastAPI)
+    let pythonHome = path.join(process.resourcesPath, "..", pathServices, pathPython)
+    let python = path.join(process.resourcesPath, "..", pathServices, pathPython, "python.exe")
+    let port = '' + selectFastAPIPort()
 
-  procFastAPI = spawn(python, ["-m","uvicorn","main:app","--host","localhost","--app-dir",appDir], {cwd: services, signal: signal});
+    console.log("starting:"+ python)
 
-  procFastAPI.stdout.on('data', function (data) {
-    console.log('fastapi-stdout: ' + data);
-  });
+    procFastAPI = spawn(python, ["-m","uvicorn","main:app","--host","localhost","--app-dir",appDir], {cwd: services, signal: signal});
 
-  procFastAPI.stderr.on('data', function (data) {
-    console.log('fastapi-stderr: ' + data);
-  });
+    procFastAPI.stdout.on('data', function (data) {
+      console.log('fastapi-stdout: ' + data);
+    });
 
-  procFastAPI.on('exit', function (code) {
-    console.log('fastapi-child process exited with code ' + code);
-  });
+    procFastAPI.stderr.on('data', function (data) {
+      console.log('fastapi-stderr: ' + data);
+    });
 
-  procFastAPI.on('close', function (code) {
-    console.log('fastapi-child process closed with code ' + code);
-  });
+    procFastAPI.on('exit', function (code) {
+      console.log('fastapi-child process exited with code ' + code);
+    });
 
-  if (procFastAPI != null) {
-    //console.log(procFastAPI)
-    console.log('fastapi-child process running on port ' + port)
+    procFastAPI.on('close', function (code) {
+      console.log('fastapi-child process closed with code ' + code);
+    });
+
+    if (procFastAPI != null) {
+      //console.log(procFastAPI)
+      console.log('fastapi-child process running on port ' + port)
+    }
   }
 }
 
 function createTypeDBProc() {
 
   let services = path.join(process.resourcesPath, "..", pathServices)
-  let appDir = path.join(process.resourcesPath, "..", pathServices, pathTypeDB)
-  let java = path.join(process.resourcesPath, "..", pathServices, pathJava, "java.exe")
-  let port = '' + selectTypeDBPort()
-  let SERVER_JAVAOPTS = ""
-  let G_CP = "\"" + appDir + "\\server\\conf\\;" + appDir + "\\server\\lib\\common\\*;" + appDir + "\\server\\lib\\prod\\*\""
 
-  console.log("starting:"+ java)
-  console.log("starting:"+ [SERVER_JAVAOPTS, "-cp", G_CP, "-Dtypedb.dir=\""+appDir+"\"", "com.vaticle.typedb.core.server.TypeDBServer"])
+  if (isPathExist(services)) {
 
-// java %SERVER_JAVAOPTS% -cp "%G_CP%" -Dtypedb.dir="%TYPEDB_HOME%" com.vaticle.typedb.core.server.TypeDBServer
-//  procTypeDB = exec(script + " server", {cwd: services, signal: signal, shell: true});
-  procTypeDB = spawn(java, [SERVER_JAVAOPTS, "-cp", G_CP, "-Dtypedb.dir=\""+appDir+"\"", "com.vaticle.typedb.core.server.TypeDBServer"], {cwd: appDir, signal: signal, windowsVerbatimArguments: true});
+    let appDir = path.join(process.resourcesPath, "..", pathServices, pathTypeDB)
+    let java = path.join(process.resourcesPath, "..", pathServices, pathJava, "java.exe")
+    let port = '' + selectTypeDBPort()
+    let SERVER_JAVAOPTS = ""
+    let G_CP = "\"" + appDir + "\\server\\conf\\;" + appDir + "\\server\\lib\\common\\*;" + appDir + "\\server\\lib\\prod\\*\""
 
-  procTypeDB.stdout.on('data', function (data) {
-    console.log('typedb-stdout: ' + data);
-  });
+    console.log("starting:"+ java)
+    console.log("starting:"+ [SERVER_JAVAOPTS, "-cp", G_CP, "-Dtypedb.dir=\""+appDir+"\"", "com.vaticle.typedb.core.server.TypeDBServer"])
 
-  procTypeDB.stderr.on('data', function (data) {
-    console.log('typedb-stderr: ' + data);
-  });
+  // java %SERVER_JAVAOPTS% -cp "%G_CP%" -Dtypedb.dir="%TYPEDB_HOME%" com.vaticle.typedb.core.server.TypeDBServer
+  //  procTypeDB = exec(script + " server", {cwd: services, signal: signal, shell: true});
+    procTypeDB = spawn(java, [SERVER_JAVAOPTS, "-cp", G_CP, "-Dtypedb.dir=\""+appDir+"\"", "com.vaticle.typedb.core.server.TypeDBServer"], {cwd: appDir, signal: signal, windowsVerbatimArguments: true});
 
-  procTypeDB.on('exit', function (code) {
-    console.log('typedb-child process exited with code ' + code);
-  });
+    procTypeDB.stdout.on('data', function (data) {
+      console.log('typedb-stdout: ' + data);
+    });
 
-  procTypeDB.on('close', function (code) {
-    console.log('typedb-child process closed with code ' + code);
-  });
+    procTypeDB.stderr.on('data', function (data) {
+      console.log('typedb-stderr: ' + data);
+    });
+
+    procTypeDB.on('exit', function (code) {
+      console.log('typedb-child process exited with code ' + code);
+    });
+
+    procTypeDB.on('close', function (code) {
+      console.log('typedb-child process closed with code ' + code);
+    });
 
 
-  if (procTypeDB != null) {
-    //console.log(procTypeDB)
-    console.log('typedb-child process running on port ' + port)
+    if (procTypeDB != null) {
+      //console.log(procTypeDB)
+      console.log('typedb-child process running on port ' + port)
+    }
   }
 }
 
