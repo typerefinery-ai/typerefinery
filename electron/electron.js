@@ -78,9 +78,6 @@ function isPathExist(path) {
 
 function setupPython() {
   let services = path.join(process.resourcesPath, "..", pathServices)
-  // mainWindow.webContents.on("did-finish-load", () => {
-  //   mainWindow.webContents.send("db:status", "starting")
-  // })
   if (isPathExist(services)) {
     let appDir = path.join(
       process.resourcesPath,
@@ -135,9 +132,8 @@ function setupPython() {
 
 function createFastAPIProc() {
   let services = path.join(process.resourcesPath, "..", pathServices)
-  // mainWindow.webContents.on("did-finish-load", () => {
   mainWindow.webContents.send("api:status", "starting")
-  // })
+
   if (isPathExist(services)) {
     let appDir = path.join(
       process.resourcesPath,
@@ -177,24 +173,17 @@ function createFastAPIProc() {
     })
 
     procFastAPI.on("exit", function (code) {
-      // mainWindow.webContents.on("did-finish-load", () => {
       mainWindow.webContents.send("api:status", "stopped")
-      // })
       console.log("fastapi-child process exited with code " + code)
     })
 
     procFastAPI.on("close", function (code) {
-      // mainWindow.webContents.on("did-finish-load", () => {
       mainWindow.webContents.send("api:status", "stopped")
-      // })
       console.log("fastapi-child process closed with code " + code)
     })
 
     if (procFastAPI != null) {
-      //console.log(procFastAPI)
-      // mainWindow.webContents.on("did-finish-load", () => {
       mainWindow.webContents.send("api:status", "started")
-      // })
       console.log("fastapi-child process running on port " + port)
     }
   }

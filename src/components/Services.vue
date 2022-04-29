@@ -67,12 +67,7 @@
       appServices.setServiceStatus([2, 0])
       appServices.enableService([2, 0])
 
-      // console.log(appServices)
-      // console.log(appServices.setServiceStatus(1, 2))
-
       window.api?.response("api:status", (s) => {
-        // appSettings.setService(s)
-        console.log(s, "api")
         if (s == "starting") {
           appServices.setServiceStatus([1, 90])
         } else if (s == "started") {
@@ -81,8 +76,6 @@
         }
       })
       window.api?.response("db:status", (s) => {
-        // appSettings.setService(s)
-        console.log(s, "db")
         if (s == "starting") {
           appServices.setServiceStatus([2, 90])
         } else if (s == "started") {
