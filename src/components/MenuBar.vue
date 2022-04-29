@@ -1,5 +1,6 @@
 <template>
   <div class="menu-bar" :class="{ focus: focus }">
+    <service-icons />
     <div
       v-if="!menuBarVisible"
       v-tooltip.bottom="$t(`tooltips.show-menu-bar`)"
@@ -30,7 +31,7 @@
       <i
         v-if="theme === 'light'"
         class="pi pi-sun"
-        style="font-weight: bold;"
+        style="font-weight: bold"
       ></i>
       <i v-else class="pi pi-moon"></i>
     </div>
@@ -93,6 +94,7 @@
   import FocusIcon from "vue-material-design-icons/BullseyeArrow.vue"
   import CloseIcon from "vue-material-design-icons/Close.vue"
   import MaxIcon from "vue-material-design-icons/CheckboxMultipleBlankOutline.vue"
+  import ServiceIcons from "./Services.vue"
   import AppSettings from "@/store/Modules/AppSettings"
   import { setThemeURL } from "@/utils/theme"
   import isElectron from "@/utils/is-electron"
@@ -106,6 +108,7 @@
       CloseIcon,
       MaxIcon,
       Menu,
+      ServiceIcons,
     },
 
     props: {
