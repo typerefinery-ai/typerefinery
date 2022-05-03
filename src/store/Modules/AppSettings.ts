@@ -1,11 +1,14 @@
 import { Module, VuexModule, Mutation } from "vuex-module-decorators"
 import store from "../index"
 
+const storeValue = localStorage.getItem("vuex")
+const settingsInStore = storeValue ? JSON.parse(storeValue).AppSettings : false
+
 @Module({
   name: "AppSettings",
   store: store,
   dynamic: true,
-  preserveState: localStorage.getItem("vuex") !== null,
+  preserveState: settingsInStore,
 })
 export default class AppSettings extends VuexModule {
   language = "hi"
