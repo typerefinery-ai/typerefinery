@@ -9,6 +9,19 @@
       <chevron-down :size="18" />
     </div>
     <div
+      v-tooltip.bottom="$t(`tooltips.profile`)"
+      class="menu-item hover:text-primary hover:border-primary profile"
+      @click="visible = !visible"
+    >
+      <div v-if="visible">
+        <Userprofile />
+      </div>
+      <div style="color: blueviolet">
+        {{ user1 }}
+        <i class="pi pi-user"></i>
+      </div>
+    </div>
+    <div
       v-tooltip.bottom="$t(`tooltips.help`)"
       class="menu-item hover:text-primary hover:border-primary"
       @click="toggleHelp"
@@ -30,7 +43,7 @@
       <i
         v-if="theme === 'light'"
         class="pi pi-sun"
-        style="font-weight: bold;"
+        style="font-weight: bold"
       ></i>
       <i v-else class="pi pi-moon"></i>
     </div>
@@ -87,174 +100,186 @@
 </template>
 
 <script>
-  import Menu from "primevue/menu"
-  import { getModule } from "vuex-module-decorators"
-  import ChevronDown from "vue-material-design-icons/ChevronDoubleDown.vue"
-  import FocusIcon from "vue-material-design-icons/BullseyeArrow.vue"
-  import CloseIcon from "vue-material-design-icons/Close.vue"
-  import MaxIcon from "vue-material-design-icons/CheckboxMultipleBlankOutline.vue"
-  import AppSettings from "@/store/Modules/AppSettings"
-  import { setThemeURL } from "@/utils/theme"
-  import isElectron from "@/utils/is-electron"
-  const appSettings = getModule(AppSettings)
+import Menu from "primevue/menu"
+import { getModule } from "vuex-module-decorators"
+import ChevronDown from "vue-material-design-icons/ChevronDoubleDown.vue"
+import FocusIcon from "vue-material-design-icons/BullseyeArrow.vue"
+import CloseIcon from "vue-material-design-icons/Close.vue"
+import MaxIcon from "vue-material-design-icons/CheckboxMultipleBlankOutline.vue"
+import AppSettings from "@/store/Modules/AppSettings"
+import { setThemeURL } from "@/utils/theme"
+import isElectron from "@/utils/is-electron"
+const appSettings = getModule(AppSettings)
+import Userprofile from "../components/Profile/userProfile.vue"
+import Auth from "@/store/Modules/Auth"
+const appAuth = getModule(Auth)
 
-  export default {
-    name: "MenuBar",
-    components: {
-      ChevronDown,
-      FocusIcon,
-      CloseIcon,
-      MaxIcon,
-      Menu,
+export default {
+  name: "MenuBar",
+  components: {
+    ChevronDown,
+    FocusIcon,
+    CloseIcon,
+    MaxIcon,
+    Userprofile,
+    Menu,
+  },
+
+  props: {
+    menuBarVisible: { type: Boolean, required: true },
+  },
+
+  emits: ["toggle"],
+
+  data() {
+    return {
+      visible: false,
+      langs: [
+        {
+          label: "English",
+          value: "en",
+          command: (e) => {
+            this.toggleLanguage(e)
+          },
+        },
+        {
+          label: "हिन्दी",
+          value: "hi",
+          command: (e) => {
+            this.toggleLanguage(e)
+          },
+        },
+      ],
+      helpMenu: [
+        {
+          label: "Docs",
+          value: "https://typerefinery.ai/",
+        },
+        {
+          label: "Github",
+          value: "https://github.com/innovolve-ai/typerefinery",
+        },
+      ],
+    }
+  },
+
+  computed: {
+    user1() {
+      return appAuth.user
+    },
+    focus() {
+      return appSettings.focus
+    },
+    theme() {
+      return appSettings.theme
+    },
+    isElectron() {
+      return isElectron()
+    },
+  },
+
+  created() {
+    const theme = appSettings?.theme || "light"
+    const lang = appSettings?.language || "en"
+    setThemeURL(theme)
+    window.api?.request("lang-change", lang)
+  },
+
+  methods: {
+    toggleLanguage(value) {
+      appSettings.setLanguage(value)
+      this.$i18n.locale = value
+      window.api?.request("lang-change", value)
+      this.$refs.menu.toggle()
     },
 
-    props: {
-      menuBarVisible: { type: Boolean, required: true },
-    },
-
-    emits: ["toggle"],
-
-    data() {
-      return {
-        langs: [
-          {
-            label: "English",
-            value: "en",
-            command: (e) => {
-              this.toggleLanguage(e)
-            },
-          },
-          {
-            label: "हिन्दी",
-            value: "hi",
-            command: (e) => {
-              this.toggleLanguage(e)
-            },
-          },
-        ],
-        helpMenu: [
-          {
-            label: "Docs",
-            value: "https://typerefinery.ai/",
-          },
-          {
-            label: "Github",
-            value: "https://github.com/innovolve-ai/typerefinery",
-          },
-        ],
-      }
-    },
-
-    computed: {
-      focus() {
-        return appSettings.focus
-      },
-      theme() {
-        return appSettings.theme
-      },
-      isElectron() {
-        return isElectron()
-      },
-    },
-
-    created() {
-      const theme = appSettings?.theme || "light"
-      const lang = appSettings?.language || "en"
+    toggleTheme() {
+      const theme = this.theme === "dark" ? "light" : "dark"
+      appSettings.setTheme(theme)
       setThemeURL(theme)
-      window.api?.request("lang-change", lang)
+    },
+    toggleprofile() {
+      this.visible = true
     },
 
-    methods: {
-      toggleLanguage(value) {
-        appSettings.setLanguage(value)
-        this.$i18n.locale = value
-        window.api?.request("lang-change", value)
-        this.$refs.menu.toggle()
-      },
-
-      toggleTheme() {
-        const theme = this.theme === "dark" ? "light" : "dark"
-        appSettings.setTheme(theme)
-        setThemeURL(theme)
-      },
-
-      toggleFocus() {
-        appSettings.toggleFocus()
-      },
-
-      toggleMenu(event) {
-        this.$refs.menu.toggle(event)
-      },
-
-      toggleHelp(event) {
-        this.$refs.help.toggle(event)
-      },
-
-      handleMenu(e) {
-        window.api?.request("menu-click", e)
-      },
-
-      openLink(url) {
-        window.open(url, "_blank")
-      },
+    toggleFocus() {
+      appSettings.toggleFocus()
     },
-  }
+
+    toggleMenu(event) {
+      this.$refs.menu.toggle(event)
+    },
+
+    toggleHelp(event) {
+      this.$refs.help.toggle(event)
+    },
+
+    handleMenu(e) {
+      window.api?.request("menu-click", e)
+    },
+
+    openLink(url) {
+      window.open(url, "_blank")
+    },
+  },
+}
 </script>
 
 <style lang="scss">
-  #body {
-    .menu-bar {
+#body {
+  .menu-bar {
+    display: flex;
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    -webkit-app-region: no-drag;
+
+    &.focus {
+      right: 6px;
+      top: 6px;
+    }
+    .profile {
+      width: auto !important;
+    }
+    .menu-item {
+      cursor: pointer;
+      width: 25px;
+      height: 25px;
+      border: 1px solid var(--surface-border);
+
       display: flex;
-      position: absolute;
-      right: 5px;
-      top: 5px;
-      -webkit-app-region: no-drag;
+      align-items: center;
+      justify-content: center;
 
-      &.focus {
-        right: 6px;
-        top: 6px;
+      &:not(:last-of-type) {
+        margin-right: 2px;
       }
-
-      .menu-item {
-        cursor: pointer;
-        width: 25px;
-        height: 25px;
-        border: 1px solid var(--surface-border);
-
+      .material-design-icon {
         display: flex;
-        align-items: center;
-        justify-content: center;
-
-        &:not(:last-of-type) {
-          margin-right: 2px;
-        }
-
-        .material-design-icon {
-          display: flex;
-        }
-      }
-    }
-
-    .help-menu.p-menu {
-      width: auto;
-      font-size: 14px;
-
-      .p-menuitem-link {
-        width: 8rem;
-
-        i {
-          margin-left: 5px;
-          font-size: 10px;
-          position: relative;
-          top: 1px;
-        }
-      }
-    }
-
-    .p-menuitem-link {
-      &.active {
-        background: var(--surface-c);
       }
     }
   }
+
+  .help-menu.p-menu {
+    width: auto;
+    font-size: 14px;
+
+    .p-menuitem-link {
+      width: 8rem;
+
+      i {
+        margin-left: 5px;
+        font-size: 10px;
+        position: relative;
+        top: 1px;
+      }
+    }
+  }
+
+  .p-menuitem-link {
+    &.active {
+      background: var(--surface-c);
+    }
+  }
+}
 </style>
