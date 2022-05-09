@@ -59,10 +59,33 @@
         </div>
 
         <div class="content-area-window" :class="{ show: activeView === 'G' }">
+          <Button class="p-button-raised m-3" @click="showD3Chart"
+            >Show D3 Graph</Button
+          >
+          <Button
+            class="p-button-raised p-button-success m-3"
+            @click="showWebcolaChart"
+            >Show Webcola Graph</Button
+          >
+          <Button
+            class="p-button-raised p-button-warning m-3"
+            @click="showD3LabelsChart"
+            >Show D3 Labels Graph</Button
+          >
+          <div v-if="activeView === 'G'" class="graph-container">
+            <graph ref="graphPRef" />
+          </div>
+
           <div class="graph-toolbar shadow-4">
-            <div class="graph-toolbar-button"><full-icon :size="15" /></div>
-            <div class="graph-toolbar-button"><plus-icon :size="15" /></div>
-            <div class="graph-toolbar-button"><minus-icon :size="15" /></div>
+            <div class="graph-toolbar-button">
+              <full-icon :size="15" />
+            </div>
+            <div class="graph-toolbar-button">
+              <plus-icon :size="15" />
+            </div>
+            <div class="graph-toolbar-button">
+              <minus-icon :size="15" />
+            </div>
             <div class="graph-toolbar-button"><control-icon :size="15" /></div>
           </div>
         </div>
@@ -116,6 +139,10 @@
   import { Splitpanes, Pane } from "splitpanes"
   import DataView from "./DataView.vue"
   import QueryView from "./QueryView.vue"
+  import Graph from "../../Graph/Graph.vue"
+  import renderD3 from "../../Transformer/D3/d3"
+  import renderWebcola from "../../Transformer/WebCola/webcola"
+  import renderD3LabelsChart from "../../Transformer/D3Labels/d3labels"
   export default {
     name: "ContentTab",
     components: {
@@ -129,6 +156,7 @@
       MinusIcon,
       PlusIcon,
       ControlIcon,
+      Graph,
     },
     props: {
       toolsVisible: { type: Boolean, required: true },
@@ -164,6 +192,15 @@
           this.$refs[`w-${this.tabId}-${this.paneId}`].style.width = "100%"
           rightPanel.style.width = 0
         }
+      },
+      showD3Chart() {
+        renderD3(this.$refs.graphPRef)
+      },
+      showWebcolaChart() {
+        renderWebcola(this.$refs.graphPRef)
+      },
+      showD3LabelsChart() {
+        renderD3LabelsChart(this.$refs.graphPRef)
       },
     },
   }
