@@ -1,0 +1,75 @@
+.graph-wrapper {
+  width: 100%;
+  height: 100%;
+
+  svg.d3-graph {
+    min-width: 200px;
+    width: 100%;
+    height: 100%;
+
+    .links line {
+      stroke: #aaa;
+    }
+    .nodes circle {
+      pointer-events: all;
+    }
+  }
+
+  svg.webcola-graph {
+    width: 100%;
+    height: 100%;
+
+    #linkArrow {
+      stroke: #96a5f5;
+      stroke-width: 2px;
+    }
+
+    .node {
+      stroke: #fff;
+      stroke-width: 1.5px;
+      cursor: move;
+    }
+
+    .link {
+      stroke: #96a5f5;
+      stroke-width: 2px;
+      /* TEMP */
+      stroke-opacity: 0.8;
+
+      &.link--control {
+        marker-start: url(#linkArrow);
+      }
+
+      &.link--economic {
+        stroke-dasharray: 8, 4;
+        marker-start: url(#linkArrow);
+      }
+
+      &.link--other {
+        stroke-dasharray: 2, 4;
+      }
+    }
+
+    .label {
+      fill: white;
+      font-family: Verdana;
+      font-size: 12px;
+      font-weight: 400;
+      text-anchor: middle;
+      cursor: move;
+    }
+  }
+
+  svg.d3-label-graph {
+    width: 100%;
+    height: 100%;
+  }
+
+  html.t-dark {
+    svg.d3-label-graph {
+      text {
+        fill: rgba(255, 255, 255, 0.87);
+      }
+    }
+  }
+}
