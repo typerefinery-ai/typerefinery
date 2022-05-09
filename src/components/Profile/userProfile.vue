@@ -4,31 +4,54 @@
     modal
     :header="$t(`profile.header`)"
     :breakpoints="{ '960px': '75vw', '640px': '90vw' }"
-    :style="{ width: '50vw' }"
+    
   >
     <div class="dialog-div">
       <div class="profile">
         <Avatar label="R" shape="circle" size="xlarge" />
       </div>
-      <div class="content">
-        <b
-          ><label for="username">{{ $t("profile.name") }}: </label></b
-        >
-        {{ user }}<br />
-
-        <b
-          ><label for="email">{{ $t("profile.email") }}: </label></b
-        >{{ email }} <br />
-        <div class="alias">
-          <span class="p-float-label">
-            <InputText
-              id="username"
-              type="text"
-              placeholder="Alias Name"
-              @input="setHandle"
-            />
-          </span>
-          <!-- <Button label="Set Name" style="margin-left: 20px;"  @click="setHandle" @input="updateMessage" /> -->
+      <div>
+        <div class="content">
+          <label for="username">{{ $t("profile.name") }}: </label><br />
+          <div>
+            <span class="p-float-label">
+              <InputText
+                id="username"
+                type="text"
+                placeholder="username"
+                :value="user"
+                @input="setUsername"
+              />
+            </span>
+          </div>
+        </div>
+        <div class="content">
+          <label for="alias">{{ $t("profile.alias") }}: </label><br />
+          <div >
+            <span class="p-float-label">
+              <InputText
+                id="alias"
+                type="text"
+                placeholder="Alias Name"
+                :value="alias"
+                @input="setAliasname"
+              />
+            </span>
+          </div>
+        </div>
+        <div class="content">
+          <label for="email">{{ $t("profile.email") }}: </label><br />
+          <div>
+            <span class="p-float-label">
+              <InputText
+                id="email"
+                type="text"
+                placeholder="Email"
+                :value="email"
+                @input="setEmail"
+              />
+            </span>
+          </div>
         </div>
       </div>
     </div>
@@ -41,9 +64,7 @@ import Avatar from "primevue/avatar"
 import InputText from "primevue/inputtext"
 import Button from "primevue/button"
 import Auth from "@/store/Modules/Auth"
-
 import { getModule } from "vuex-module-decorators"
-// import { computed } from "vue"
 const appAuth = getModule(Auth)
 
 export default {
@@ -60,20 +81,26 @@ export default {
     }
   },
   methods: {
-    setHandle(e) {
-      console.log(e.target.value)
-      return appAuth.SET_ALIAS_NAME(e.target.value)
+    setUsername(e) {
+      return appAuth.setUsername(e.target.value)
+    },
+    setAliasname(e) {
+      return appAuth.setAliasname(e.target.value)
+    },
+    setEmail(e) {
+      return appAuth.setEmail(e.target.value)
     },
   },
   computed: {
-    //Getters
     user() {
-      return appAuth.user
+      return appAuth.username
     },
     email() {
       return appAuth.email
     },
-    //mutation
+    alias() {
+      return appAuth.alias
+    },
   },
 }
 </script>
@@ -81,12 +108,14 @@ export default {
 .dialog-div {
   display: flex;
   padding: 5px;
+  
 }
-.alias {
-  display: flex;
-}
+
 .content {
   margin-left: 30px;
   font-size: 20px;
+//   display: flex;
+  padding: 10px;
+  
 }
 </style>
