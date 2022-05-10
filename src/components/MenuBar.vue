@@ -108,6 +108,7 @@ import FocusIcon from "vue-material-design-icons/BullseyeArrow.vue"
 import CloseIcon from "vue-material-design-icons/Close.vue"
 import MaxIcon from "vue-material-design-icons/CheckboxMultipleBlankOutline.vue"
 import AppSettings from "@/store/Modules/AppSettings"
+import ServiceIcons from "./Services.vue"
 import { setThemeURL } from "@/utils/theme"
 import isElectron from "@/utils/is-electron"
 const appSettings = getModule(AppSettings)
@@ -123,6 +124,7 @@ export default {
     CloseIcon,
     MaxIcon,
     Userprofile,
+     ServiceIcons,
     Menu,
   },
 
