@@ -34,6 +34,13 @@
     "project": "Project",
     "search": "Search",
     "logout": "Logout",
-    "help": "Help"
+    "help": "Help",
+    "profile": "User profile"
+  },
+  "profile": {
+    "name": "Name",
+    "email": "Email",
+    "header": "User Profile",
+    "alias": "Alias Name"
   }
 }
