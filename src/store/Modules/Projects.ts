@@ -1,14 +1,14 @@
 import { Module, VuexModule, Mutation } from "vuex-module-decorators"
 import store from "../index"
 const storeValue = localStorage.getItem("vuex")
-const newProjectInStore = storeValue ? JSON.parse(storeValue).NewProject : false
+const projectsInStore = storeValue ? JSON.parse(storeValue).Projects : false
 @Module({
   name: "NewProject",
   store: store,
   dynamic: true,
-  preserveState: newProjectInStore,
+  preserveState: projectsInStore,
 })
-export default class NewProject extends VuexModule {
+export default class Projects extends VuexModule {
   projects = {
     type: "projects",
     list: [
