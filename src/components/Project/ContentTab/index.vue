@@ -102,6 +102,7 @@
               }"
               @click="handleTab3(1)"
             />
+            <!-- TODO: Uncomment this to open Data Tab -->
             <!-- <Button
               :label="$t(`components.project.data`)"
               class="p-button-raised"
@@ -115,6 +116,7 @@
             <div class="tab-3-content-item" :class="{ show: activeTab3 === 1 }">
               <properties :data="nodeData" />
             </div>
+            <!-- TODO: Uncomment this to open Data Tab -->
             <!-- <div class="tab-3-content-item" :class="{ show: activeTab3 === 2 }">
               <p class="text-lg">
                 {{ $t("components.project.data") }}
