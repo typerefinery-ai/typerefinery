@@ -31,11 +31,12 @@
       <i
         v-if="theme === 'light'"
         class="pi pi-sun"
-        style="font-weight: bold"
+        style="font-weight: bold;"
       ></i>
       <i v-else class="pi pi-moon"></i>
     </div>
     <div
+    id="focus"
       v-tooltip.bottom="$t(`tooltips.toggle-focus`)"
       class="menu-item hover:text-primary hover:border-primary"
       @click="toggleFocus"
