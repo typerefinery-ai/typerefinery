@@ -3,7 +3,7 @@ import store from "../index"
 const storeValue = localStorage.getItem("vuex")
 const projectsInStore = storeValue ? JSON.parse(storeValue).Projects : false
 @Module({
-  name: "NewProject",
+  name: "Projects",
   store: store,
   dynamic: true,
   preserveState: projectsInStore,
