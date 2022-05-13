@@ -2,7 +2,7 @@ import * as d3 from "d3"
 import * as cola from "webcola"
 import data from "./webcola1.json"
 
-function renderWebcola(item) {
+function renderWebcola(item, self) {
   const svgEl = item.$refs.graphRef
 
   if (svgEl.childNodes.length) {
@@ -122,9 +122,25 @@ function renderWebcola(item) {
     label
       .attr("x", (d) => d.x)
       .attr("y", function (d) {
-        var h = this.getBBox().height
-        return d.y + h / 4
+        if (this.getBBox) {
+          var h = this.getBBox()?.height
+          return d.y + h / 4
+        }
       })
+  })
+
+  //   click event
+  label.on("click", (e) => {
+    self.nodeData = {
+      label: e.label,
+      index: e.index,
+    }
+  })
+  node.on("click", (e) => {
+    self.nodeData = {
+      label: e.label,
+      index: e.index,
+    }
   })
 }
 
