@@ -12,12 +12,9 @@
     <div
       v-tooltip.bottom="$t(`tooltips.profile`)"
       class="menu-item hover:text-primary hover:border-primary profile"
-      @click="visible = !visible"
+      @click="openSettings"
     >
-      <div v-if="visible">
-        <Userprofile />
-      </div>
-      <div style="color: blueviolet;">
+      <div class="mx-2">
         {{ nickname }}
         <i class="pi pi-user"></i>
       </div>
@@ -44,7 +41,7 @@
       <i
         v-if="theme === 'light'"
         class="pi pi-sun"
-        style="font-weight: bold;"
+        style="font-weight: bold"
       ></i>
       <i v-else class="pi pi-moon"></i>
     </div>
@@ -101,188 +98,186 @@
 </template>
 
 <script>
-import Menu from "primevue/menu"
-import { getModule } from "vuex-module-decorators"
-import ChevronDown from "vue-material-design-icons/ChevronDoubleDown.vue"
-import FocusIcon from "vue-material-design-icons/BullseyeArrow.vue"
-import CloseIcon from "vue-material-design-icons/Close.vue"
-import MaxIcon from "vue-material-design-icons/CheckboxMultipleBlankOutline.vue"
-import AppSettings from "@/store/Modules/AppSettings"
-import ServiceIcons from "./Services.vue"
-import { setThemeURL } from "@/utils/theme"
-import isElectron from "@/utils/is-electron"
-const appSettings = getModule(AppSettings)
-import Userprofile from "../components/Profile/userProfile.vue"
-import Auth from "@/store/Modules/Auth"
-const appAuth = getModule(Auth)
+  import Menu from "primevue/menu"
+  import { getModule } from "vuex-module-decorators"
+  import ChevronDown from "vue-material-design-icons/ChevronDoubleDown.vue"
+  import FocusIcon from "vue-material-design-icons/BullseyeArrow.vue"
+  import CloseIcon from "vue-material-design-icons/Close.vue"
+  import MaxIcon from "vue-material-design-icons/CheckboxMultipleBlankOutline.vue"
+  import AppSettings from "@/store/Modules/AppSettings"
+  import ServiceIcons from "./Services.vue"
+  import { setThemeURL } from "@/utils/theme"
+  import isElectron from "@/utils/is-electron"
+  const appSettings = getModule(AppSettings)
+  import Auth from "@/store/Modules/Auth"
+  const appAuth = getModule(Auth)
 
-export default {
-  name: "MenuBar",
-  components: {
-    ChevronDown,
-    FocusIcon,
-    CloseIcon,
-    MaxIcon,
-    Userprofile,
-     ServiceIcons,
-    Menu,
-  },
+  export default {
+    name: "MenuBar",
+    components: {
+      ChevronDown,
+      FocusIcon,
+      CloseIcon,
+      MaxIcon,
+      ServiceIcons,
+      Menu,
+    },
 
-  props: {
-    menuBarVisible: { type: Boolean, required: true },
-  },
+    props: {
+      menuBarVisible: { type: Boolean, required: true },
+    },
 
-  emits: ["toggle"],
+    emits: ["toggle"],
 
-  data() {
-    return {
-      visible: false,
-      langs: [
-        {
-          label: "English",
-          value: "en",
-          command: (e) => {
-            this.toggleLanguage(e)
+    data() {
+      return {
+        langs: [
+          {
+            label: "English",
+            value: "en",
+            command: (e) => {
+              this.toggleLanguage(e)
+            },
           },
-        },
-        {
-          label: "हिन्दी",
-          value: "hi",
-          command: (e) => {
-            this.toggleLanguage(e)
+          {
+            label: "हिन्दी",
+            value: "hi",
+            command: (e) => {
+              this.toggleLanguage(e)
+            },
           },
-        },
-      ],
-      helpMenu: [
-        {
-          label: "Docs",
-          value: "https://typerefinery.ai/",
-        },
-        {
-          label: "Github",
-          value: "https://github.com/innovolve-ai/typerefinery",
-        },
-      ],
-    }
-  },
-
-  computed: {
-    nickname() {
-      return appAuth.alias?appAuth.alias:appAuth.username
-    },
-    focus() {
-      return appSettings.focus
-    },
-    theme() {
-      return appSettings.theme
-    },
-    isElectron() {
-      return isElectron()
-    },
-  },
-
-  created() {
-    const theme = appSettings?.theme || "light"
-    const lang = appSettings?.language || "en"
-    setThemeURL(theme)
-    window.api?.request("lang-change", lang)
-  },
-
-  methods: {
-    toggleLanguage(value) {
-      appSettings.setLanguage(value)
-      this.$i18n.locale = value
-      window.api?.request("lang-change", value)
-      this.$refs.menu.toggle()
+        ],
+        helpMenu: [
+          {
+            label: "Docs",
+            value: "https://typerefinery.ai/",
+          },
+          {
+            label: "Github",
+            value: "https://github.com/innovolve-ai/typerefinery",
+          },
+        ],
+      }
     },
 
-    toggleTheme() {
-      const theme = this.theme === "dark" ? "light" : "dark"
-      appSettings.setTheme(theme)
+    computed: {
+      nickname() {
+        return appAuth.alias ? appAuth.alias : appAuth.username
+      },
+      focus() {
+        return appSettings.focus
+      },
+      theme() {
+        return appSettings.theme
+      },
+      isElectron() {
+        return isElectron()
+      },
+    },
+
+    created() {
+      const theme = appSettings?.theme || "light"
+      const lang = appSettings?.language || "en"
       setThemeURL(theme)
-    },
-    toggleprofile() {
-      this.visible = true
+      window.api?.request("lang-change", lang)
     },
 
-    toggleFocus() {
-      appSettings.toggleFocus()
-    },
+    methods: {
+      toggleLanguage(value) {
+        appSettings.setLanguage(value)
+        this.$i18n.locale = value
+        window.api?.request("lang-change", value)
+        this.$refs.menu.toggle()
+      },
 
-    toggleMenu(event) {
-      this.$refs.menu.toggle(event)
-    },
+      toggleTheme() {
+        const theme = this.theme === "dark" ? "light" : "dark"
+        appSettings.setTheme(theme)
+        setThemeURL(theme)
+      },
 
-    toggleHelp(event) {
-      this.$refs.help.toggle(event)
-    },
+      toggleFocus() {
+        appSettings.toggleFocus()
+      },
 
-    handleMenu(e) {
-      window.api?.request("menu-click", e)
-    },
+      toggleMenu(event) {
+        this.$refs.menu.toggle(event)
+      },
 
-    openLink(url) {
-      window.open(url, "_blank")
+      toggleHelp(event) {
+        this.$refs.help.toggle(event)
+      },
+
+      handleMenu(e) {
+        window.api?.request("menu-click", e)
+      },
+
+      openLink(url) {
+        window.open(url, "_blank")
+      },
+
+      openSettings() {
+        appSettings.openSettingsDialog("profile/alias")
+      },
     },
-  },
-}
+  }
 </script>
 
 <style lang="scss">
-#body {
-  .menu-bar {
-    display: flex;
-    position: absolute;
-    right: 5px;
-    top: 5px;
-    -webkit-app-region: no-drag;
-
-    &.focus {
-      right: 6px;
-      top: 6px;
-    }
-    .profile {
-      width: auto !important;
-    }
-    .menu-item {
-      cursor: pointer;
-      width: 25px;
-      height: 25px;
-      border: 1px solid var(--surface-border);
-
+  #body {
+    .menu-bar {
       display: flex;
-      align-items: center;
-      justify-content: center;
+      position: absolute;
+      right: 5px;
+      top: 5px;
+      -webkit-app-region: no-drag;
 
-      &:not(:last-of-type) {
-        margin-right: 2px;
+      &.focus {
+        right: 6px;
+        top: 6px;
       }
-      .material-design-icon {
+      .profile {
+        width: auto !important;
+      }
+      .menu-item {
+        cursor: pointer;
+        width: 25px;
+        height: 25px;
+        border: 1px solid var(--surface-border);
+
         display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &:not(:last-of-type) {
+          margin-right: 2px;
+        }
+        .material-design-icon {
+          display: flex;
+        }
       }
     }
-  }
 
-  .help-menu.p-menu {
-    width: auto;
-    font-size: 14px;
+    .help-menu.p-menu {
+      width: auto;
+      font-size: 14px;
+
+      .p-menuitem-link {
+        width: 8rem;
+
+        i {
+          margin-left: 5px;
+          font-size: 10px;
+          position: relative;
+          top: 1px;
+        }
+      }
+    }
 
     .p-menuitem-link {
-      width: 8rem;
-
-      i {
-        margin-left: 5px;
-        font-size: 10px;
-        position: relative;
-        top: 1px;
+      &.active {
+        background: var(--surface-c);
       }
     }
   }
-
-  .p-menuitem-link {
-    &.active {
-      background: var(--surface-c);
-    }
-  }
-}
 </style>

@@ -18,6 +18,19 @@
       "properties": "Properties",
       "data": "Data",
       "graph": "Graph"
+    },
+    "setting": {
+      "settings": "Settings",
+      "general": "General",
+      "general-settings": "General Settings",
+      "profile": "Profile",
+      "privacy": "Privacy",
+      "privacy-settings": "Privacy Settings"
+    },
+    "profile": {
+      "username": "Username",
+      "email": "Email",
+      "alias": "Alias Name"
     }
   },
   "tooltips": {
@@ -35,12 +48,7 @@
     "search": "Search",
     "logout": "Logout",
     "help": "Help",
-    "profile": "User profile"
-  },
-  "profile": {
-    "name": "Name",
-    "email": "Email",
-    "header": "User Profile",
-    "alias": "Alias Name"
+    "profile": "User profile",
+    "settings": "Open Settings"
   }
 }

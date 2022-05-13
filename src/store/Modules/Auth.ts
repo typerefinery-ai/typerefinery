@@ -1,18 +1,18 @@
 import { Module, VuexModule, Mutation, Action } from "vuex-module-decorators"
 import store from "../index"
 
-// const storeValue = localStorage.getItem("vuex")
-// const AuthInStore = storeValue ? JSON.parse(storeValue).Auth : false
+const storeValue = localStorage.getItem("vuex")
+const authInStore = storeValue ? JSON.parse(storeValue).Auth : false
 @Module({
   name: "Auth",
   store: store,
   dynamic: true,
-  preserveState: localStorage.getItem("vuex") !== null,
+  preserveState: authInStore,
 })
 export default class Auth extends VuexModule {
-  username: string = "Rahul Shaw"
-  email: string = "rshaw@aapnainfotech.com"
-  alias: string = "rshaw"
+  username = "Rahul Shaw"
+  email = "rshaw@aapnainfotech.com"
+  alias = "rshaw"
   @Mutation
   setUsername(username: string) {
     this.username = username

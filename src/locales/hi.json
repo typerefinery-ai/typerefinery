@@ -18,6 +18,19 @@
       "properties": "प्रोपर्टीज",
       "data": "आंकड़े",
       "graph": "ग्राफ"
+    },
+    "setting": {
+      "settings": "सेटिंग्स",
+      "general": "साधारण",
+      "general-settings": "साधारण सेटिंग्स",
+      "profile": "प्रोफ़ाइल",
+      "privacy": "गोपनीयता",
+      "privacy-settings": "गोपनीयता सेटिंग्स"
+    },
+    "profile": {
+      "username": "उपयोगकर्ता नाम",
+      "email": "ईमेल",
+      "alias": "उर्फ"
     }
   },
   "tooltips": {
@@ -35,12 +48,7 @@
     "search": "खोजें",
     "logout": "लॉग आउट",
     "help": "मदद",
-    "profile": "उपयोगकर्ता रूपरेखा"
-  },
-  "profile": {
-    "name": "नाम",
-    "email": "ईमेल",
-    "alias": "उर्फ नाम",
-    "header": "उपयोगकर्ता रूपरेखा"
+    "profile": "उपयोगकर्ता रूपरेखा",
+    "settings": "सेटिंग्स खोलें"
   }
 }
