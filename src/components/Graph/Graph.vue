@@ -1,6 +1,6 @@
 <template>
   <div class="graph-wrapper">
-    <svg ref="graphRef"></svg>
+    <svg id="graph" ref="graphRef"></svg>
   </div>
 </template>
 
