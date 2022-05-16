@@ -31,7 +31,7 @@
       <i
         v-if="theme === 'light'"
         class="pi pi-sun"
-        style="font-weight: bold;"
+       
       ></i>
       <i v-else class="pi pi-moon"></i>
     </div>
@@ -230,6 +230,9 @@
 
         &:not(:last-of-type) {
           margin-right: 2px;
+        }
+        .pi-sun{
+          font-weight: bold;
         }
 
         .material-design-icon {

@@ -18,7 +18,12 @@
       "calories": "कैलोरी",
       "properties": "प्रोपर्टीज",
       "data": "आंकड़े",
-      "graph": "ग्राफ"
+      "graph": "ग्राफ",
+      "send": "भेजें",
+      "messageplaceholder": "अपना संदेश यहां टंकित करें...",
+      "error": "कुछ गलत हो गया",
+      "to": "को",
+      "From": "से"
     }
   },
   "tooltips": {

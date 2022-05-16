@@ -34,11 +34,23 @@
 
   .message {
     width: 40%;
-    height: 8%;
+    height: 9%;
     border-radius: 10px;
     padding: 0.5em;
     /*   margin-bottom: .5em; */
     font-size: 1em;
+    .time {
+      text-align: right;
+      font-size: 75%;
+    }
+
+    .material-design-icon.checkicon {
+      height: 200%;
+      width: 7%;
+      float: right;
+      margin-top: -3%;
+      padding-left: 1%;
+    }
   }
 
   .message-out {

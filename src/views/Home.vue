@@ -9,7 +9,7 @@
   import Project from "@/components/Project"
   import Charts from "@/components/Charts"
   import Maps from "@/components/Maps"
-  import Chat from "@/components/Chat/ChatComponent.vue"
+  import Chat from "@/components/Chat"
   export default {
     name: "Home",
     components: { Project, Charts, Maps, Chat },

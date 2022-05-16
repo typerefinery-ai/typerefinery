@@ -18,7 +18,12 @@
       "calories": "Calories",
       "properties": "Properties",
       "data": "Data",
-      "graph": "Graph"
+      "graph": "Graph",
+      "send": "Send",
+      "messageplaceholder": "Type your message here...",
+      "error": "something went wrong",
+      "to": "To",
+      "From": "From"
     }
   },
   "tooltips": {

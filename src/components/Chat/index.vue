@@ -9,20 +9,29 @@
     </div>
     <!-- content -->
     <div class="chatpage">
-        <p v-for="message in messages" :key="message.id" class="message" :class="{ 'message-out': message.author === 'Receiver', 'message-in': message.author !== 'Receiver' }">
+        <div v-for="message in messages" 
+        :key="message.id" 
+        class="message" 
+        :class="{ 'message-out': message.user === 'To', 'message-in': message.user !== 'To' }">
       <span class="sender">
-        {{message.author}}
+        {{message.user}}
       </span>
       <br :class="send">
       {{ message.body }}
-        </p>
-    
+      <br >
+      <!-- <div class="timespan"> -->
+         <div class="time"  > {{new Date().toString().substring(16, 21)}} <check-icon class="checkicon" />
+          <!-- </div> -->
+          </div>
+        </div>      
         <div class="iframe-container">
-             <form @submit.prevent="sendMessage('in')" id="sender-form" class="message-inputtab">
+             <form @submit.prevent="sendMessage('from')" id="sender-form" class="message-inputtab">
                 <div class="p-inputgroup">
-                 <InputText v-model="Message" placeholder= "Type your message here..." id="sender-input" class="chat-inputs" />
+                 <InputText v-model="Message"
+                  :placeholder= "$t(`components.project.messageplaceholder`)"
+                  type="message" id="sender-input" class="chat-inputs" />
                      <Button label="send" class="p-button-primary" type=" submit">
-                         <div class="sendbutton">Send</div></Button>
+                         <div class="sendbutton">{{$t("components.project.send")}}</div></Button>
                  </div>
               </form>
          </div>
@@ -35,28 +44,20 @@
   import MainMenu from "@/components/MainMenu.vue"
   import InputText from "primevue/inputtext"
   import Button from "primevue/button"
+  import CheckIcon from 'vue-material-design-icons/Checkall.vue';
   export default {
-    name: "Maps",
-    components: { MenuBar, MainMenu, InputText, Button },
+    name: "Chat",
+    components: { MenuBar, MainMenu, InputText, Button, CheckIcon },
     data() {
       return {
         showMainOverlayMenu: false,
          mainMenuVisible: true,
          Message: '',
-         messages: 
-            [
-            {
-              body: 'Hi',
-              author: 'Sender'
-            },
-            {
-               body: 'Welcome',
-               author: 'Receiver'
-             },
-             ]  
+         messages: []
       }
     },
     methods: {
+      timestamp: Date.now(),
       toggleMainMenu() {
         this.mainMenuVisible = !this.mainMenuVisible
       },
@@ -64,14 +65,16 @@
       if (!this.Message && !this.Message) {
         return
       }
-       if (direction === 'in') {
-        this.messages.push({body: this.Message, author: 'Sender'})
+      
+       if (direction === 'from') {
+        this.messages.push({body: this.Message, user: 'From'})
         this.SenderMessage = ''
-        this.messages.push({body: this.Message, author: 'Receiver',})
+        this.messages.push({body: this.Message, user: 'To'})
         this.Message = ''
       } else {
-        alert('something went wrong')
+        alert(  this.$t('components.project.error')  )
       }
+      
       Vue.nextTick(() => {
         let messageDisplay = this.$refs.chatArea
         messageDisplay.scrollTop = messageDisplay.scrollHeight
