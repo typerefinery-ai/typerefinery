@@ -13,19 +13,19 @@
     name: "App",
 
     created() {
-      window.addEventListener("keyup", this.keyListener)
+      window.addEventListener("keydown", this.keyListener)
     },
 
     unmounted() {
-      window.removeEventListener("keyup", this.keyListener)
+      window.removeEventListener("keydown", this.keyListener)
     },
 
     methods: {
       keyListener(e) {
-        const { key } = e
-        if (key === "f") {
+        const { key, shiftKey } = e
+        if (shiftKey && key === "F") {
           appSettings.toggleFocus()
-        } else if (key === "t") {
+        } else if (shiftKey && key === "T") {
           const theme = appSettings.theme === "dark" ? "light" : "dark"
           appSettings.setTheme(theme)
           setThemeURL(theme)
