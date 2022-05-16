@@ -18,12 +18,25 @@
       "calories": "Calories",
       "properties": "Properties",
       "data": "Data",
-      "graph": "Graph",
       "send": "Send",
       "messageplaceholder": "Type your message here...",
       "error": "something went wrong",
       "to": "To",
       "From": "From"
+      "graph": "Graph"
+    },
+    "setting": {
+      "settings": "Settings",
+      "general": "General",
+      "general-settings": "General Settings",
+      "profile": "Profile",
+      "privacy": "Privacy",
+      "privacy-settings": "Privacy Settings"
+    },
+    "profile": {
+      "username": "Username",
+      "email": "Email",
+      "alias": "Alias Name"
     }
   },
   "tooltips": {
@@ -40,6 +53,8 @@
     "project": "Project",
     "search": "Search",
     "logout": "Logout",
-    "help": "Help"
+    "help": "Help",
+    "profile": "User profile",
+    "settings": "Open Settings"
   }
 }

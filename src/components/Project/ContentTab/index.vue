@@ -102,26 +102,26 @@
               }"
               @click="handleTab3(1)"
             />
-            <Button
+            <!-- TODO: Uncomment this to open Data Tab -->
+            <!-- <Button
               :label="$t(`components.project.data`)"
               class="p-button-raised"
               :class="{
                 'p-button-text p-button-plain': activeTab3 !== 2,
               }"
               @click="handleTab3(2)"
-            />
+            /> -->
           </div>
           <div class="tab-3-content">
             <div class="tab-3-content-item" :class="{ show: activeTab3 === 1 }">
-              <p class="text-lg">
-                {{ $t("components.project.properties") }}
-              </p>
+              <properties :data="nodeData" />
             </div>
-            <div class="tab-3-content-item" :class="{ show: activeTab3 === 2 }">
+            <!-- TODO: Uncomment this to open Data Tab -->
+            <!-- <div class="tab-3-content-item" :class="{ show: activeTab3 === 2 }">
               <p class="text-lg">
                 {{ $t("components.project.data") }}
               </p>
-            </div>
+            </div> -->
           </div>
         </div>
       </pane>
@@ -139,6 +139,7 @@
   import { Splitpanes, Pane } from "splitpanes"
   import DataView from "./DataView.vue"
   import QueryView from "./QueryView.vue"
+  import Properties from "./Properties.vue"
   import Graph from "../../Graph/Graph.vue"
   import renderD3 from "../../Transformer/D3/d3"
   import renderWebcola from "../../Transformer/WebCola/webcola"
@@ -157,6 +158,7 @@
       PlusIcon,
       ControlIcon,
       Graph,
+      Properties,
     },
     props: {
       toolsVisible: { type: Boolean, required: true },
@@ -168,8 +170,8 @@
     data() {
       return {
         activeView: "Q",
-        contentToolsVisible: true,
         activeTab3: 1,
+        nodeData: {},
       }
     },
     watch: {
@@ -194,13 +196,16 @@
         }
       },
       showD3Chart() {
-        renderD3(this.$refs.graphPRef)
+        this.nodeData = {}
+        renderD3(this.$refs.graphPRef, this)
       },
       showWebcolaChart() {
-        renderWebcola(this.$refs.graphPRef)
+        this.nodeData = {}
+        renderWebcola(this.$refs.graphPRef, this)
       },
       showD3LabelsChart() {
-        renderD3LabelsChart(this.$refs.graphPRef)
+        this.nodeData = {}
+        renderD3LabelsChart(this.$refs.graphPRef, this)
       },
     },
   }

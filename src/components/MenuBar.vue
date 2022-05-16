@@ -10,6 +10,16 @@
       <chevron-down :size="18" />
     </div>
     <div
+      v-tooltip.bottom="$t(`tooltips.profile`)"
+      class="menu-item hover:text-primary hover:border-primary profile"
+      @click="openSettings"
+    >
+      <div class="mx-2">
+        {{ nickname }}
+        <i class="pi pi-user"></i>
+      </div>
+    </div>
+    <div
       v-tooltip.bottom="$t(`tooltips.help`)"
       class="menu-item hover:text-primary hover:border-primary"
       @click="toggleHelp"
@@ -94,11 +104,13 @@
   import FocusIcon from "vue-material-design-icons/BullseyeArrow.vue"
   import CloseIcon from "vue-material-design-icons/Close.vue"
   import MaxIcon from "vue-material-design-icons/CheckboxMultipleBlankOutline.vue"
-  import ServiceIcons from "./Services.vue"
   import AppSettings from "@/store/Modules/AppSettings"
+  import ServiceIcons from "./Services.vue"
   import { setThemeURL } from "@/utils/theme"
   import isElectron from "@/utils/is-electron"
   const appSettings = getModule(AppSettings)
+  import Auth from "@/store/Modules/Auth"
+  const appAuth = getModule(Auth)
 
   export default {
     name: "MenuBar",
@@ -107,8 +119,8 @@
       FocusIcon,
       CloseIcon,
       MaxIcon,
-      Menu,
       ServiceIcons,
+      Menu,
     },
 
     props: {
@@ -149,6 +161,9 @@
     },
 
     computed: {
+      nickname() {
+        return appAuth.alias ? appAuth.alias : appAuth.username
+      },
       focus() {
         return appSettings.focus
       },
@@ -200,6 +215,10 @@
       openLink(url) {
         window.open(url, "_blank")
       },
+
+      openSettings() {
+        appSettings.openSettingsDialog("profile/alias")
+      },
     },
   }
 </script>
@@ -217,7 +236,9 @@
         right: 6px;
         top: 6px;
       }
-
+      .profile {
+        width: auto !important;
+      }
       .menu-item {
         cursor: pointer;
         width: 25px;
@@ -231,10 +252,6 @@
         &:not(:last-of-type) {
           margin-right: 2px;
         }
-        .pi-sun{
-          font-weight: bold;
-        }
-
         .material-design-icon {
           display: flex;
         }
