@@ -1,6 +1,6 @@
 import * as d3 from "d3"
 
-function renderD3Labels(item) {
+function renderD3Labels(item, self) {
   const svgEl = item.$refs.graphRef
 
   if (svgEl.childNodes.length) {
@@ -130,6 +130,14 @@ function renderD3Labels(item) {
     .text(function (d) {
       return d.name
     })
+
+  gs.on("click", (e) => {
+    console.log(e)
+    self.nodeData = {
+      label: e.name,
+      index: e.index,
+    }
+  })
 
   // ticked
   function ticked() {
