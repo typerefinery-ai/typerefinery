@@ -9,9 +9,8 @@ const projectsInStore = storeValue ? JSON.parse(storeValue).Projects : false
   preserveState: projectsInStore,
 })
 export default class Projects extends VuexModule {
-  projects = {
-    type: "projects",
-    list: [
+    type = "projects"
+    list = [
       {
         type: "project",
         name: "Project 1",
@@ -135,6 +134,5 @@ export default class Projects extends VuexModule {
           ],
         },
       },
-    ],
-  }
+    ]
 }
