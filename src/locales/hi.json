@@ -24,11 +24,14 @@
     },
     "setting": {
       "settings": "सेटिंग्स",
-      "general": "साधारण",
       "general-settings": "साधारण सेटिंग्स",
-      "profile": "प्रोफ़ाइल",
-      "privacy": "गोपनीयता",
-      "privacy-settings": "गोपनीयता सेटिंग्स"
+      "privacy-settings": "गोपनीयता सेटिंग्स",
+      "section": {
+        "general": "साधारण",
+        "profile": "प्रोफ़ाइल",
+        "privacy": "गोपनीयता",
+        "services": "सेवाएँ"
+      }
     },
     "profile": {
       "username": "उपयोगकर्ता नाम",

@@ -24,11 +24,14 @@
     },
     "setting": {
       "settings": "Settings",
-      "general": "General",
       "general-settings": "General Settings",
-      "profile": "Profile",
-      "privacy": "Privacy",
-      "privacy-settings": "Privacy Settings"
+      "privacy-settings": "Privacy Settings",
+      "section": {
+        "general": "General",
+        "profile": "Profile",
+        "privacy": "Privacy",
+        "services": "Services"
+      }
     },
     "profile": {
       "username": "Username",
