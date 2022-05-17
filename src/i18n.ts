@@ -10,6 +10,9 @@ const messages = {
   hi,
 }
 
+// available locales
+export const locales = ["en", "hi"]
+
 const i18n = createI18n({
   locale: appSettings.language || "en",
   fallbackLocale: process.env.VUE_APP_I18N_FALLBACK_LOCALE || "en",

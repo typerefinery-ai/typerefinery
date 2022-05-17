@@ -3,7 +3,7 @@ const i18next = require("i18next")
 const Backend = require("i18next-fs-backend")
 
 const i18nextOptions = {
-  lng: "hi",
+  lng: "en",
   fallbackLng: "en",
   preload: ["en", "hi"],
   ns: ["translation"],
