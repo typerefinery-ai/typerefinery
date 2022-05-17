@@ -98,6 +98,7 @@
   import AppSettings from "@/store/Modules/AppSettings"
   import { setThemeURL } from "@/utils/theme"
   import isElectron from "@/utils/is-electron"
+  import { locales } from "@/i18n"
   const appSettings = getModule(AppSettings)
 
   export default {
@@ -161,18 +162,31 @@
     },
 
     created() {
+      const systemLang = navigator.language.substring(0, 2)
       const theme = appSettings?.theme || "light"
-      const lang = appSettings?.language || "en"
+      const langInStore = appSettings?.language
       setThemeURL(theme)
-      window.api?.request("lang-change", lang)
+
+      if (systemLang && !langInStore) {
+        if (locales.includes(systemLang)) {
+          this.setLanguage(systemLang)
+          window.api?.request("lang-change", systemLang)
+        }
+      } else {
+        window.api?.request("lang-change", langInStore)
+      }
     },
 
     methods: {
       toggleLanguage(value) {
-        appSettings.setLanguage(value)
-        this.$i18n.locale = value
+        this.setLanguage(value)
         window.api?.request("lang-change", value)
         this.$refs.menu.toggle()
+      },
+
+      setLanguage(lang) {
+        appSettings.setLanguage(lang)
+        this.$i18n.locale = lang
       },
 
       toggleTheme() {
