@@ -31,6 +31,15 @@
         "profile": "प्रोफ़ाइल",
         "privacy": "गोपनीयता",
         "services": "सेवाएँ"
+      },
+      "services": {
+        "info": {
+          "name": "नाम",
+          "enabled": "सक्षम",
+          "status": "स्थिति",
+          "type": "प्रकार",
+          "description": "विवरण"
+        }
       }
     },
     "profile": {

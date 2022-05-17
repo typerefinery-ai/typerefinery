@@ -32,16 +32,55 @@
           </span>
         </template>
 
-        <p class="mb-2 text-lg">
-          <span class="font-bold">Name:</span> {{ service.name }}
-        </p>
-        <p class="mb-2 text-lg">
-          <span class="font-bold">Enabled:</span> {{ service.enabled }}
-        </p>
-        <p class="mb-3 text-lg">
-          <span class="font-bold">Description:</span>
-          {{ service.description }}
-        </p>
+        <div class="field">
+          <label for="name">{{
+            $t("components.setting.services.info.name")
+          }}</label>
+          <InputText id="name" v-model="service.name" type="text" />
+        </div>
+        <div class="field">
+          <label for="enabled">{{
+            $t("components.setting.services.info.enabled")
+          }}</label>
+          <Checkbox id="enabled" v-model="service.enabled" :binary="true" />
+        </div>
+        <div class="field">
+          <label for="status">{{
+            $t("components.setting.services.info.status")
+          }}</label>
+          <Dropdown
+            id="status"
+            v-model="service.status"
+            :options="servicestatuslist"
+            option-label="name"
+            option-value="value"
+          >
+          </Dropdown>
+        </div>
+        <div class="field">
+          <label for="type">{{
+            $t("components.setting.services.info.type")
+          }}</label>
+          <Dropdown
+            id="type"
+            v-model="service.servicetype"
+            :options="servicestypelist"
+            option-label="name"
+            option-value="value"
+          >
+          </Dropdown>
+        </div>
+        <div class="field">
+          <label for="description">{{
+            $t("components.setting.services.info.description")
+          }}</label>
+          <Textarea
+            id="description"
+            v-model="service.description"
+            rows="5"
+            cols="30"
+          />
+        </div>
         <Panel
           id="service-panel"
           header="Log Output"
@@ -62,9 +101,12 @@
   const appServices = getModule(Services)
   import AppSettings from "@/store/Modules/AppSettings"
   const appSettings = getModule(AppSettings)
-  import Button from "primevue/button"
   import Accordion from "primevue/accordion"
   import AccordionTab from "primevue/accordiontab"
+  import Dropdown from "primevue/dropdown"
+  import Checkbox from "primevue/checkbox"
+  import InputText from "primevue/inputtext"
+  import Textarea from "primevue/textarea"
 
   export default {
     name: "Services",
@@ -72,7 +114,10 @@
       Panel,
       Accordion,
       AccordionTab,
-      Button,
+      Dropdown,
+      Checkbox,
+      InputText,
+      Textarea,
     },
     props: {
       variant: { type: String, default: "buttons" },
@@ -84,6 +129,26 @@
       }
     },
     computed: {
+      servicestatuslist() {
+        let servicestatusList = []
+        for (const [key, value] of Object.entries(appServices.servicestatus)) {
+          servicestatusList.push({
+            name: value.name,
+            value: parseFloat(key),
+          })
+        }
+        return servicestatusList
+      },
+      servicestypelist() {
+        let servicetypeList = []
+        for (const [key, value] of Object.entries(appServices.servicetype)) {
+          servicetypeList.push({
+            name: value.name,
+            value: parseFloat(key),
+          })
+        }
+        return servicetypeList
+      },
       services() {
         return appServices.services
       },
@@ -96,33 +161,28 @@
       }
     },
     created() {
-      appServices.setServiceStatus([1, 0])
-      appServices.enableService([1, 0])
-      appServices.setServiceStatus([2, 0])
-      appServices.enableService([2, 0])
-
-      window.api?.response("api:status", (s) => {
-        if (s == "starting") {
-          appServices.setServiceStatus([1, 90])
-        } else if (s == "started") {
-          appServices.setServiceStatus([1, 120])
-          appServices.enableService([1, 120])
-        }
-      })
-      window.api?.response("db:status", (s) => {
-        if (s == "starting") {
-          appServices.setServiceStatus([2, 90])
-        } else if (s == "started") {
-          appServices.setServiceStatus([2, 120])
-          appServices.enableService([2, 120])
-        }
-      })
+      // appServices.setServiceStatus([1, 0])
+      // appServices.enableService([1, 0])
+      // appServices.setServiceStatus([2, 0])
+      // appServices.enableService([2, 0])
+      // window.api?.response("api:status", (s) => {
+      //   if (s == "starting") {
+      //     appServices.setServiceStatus([1, 90])
+      //   } else if (s == "started") {
+      //     appServices.setServiceStatus([1, 120])
+      //     appServices.enableService([1, 120])
+      //   }
+      // })
+      // window.api?.response("db:status", (s) => {
+      //   if (s == "starting") {
+      //     appServices.setServiceStatus([2, 90])
+      //   } else if (s == "started") {
+      //     appServices.setServiceStatus([2, 120])
+      //     appServices.enableService([2, 120])
+      //   }
+      // })
     },
     methods: {
-      openDialog(serviceData) {
-        this.display = true
-        this.serviceData = serviceData
-      },
       openSettings(serviceId) {
         appSettings.openSettingsDialog("services/" + serviceId)
       },

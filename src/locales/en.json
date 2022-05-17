@@ -31,6 +31,15 @@
         "profile": "Profile",
         "privacy": "Privacy",
         "services": "Services"
+      },
+      "services": {
+        "info": {
+          "name": "Name",
+          "enabled": "Enabled",
+          "status": "Status",
+          "type": "Type",
+          "description": "Description"
+        }
       }
     },
     "profile": {
