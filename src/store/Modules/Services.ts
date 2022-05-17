@@ -1,7 +1,7 @@
 import { Module, VuexModule, Mutation } from "vuex-module-decorators"
 import store from "../index"
 
-const storeValue = localStorage.getItem("vuex")
+const storeValue = localStorage.getItem("services")
 const servicesInStore = storeValue ? JSON.parse(storeValue).Services : false
 
 @Module({
@@ -20,6 +20,19 @@ export default class Services extends VuexModule {
       status: -1,
       logoutput: "...",
       icon: "pi pi-cog",
+      servicetype: 10,
+      actions: {
+        stop: {
+          name: "stop",
+          path: "...",
+          commanline: "...",
+        },
+        start: {
+          name: "start",
+          path: "...",
+          commanline: "...",
+        },
+      },
     },
     {
       id: 2,
@@ -29,6 +42,7 @@ export default class Services extends VuexModule {
       status: 30,
       logoutput: "...",
       icon: "pi pi-database",
+      servicetype: 10,
     },
   ]
 
@@ -53,5 +67,10 @@ export default class Services extends VuexModule {
     "60": { name: "stopping", color: "purple" },
     "90": { name: "starting", color: "yellow" },
     "120": { name: "started", color: "green" },
+  }
+
+  servicetype = {
+    "10": { name: "local", icon: "pi pi-cog" },
+    "20": { name: "online", icon: "pi pi-globe" },
   }
 }
