@@ -60,29 +60,13 @@
     name: "Settings",
     components: { Dialog, ProfileSetting },
     emits: ["hide"],
-    data() {
-      return {
-        settings: [
-          {
-            id: "general",
-            label: "General",
-            icon: "pi pi-cog",
-          },
-          {
-            id: "profile",
-            label: "Profile",
-            icon: "pi pi-user",
-          },
-          {
-            id: "privacy",
-            label: "Privacy",
-            icon: "pi pi-lock",
-          },
-        ],
-        selected: appSettings.settingPath?.split("/")[0],
-      }
-    },
     computed: {
+      selected() {
+        return appSettings.settingPath?.split("/")[0]
+      },
+      settings() {
+        return appSettings.settings
+      },
       path() {
         const path = appSettings.settingPath?.split("/")
         return {
