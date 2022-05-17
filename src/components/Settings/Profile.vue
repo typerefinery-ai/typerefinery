@@ -30,7 +30,7 @@
   const appAuth = getModule(Auth)
 
   export default {
-    name: "ProfileSetting",
+    name: "Profile",
     components: { InputText },
     props: { field: { type: String, default: "" } },
 
