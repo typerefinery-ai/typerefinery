@@ -7,6 +7,9 @@
       <div class="sidebar-fixed-items hover:text-primary">
         <magnify-icon v-tooltip="$t(`tooltips.search`)" :size="20" />
       </div>
+      <div class="sidebar-fixed-items hover:text-primary" @click="openSettings">
+        <tune-icon v-tooltip="$t(`tooltips.settings`)" :size="25" />
+      </div>
       <div class="sidebar-fixed-items hover:text-primary">
         <logout-icon v-tooltip="$t(`tooltips.logout`)" :size="25" />
       </div>
@@ -37,9 +40,14 @@
   import FileIcon from "vue-material-design-icons/FileMultipleOutline.vue"
   import MagnifyIcon from "vue-material-design-icons/Magnify.vue"
   import LogoutIcon from "vue-material-design-icons/Logout.vue"
+  import TuneIcon from "vue-material-design-icons/Tune.vue"
+  import { getModule } from "vuex-module-decorators"
+  import AppSettings from "@/store/Modules/AppSettings"
+  const appSettings = getModule(AppSettings)
+
   export default {
     name: "Sidebar",
-    components: { LogoutIcon, MagnifyIcon, FileIcon, Tree },
+    components: { LogoutIcon, MagnifyIcon, FileIcon, Tree, TuneIcon },
     data() {
       return {
         nodes: null,
@@ -54,6 +62,11 @@
       this.nodes = this.nodeService.getTreeNodes().root
       this.expandedKeys[this.nodes[0].key] = true
       this.expandedKeys[this.nodes[1].key] = true
+    },
+    methods: {
+      openSettings() {
+        appSettings.openSettingsDialog("general")
+      },
     },
   }
 </script>
