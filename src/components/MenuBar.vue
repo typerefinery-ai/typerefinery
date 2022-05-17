@@ -84,7 +84,7 @@
   import CloseIcon from "vue-material-design-icons/Close.vue"
   import MaxIcon from "vue-material-design-icons/CheckboxMultipleBlankOutline.vue"
   import AppSettings from "@/store/Modules/AppSettings"
-  import ServiceIcons from "./Services.vue"
+  import ServiceIcons from "./Services"
   import { setThemeURL } from "@/utils/theme"
   import isElectron from "@/utils/is-electron"
   import MenuItem from "./MenuItem.vue"

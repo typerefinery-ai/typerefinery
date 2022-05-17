@@ -4,6 +4,7 @@
     :id="service.id"
     :key="service.id"
     class="menu-item"
+    :status="service.status"
     :class="{
       'text-yellow-500': service.status == 90,
       'text-green-500': service.status == 120,
