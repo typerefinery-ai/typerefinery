@@ -32,18 +32,29 @@
             @click="changeTab(setting.id)"
           >
             <i :class="setting.icon"></i>
-            {{ $t(`components.setting.${setting.id}`) }}
+            {{ $t(`components.setting.section.${setting.id}`) }}
           </li>
         </ul>
       </div>
       <div class="menu-content">
+        <!-- section content -->
+        <!-- general -->
         <h4 v-if="selected == 'general'">
           {{ $t("components.setting.general-settings") }}
         </h4>
-        <profile-setting v-if="selected == 'profile'" :field="path.tabField" />
+        <!-- profile -->
+        <profile-info v-if="selected == 'profile'" :field="path.tabField" />
+
+        <!-- privacy -->
         <h4 v-if="selected == 'privacy'">
           {{ $t("components.setting.privacy-settings") }}
         </h4>
+        <!-- services -->
+        <services-list
+          v-if="selected == 'services'"
+          :variant="'table'"
+          :field="path.tabField"
+        />
       </div>
     </div>
   </Dialog>
@@ -52,37 +63,24 @@
 <script>
   import Dialog from "primevue/dialog"
   import { getModule } from "vuex-module-decorators"
-  import ProfileSetting from "./ProfileSetting.vue"
+  import ProfileInfo from "./Profile.vue"
+  import ServicesList from "../Services"
   import AppSettings from "@/store/Modules/AppSettings"
   const appSettings = getModule(AppSettings)
 
   export default {
     name: "Settings",
-    components: { Dialog, ProfileSetting },
+    components: { Dialog, ProfileInfo, ServicesList },
     emits: ["hide"],
     data() {
       return {
-        settings: [
-          {
-            id: "general",
-            label: "General",
-            icon: "pi pi-cog",
-          },
-          {
-            id: "profile",
-            label: "Profile",
-            icon: "pi pi-user",
-          },
-          {
-            id: "privacy",
-            label: "Privacy",
-            icon: "pi pi-lock",
-          },
-        ],
         selected: appSettings.settingPath?.split("/")[0],
       }
     },
     computed: {
+      settings() {
+        return appSettings.settings
+      },
       path() {
         const path = appSettings.settingPath?.split("/")
         return {

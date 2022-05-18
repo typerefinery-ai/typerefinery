@@ -1,7 +1,7 @@
 import { Module, VuexModule, Mutation, Action } from "vuex-module-decorators"
 import store from "../index"
 
-const storeValue = localStorage.getItem("vuex")
+const storeValue = localStorage.getItem("appsettings")
 const settingsInStore = storeValue ? JSON.parse(storeValue).AppSettings : false
 
 @Module({
@@ -46,4 +46,27 @@ export default class AppSettings extends VuexModule {
     this.settingsDialogVisible = true
     this.settingPath = path
   }
+
+  settings = [
+    {
+      id: "general",
+      label: "General",
+      icon: "pi pi-cog",
+    },
+    {
+      id: "profile",
+      label: "Profile",
+      icon: "pi pi-user",
+    },
+    {
+      id: "privacy",
+      label: "Privacy",
+      icon: "pi pi-lock",
+    },
+    {
+      id: "services",
+      label: "Services",
+      icon: "pi pi-cog",
+    },
+  ]
 }
