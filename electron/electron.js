@@ -21,6 +21,8 @@ const pathFastAPIModule = "main" // without .py suffix
 const pathTypeDB = "typedb"
 const pathJava = "java/jre17/bin"
 const pathPython = "python"
+const serviceEventSatus = "service:status"
+const serviceEventLog = "service:log"
 
 let procFastAPI = null
 let portFastAPI = null
@@ -42,28 +44,33 @@ function os_func() {
 var os = new os_func()
 
 function selectFastAPIPort() {
-  port = 8000
+  let port = 8000
   return port
 }
 
 function selectTypeDBPort() {
-  port = 1729
+  let port = 1729
   return port
 }
 
 function exitTypeDBProc() {
   if (procTypeDB != null) {
+    sendServiceStatus("typedb", "stopping")
     procTypeDB.kill()
     procTypeDB = null
     portTypeDB = null
+    sendServiceStatus("typedb", "stopping")
   }
 }
 
 function exitFastAPIProc() {
   if (procFastAPI != null) {
+    sendServiceStatus("fastapi", "stopping")
     procFastAPI.kill()
     procFastAPI = null
     portFastAPI = null
+    sendServiceStatus("fastapi", "stopped")
+
   }
 }
 
@@ -76,9 +83,43 @@ function isPathExist(path) {
   return false
 }
 
-function setupPython() {
+function serviceStatusMessage(servicename, status) {
+  return {
+    name: servicename,
+    status: status,
+  }
+}
+
+function serviceLogMessage(servicename, log) {
+  return {
+    name: servicename,
+    log: log,
+  }
+}
+
+function sendServiceStatus(servicename, status) {
+  sendServiceEventToApp(
+    serviceEventSatus,
+    serviceStatusMessage(servicename, status)
+  )
+}
+function sendServiceLog(servicename, log) {
+  sendServiceEventToApp(serviceEventLog, serviceLogMessage(servicename, log))
+}
+function sendServiceEventToApp(event, content) {
+  mainWindow.webContents.on("did-finish-load", () => {
+    mainWindow.webContents.send(event, content)
+  })
+}
+
+function setupPython(serviceName, callback) {
   let services = path.join(process.resourcesPath, "..", pathServices)
+
+  sendServiceLog(serviceName, "checking: " + services)
+
   if (isPathExist(services)) {
+    sendServiceLog(serviceName, "starting: " + services)
+
     let appDir = path.join(
       process.resourcesPath,
       "..",
@@ -109,30 +150,37 @@ function setupPython() {
     let pythonPyGet = "python get-pip.py --no-warn-script-location"
     let pythonPiInstall = "python -m pip install -r " + requirements
 
-    console.log("starting:" + pythonPyGet)
+    sendServiceLog(serviceName, "starting:" + pythonPyGet)
 
     os.execCommand(
       pythonPyGet,
       { cwd: pythonHome, signal: signal },
       function (returnvalue) {
-        console.log(`Output: ${returnvalue}`)
-        console.log("starting:" + pythonPiInstall)
+        sendServiceLog(serviceName, `Output: ${returnvalue}`)
+        sendServiceLog(serviceName, "starting:" + pythonPiInstall)
+
         os.execCommand(
           pythonPiInstall,
           { cwd: pythonHome, signal: signal },
           function (returnvalue) {
-            console.log(`Output: ${returnvalue}`)
-            createFastAPIProc()
+            sendServiceLog(serviceName, `Output: ${returnvalue}`)
+            if (callback) {
+              callback()
+            }
           }
         )
       }
     )
+  } else {
+    sendServiceStatus(serviceName, "stopped")
+    sendServiceLog(serviceName, "service not found in " + services)
   }
 }
 
 function createFastAPIProc() {
   let services = path.join(process.resourcesPath, "..", pathServices)
-  mainWindow.webContents.send("api:status", "starting")
+  let serviceName = "fastapi"
+  sendServiceStatus(serviceName, "starting")
 
   if (isPathExist(services)) {
     let appDir = path.join(
@@ -156,7 +204,7 @@ function createFastAPIProc() {
     )
     let port = "" + selectFastAPIPort()
 
-    console.log("starting:" + python)
+    sendServiceLog(serviceName, "starting:" + python)
 
     procFastAPI = spawn(
       python,
@@ -165,36 +213,35 @@ function createFastAPIProc() {
     )
 
     procFastAPI.stdout.on("data", function (data) {
-      console.log("fastapi-stdout: " + data)
+      sendServiceLog(serviceName, "stdout:" + data)
     })
 
     procFastAPI.stderr.on("data", function (data) {
-      console.log("fastapi-stderr: " + data)
+      sendServiceLog(serviceName, "stderr:" + data)
     })
 
     procFastAPI.on("exit", function (code) {
-      mainWindow.webContents.send("api:status", "stopped")
-      console.log("fastapi-child process exited with code " + code)
+      sendServiceStatus(serviceName, "stopped")
+      sendServiceLog(serviceName, "process exited with code " + code)
     })
 
     procFastAPI.on("close", function (code) {
-      mainWindow.webContents.send("api:status", "stopped")
-      console.log("fastapi-child process closed with code " + code)
+      sendServiceStatus(serviceName, "stopped")
+      sendServiceLog(serviceName, "process closed with code " + code)
     })
 
     if (procFastAPI != null) {
-      mainWindow.webContents.send("api:status", "started")
-      console.log("fastapi-child process running on port " + port)
+      sendServiceStatus(serviceName, "started")
+      sendServiceLog(serviceName, "process running on port " + port)
     }
   }
 }
 
 function createTypeDBProc() {
   let services = path.join(process.resourcesPath, "..", pathServices)
-  mainWindow.webContents.on("did-finish-load", () => {
-    mainWindow.webContents.send("db:status", "starting")
-  })
-  mainWindow
+  let serviceName = "typedb"
+  sendServiceStatus(serviceName, "starting")
+
   if (isPathExist(services)) {
     let appDir = path.join(
       process.resourcesPath,
@@ -220,8 +267,9 @@ function createTypeDBProc() {
       appDir +
       '\\server\\lib\\prod\\*"'
 
-    console.log("starting:" + java)
-    console.log(
+    sendServiceLog(serviceName, "starting:" + java)
+    sendServiceLog(
+      serviceName,
       "starting:" +
         [
           SERVER_JAVAOPTS,
@@ -247,63 +295,53 @@ function createTypeDBProc() {
     )
 
     procTypeDB.stdout.on("data", function (data) {
-      console.log("typedb-stdout: " + data)
+      sendServiceLog(serviceName, "stdout: " + data)
     })
 
     procTypeDB.stderr.on("data", function (data) {
-      console.log("typedb-stderr: " + data)
+      sendServiceLog(serviceName, "stderr: " + data)
     })
 
     procTypeDB.on("exit", function (code) {
-      mainWindow.webContents.on("did-finish-load", () => {
-        mainWindow.webContents.send("db:status", "stopped")
-      })
-      console.log("typedb-child process exited with code " + code)
+      sendServiceStatus(serviceName, "stopped")
+      sendServiceLog(serviceName, "process exited with code " + code)
     })
 
     procTypeDB.on("close", function (code) {
-      mainWindow.webContents.on("did-finish-load", () => {
-        mainWindow.webContents.send("db:status", "stopped")
-      })
-      console.log("typedb-child process closed with code " + code)
+      sendServiceStatus(serviceName, "stopped")
+      sendServiceLog(serviceName, "process closed with code " + code)
     })
 
     if (procTypeDB != null) {
-      //console.log(procTypeDB)
-      mainWindow.webContents.on("did-finish-load", () => {
-        mainWindow.webContents.send("db:status", "started")
-      })
-      console.log("typedb-child process running on port " + port)
+      sendServiceStatus(serviceName, "started")
+      sendServiceLog(serviceName, "process running on port " + port)
     }
+  } else {
+    sendServiceStatus(serviceName, "stopped")
+    sendServiceLog(serviceName, "service not found in " + services)
   }
 }
 
 function stopServices() {
   if (process.platform == "win32") {
-    mainWindow.webContents.on("did-finish-load", () => {
-      mainWindow.webContents.send("api:status", "stopping")
-    })
-
-    console.log("fastapi-closing")
+    sendServiceLog("all", "stopping services")
     exitFastAPIProc()
-    mainWindow.webContents.on("did-finish-load", () => {
-      mainWindow.webContents.send("db:status", "stopping")
-    })
-    console.log("typedb-closing")
     exitTypeDBProc()
-    console.log("services-aborting")
+    sendServiceLog("all", "ready or not aborting")
     controller.abort()
   } else {
-    console.log("embedded services are not yet available on your os.")
+    sendServiceLog("all", "embedded services are not yet available on your os.")
   }
 }
 function startServices() {
   if (process.platform == "win32") {
-    setupPython()
+    sendServiceLog("all", "starting services")
+    setupPython("fastapi", createFastAPIProc)
     //createFastAPIProc()
     createTypeDBProc()
+    sendServiceLog("all", "started services")
   } else {
-    console.log("embedded services are not yet available on your os.")
+    sendServiceLog("all", "embedded services are not yet available on your os.")
   }
 }
 
@@ -379,7 +417,6 @@ app.whenReady().then(() => {
       e.preventDefault()
       mainWindow.hide()
     } else {
-      console.log("exiting:close")
       stopServices()
     }
   })
@@ -390,7 +427,6 @@ app.whenReady().then(() => {
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
 app.on("window-all-closed", () => {
-  console.log("exiting:window-all-closed")
   stopServices()
   if (process.platform !== "darwin") {
     app.quit()
