@@ -79,7 +79,12 @@
           :toggleable="true"
           :collapsed="true"
         >
-          <p>{{ service.logoutput }}</p>
+          <Textarea
+            id="logoutput"
+            v-model="service.logoutput"
+            rows="5"
+            cols="30"
+          />
         </Panel>
       </AccordionTab>
     </Accordion>
