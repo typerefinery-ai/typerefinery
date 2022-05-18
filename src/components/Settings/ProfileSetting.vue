@@ -71,6 +71,7 @@
   .p-float-label {
     margin-bottom: 10px;
   }
+
   input {
     width: 80%;
   }
