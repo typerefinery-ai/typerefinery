@@ -123,31 +123,13 @@
     },
     computed: {
       servicestatuslist() {
-        let servicestatusList = []
-        for (const [key, value] of Object.entries(appServices.servicestatus)) {
-          servicestatusList.push({
-            name: value.name,
-            value: parseFloat(key),
-          })
-        }
-        return servicestatusList
+        return appServices.serviceStatusList
       },
       servicestatuscolorlist() {
-        let servicestatuscolorList = {}
-        for (const [key, value] of Object.entries(appServices.servicestatus)) {
-          servicestatuscolorList[value.name] = value.color
-        }
-        return servicestatuscolorList
+        return appServices.serviceStatusColorList
       },
       servicestypelist() {
-        let servicetypeList = []
-        for (const [key, value] of Object.entries(appServices.servicetype)) {
-          servicetypeList.push({
-            name: value.name,
-            value: parseFloat(key),
-          })
-        }
-        return servicetypeList
+        return appServices.serviceTypeList
       },
       services() {
         return appServices.services
@@ -159,28 +141,6 @@
       } else {
         this.activeIndex = -1
       }
-    },
-    created() {
-      // appServices.setServiceStatus([1, 0])
-      // appServices.enableService([1, 0])
-      // appServices.setServiceStatus([2, 0])
-      // appServices.enableService([2, 0])
-      // window.api?.response("api:status", (s) => {
-      //   if (s == "starting") {
-      //     appServices.setServiceStatus([1, 90])
-      //   } else if (s == "started") {
-      //     appServices.setServiceStatus([1, 120])
-      //     appServices.enableService([1, 120])
-      //   }
-      // })
-      // window.api?.response("db:status", (s) => {
-      //   if (s == "starting") {
-      //     appServices.setServiceStatus([2, 90])
-      //   } else if (s == "started") {
-      //     appServices.setServiceStatus([2, 120])
-      //     appServices.enableService([2, 120])
-      //   }
-      // })
     },
     methods: {
       openSettings(serviceId) {

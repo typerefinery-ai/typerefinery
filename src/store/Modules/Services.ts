@@ -13,11 +13,11 @@ const servicesInStore = storeValue ? JSON.parse(storeValue).Services : false
 export default class Services extends VuexModule {
   services = [
     {
-      id: 1,
+      id: "fastapi",
       name: "API",
       description: "Fast API",
       enabled: false,
-      status: -1,
+      status: "-1",
       logoutput: "...",
       icon: "pi pi-cog",
       servicetype: 10,
@@ -35,32 +35,38 @@ export default class Services extends VuexModule {
       },
     },
     {
-      id: 2,
+      id: "typedb",
       name: "DB",
       description: "Database",
       enabled: false,
-      status: 30,
+      status: "30",
       logoutput: "...",
       icon: "pi pi-database",
       servicetype: 10,
     },
   ]
-
   @Mutation
-  setServiceStatus(args: Array<number>) {
-    const [id, status] = args
-    const idx = this.services.findIndex((s) => s.id === id)
-    this.services[idx].status = status
+  serviceNames() {
+    const servicestatusnamesList = {}
+    for (const [key, value] of Object.entries(this.services)) {
+      servicestatusnamesList[value.name] = value.name
+    }
+    return servicestatusnamesList
   }
 
   @Mutation
-  enableService(args: Array<number>) {
-    const [id, status] = args
-    const idx = this.services.findIndex((s) => s.id === id)
-    this.services[idx].enabled = status == 120
+  setServiceStatus(serviceId: string, statusId: string) {
+    const idx = this.services.findIndex((s) => s.id === serviceId)
+    this.services[idx].status = statusId
   }
 
-  servicestatus = {
+  @Mutation
+  setServiceStatusByStatusName(serviceId: string, statusName: string) {
+    const statusId = this.serviceStatusNames()[statusName]
+    this.setServiceStatus(serviceId, statusId)
+  }
+
+  serviceStatusEnum = {
     "-1": { name: "error", color: "red" },
     "0": { name: "disabled", color: "gray" },
     "30": { name: "stopping", color: "blue" },
@@ -69,8 +75,59 @@ export default class Services extends VuexModule {
     "120": { name: "started", color: "green" },
   }
 
-  servicetype = {
+  @Mutation
+  serviceStatusNames() {
+    const list = {}
+    for (const [key, value] of Object.entries(this.serviceStatusEnum)) {
+      list[value.name] = key
+    }
+    return list
+  }
+
+  @Mutation
+  serviceStatusColorList() {
+    const list = {}
+    for (const [key, value] of Object.entries(this.serviceStatusEnum)) {
+      list[value.name] = value.color
+    }
+    return list
+  }
+
+  @Mutation
+  serviceStatusList() {
+    const list: object[] = []
+    for (const [key, value] of Object.entries(this.serviceStatusEnum)) {
+      list.push({
+        name: value.name,
+        value: parseFloat(key),
+      })
+    }
+    return list
+  }
+
+  serviceTypeEnum = {
     "10": { name: "local", icon: "pi pi-cog" },
     "20": { name: "online", icon: "pi pi-globe" },
+  }
+
+  @Mutation
+  serviceTypeNames() {
+    const servicetypenamesList = {}
+    for (const [key, value] of Object.entries(this.serviceTypeEnum)) {
+      servicetypenamesList[value.name] = key
+    }
+    return servicetypenamesList
+  }
+
+  @Mutation
+  serviceTypeList() {
+    const list: object[] = []
+    for (const [key, value] of Object.entries(this.serviceTypeEnum)) {
+      list.push({
+        name: value.name,
+        value: parseFloat(key),
+      })
+    }
+    return list
   }
 }
