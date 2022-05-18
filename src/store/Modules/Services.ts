@@ -2,13 +2,15 @@ import { Module, VuexModule, Mutation } from "vuex-module-decorators"
 import store from "../index"
 
 const storeValue = localStorage.getItem("services")
-const servicesInStore = storeValue ? JSON.parse(storeValue).Services : false
+// const servicesInStore = storeValue ? JSON.parse(storeValue).Services : false
 
 @Module({
   name: "Services",
   store: store,
   dynamic: true,
-  preserveState: servicesInStore,
+  namespaced: true,
+  stateFactory: true,
+  preserveState: true,
 })
 export default class Services extends VuexModule {
   services = [
@@ -45,13 +47,18 @@ export default class Services extends VuexModule {
       servicetype: 10,
     },
   ]
+
+  get serviceList() {
+    return this.services
+  }
+
   @Mutation
   serviceNames() {
-    const servicestatusnamesList = {}
+    const list = {}
     for (const [key, value] of Object.entries(this.services)) {
-      servicestatusnamesList[value.name] = value.name
+      list[value.name] = value.name
     }
-    return servicestatusnamesList
+    return list
   }
 
   @Mutation
@@ -62,7 +69,7 @@ export default class Services extends VuexModule {
 
   @Mutation
   setServiceStatusByStatusName(serviceId: string, statusName: string) {
-    const statusId = this.serviceStatusNames()[statusName]
+    const statusId = this.serviceStatusNames[statusName]
     this.setServiceStatus(serviceId, statusId)
   }
 
@@ -75,8 +82,7 @@ export default class Services extends VuexModule {
     "120": { name: "started", color: "green" },
   }
 
-  @Mutation
-  serviceStatusNames() {
+  get serviceStatusNames() {
     const list = {}
     for (const [key, value] of Object.entries(this.serviceStatusEnum)) {
       list[value.name] = key
@@ -84,8 +90,7 @@ export default class Services extends VuexModule {
     return list
   }
 
-  @Mutation
-  serviceStatusColorList() {
+  get serviceStatusColorList() {
     const list = {}
     for (const [key, value] of Object.entries(this.serviceStatusEnum)) {
       list[value.name] = value.color
@@ -93,13 +98,12 @@ export default class Services extends VuexModule {
     return list
   }
 
-  @Mutation
-  serviceStatusList() {
+  get serviceStatusList() {
     const list: object[] = []
     for (const [key, value] of Object.entries(this.serviceStatusEnum)) {
       list.push({
         name: value.name,
-        value: parseFloat(key),
+        value: key,
       })
     }
     return list
@@ -110,8 +114,7 @@ export default class Services extends VuexModule {
     "20": { name: "online", icon: "pi pi-globe" },
   }
 
-  @Mutation
-  serviceTypeNames() {
+  get serviceTypeNames() {
     const servicetypenamesList = {}
     for (const [key, value] of Object.entries(this.serviceTypeEnum)) {
       servicetypenamesList[value.name] = key
@@ -119,8 +122,7 @@ export default class Services extends VuexModule {
     return servicetypenamesList
   }
 
-  @Mutation
-  serviceTypeList() {
+  get serviceTypeList() {
     const list: object[] = []
     for (const [key, value] of Object.entries(this.serviceTypeEnum)) {
       list.push({
