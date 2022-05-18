@@ -1,7 +1,7 @@
-import { Module, VuexModule, Mutation } from "vuex-module-decorators"
+import { Module, VuexModule, Mutation, Action } from "vuex-module-decorators"
 import store from "../index"
 
-const storeValue = localStorage.getItem("services")
+// const storeValue = localStorage.getItem("services")
 // const servicesInStore = storeValue ? JSON.parse(storeValue).Services : false
 
 @Module({
@@ -50,27 +50,6 @@ export default class Services extends VuexModule {
 
   get serviceList() {
     return this.services
-  }
-
-  @Mutation
-  serviceNames() {
-    const list = {}
-    for (const [key, value] of Object.entries(this.services)) {
-      list[value.name] = value.name
-    }
-    return list
-  }
-
-  @Mutation
-  setServiceStatus(serviceId: string, statusId: string) {
-    const idx = this.services.findIndex((s) => s.id === serviceId)
-    this.services[idx].status = statusId
-  }
-
-  @Mutation
-  setServiceStatusByStatusName(serviceId: string, statusName: string) {
-    const statusId = this.serviceStatusNames[statusName]
-    this.setServiceStatus(serviceId, statusId)
   }
 
   serviceStatusEnum = {
@@ -131,5 +110,77 @@ export default class Services extends VuexModule {
       })
     }
     return list
+  }
+
+  @Mutation
+  serviceNames() {
+    const list = {}
+    for (const [key, value] of Object.entries(this.services)) {
+      list[value.name] = value.name
+    }
+    return list
+  }
+
+  @Mutation
+  setServiceStatus(serviceId: string, statusId: string) {
+    const idx = this.services.findIndex((s) => s.id === serviceId)
+    this.services[idx].status = statusId
+  }
+
+  @Action({ rawError: true })
+  async updateServiceStatusByStatusName(payload: object) {
+    this.context.commit("setServiceStatusPayload", payload)
+  }
+
+  @Mutation
+  setServiceStatusPayload(payload: object) {
+    const serviceId = payload["name"]
+    const statusName = payload["status"]
+    Object.entries(this.serviceStatusEnum).find(([key, value]) => {
+      console.log([serviceId, statusName, key, value.name])
+      if (value.name === statusName) {
+        console.log([serviceId, key, "set"])
+        const idx = this.services.findIndex((s) => s.id === serviceId)
+        this.services[idx].status = key
+      }
+    })
+  }
+
+  @Mutation
+  setServiceStatusByStatusName(serviceId: string, statusName: string) {
+    const statusId = this.serviceStatusNames[statusName]
+    this.setServiceStatus(serviceId, statusId)
+  }
+
+  @Action({ rawError: true })
+  async updateServiceLogByName(payload: object) {
+    this.context.commit("setServiceLogPayload", payload)
+  }
+
+  @Mutation
+  setServiceLogPayload(payload: object) {
+    const serviceId = payload["name"]
+    const logstring = payload["log"]
+    console.log([payload, serviceId, logstring])
+    const idx = this.services.findIndex((s) => s.id === serviceId)
+    console.log([serviceId, logstring, idx])
+    if (serviceId > 0) {
+      this.services[idx].logoutput =
+        this.services[idx].logoutput + "\n" + logstring
+    } else {
+      //for each service update logoutput
+      for (const [key, value] of Object.entries(this.services)) {
+        this.services[key].logoutput =
+          this.services[key].logoutput + "\n" + logstring
+      }
+    }
+  }
+
+  @Mutation
+  setServiceLogByName(serviceId: string, logstring: string) {
+    const idx = this.services.findIndex((s) => s.id === serviceId)
+    console.log([serviceId, logstring, this.services[idx]])
+    this.services[idx].logoutput =
+      this.services[idx].logoutput + "\n" + logstring
   }
 }

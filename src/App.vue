@@ -8,19 +8,38 @@
   import { getModule } from "vuex-module-decorators"
   import { setThemeURL } from "@/utils/theme"
   const appSettings = getModule(AppSettings)
+  import { mapGetters, mapActions } from "vuex"
 
   export default defineComponent({
     name: "App",
 
     created() {
       window.addEventListener("keydown", this.keyListener)
+
+      // monitor service events
+      window.api?.response("service:status", (data) => {
+        this.updateServiceStatusByStatusName(data)
+      })
+      window.api?.response("service:log", (data) => {
+        this.updateServiceLogByName(data)
+      })
     },
 
     unmounted() {
       window.removeEventListener("keydown", this.keyListener)
     },
-
     methods: {
+      ...mapActions({
+        updateServiceLogByName: "Services/updateServiceLogByName",
+        updateServiceStatusByStatusName:
+          "Services/updateServiceStatusByStatusName",
+      }),
+      ...mapGetters({
+        serviceTypeList: "Services/serviceTypeList",
+        serviceStatusList: "Services/serviceStatusList",
+        serviceStatusColorList: "Services/serviceStatusColorList",
+        services: "Services/services",
+      }),
       keyListener(e) {
         const { key, shiftKey } = e
         if (shiftKey && key === "F") {
