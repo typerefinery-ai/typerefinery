@@ -137,7 +137,6 @@
         for (const [key, value] of Object.entries(appServices.servicestatus)) {
           servicestatuscolorList[value.name] = value.color
         }
-        console.log(servicestatuscolorList)
         return servicestatuscolorList
       },
       servicestypelist() {
