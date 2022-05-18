@@ -13,9 +13,7 @@ describe("Content tabs tests", () => {
     },
     props: { menuBarVisible: true },
   })
-
   const toggle = wrapper.get("#toggle-focus-button")
-
   const main = wrapper.get(".menu-bar")
   it("full screen on focus mode", async () => {
     await toggle.trigger("click")

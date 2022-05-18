@@ -16,7 +16,7 @@
     </menu-item>
     <menu-item tooltip="change-language" :on-click="toggleMenu">
       <i class="pi pi-globe"></i>
-    </menu-item>
+      </menu-item>
     <menu-item tooltip="toggle-theme" :on-click="toggleTheme">
       <i v-if="theme === 'light'" class="pi pi-sun font-bold"></i>
       <i v-else class="pi pi-moon"></i>
