@@ -1,5 +1,6 @@
 import { createRouter, createWebHashHistory } from "vue-router"
 import Home from "../views/Home.vue"
+import Chat from "../components/Chat/index.vue"
 import Maps from "../components/Maps/index.vue"
 
 const router = createRouter({
@@ -12,6 +13,11 @@ const router = createRouter({
         default: Home,
         dialog: Maps,
       },
+    },
+    {
+      path: "/home/chats",
+      name: "chat",
+      component: Chat,
     },
     {
       path: "/",

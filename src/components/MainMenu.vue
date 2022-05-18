@@ -70,6 +70,12 @@
             to: "/home/maps",
             subMenu: [{ id: "load-data", to: "#" }],
           },
+          {
+            label: this.$t("components.project.chats"),
+            icon: "pi pi-comment",
+            to: "/home/chats",
+            subMenu: [{ id: "load-data", to: "#" }],
+          },
         ]
       },
 

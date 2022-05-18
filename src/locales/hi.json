@@ -4,6 +4,7 @@
       "project": "परियोजना",
       "charts": "चार्ट",
       "maps": "नक़्शे",
+      "chats": "चैट",
       "new-project": "नया काम",
       "new-query": "नया प्रश्न",
       "new-connection": "नया कनेक्शन",
@@ -18,6 +19,11 @@
       "properties": "प्रोपर्टीज",
       "data": "आंकड़े",
       "graph": "ग्राफ",
+      "send": "भेजें",
+      "messageplaceholder": "अपना संदेश यहां टंकित करें...",
+      "error": "कुछ गलत हो गया",
+      "to": "को",
+      "From": "से"
       "no-node": "कोई नोड चयनित नहीं",
       "index": "इंडेक्स",
       "label": "लेबल"
