@@ -5,12 +5,8 @@
       v-for="service in services"
       :id="service.id"
       :key="service.id"
-      class="menu-item"
+      class="menu-item service-button"
       :status="service.status"
-      :class="{
-        'text-yellow-500': service.status == 90,
-        'text-green-500': service.status == 120,
-      }"
       @click="openSettings(service.id)"
     >
       <i :class="service.icon"></i>
@@ -18,18 +14,14 @@
   </span>
   <!-- if prop variant is set to table then load template from Table.vue -->
   <span v-else-if="variant == 'table'">
-    <Accordion :active-index="active">
+    <Accordion :active-index="activeIndex">
       <AccordionTab v-for="service in services" :key="service.id">
         <template #header>
-          <span
-            :class="{
-              'text-yellow-500': service.status == 90,
-              'text-green-500': service.status == 120,
-            }"
-          >
+          <div class="service-header">
             <i :class="service.icon"></i>
-            <span>{{ service.name }}</span>
-          </span>
+            <span class="service-title">{{ service.name }}</span>
+            <span class="service-status" :status="service.status"></span>
+          </div>
         </template>
 
         <div class="field">
@@ -125,7 +117,8 @@
     },
     data() {
       return {
-        active: 1,
+        activeIndex: 1,
+        color: "red",
       }
     },
     computed: {
@@ -138,6 +131,14 @@
           })
         }
         return servicestatusList
+      },
+      servicestatuscolorlist() {
+        let servicestatuscolorList = {}
+        for (const [key, value] of Object.entries(appServices.servicestatus)) {
+          servicestatuscolorList[value.name] = value.color
+        }
+        console.log(servicestatuscolorList)
+        return servicestatuscolorList
       },
       servicestypelist() {
         let servicetypeList = []
@@ -155,9 +156,9 @@
     },
     mounted() {
       if (this.field) {
-        this.active = this.field - 1
+        this.activeIndex = this.field - 1
       } else {
-        this.active = -1
+        this.activeIndex = -1
       }
     },
     created() {
@@ -190,7 +191,7 @@
   }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
   span.service-buttons-list {
     display: inline-flex;
     margin-right: 2px;
@@ -209,6 +210,70 @@
       padding: 1rem;
       border: 1px solid var(--surface-border);
       border-top-width: 0;
+    }
+  }
+
+  .service-header {
+    vertical-align: top;
+    width: 100%;
+    display: flex;
+    align-items: flex-start;
+    flex-direction: row;
+  }
+
+  .service-title {
+    padding-left: 1rem;
+  }
+
+  .service-status {
+    margin-left: auto;
+    margin-right: 1rem;
+    height: 1rem;
+    width: 1rem;
+    padding-left: 1rem;
+    background-color: gray;
+    border-radius: 50%;
+    display: inline-block;
+
+    &[status="-1"] {
+      background-color: v-bind("servicestatuscolorlist.error");
+    }
+    &[status="0"] {
+      background-color: v-bind("servicestatuscolorlist.disabled");
+    }
+    &[status="30"] {
+      background-color: v-bind("servicestatuscolorlist.stopping");
+    }
+    &[status="60"] {
+      background-color: v-bind("servicestatuscolorlist.stopped");
+    }
+    &[status="90"] {
+      background-color: v-bind("servicestatuscolorlist.starting");
+    }
+    &[status="120"] {
+      background-color: v-bind("servicestatuscolorlist.started");
+    }
+  }
+
+  .service-button {
+    color: gray;
+    &[status="-1"] {
+      color: v-bind("servicestatuscolorlist.error");
+    }
+    &[status="0"] {
+      color: v-bind("servicestatuscolorlist.disabled");
+    }
+    &[status="30"] {
+      color: v-bind("servicestatuscolorlist.stopping");
+    }
+    &[status="60"] {
+      color: v-bind("servicestatuscolorlist.stopped");
+    }
+    &[status="90"] {
+      color: v-bind("servicestatuscolorlist.starting");
+    }
+    &[status="120"] {
+      color: v-bind("servicestatuscolorlist.started");
     }
   }
 </style>

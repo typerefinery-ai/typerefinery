@@ -63,8 +63,8 @@ export default class Services extends VuexModule {
   servicestatus = {
     "-1": { name: "error", color: "red" },
     "0": { name: "disabled", color: "gray" },
-    "30": { name: "stopped", color: "blue" },
-    "60": { name: "stopping", color: "purple" },
+    "30": { name: "stopping", color: "blue" },
+    "60": { name: "stopped", color: "purple" },
     "90": { name: "starting", color: "yellow" },
     "120": { name: "started", color: "green" },
   }
