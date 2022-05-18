@@ -2,7 +2,7 @@
   <!-- if prop variant is set to buttons then load template from Buttons.vue -->
   <span v-if="variant == 'buttons'" class="service-buttons-list">
     <span
-      v-for="service in services"
+      v-for="service in serviceList()"
       :id="service.id"
       :key="service.id"
       class="menu-item service-button"
@@ -15,7 +15,7 @@
   <!-- if prop variant is set to table then load template from Table.vue -->
   <span v-else-if="variant == 'table'">
     <Accordion :active-index="activeIndex">
-      <AccordionTab v-for="service in services" :key="service.id">
+      <AccordionTab v-for="service in serviceList()" :key="service.id">
         <template #header>
           <div class="service-header">
             <i :class="service.icon"></i>
@@ -43,7 +43,7 @@
           <Dropdown
             id="status"
             v-model="service.status"
-            :options="servicestatuslist"
+            :options="serviceStatusList()"
             option-label="name"
             option-value="value"
           >
@@ -56,7 +56,7 @@
           <Dropdown
             id="type"
             v-model="service.servicetype"
-            :options="servicestypelist"
+            :options="serviceTypeList()"
             option-label="name"
             option-value="value"
           >
@@ -79,7 +79,12 @@
           :toggleable="true"
           :collapsed="true"
         >
-          <p>{{ service.logoutput }}</p>
+          <Textarea
+            id="logoutput"
+            v-model="service.logoutput"
+            rows="5"
+            cols="30"
+          />
         </Panel>
       </AccordionTab>
     </Accordion>
@@ -90,7 +95,6 @@
   import Panel from "primevue/panel"
   import Services from "@/store/Modules/Services"
   import { getModule } from "vuex-module-decorators"
-  const appServices = getModule(Services)
   import AppSettings from "@/store/Modules/AppSettings"
   const appSettings = getModule(AppSettings)
   import Accordion from "primevue/accordion"
@@ -99,6 +103,7 @@
   import Checkbox from "primevue/checkbox"
   import InputText from "primevue/inputtext"
   import Textarea from "primevue/textarea"
+  import { mapGetters } from "vuex"
 
   export default {
     name: "Services",
@@ -117,73 +122,26 @@
     },
     data() {
       return {
-        activeIndex: 1,
-        color: "red",
+        activeIndex: -1,
       }
-    },
-    computed: {
-      servicestatuslist() {
-        let servicestatusList = []
-        for (const [key, value] of Object.entries(appServices.servicestatus)) {
-          servicestatusList.push({
-            name: value.name,
-            value: parseFloat(key),
-          })
-        }
-        return servicestatusList
-      },
-      servicestatuscolorlist() {
-        let servicestatuscolorList = {}
-        for (const [key, value] of Object.entries(appServices.servicestatus)) {
-          servicestatuscolorList[value.name] = value.color
-        }
-        console.log(servicestatuscolorList)
-        return servicestatuscolorList
-      },
-      servicestypelist() {
-        let servicetypeList = []
-        for (const [key, value] of Object.entries(appServices.servicetype)) {
-          servicetypeList.push({
-            name: value.name,
-            value: parseFloat(key),
-          })
-        }
-        return servicetypeList
-      },
-      services() {
-        return appServices.services
-      },
     },
     mounted() {
       if (this.field) {
-        this.activeIndex = this.field - 1
+        const serviceIndex = this.serviceList().findIndex(
+          (s) => s.id === this.field
+        )
+        this.activeIndex = serviceIndex
       } else {
         this.activeIndex = -1
       }
     },
-    created() {
-      // appServices.setServiceStatus([1, 0])
-      // appServices.enableService([1, 0])
-      // appServices.setServiceStatus([2, 0])
-      // appServices.enableService([2, 0])
-      // window.api?.response("api:status", (s) => {
-      //   if (s == "starting") {
-      //     appServices.setServiceStatus([1, 90])
-      //   } else if (s == "started") {
-      //     appServices.setServiceStatus([1, 120])
-      //     appServices.enableService([1, 120])
-      //   }
-      // })
-      // window.api?.response("db:status", (s) => {
-      //   if (s == "starting") {
-      //     appServices.setServiceStatus([2, 90])
-      //   } else if (s == "started") {
-      //     appServices.setServiceStatus([2, 120])
-      //     appServices.enableService([2, 120])
-      //   }
-      // })
-    },
     methods: {
+      ...mapGetters({
+        serviceTypeList: "Services/serviceTypeList",
+        serviceStatusList: "Services/serviceStatusList",
+        serviceStatusColorList: "Services/serviceStatusColorList",
+        serviceList: "Services/serviceList",
+      }),
       openSettings(serviceId) {
         appSettings.openSettingsDialog("services/" + serviceId)
       },
@@ -236,44 +194,44 @@
     display: inline-block;
 
     &[status="-1"] {
-      background-color: v-bind("servicestatuscolorlist.error");
+      background-color: v-bind("serviceStatusColorList()['error']");
     }
     &[status="0"] {
-      background-color: v-bind("servicestatuscolorlist.disabled");
+      background-color: v-bind("serviceStatusColorList()['disabled']");
     }
     &[status="30"] {
-      background-color: v-bind("servicestatuscolorlist.stopping");
+      background-color: v-bind("serviceStatusColorList()['stopping']");
     }
     &[status="60"] {
-      background-color: v-bind("servicestatuscolorlist.stopped");
+      background-color: v-bind("serviceStatusColorList()['stopped']");
     }
     &[status="90"] {
-      background-color: v-bind("servicestatuscolorlist.starting");
+      background-color: v-bind("serviceStatusColorList()['starting']");
     }
     &[status="120"] {
-      background-color: v-bind("servicestatuscolorlist.started");
+      background-color: v-bind("serviceStatusColorList()['started']");
     }
   }
 
   .service-button {
     color: gray;
     &[status="-1"] {
-      color: v-bind("servicestatuscolorlist.error");
+      color: v-bind("serviceStatusColorList()['error']");
     }
     &[status="0"] {
-      color: v-bind("servicestatuscolorlist.disabled");
+      color: v-bind("serviceStatusColorList()['disabled']");
     }
     &[status="30"] {
-      color: v-bind("servicestatuscolorlist.stopping");
+      color: v-bind("serviceStatusColorList()['stopping']");
     }
     &[status="60"] {
-      color: v-bind("servicestatuscolorlist.stopped");
+      color: v-bind("serviceStatusColorList()['stopped']");
     }
     &[status="90"] {
-      color: v-bind("servicestatuscolorlist.starting");
+      color: v-bind("serviceStatusColorList()['starting']");
     }
     &[status="120"] {
-      color: v-bind("servicestatuscolorlist.started");
+      color: v-bind("serviceStatusColorList()['started']");
     }
   }
 </style>
