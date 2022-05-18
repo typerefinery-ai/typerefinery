@@ -23,7 +23,10 @@
       "error": "something went wrong",
       "to": "To",
       "From": "From"
-      "graph": "Graph"
+      "graph": "Graph",
+      "no-node": "No Node Selected",
+      "index": "Index",
+      "label": "Label"
     },
     "setting": {
       "settings": "Settings",

@@ -11,7 +11,7 @@ const settingsInStore = storeValue ? JSON.parse(storeValue).AppSettings : false
   preserveState: settingsInStore,
 })
 export default class AppSettings extends VuexModule {
-  language = "hi"
+  language = ""
   @Mutation
   setLanguage(text: string) {
     this.language = text
