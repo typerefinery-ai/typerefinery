@@ -1,72 +1,59 @@
 <template>
   <div class="menu-bar" :class="{ focus: focus }">
+    <!-- service icons -->
     <service-icons />
-    <div
+
+    <!-- menu icons -->
+    <menu-item
       v-if="!menuBarVisible"
-      v-tooltip.bottom="$t(`tooltips.show-menu-bar`)"
-      class="menu-item hover:text-primary hover:border-primary"
-      @click="$emit('toggle')"
+      tooltip="show-menu-bar"
+      :on-click="() => $emit('toggle')"
     >
-      <chevron-down :size="18" />
-    </div>
-    <div
-      v-tooltip.bottom="$t(`tooltips.help`)"
-      class="menu-item hover:text-primary hover:border-primary"
-      @click="toggleHelp"
-    >
+      <i class="pi pi-angle-double-down"></i>
+    </menu-item>
+    <menu-item tooltip="help" :on-click="toggleHelp">
       <i class="pi pi-info-circle"></i>
-    </div>
-    <div
-      v-tooltip.bottom="$t(`tooltips.change-language`)"
-      class="menu-item hover:text-primary hover:border-primary"
-      @click="toggleMenu"
-    >
+    </menu-item>
+    <menu-item tooltip="change-language" :on-click="toggleMenu">
       <i class="pi pi-globe"></i>
-    </div>
-    <div
-      v-tooltip.bottom="$t(`tooltips.toggle-theme`)"
-      class="menu-item hover:text-primary hover:border-primary"
-      @click="toggleTheme"
-    >
-      <i
-        v-if="theme === 'light'"
-        class="pi pi-sun"
-        style="font-weight: bold;"
-      ></i>
+      </menu-item>
+    <menu-item tooltip="toggle-theme" :on-click="toggleTheme">
+      <i v-if="theme === 'light'" class="pi pi-sun font-bold"></i>
       <i v-else class="pi pi-moon"></i>
-    </div>
-    <div
-      v-tooltip.bottom="$t(`tooltips.toggle-focus`)"
-      class="menu-item hover:text-primary hover:border-primary"
-      @click="toggleFocus"
-    >
+    </menu-item>
+    <menu-item tooltip="toggle-focus" :on-click="toggleFocus">
       <focus-icon :size="18" />
-    </div>
-    <div
+    </menu-item>
+    <menu-item tooltip="profile" :on-click="openSettings">
+      <span v-if="nickname" class="mr-1">{{ nickname }}</span>
+      <user-icon :size="18" />
+    </menu-item>
+
+    <!-- electron only icons -->
+    <menu-item
       v-if="isElectron"
-      v-tooltip.bottom="$t(`tooltips.minimize`)"
-      class="menu-item hover:text-primary hover:border-primary"
-      @click="handleMenu('min')"
+      tooltip="minimize"
+      :on-click="() => handleMenu('min')"
     >
       <i class="pi pi-minus"></i>
-    </div>
-    <div
+    </menu-item>
+    <menu-item
       v-if="isElectron"
-      v-tooltip.bottom="$t(`tooltips.maximize`)"
-      class="menu-item hover:text-primary hover:border-primary"
-      @click="handleMenu('max')"
+      tooltip="maximize"
+      :on-click="() => handleMenu('max')"
     >
       <max-icon :size="18" />
-    </div>
-    <div
+    </menu-item>
+    <menu-item
       v-if="isElectron"
-      v-tooltip.left="$t(`tooltips.close`)"
-      class="menu-item hover:text-primary hover:border-primary"
-      @click="handleMenu('close')"
+      tooltip="close"
+      :on-click="() => handleMenu('close')"
     >
       <close-icon :size="18" />
-    </div>
+    </menu-item>
   </div>
+
+  <!-- language options -->
   <Menu ref="menu" :model="langs" :popup="true">
     <template #item="{ item }">
       <div
@@ -78,6 +65,8 @@
       </div>
     </template>
   </Menu>
+
+  <!-- help options -->
   <Menu ref="help" class="help-menu" :model="helpMenu" :popup="true">
     <template #item="{ item }">
       <div class="p-menuitem-link" @click="openLink(item.value)">
@@ -90,25 +79,30 @@
 <script>
   import Menu from "primevue/menu"
   import { getModule } from "vuex-module-decorators"
-  import ChevronDown from "vue-material-design-icons/ChevronDoubleDown.vue"
+  import UserIcon from "vue-material-design-icons/AccountCircle.vue"
   import FocusIcon from "vue-material-design-icons/BullseyeArrow.vue"
   import CloseIcon from "vue-material-design-icons/Close.vue"
   import MaxIcon from "vue-material-design-icons/CheckboxMultipleBlankOutline.vue"
-  import ServiceIcons from "./Services.vue"
   import AppSettings from "@/store/Modules/AppSettings"
+  import ServiceIcons from "./Services.vue"
   import { setThemeURL } from "@/utils/theme"
   import isElectron from "@/utils/is-electron"
+  import { locales } from "@/i18n"
+  import MenuItem from "./MenuItem.vue"
   const appSettings = getModule(AppSettings)
+  import Auth from "@/store/Modules/Auth"
+  const appAuth = getModule(Auth)
 
   export default {
     name: "MenuBar",
     components: {
-      ChevronDown,
       FocusIcon,
       CloseIcon,
       MaxIcon,
-      Menu,
       ServiceIcons,
+      UserIcon,
+      Menu,
+      MenuItem,
     },
 
     props: {
@@ -149,6 +143,9 @@
     },
 
     computed: {
+      nickname() {
+        return appAuth.alias ? appAuth.alias : appAuth.username
+      },
       focus() {
         return appSettings.focus
       },
@@ -161,18 +158,31 @@
     },
 
     created() {
+      const systemLang = navigator.language.substring(0, 2)
       const theme = appSettings?.theme || "light"
-      const lang = appSettings?.language || "en"
+      const langInStore = appSettings?.language
       setThemeURL(theme)
-      window.api?.request("lang-change", lang)
+
+      if (systemLang && !langInStore) {
+        if (locales.includes(systemLang)) {
+          this.setLanguage(systemLang)
+          window.api?.request("lang-change", systemLang)
+        }
+      } else {
+        window.api?.request("lang-change", langInStore)
+      }
     },
 
     methods: {
       toggleLanguage(value) {
-        appSettings.setLanguage(value)
-        this.$i18n.locale = value
+        this.setLanguage(value)
         window.api?.request("lang-change", value)
         this.$refs.menu.toggle()
+      },
+
+      setLanguage(lang) {
+        appSettings.setLanguage(lang)
+        this.$i18n.locale = lang
       },
 
       toggleTheme() {
@@ -200,6 +210,10 @@
       openLink(url) {
         window.open(url, "_blank")
       },
+
+      openSettings() {
+        appSettings.openSettingsDialog("profile/alias")
+      },
     },
   }
 </script>
@@ -212,30 +226,6 @@
       right: 5px;
       top: 5px;
       -webkit-app-region: no-drag;
-
-      &.focus {
-        right: 6px;
-        top: 6px;
-      }
-
-      .menu-item {
-        cursor: pointer;
-        width: 25px;
-        height: 25px;
-        border: 1px solid var(--surface-border);
-
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        &:not(:last-of-type) {
-          margin-right: 2px;
-        }
-
-        .material-design-icon {
-          display: flex;
-        }
-      }
     }
 
     .help-menu.p-menu {

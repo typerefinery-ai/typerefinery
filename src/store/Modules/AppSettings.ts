@@ -1,4 +1,4 @@
-import { Module, VuexModule, Mutation } from "vuex-module-decorators"
+import { Module, VuexModule, Mutation, Action } from "vuex-module-decorators"
 import store from "../index"
 
 const storeValue = localStorage.getItem("vuex")
@@ -11,7 +11,7 @@ const settingsInStore = storeValue ? JSON.parse(storeValue).AppSettings : false
   preserveState: settingsInStore,
 })
 export default class AppSettings extends VuexModule {
-  language = "hi"
+  language = ""
   @Mutation
   setLanguage(text: string) {
     this.language = text
@@ -27,5 +27,23 @@ export default class AppSettings extends VuexModule {
   @Mutation
   toggleFocus() {
     this.focus = !this.focus
+  }
+
+  settingsDialogVisible = false
+  @Mutation
+  toggleSettingsDialog() {
+    this.settingsDialogVisible = !this.settingsDialogVisible
+  }
+
+  settingPath = null
+  @Mutation
+  setSettingPath(path) {
+    this.settingPath = path
+  }
+
+  @Mutation
+  openSettingsDialog(path) {
+    this.settingsDialogVisible = true
+    this.settingPath = path
   }
 }

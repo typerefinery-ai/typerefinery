@@ -1,6 +1,7 @@
 import * as d3 from "d3"
 
-function renderD3(item) {
+function renderD3(item, self) {
+  //   console.log(self)
   const svgEl = item.$refs.graphRef
 
   // remove child element of svg
@@ -25,7 +26,7 @@ function renderD3(item) {
     .force(
       "link",
       d3.forceLink().id(function (d) {
-        return d.id
+        return d.label
       })
     )
     .force("charge", d3.forceManyBody())
@@ -67,7 +68,14 @@ function renderD3(item) {
         )
 
       node.append("title").text(function (d) {
-        return d.id
+        return d.label
+      })
+
+      node.on("click", (e) => {
+        self.nodeData = {
+          label: e.label,
+          index: e.index,
+        }
       })
 
       simulation.nodes(graph.nodes).on("tick", ticked)

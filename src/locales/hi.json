@@ -17,7 +17,23 @@
       "calories": "कैलोरी",
       "properties": "प्रोपर्टीज",
       "data": "आंकड़े",
-      "graph": "ग्राफ"
+      "graph": "ग्राफ",
+      "no-node": "कोई नोड चयनित नहीं",
+      "index": "इंडेक्स",
+      "label": "लेबल"
+    },
+    "setting": {
+      "settings": "सेटिंग्स",
+      "general": "साधारण",
+      "general-settings": "साधारण सेटिंग्स",
+      "profile": "प्रोफ़ाइल",
+      "privacy": "गोपनीयता",
+      "privacy-settings": "गोपनीयता सेटिंग्स"
+    },
+    "profile": {
+      "username": "उपयोगकर्ता नाम",
+      "email": "ईमेल",
+      "alias": "उर्फ"
     }
   },
   "tooltips": {
@@ -34,6 +50,8 @@
     "project": "परियोजना",
     "search": "खोजें",
     "logout": "लॉग आउट",
-    "help": "मदद"
+    "help": "मदद",
+    "profile": "उपयोगकर्ता रूपरेखा",
+    "settings": "सेटिंग्स खोलें"
   }
 }

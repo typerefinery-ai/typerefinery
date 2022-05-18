@@ -17,7 +17,23 @@
       "calories": "Calories",
       "properties": "Properties",
       "data": "Data",
-      "graph": "Graph"
+      "graph": "Graph",
+      "no-node": "No Node Selected",
+      "index": "Index",
+      "label": "Label"
+    },
+    "setting": {
+      "settings": "Settings",
+      "general": "General",
+      "general-settings": "General Settings",
+      "profile": "Profile",
+      "privacy": "Privacy",
+      "privacy-settings": "Privacy Settings"
+    },
+    "profile": {
+      "username": "Username",
+      "email": "Email",
+      "alias": "Alias Name"
     }
   },
   "tooltips": {
@@ -34,6 +50,8 @@
     "project": "Project",
     "search": "Search",
     "logout": "Logout",
-    "help": "Help"
+    "help": "Help",
+    "profile": "User profile",
+    "settings": "Open Settings"
   }
 }
