@@ -70,7 +70,7 @@ jobs:
       - name: Run Lint
         run: |
           npm run lint:style
-      - name: Run Lint
+      - name: Run Typecheck
         run: |
           npm run typecheck
 
