@@ -63,7 +63,7 @@
   import MainMenu from "@/components/MainMenu.vue"
   import InputText from "primevue/inputtext"
   import Button from "primevue/button"
-  import CheckIcon from "vue-material-design-icons/Checkall.vue"
+  import CheckIcon from "vue-material-design-icons/CheckAll.vue"
   export default {
     name: "Chat",
     components: { MenuBar, MainMenu, InputText, Button, CheckIcon },
