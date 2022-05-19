@@ -94,6 +94,13 @@ jobs:
       - name: Check out Git repository
         uses: actions/checkout@v2
 
+      # # This workaround is required for running npm install
+      # - name: Set permissions
+      #   run: |
+      #     chmod -R 777 /github/home
+      #     chmod -R 777 cypress
+      #     chmod -R 777 node_modules
+
       - name: Run Cypress using Docker
         run: |
           docker compose up --exit-code-from server
