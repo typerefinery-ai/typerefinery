@@ -58,7 +58,6 @@
 </template>
 
 <script>
-  import Vue from "vue"
   import MenuBar from "@/components/MenuBar.vue"
   import MainMenu from "@/components/MainMenu.vue"
   import InputText from "primevue/inputtext"
