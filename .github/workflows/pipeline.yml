@@ -67,8 +67,12 @@ jobs:
       - name: Run Install
         run: |
           npm install
-      # - name: Run Unit Test
-      #   run: npm run test:unit
+      - name: Run Lint
+        run: |
+          npm run lint:style
+      - name: Run Lint
+        run: |
+          npm run typecheck
 
   functional-test:
     needs: [unit-test]
