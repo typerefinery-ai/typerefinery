@@ -1,5 +1,5 @@
-export const setThemeURL = (theme) => {
-  let rootElement = document.documentElement
+export function setThemeURL(theme: string) {
+  const rootElement = document.documentElement
 
   if (theme === "light") {
     rootElement.classList.add("t-light")

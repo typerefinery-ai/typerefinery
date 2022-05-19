@@ -86,7 +86,7 @@
   import AppSettings from "@/store/Modules/AppSettings"
   import ServicesInfo from "./Services"
   import { setThemeURL } from "@/utils/theme"
-  import isElectron from "@/utils/is-electron"
+  import * as electronHelpers from "@/utils/electron"
   import { locales } from "@/i18n"
   import MenuItem from "./MenuItem.vue"
   const appSettings = getModule(AppSettings)
@@ -153,7 +153,7 @@
         return appSettings.theme
       },
       isElectron() {
-        return isElectron()
+        return electronHelpers.isElectron()
       },
     },
 
