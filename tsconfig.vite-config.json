@@ -4,6 +4,10 @@
   "compilerOptions": {
     "composite": true,
     "experimentalDecorators": true,
-    "types": ["node", "vitest"]
+    "types": ["node", "vitest"],
+    "typeRoots": [
+      "src/types",
+      "node_modules/@types",
+    ],
   }
 }
