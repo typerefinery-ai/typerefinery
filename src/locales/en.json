@@ -26,7 +26,8 @@
       "graph": "Graph",
       "no-node": "No Node Selected",
       "index": "Index",
-      "label": "Label"
+      "label": "Label",
+      "editor": "Editor"
     },
     "setting": {
       "settings": "Settings",
