@@ -24,55 +24,55 @@
 </template>
 
 <script>
-  import InputText from "primevue/inputtext"
-  import { getModule } from "vuex-module-decorators"
-  import Auth from "@/store/Modules/Auth"
-  const appAuth = getModule(Auth)
+import InputText from "primevue/inputtext"
+import { getModule } from "vuex-module-decorators"
+import Auth from "@/store/Modules/Auth"
+const appAuth = getModule(Auth)
 
-  export default {
-    name: "Profile",
-    components: { InputText },
-    props: { field: { type: String, default: "" } },
+export default {
+  name: "Profile",
+  components: { InputText },
+  props: { field: { type: String, default: "" } },
 
-    computed: {
-      username() {
-        return appAuth.username
-      },
-      alias() {
-        return appAuth.alias
-      },
-      email() {
-        return appAuth.email
-      },
+  computed: {
+    username() {
+      return appAuth.username
     },
-    mounted() {
-      if (this.field) {
-        console.log(this.$refs)
-        const el = this.$refs[this.field]
-        console.log(el)
-        el.scrollIntoView()
-      }
+    alias() {
+      return appAuth.alias
     },
-    methods: {
-      setUsername(e) {
-        return appAuth.setUsername(e.target.value)
-      },
-      setAlias(e) {
-        return appAuth.setAliasname(e.target.value)
-      },
-      setEmail(e) {
-        return appAuth.setEmail(e.target.value)
-      },
+    email() {
+      return appAuth.email
     },
-  }
+  },
+  mounted() {
+    if (this.field) {
+      console.log(this.$refs)
+      const el = this.$refs[this.field]
+      console.log(el)
+      el.scrollIntoView()
+    }
+  },
+  methods: {
+    setUsername(e) {
+      return appAuth.setUsername(e.target.value)
+    },
+    setAlias(e) {
+      return appAuth.setAliasname(e.target.value)
+    },
+    setEmail(e) {
+      return appAuth.setEmail(e.target.value)
+    },
+  },
+}
 </script>
 
 <style>
-  .p-float-label {
-    margin-bottom: 10px;
-  }
+.p-float-label {
+  margin-bottom: 10px;
+}
 
-  input {
-    width: 80%;
-  }
+input {
+  width: 80%;
+}
 </style>
