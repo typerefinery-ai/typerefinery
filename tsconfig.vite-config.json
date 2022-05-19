@@ -4,6 +4,7 @@
   "compilerOptions": {
     "composite": true,
     "experimentalDecorators": true,
+    "suppressImplicitAnyIndexErrors": true,
     "types": ["node", "vitest"],
     "typeRoots": [
       "src/types",
