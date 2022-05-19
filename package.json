@@ -8,7 +8,6 @@
   "version": "2022.3.24",
   "appWidth": 1366,
   "appHeight": 768,
-  
   "scripts": {
     "build": "vue-tsc --noEmit && vite build",
     "test:unit": "vitest",
@@ -48,13 +47,12 @@
     "dotenv": "^16.0.0",
     "i18next": "^21.6.16",
     "i18next-fs-backend": "^1.1.4",
-    "monaco-editor": "^0.25.2",
+    "monaco-editor": "^0.33.0",
     "primeflex": "^3.1.3",
     "primeicons": "^5.0.0",
     "primevue": "^3.12.2",
     "register-service-worker": "^1.7.2",
     "roboto-fontface": "*",
-    "rollup-plugin-monaco-editor": "0.0.7",
     "splitpanes": "^3.1.1",
     "vue": "^3.2.31",
     "vue-i18n": "^9.1.9",
