@@ -93,7 +93,6 @@
 
 <script>
   import Panel from "primevue/panel"
-  import Services from "@/store/Modules/Services"
   import { getModule } from "vuex-module-decorators"
   import AppSettings from "@/store/Modules/AppSettings"
   const appSettings = getModule(AppSettings)
@@ -106,7 +105,7 @@
   import { mapGetters } from "vuex"
 
   export default {
-    name: "Services",
+    name: "ServicesSettings",
     components: {
       Panel,
       Accordion,

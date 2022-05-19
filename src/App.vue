@@ -9,6 +9,8 @@
   import { setThemeURL } from "@/utils/theme"
   const appSettings = getModule(AppSettings)
   import { mapGetters, mapActions } from "vuex"
+  //todo: figure out why store not being loaded automatically in store/index.ts.
+  import Services from "@/store/Modules/Services"
 
   export default defineComponent({
     name: "App",
