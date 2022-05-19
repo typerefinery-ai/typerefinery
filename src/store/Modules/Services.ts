@@ -1,8 +1,8 @@
 import { Module, VuexModule, Mutation, Action } from "vuex-module-decorators"
 import store from "../index"
 
-// const storeValue = localStorage.getItem("services")
-// const servicesInStore = storeValue ? JSON.parse(storeValue).Services : false
+const storeValue = localStorage.getItem("services")
+const servicesInStore = storeValue ? JSON.parse(storeValue).Services : false
 
 @Module({
   name: "Services",
@@ -10,7 +10,7 @@ import store from "../index"
   dynamic: true,
   namespaced: true,
   stateFactory: true,
-  preserveState: true,
+  preserveState: servicesInStore, // replace true with servicesInStore to resolve local storage bug
 })
 export default class Services extends VuexModule {
   services = [
