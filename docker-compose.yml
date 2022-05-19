@@ -9,8 +9,6 @@ services:
     user: 1001:1001
     volumes:
       - ./:/build/source
-      - .cache:/build/.cache
-      - .config:/build/.config
     environment:
       - NODE_ENV=develop
       - PORT=8080

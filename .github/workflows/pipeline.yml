@@ -97,8 +97,7 @@ jobs:
       # This workaround is required for running npm install
       - name: Set permissions
         run: |
-          chmod -R 777 /github/home
-          chmod -R 777 cypress
+          chmod -R 777 ./
 
       - name: Run Cypress using Docker
         run: |
