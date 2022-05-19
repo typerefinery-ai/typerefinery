@@ -93,7 +93,8 @@
           alert(this.$t("components.project.error"))
         }
 
-        Vue.nextTick(() => {
+        //TODO: this needs to scroll to last messasge that was received.
+        this.$nextTick(() => {
           let messageDisplay = this.$refs.chatArea
           messageDisplay.scrollTop = messageDisplay.scrollHeight
         })
