@@ -1,6 +1,6 @@
 {
   "extends": "@vue/tsconfig/tsconfig.node.json",
-  "include": ["src/*"],
+  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue", "src/**/*.json"],
   "compilerOptions": {
     "composite": true,
     "experimentalDecorators": true,
@@ -14,5 +14,5 @@
       "src/types",
       "node_modules/@types",
     ],
-  }
+  },
 }
