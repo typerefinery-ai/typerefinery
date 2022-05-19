@@ -1,4 +1,4 @@
-import { Module, VuexModule, Mutation, Action } from "vuex-module-decorators"
+import { Module, VuexModule, Mutation } from "vuex-module-decorators"
 import store from "../index"
 
 const storeValue = localStorage.getItem("appsettings")
@@ -37,12 +37,12 @@ export default class AppSettings extends VuexModule {
 
   settingPath = null
   @Mutation
-  setSettingPath(path) {
+  setSettingPath(path: null) {
     this.settingPath = path
   }
 
   @Mutation
-  openSettingsDialog(path) {
+  openSettingsDialog(path: null) {
     this.settingsDialogVisible = true
     this.settingPath = path
   }
