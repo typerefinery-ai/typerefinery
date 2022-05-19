@@ -8,6 +8,7 @@
   "version": "2022.3.24",
   "appWidth": 1366,
   "appHeight": 768,
+  
   "scripts": {
     "build": "vue-tsc --noEmit && vite build",
     "test:unit": "vitest",
