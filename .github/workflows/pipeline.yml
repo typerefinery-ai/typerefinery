@@ -100,7 +100,7 @@ jobs:
           folder: cypress/reports
 
   release:
-    needs: [unit-test, functional-test]
+    needs: [functional-test]
     if: "!contains(github.event.head_commit.message, 'skip ci')"
     name: ${{ matrix.friendlyName }}
     runs-on: ${{ matrix.os }}
