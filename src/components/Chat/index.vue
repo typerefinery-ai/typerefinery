@@ -9,51 +9,70 @@
     </div>
     <!-- content -->
     <div class="chatpage">
-        <div v-for="message in messages" 
-        :key="message.id" 
-        class="message" 
-        :class="{ 'message-out': message.user === 'To', 'message-in': message.user !== 'To' }">
-      <span class="sender">
-        {{message.user}}
-      </span>
-      <br :class="send">
-      {{ message.body }}
-      <br >
-      <!-- <div class="timespan"> -->
-         <div class="time"  > {{new Date().toString().substring(16, 21)}} <check-icon class="checkicon" />
+      <div
+        v-for="message in messages"
+        :key="message.id"
+        class="message"
+        :class="{
+          'message-out': message.user === 'To',
+          'message-in': message.user !== 'To',
+        }"
+      >
+        <span class="sender">
+          {{ message.user }}
+        </span>
+        <br :class="send" />
+        {{ message.body }}
+        <br />
+        <!-- <div class="timespan"> -->
+        <div class="time">
+          {{ new Date().toString().substring(16, 21) }}
+          <check-icon class="checkicon" />
           <!-- </div> -->
+        </div>
+      </div>
+      <div class="iframe-container">
+        <form
+          id="sender-form"
+          class="message-inputtab"
+          @submit.prevent="sendMessage('from')"
+        >
+          <div class="p-inputgroup">
+            <InputText
+              id="sender-input"
+              v-model="Message"
+              :placeholder="$t(`components.project.messageplaceholder`)"
+              type="message"
+              class="chat-inputs"
+            />
+            <Button label="send" class="p-button-primary" type=" submit">
+              <div class="sendbutton">
+                {{ $t("components.project.send") }}
+              </div></Button
+            >
           </div>
-        </div>      
-        <div class="iframe-container">
-             <form @submit.prevent="sendMessage('from')" id="sender-form" class="message-inputtab">
-                <div class="p-inputgroup">
-                 <InputText v-model="Message"
-                  :placeholder= "$t(`components.project.messageplaceholder`)"
-                  type="message" id="sender-input" class="chat-inputs" />
-                     <Button label="send" class="p-button-primary" type=" submit">
-                         <div class="sendbutton">{{$t("components.project.send")}}</div></Button>
-                 </div>
-              </form>
-         </div>
+        </form>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+  import Vue from "vue"
   import MenuBar from "@/components/MenuBar.vue"
   import MainMenu from "@/components/MainMenu.vue"
   import InputText from "primevue/inputtext"
   import Button from "primevue/button"
-  import CheckIcon from 'vue-material-design-icons/Checkall.vue';
+  import CheckIcon from "vue-material-design-icons/Checkall.vue"
   export default {
     name: "Chat",
     components: { MenuBar, MainMenu, InputText, Button, CheckIcon },
     data() {
       return {
         showMainOverlayMenu: false,
-         mainMenuVisible: true,
-         Message: '',
-         messages: []
+        mainMenuVisible: true,
+        Message: "",
+        messages: [],
       }
     },
     methods: {
@@ -62,24 +81,24 @@
         this.mainMenuVisible = !this.mainMenuVisible
       },
       sendMessage(direction) {
-      if (!this.Message && !this.Message) {
-        return
-      }
-      
-       if (direction === 'from') {
-        this.messages.push({body: this.Message, user: 'From'})
-        this.SenderMessage = ''
-        this.messages.push({body: this.Message, user: 'To'})
-        this.Message = ''
-      } else {
-        alert(  this.$t('components.project.error')  )
-      }
-      
-      Vue.nextTick(() => {
-        let messageDisplay = this.$refs.chatArea
-        messageDisplay.scrollTop = messageDisplay.scrollHeight
-      })
-    },
+        if (!this.Message && !this.Message) {
+          return
+        }
+
+        if (direction === "from") {
+          this.messages.push({ body: this.Message, user: "From" })
+          this.SenderMessage = ""
+          this.messages.push({ body: this.Message, user: "To" })
+          this.Message = ""
+        } else {
+          alert(this.$t("components.project.error"))
+        }
+
+        Vue.nextTick(() => {
+          let messageDisplay = this.$refs.chatArea
+          messageDisplay.scrollTop = messageDisplay.scrollHeight
+        })
+      },
     },
   }
 </script>
