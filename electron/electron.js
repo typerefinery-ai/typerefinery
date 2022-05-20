@@ -350,6 +350,7 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     width: +config.appWidth,
     height: +config.appHeight,
+    show: false,
     frame: false,
     icon: path.join(__dirname, "./assets/icon.png"),
     webPreferences: {
@@ -366,6 +367,25 @@ function createWindow() {
       : `file://${path.join(__dirname, "../dist/index.html")}`
   )
 
+  //splash screen
+  var splash = new BrowserWindow({ 
+    width: 500, 
+    height: 550, 
+    transparent: true, 
+    frame: false, 
+    alwaysOnTop: true 
+  });
+  
+  splash.loadURL(path.join(__dirname, "./loader/splash.html"));
+  splash.center();
+  setTimeout(function () {
+    splash.close();
+    mainWindow.center();
+    mainWindow.show();
+  }, 5000);
+
+  
+  //tray
   tray = new Tray(path.join(__dirname, "./assets/icon.png"))
 
   tray.setToolTip("Innovolve app")
