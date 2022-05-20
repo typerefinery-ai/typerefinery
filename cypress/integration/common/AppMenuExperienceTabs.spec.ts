@@ -6,21 +6,26 @@ describe("Main Menu Tabs", () => {
   })
 
   it("Has Project tab in main menu.", () => {
-    cy.get(".main-menu-wrapper").should('be.visible').and(($menu) => {
-      expect($menu.find(".p-tabmenuitem")).to.contain("Project")
-    })
+    cy.get(".main-menu-wrapper")
+      .should("be.visible")
+      .and(($menu) => {
+        expect($menu.find(".p-tabmenuitem")).to.contain("Project")
+      })
   })
 
   it("Has Charts tab in main menu.", () => {
-    cy.get(".main-menu-wrapper").should('be.visible').and(($menu) => {
-      expect($menu.find(".p-tabmenuitem")).to.contain("Charts")
-    })
+    cy.get(".main-menu-wrapper")
+      .should("be.visible")
+      .and(($menu) => {
+        expect($menu.find(".p-tabmenuitem")).to.contain("Charts")
+      })
   })
 
   it("Has Maps tab in main menu.", () => {
-    cy.get(".main-menu-wrapper").should('be.visible').and(($menu) => {
-      expect($menu.find(".p-tabmenuitem")).to.contain("Maps")
-    })
+    cy.get(".main-menu-wrapper")
+      .should("be.visible")
+      .and(($menu) => {
+        expect($menu.find(".p-tabmenuitem")).to.contain("Maps")
+      })
   })
-
 })
