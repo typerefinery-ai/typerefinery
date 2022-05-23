@@ -19,7 +19,7 @@
               cols="30"
               class="w-full"
             />
-            <label for="query">{{ $t(`components.project.query`) }}</label>
+            <label for="query">{{ $t(`components.tab.query`) }}</label>
           </span>
         </div>
       </div>
@@ -28,14 +28,14 @@
 </template>
 
 <script>
-  import InputText from "primevue/inputtext"
-  import Textarea from "primevue/textarea"
-  export default {
-    name: "QueryView",
-    components: { InputText, Textarea },
-    data: () => ({
-      query: "",
-      name: "",
-    }),
-  }
+import InputText from "primevue/inputtext"
+import Textarea from "primevue/textarea"
+export default {
+  name: "QueryView",
+  components: { InputText, Textarea },
+  data: () => ({
+    query: "",
+    name: "",
+  }),
+}
 </script>

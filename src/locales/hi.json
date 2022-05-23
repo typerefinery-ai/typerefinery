@@ -1,10 +1,13 @@
 {
   "components": {
-    "project": {
+    "mainmenu": {
       "project": "परियोजना",
       "charts": "चार्ट",
       "maps": "नक़्शे",
       "chats": "चैट",
+      "editor": "संपादक"
+    },
+    "project": {
       "new-project": "नया काम",
       "new-query": "नया प्रश्न",
       "new-connection": "नया कनेक्शन",
@@ -15,19 +18,7 @@
       "tab": "टैब",
       "name": "नाम",
       "query": "प्रश्न",
-      "calories": "कैलोरी",
-      "properties": "प्रोपर्टीज",
-      "data": "आंकड़े",
-      "graph": "ग्राफ",
-      "send": "भेजें",
-      "messageplaceholder": "अपना संदेश यहां टंकित करें...",
-      "error": "कुछ गलत हो गया",
-      "to": "को",
-      "From": "से",
-      "no-node": "कोई नोड चयनित नहीं",
-      "index": "इंडेक्स",
-      "label": "लेबल",
-      "editor": "संपादक"
+      "calories": "कैलोरी"
     },
     "setting": {
       "settings": "सेटिंग्स",
@@ -53,6 +44,25 @@
       "username": "उपयोगकर्ता नाम",
       "email": "ईमेल",
       "alias": "उर्फ"
+    },
+
+    "chat": {
+      "send": "भेजें",
+      "messageplaceholder": "अपना संदेश यहां टंकित करें...",
+      "error": "कुछ गलत हो गया",
+      "to": "को",
+      "From": "से"
+    },
+    "tab": {
+      "query": "प्रश्न",
+      "data": "आंकड़े",
+      "graph": "ग्राफ"
+    },
+    "graph": {
+      "properties": "प्रोपर्टीज",
+      "no-node": "कोई नोड चयनित नहीं",
+      "index": "इंडेक्स",
+      "label": "लेबल"
     }
   },
   "tooltips": {
