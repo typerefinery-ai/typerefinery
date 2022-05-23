@@ -63,6 +63,18 @@
       "no-node": "कोई नोड चयनित नहीं",
       "index": "इंडेक्स",
       "label": "लेबल"
+    },
+    "dialog": {
+      "projects": {
+        "header": "परियोजना",
+        "info": {
+          "type": "प्रकार",
+          "name": "नाम",
+          "expanded": "विस्तारित",
+          "description": "विवरण",
+          "icon": "आइकन"
+        }
+      }
     }
   },
   "tooltips": {
