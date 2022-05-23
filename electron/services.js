@@ -12,9 +12,19 @@ const pathFastAPIModule = "main" // without .py suffix
 const pathTypeDB = "typedb"
 
 // base services
-const pathJava = "_java/jre17/bin"
+
+//path where local python is located
 const pathPython = "_python"
+const pythonHome = path.join(
+  process.resourcesPath,
+  "..",
+  pathServices,
+  pathPython
+)
 const pythonExecutable = getPythonPath()
+
+const pathJava = "_java/jre17/bin"
+const javaHome = path.join(process.resourcesPath, "..", pathServices, pathJava)
 const javaExecutable = getJavaExecutable()
 
 // python variables
@@ -24,11 +34,7 @@ const pythonPyGet = "python get-pip.py --no-warn-script-location" //get latest p
 const serviceEventSatus = "service:status"
 const serviceEventLog = "service:log"
 const serviceEventList = "service:list"
-
-
-
-//path where local java is located
-const javaHome = path.join(process.resourcesPath, "..", pathServices, pathJava)
+const serviceEventGlobalName = "all"
 
 // get java executable based on type of os
 function getJavaExecutable() {
@@ -40,14 +46,6 @@ function getJavaExecutable() {
     return path.join(javaHome, "java")
   }
 }
-
-//path where local python is located
-const pythonHome = path.join(
-  process.resourcesPath,
-  "..",
-  pathServices,
-  pathPython
-)
 
 // get python path based on type of os
 function getPythonPath() {
@@ -205,16 +203,16 @@ function sendServiceEventToApp(event, content) {
   }
 }
 
-function setupPythonPip(servicename, callback) {
+function setupPythonPip(callback) {
   if (isPathExist(pathPython)) {
-    sendServiceLog(servicename, "python found")
+    sendServiceLog(serviceEventGlobalName, "python found")
 
     os.execCommand(
       pythonPyGet,
       { cwd: pythonHome, signal: signal },
       function (returnvalue) {
-        sendServiceLog(serviceName, `Output: ${returnvalue}`)
-        sendServiceLog(serviceName, "starting:" + pythonPiInstall)
+        sendServiceLog(serviceEventGlobalName, `Output: ${returnvalue}`)
+        sendServiceLog(serviceEventGlobalName, "starting:" + pythonPyGet)
 
         if (callback) {
           callback()
@@ -223,7 +221,7 @@ function setupPythonPip(servicename, callback) {
     )
   } else {
     sendServiceLog(
-      servicename,
+      serviceEventGlobalName,
       "python not found. Please install python 3.7.5 or higher"
     )
   }
@@ -445,32 +443,40 @@ function createTypeDBProc() {
 
 function stopServices() {
   if (process.platform == "win32") {
-    sendServiceLog("all", "stopping services")
+    sendServiceLog(serviceEventGlobalName, "stopping services")
     exitFastAPIProc()
     exitTypeDBProc()
-    sendServiceLog("all", "ready or not aborting")
+    sendServiceLog(serviceEventGlobalName, "ready or not aborting")
     controller.abort()
   } else {
-    sendServiceLog("all", "embedded services are not yet available on your os.")
+    sendServiceLog(
+      serviceEventGlobalName,
+      "embedded services are not yet available on your os."
+    )
   }
 }
 function startServices() {
   if (process.platform == "win32") {
-    sendServiceLog("all", "starting services")
-    configurePython("fastapi", createFastAPIProc)
-    //createFastAPIProc()
+    sendServiceLog(serviceEventGlobalName, "starting services")
+    // setup python pip with call back to run fastapi
+    setupPythonPip(function () {
+      configurePython("fastapi", createFastAPIProc)
+    })
     createTypeDBProc()
-    sendServiceLog("all", "started services")
+    sendServiceLog(serviceEventGlobalName, "started services")
   } else {
-    sendServiceLog("all", "embedded services are not yet available on your os.")
+    sendServiceLog(
+      serviceEventGlobalName,
+      "embedded services are not yet available on your os."
+    )
   }
 }
 
 function init(window) {
-  sendServiceLog("all", "initializing services")
+  sendServiceLog(serviceEventGlobalName, "initializing services")
   mainWindow = window
   startServices()
-  sendServiceLog("all", "initialized services")
+  sendServiceLog(serviceEventGlobalName, "initialized services")
 }
 
 module.exports = {
