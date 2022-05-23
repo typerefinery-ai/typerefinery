@@ -11,16 +11,68 @@ const pathFastAPI = "fastapi"
 const pathFastAPIModule = "main" // without .py suffix
 const pathTypeDB = "typedb"
 const pathJava = "java/jre17/bin"
-const pathPython = "python"
+const pathPython = "_python"
+const pythonExecutable = getPythonPath()
 const serviceEventSatus = "service:status"
 const serviceEventLog = "service:log"
+const serviceEventList = "service:list"
+const pythonPyGet = "python get-pip.py --no-warn-script-location"
+
+//path where local pythion is located
+const pythonHome = path.join(
+  process.resourcesPath,
+  "..",
+  pathServices,
+  pathPython
+)
+
+// get python path based on type of os
+function getPythonPath() {
+  if (process.platform === "win32") {
+    return path.join(pythonHome, "python.exe")
+  } else {
+    return path.join(pythonHome, "python")
+  }
+}
+
+const python = path.join(
+  process.resourcesPath,
+  "..",
+  pathServices,
+  pathPython,
+  pythonExecutable
+)
 
 let mainWindow
+let serviceList = findServices()
 
 let procFastAPI = null
 let portFastAPI = null
 let procTypeDB = null
 let portTypeDB = null
+
+// load services
+function loadServices() {
+  serviceList = findServices()
+  sendServiceList()
+}
+
+// find all service.json in services folder
+function findServices() {
+  let services = []
+  let files = fs.readdirSync(pathServices)
+  for (let file of files) {
+    if (file.endsWith("service.json")) {
+      // only service.json
+      let service = JSON.parse(
+        fs.readFileSync(path.join(pathServices, file), "utf8")
+      )
+      service.file = file
+      services.push(service)
+    }
+  }
+  return services
+}
 
 // check if path exists
 function isPathExist(path) {
@@ -82,29 +134,46 @@ function exitFastAPIProc() {
   }
 }
 
-function serviceStatusMessage(servicename, status) {
+// compile a status message to be sent to app
+function compileServiceStatusMessage(servicename, status) {
   return {
     name: servicename,
     status: status,
   }
 }
 
-function serviceLogMessage(servicename, log) {
+// compile a service log message to be sent to app
+function compileServiceLogMessage(servicename, log) {
   return {
     name: servicename,
     log: log,
   }
 }
 
+// send service list to app
+function sendServiceList() {
+  if (mainWindow && mainWindow.webContents) {
+    mainWindow.webContents.send(serviceEventList, serviceList)
+  }
+}
+
+// send service status to app
 function sendServiceStatus(servicename, status) {
   sendServiceEventToApp(
     serviceEventSatus,
-    serviceStatusMessage(servicename, status)
+    compileServiceStatusMessage(servicename, status)
   )
 }
+
+// send service log to app
 function sendServiceLog(servicename, log) {
-  sendServiceEventToApp(serviceEventLog, serviceLogMessage(servicename, log))
+  sendServiceEventToApp(
+    serviceEventLog,
+    compileServiceLogMessage(servicename, log)
+  )
 }
+
+// send service event to app
 function sendServiceEventToApp(event, content) {
   if (mainWindow && mainWindow.webContents) {
     mainWindow.webContents.on("did-finish-load", () => {
@@ -113,7 +182,31 @@ function sendServiceEventToApp(event, content) {
   }
 }
 
-function setupPython(serviceName, callback) {
+function setupPythonPip(servicename, callback) {
+  if (isPathExist(pathPython)) {
+    sendServiceLog(servicename, "python found")
+
+    os.execCommand(
+      pythonPyGet,
+      { cwd: pythonHome, signal: signal },
+      function (returnvalue) {
+        sendServiceLog(serviceName, `Output: ${returnvalue}`)
+        sendServiceLog(serviceName, "starting:" + pythonPiInstall)
+
+        if (callback) {
+          callback()
+        }
+      }
+    )
+  } else {
+    sendServiceLog(
+      servicename,
+      "python not found. Please install python 3.7.5 or higher"
+    )
+  }
+}
+
+function configurePython(serviceName, callback) {
   let services = path.join(process.resourcesPath, "..", pathServices)
 
   sendServiceLog(serviceName, "checking: " + services)
@@ -149,7 +242,11 @@ function setupPython(serviceName, callback) {
     )
     let port = "" + selectFastAPIPort()
     let pythonPyGet = "python get-pip.py --no-warn-script-location"
-    let pythonPiInstall = "python -m pip install -r " + requirements
+    let pythonPiInstall =
+      "python -m pip install --no-warn-script-location --target=" +
+      appDir +
+      " -r " +
+      requirements
 
     sendServiceLog(serviceName, "starting:" + pythonPyGet)
 
@@ -210,7 +307,7 @@ function createFastAPIProc() {
     procFastAPI = spawn(
       python,
       ["-m", "uvicorn", "main:app", "--host", "localhost", "--app-dir", appDir],
-      { cwd: services, signal: signal }
+      { cwd: services, signal: signal, env: { PYTHONPATH: appDir } }
     )
 
     procFastAPI.stdout.on("data", function (data) {
@@ -337,7 +434,7 @@ function stopServices() {
 function startServices() {
   if (process.platform == "win32") {
     sendServiceLog("all", "starting services")
-    setupPython("fastapi", createFastAPIProc)
+    configurePython("fastapi", createFastAPIProc)
     //createFastAPIProc()
     createTypeDBProc()
     sendServiceLog("all", "started services")

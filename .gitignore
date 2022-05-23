@@ -44,3 +44,4 @@ services/python/Lib
 services/python/Scripts
 
 __pycache__
+__packages__
