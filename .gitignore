@@ -39,9 +39,13 @@ lerna-debug.log*
 #Electron-builder output
 /dist_electron
 
-services/typedb/server/data/**/*
-services/python/Lib
-services/python/Scripts
+# python cache files
+services/_python/Lib
+services/_python/Scripts
 
+# service specific folders
 __pycache__
 __packages__
+
+# type db data
+services/typedb/server/data/**/*
