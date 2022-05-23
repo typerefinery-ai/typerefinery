@@ -1,12 +1,17 @@
 @echo off
 
-SET "PYTHON_HOME=%cd%\python"
-SET "SERVER_HOME=%cd%\fastapi"
-SET "PATH=%SERVER_HOME%\__packages__;%PYTHON_HOME%"
+SET "SERVICE_NAME=fastapi"
+SET "PYTHON_HOME=%cd%\_python"
+SET "SERVER_HOME=%cd%\%SERVICE_NAME%"
+SET "PATH=%cd%;%PYTHON_HOME%"
+SET "PYTHONPACKAGES=%SERVER_HOME%\__packages__"
+SET "PYTHONPATH=%cd%;%PYTHONPACKAGES%"
 
 echo SERVER - PYTHON_HOME=%PYTHON_HOME%
 echo SERVER - SERVER_HOME=%SERVER_HOME%
 echo SERVER - PATH=%PATH%
+echo SERVER - PYTHONPACKAGES=%PYTHONPACKAGES%
+echo SERVER - PYTHONPATH=%PYTHONPATH%
 
 python --version
 
@@ -34,7 +39,8 @@ goto exiterror
 if exist %SERVER_HOME% (
   cd %PYTHON_HOME%
   python get-pip.py
-  python -m pip install --target=%SERVER_HOME%\__packages__ -r %SERVER_HOME%\requirements.txt
+  python -m pip install uvicorn[standard]
+  python -m pip install --target=%PYTHONPACKAGES% -r %SERVER_HOME%\requirements.txt
   goto exit
 ) else (
   echo Can't find server^.
@@ -44,7 +50,7 @@ if exist %SERVER_HOME% (
 :startserver
 
 if exist %SERVER_HOME% (
-  python -m uvicorn main:app --reload --host localhost --app-dir %SERVER_HOME%
+  python -I -m uvicorn main:app --reload --host localhost --app-dir %SERVER_HOME%
   goto exit
 ) else (
   echo Can't find server^.

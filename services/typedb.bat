@@ -1,7 +1,7 @@
 @echo off
 
-SET "TYPEDB_HOME=%cd%\typedb"
-SET "JAVA_HOME=%cd%\java\jre17"
+SET "TYPEDB_HOME=%cd%\_typedb"
+SET "JAVA_HOME=%cd%\_java\jre17"
 SET "PATH=%JAVA_HOME%\bin"
 
 echo TYPEDB - TYPEDB_HOME=%TYPEDB_HOME%
