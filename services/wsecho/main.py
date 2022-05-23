@@ -1,49 +1,17 @@
 #!/usr/bin/env python3
-from flask import Flask, request, jsonify
-from flask_sockets import Sockets
+from simple_websocket_server import WebSocketServer, WebSocket
 
-app = Flask(__name__)
-sockets = Sockets(app)
+class SimpleEcho(WebSocket):
+    def handle(self):
+        # echo message back to client
+        self.send_message(self.data)
 
+    def connected(self):
+        print(self.address, 'connected')
 
-@app.route("/ncco")
-def answer_call():
-    ncco = [
-        {
-            "action": "talk",
-            "text": "Please wait while we connect you to the echo server",
-        },
-        {
-            "action": "connect",
-            "from": "NexmoTest",
-            "endpoint": [
-                {
-                    "type": "websocket",
-                    "uri": "wss://{0}/socket".format(request.host),
-                    "content-type": "audio/l16;rate=16000",
-                }
-            ],
-        },
-    ]
-
-    return jsonify(ncco)
+    def handle_close(self):
+        print(self.address, 'closed')
 
 
-@app.route("/webhooks/event", methods=["POST"])
-def events():
-    return "200"
-
-
-@sockets.route("/socket", methods=["GET"])
-def echo_socket(ws):
-    while not ws.closed:
-        message = ws.receive()
-        ws.send(message)
-
-
-if __name__ == "__main__":
-    from gevent import pywsgi
-    from geventwebsocket.handler import WebSocketHandler
-
-    server = pywsgi.WSGIServer(("", 6000), app, handler_class=WebSocketHandler)
-    server.serve_forever()
+server = WebSocketServer('', 8080, SimpleEcho)
+server.serve_forever()

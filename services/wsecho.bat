@@ -12,20 +12,20 @@ python --version
 
 if "%1" == "" goto missingargument
 
-if "%1" == "wsecho"  goto startfastapi
+if "%1" == "server"  goto startfastapi
 if "%1" == "setup"  goto startsetup
 if "%1" == "package"  goto startpackage
 
 echo   Invalid argument: %1. Possible commands are:
-echo   Server:          server wsecho [--help]
-echo   Setup:           server setup [--help]
+echo   Server:          server [--help]
+echo   Setup:           setup [--help]
 goto exiterror
 
 :missingargument
 
 echo   Missing argument. Possible commands are:
-echo   Server:         server wsecho [--help]
-echo   Setup:          server setup [--help]
+echo   Server:         server [--help]
+echo   Setup:          setup [--help]
 goto exiterror
 
 

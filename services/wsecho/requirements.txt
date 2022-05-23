@@ -1,7 +1,4 @@
-Flask
-uvicorn[standard]
 requests
 jsonify
 Sockets
-flask_sockets
-
+simple-websocket-server
