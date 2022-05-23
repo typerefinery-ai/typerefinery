@@ -40,8 +40,8 @@ lerna-debug.log*
 /dist_electron
 
 # python cache files
-services/_python/Lib
-services/_python/Scripts
+#services/_python/Lib
+#services/_python/Scripts
 
 # service specific folders
 __pycache__

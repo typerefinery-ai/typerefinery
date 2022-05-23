@@ -10,15 +10,38 @@ const pathServices = "services"
 const pathFastAPI = "fastapi"
 const pathFastAPIModule = "main" // without .py suffix
 const pathTypeDB = "typedb"
+
+// base services
 const pathJava = "_java/jre17/bin"
 const pathPython = "_python"
 const pythonExecutable = getPythonPath()
+const javaExecutable = getJavaExecutable()
+
+// python variables
+const pythonPyGet = "python get-pip.py --no-warn-script-location" //get latest pip into local cache
+
+// service events
 const serviceEventSatus = "service:status"
 const serviceEventLog = "service:log"
 const serviceEventList = "service:list"
-const pythonPyGet = "python get-pip.py --no-warn-script-location"
 
-//path where local pythion is located
+
+
+//path where local java is located
+const javaHome = path.join(process.resourcesPath, "..", pathServices, pathJava)
+
+// get java executable based on type of os
+function getJavaExecutable() {
+  if (process.platform === "win32") {
+    return path.join(javaHome, "java.exe")
+  } else if (process.platform === "darwin") {
+    return path.join(javaHome, "java")
+  } else {
+    return path.join(javaHome, "java")
+  }
+}
+
+//path where local python is located
 const pythonHome = path.join(
   process.resourcesPath,
   "..",
