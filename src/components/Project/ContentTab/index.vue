@@ -4,14 +4,14 @@
       <div class="grid">
         <div class="col-12">
           <div class="p-inputgroup">
-            <InputText :placeholder="$t(`components.project.query`)" />
+            <InputText :placeholder="$t(`components.tab.query`)" />
             <Button icon="pi pi-search" class="p-button-primary" />
           </div>
         </div>
       </div>
       <div class="content-tools">
         <Button
-          :label="$t(`components.project.query`)"
+          :label="$t(`components.tab.query`)"
           class="p-button-raised"
           :class="{
             'p-button-text p-button-plain': activeView !== 'Q',
@@ -19,7 +19,7 @@
           @click="handleView('Q')"
         />
         <Button
-          :label="$t(`components.project.data`)"
+          :label="$t(`components.tab.data`)"
           class="p-button-raised"
           :class="{
             'p-button-text p-button-plain': activeView !== 'D',
@@ -27,7 +27,7 @@
           @click="handleView('D')"
         />
         <Button
-          :label="$t(`components.project.graph`)"
+          :label="$t(`components.tab.graph`)"
           class="p-button-raised"
           :class="{
             'p-button-text p-button-plain': activeView !== 'G',
@@ -95,7 +95,7 @@
         <div class="content-area-properties">
           <div class="tab-3-container">
             <Button
-              :label="$t(`components.project.properties`)"
+              :label="$t(`components.graph.properties`)"
               class="p-button-raised"
               :class="{
                 'p-button-text p-button-plain': activeTab3 !== 1,
@@ -130,87 +130,87 @@
 </template>
 
 <script>
-  import FullIcon from "vue-material-design-icons/Fullscreen.vue"
-  import MinusIcon from "vue-material-design-icons/MagnifyMinus.vue"
-  import PlusIcon from "vue-material-design-icons/MagnifyPlus.vue"
-  import ControlIcon from "vue-material-design-icons/CameraControl.vue"
-  import InputText from "primevue/inputtext"
-  import Button from "primevue/button"
-  import { Splitpanes, Pane } from "splitpanes"
-  import DataView from "./DataView.vue"
-  import QueryView from "./QueryView.vue"
-  import Properties from "./Properties.vue"
-  import Graph from "../../Graph/Graph.vue"
-  import renderD3 from "../../Transformer/D3/d3"
-  import renderWebcola from "../../Transformer/WebCola/webcola"
-  import renderD3LabelsChart from "../../Transformer/D3Labels/d3labels"
-  export default {
-    name: "ContentTab",
-    components: {
-      Splitpanes,
-      Pane,
-      DataView,
-      QueryView,
-      InputText,
-      Button,
-      FullIcon,
-      MinusIcon,
-      PlusIcon,
-      ControlIcon,
-      Graph,
-      Properties,
+import FullIcon from "vue-material-design-icons/Fullscreen.vue"
+import MinusIcon from "vue-material-design-icons/MagnifyMinus.vue"
+import PlusIcon from "vue-material-design-icons/MagnifyPlus.vue"
+import ControlIcon from "vue-material-design-icons/CameraControl.vue"
+import InputText from "primevue/inputtext"
+import Button from "primevue/button"
+import { Splitpanes, Pane } from "splitpanes"
+import DataView from "./DataView.vue"
+import QueryView from "./QueryView.vue"
+import Properties from "./Properties.vue"
+import Graph from "../../Graph/Graph.vue"
+import renderD3 from "../../Transformer/D3/d3"
+import renderWebcola from "../../Transformer/WebCola/webcola"
+import renderD3LabelsChart from "../../Transformer/D3Labels/d3labels"
+export default {
+  name: "ContentTab",
+  components: {
+    Splitpanes,
+    Pane,
+    DataView,
+    QueryView,
+    InputText,
+    Button,
+    FullIcon,
+    MinusIcon,
+    PlusIcon,
+    ControlIcon,
+    Graph,
+    Properties,
+  },
+  props: {
+    toolsVisible: { type: Boolean, required: true },
+    focus: { type: Boolean, required: true },
+    tabId: { type: String, required: true },
+    paneId: { type: String, required: true },
+  },
+  emits: ["toggle"],
+  data() {
+    return {
+      activeView: "Q",
+      activeTab3: 1,
+      nodeData: {},
+    }
+  },
+  watch: {
+    focus(isTrue) {
+      if (isTrue) this.handleSplitterClick()
     },
-    props: {
-      toolsVisible: { type: Boolean, required: true },
-      focus: { type: Boolean, required: true },
-      tabId: { type: String, required: true },
-      paneId: { type: String, required: true },
+  },
+  methods: {
+    handleView(view) {
+      this.activeView = view
     },
-    emits: ["toggle"],
-    data() {
-      return {
-        activeView: "Q",
-        activeTab3: 1,
-        nodeData: {},
+    handleTab3(index) {
+      this.activeTab3 = index
+    },
+    handleSplitterClick() {
+      const rightPanel = this.$refs[`p-${this.tabId}-${this.paneId}`]
+      if (rightPanel.style.width == "0") {
+        rightPanel.style.width = "30%"
+      } else {
+        this.$refs[`w-${this.tabId}-${this.paneId}`].style.width = "100%"
+        rightPanel.style.width = 0
       }
     },
-    watch: {
-      focus(isTrue) {
-        if (isTrue) this.handleSplitterClick()
-      },
+    showD3Chart() {
+      this.nodeData = {}
+      renderD3(this.$refs.graphPRef, this)
     },
-    methods: {
-      handleView(view) {
-        this.activeView = view
-      },
-      handleTab3(index) {
-        this.activeTab3 = index
-      },
-      handleSplitterClick() {
-        const rightPanel = this.$refs[`p-${this.tabId}-${this.paneId}`]
-        if (rightPanel.style.width == "0") {
-          rightPanel.style.width = "30%"
-        } else {
-          this.$refs[`w-${this.tabId}-${this.paneId}`].style.width = "100%"
-          rightPanel.style.width = 0
-        }
-      },
-      showD3Chart() {
-        this.nodeData = {}
-        renderD3(this.$refs.graphPRef, this)
-      },
-      showWebcolaChart() {
-        this.nodeData = {}
-        renderWebcola(this.$refs.graphPRef, this)
-      },
-      showD3LabelsChart() {
-        this.nodeData = {}
-        renderD3LabelsChart(this.$refs.graphPRef, this)
-      },
+    showWebcolaChart() {
+      this.nodeData = {}
+      renderWebcola(this.$refs.graphPRef, this)
     },
-  }
+    showD3LabelsChart() {
+      this.nodeData = {}
+      renderD3LabelsChart(this.$refs.graphPRef, this)
+    },
+  },
+}
 </script>
 
 <style lang="scss" scoped>
-  @import "./ContentTab.scss";
+@import "./ContentTab.scss";
 </style>
