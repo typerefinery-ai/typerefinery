@@ -1,0 +1,10 @@
+{
+  "id": "typedb",
+  "name": "DB",
+  "description": "Database",
+  "enabled": false,
+  "status": "30",
+  "logoutput": "...",
+  "icon": "pi pi-database",
+  "servicetype": 10
+}

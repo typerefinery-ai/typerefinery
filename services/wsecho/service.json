@@ -1,0 +1,10 @@
+{
+  "id": "wsecho",
+  "name": "WebSocket Echo",
+  "description": "Sample WebSocket server that echos back all received messages.",
+  "enabled": true,
+  "status": "30",
+  "logoutput": "",
+  "icon": "pi pi-globe",
+  "servicetype": 10
+}

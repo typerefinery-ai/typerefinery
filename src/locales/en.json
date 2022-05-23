@@ -1,10 +1,14 @@
 {
   "components": {
-    "project": {
+    "mainmenu": {
       "project": "Project",
       "charts": "Charts",
       "maps": "Maps",
       "chats": "Chat",
+      "editor": "Editor"
+    },
+
+    "project": {
       "new-project": "New Project",
       "new-query": "New Query",
       "new-connection": "New Connection",
@@ -14,20 +18,7 @@
       "queries": "Queries",
       "tab": "Tab",
       "name": "Name",
-      "query": "Query",
-      "calories": "Calories",
-      "properties": "Properties",
-      "data": "Data",
-      "send": "Send",
-      "messageplaceholder": "Type your message here...",
-      "error": "something went wrong",
-      "to": "To",
-      "From": "From",
-      "graph": "Graph",
-      "no-node": "No Node Selected",
-      "index": "Index",
-      "label": "Label",
-      "editor": "Editor"
+      "calories": "Calories"
     },
     "setting": {
       "settings": "Settings",
@@ -54,6 +45,24 @@
       "email": "Email",
       "alias": "Alias Name"
     },
+    "chat": {
+      "send": "Send",
+      "messageplaceholder": "Type your message here...",
+      "error": "something went wrong",
+      "to": "To",
+      "From": "From"
+    },
+    "tab": {
+      "query": "Query",
+      "data": "Data",
+      "graph": "Graph"
+    },
+    "graph": {
+      "properties": "Properties",
+      "no-node": "No Node Selected",
+      "index": "Index",
+      "label": "Label"
+    },
     "dialog": {
       "projects": {
         "header": "Projects ",
@@ -67,6 +76,7 @@
       }
     }
   },
+
   "tooltips": {
     "hide-menu-bar": "Hide Menu Bar",
     "show-menu-bar": "Show Menu Bar",

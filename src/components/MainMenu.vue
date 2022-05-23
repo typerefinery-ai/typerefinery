@@ -50,7 +50,7 @@ export default {
     items() {
       return [
         {
-          label: this.$t("components.project.project"),
+          label: this.$t("components.mainmenu.project"),
           icon: "pi pi-briefcase",
           to: "/home/project",
           subMenu: [
@@ -60,7 +60,7 @@ export default {
           ],
         },
         {
-          label: this.$t("components.project.charts"),
+          label: this.$t("components.mainmenu.charts"),
           icon: "pi pi-chart-pie",
           to: "/home/charts",
           subMenu: [
@@ -69,19 +69,19 @@ export default {
           ],
         },
         {
-          label: this.$t("components.project.maps"),
+          label: this.$t("components.mainmenu.maps"),
           icon: "pi pi-sitemap",
           to: "/home/maps",
           subMenu: [{ id: "load-data", to: "#" }],
         },
         {
-          label: this.$t("components.project.chats"),
+          label: this.$t("components.mainmenu.chats"),
           icon: "pi pi-comment",
           to: "/home/chats",
           subMenu: [{ id: "load-data", to: "#" }],
         },
         {
-          label: this.$t("components.project.editor"),
+          label: this.$t("components.mainmenu.editor"),
           icon: "pi pi-code",
           to: "/home/editor",
         },
