@@ -106,9 +106,11 @@ function sendServiceLog(servicename, log) {
   sendServiceEventToApp(serviceEventLog, serviceLogMessage(servicename, log))
 }
 function sendServiceEventToApp(event, content) {
-  mainWindow.webContents.on("did-finish-load", () => {
-    mainWindow.webContents.send(event, content)
-  })
+  if (mainWindow && mainWindow.webContents) {
+    mainWindow.webContents.on("did-finish-load", () => {
+      mainWindow.webContents.send(event, content)
+    })
+  }
 }
 
 function setupPython(serviceName, callback) {
