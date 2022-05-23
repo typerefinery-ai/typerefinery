@@ -53,6 +53,18 @@
       "username": "Username",
       "email": "Email",
       "alias": "Alias Name"
+    },
+    "dialog": {
+      "projects": {
+        "header": "Projects ",
+        "info": {
+          "type": "Type",
+          "name": "Name",
+          "expanded": "Expanded",
+          "description": "Description",
+          "icon": "Icon"
+        }
+      }
     }
   },
   "tooltips": {

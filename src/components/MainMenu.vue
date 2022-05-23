@@ -11,7 +11,9 @@
           v-for="item in subItems"
           :key="item.id"
           class="main-submenu--item hover:text-primary cursor-pointer"
+            @click="handleProject(item.id)"
         >
+         <Projects v-if="projectdialog" @close="closemodal"/>
           {{ $t(`components.project.${item.id}`) }}
         </div>
       </div>
@@ -30,9 +32,10 @@
 
 <script>
 import TabMenu from "primevue/tabmenu"
+import Projects from "@/components/Dialog/Projects.vue"
 export default {
   name: "MainMenu",
-  components: { TabMenu },
+  components: { TabMenu,Projects },
   props: {
     mainMenuVisible: { type: Boolean, required: true },
   },
@@ -40,6 +43,7 @@ export default {
   data() {
     return {
       showSubMenuOverlay: false,
+      projectdialog:false,
     }
   },
   computed: {
@@ -90,6 +94,15 @@ export default {
   },
 
   methods: {
+    closemodal(){
+        this.projectdialog=false
+      },
+     handleProject(id){     
+       if(id==='new-project')
+       { console.log(id)
+         this.projectdialog=!this.projectdialog
+       }
+      },
     handleRoutes(route) {
       const url = `/home/${route}`
       this.$router.push(url)

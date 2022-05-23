@@ -53,6 +53,18 @@
       "username": "उपयोगकर्ता नाम",
       "email": "ईमेल",
       "alias": "उर्फ"
+    },
+    "dialog": {
+      "projects": {
+        "header": "परियोजना",
+        "info": {
+          "type": "प्रकार",
+          "name": "नाम",
+          "expanded": "विस्तारित",
+          "description": "विवरण",
+          "icon": "आइकन"
+        }
+      }
     }
   },
   "tooltips": {
