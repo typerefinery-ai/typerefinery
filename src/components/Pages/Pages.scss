@@ -4,11 +4,6 @@
   -webkit-app-region: drag;
 }
 
-.sign-up {
-  color: #2c3e50;
-  text-align: center;
-}
-
 .register input,
 .login input,
 .add input {
@@ -35,21 +30,15 @@
   margin: auto;
   width: 50%;
   text-align: center;
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
   margin-top: 5%;
 }
 .sign-up {
   margin: auto;
   width: 50%;
-  text-align: center;
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  color: #2c3e50;
   margin-top: 5%;
+  color: #2c3e50;
+  text-align: center;
 }
 
 .w-full mb-3 {

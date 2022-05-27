@@ -37,7 +37,8 @@ function createWindow() {
     height: 550, 
     transparent: true, 
     frame: false, 
-    alwaysOnTop: true 
+    alwaysOnTop: true,
+    icon: path.join(__dirname, "./assets/icon.png"),     //added icon for loader.
   });
   
   splash.loadURL(path.join(__dirname, "./loader/splash.html"));
