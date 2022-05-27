@@ -41,7 +41,7 @@
 import InputText from "primevue/inputtext"
 import Password from "primevue/password"
 import Button from "primevue/button"
-import "primevue/resources/themes/lara-light-indigo/theme.css"
+import "primevue/resources/themes/lara-light-indigo/theme.css" //these two imported css file is added here because primevue was not working properly without it,
 import "primevue/resources/primevue.min.css"
 import PageMenubar from "./PageMenubar.vue"
 // import axios from "axios"
