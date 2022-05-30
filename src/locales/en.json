@@ -62,6 +62,19 @@
       "no-node": "No Node Selected",
       "index": "Index",
       "label": "Label"
+    },
+    "dialog": {
+      "projects": {
+        "header": "Projects ",
+        "info": {
+          "type": "Type",
+          "name": "Name",
+          "expanded": "Expanded",
+          "description": "Description",
+          "icon": "Icon",
+          "submit": "Submit"
+        }
+      }
     }
   },
 
