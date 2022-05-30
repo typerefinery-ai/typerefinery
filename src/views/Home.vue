@@ -18,6 +18,7 @@ import CodeEditor from "@/components/CodeEditor/MonacoEditor"
 import Settings from "@/components/Settings/Settings.vue"
 import AppSettings from "@/store/Modules/AppSettings"
 const appSettings = getModule(AppSettings)
+// import axios from "axios"
 
 export default {
   name: "Home",
@@ -27,5 +28,19 @@ export default {
       return appSettings.settingsDialogVisible
     },
   },
+  // methods:{
+    
+  //    async loadData()
+  //    {
+  //      let user = localStorage.getItem("user-info");
+  //   this.name = JSON.parse(user).name;
+  //   if (!user) {
+  //     this.$router.push({ name: "SignUp" });
+  //   }
+  //    }
+  // }, async mounted() 
+  // {
+  //   this.loadData();
+  // },
 }
 </script>
