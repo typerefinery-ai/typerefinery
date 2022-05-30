@@ -14,6 +14,7 @@
             @click="handleProject(item.id)"
         >
          <Projects v-if="projectdialog" @close="closemodal"/>
+         <NewConnections v-if="connectiondialog" @close="connectionclosemodal"/>
           {{ $t(`components.project.${item.id}`) }}
         </div>
       </div>
@@ -33,9 +34,10 @@
 <script>
 import TabMenu from "primevue/tabmenu"
 import Projects from "@/components/Dialog/Projects.vue"
+import NewConnections from "@/components/Dialog/Newconnections.vue"
 export default {
   name: "MainMenu",
-  components: { TabMenu,Projects },
+  components: { TabMenu,Projects,NewConnections },
   props: {
     mainMenuVisible: { type: Boolean, required: true },
   },
@@ -44,6 +46,7 @@ export default {
     return {
       showSubMenuOverlay: false,
        projectdialog:false,
+        connectiondialog:false,
     }
   },
   computed: {
@@ -97,10 +100,16 @@ export default {
     closemodal(){
         this.projectdialog=false
       },
+      connectionclosemodal(){
+        this.connectiondialog=false
+      },
      handleProject(id){     
        if(id==='new-project')
-       { console.log(id)
+       {
          this.projectdialog=!this.projectdialog
+       }
+        if(id==='new-connection'){       
+         this.connectiondialog=!this.connectiondialog
        }
       },
     handleRoutes(route) {

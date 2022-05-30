@@ -135,6 +135,20 @@ export default class Projects extends VuexModule {
       },
     },
   ]
+  get projectList() {
+    let name = this.list.map((el) => {
+      return { name: el.name, key: el.name }
+    })
+    return name
+  }
+  @Mutation
+  addNewConnection(l) {
+    for (var index in this.list) {
+      if (this.list[index].name === l.name) {
+        this.list[index].connections.list.push(l.list)
+      }
+    }
+  }
   @Mutation
   addToList(l) {
     this.list.push(l)
