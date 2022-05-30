@@ -41,13 +41,13 @@
             <InputText
               id="sender-input"
               v-model="Message"
-              :placeholder="$t(`components.project.messageplaceholder`)"
+              :placeholder="$t(`components.chat.messageplaceholder`)"
               type="message"
               class="chat-inputs"
             />
             <Button label="send" class="p-button-primary" type=" submit">
               <div class="sendbutton">
-                {{ $t("components.project.send") }}
+                {{ $t("components.chat.send") }}
               </div></Button
             >
           </div>
@@ -58,51 +58,51 @@
 </template>
 
 <script>
-  import MenuBar from "@/components/MenuBar.vue"
-  import MainMenu from "@/components/MainMenu.vue"
-  import InputText from "primevue/inputtext"
-  import Button from "primevue/button"
-  import CheckIcon from "vue-material-design-icons/CheckAll.vue"
-  export default {
-    name: "Chat",
-    components: { MenuBar, MainMenu, InputText, Button, CheckIcon },
-    data() {
-      return {
-        showMainOverlayMenu: false,
-        mainMenuVisible: true,
-        Message: "",
-        messages: [],
+import MenuBar from "@/components/MenuBar.vue"
+import MainMenu from "@/components/MainMenu.vue"
+import InputText from "primevue/inputtext"
+import Button from "primevue/button"
+import CheckIcon from "vue-material-design-icons/CheckAll.vue"
+export default {
+  name: "Chat",
+  components: { MenuBar, MainMenu, InputText, Button, CheckIcon },
+  data() {
+    return {
+      showMainOverlayMenu: false,
+      mainMenuVisible: true,
+      Message: "",
+      messages: [],
+    }
+  },
+  methods: {
+    timestamp: Date.now(),
+    toggleMainMenu() {
+      this.mainMenuVisible = !this.mainMenuVisible
+    },
+    sendMessage(direction) {
+      if (!this.Message && !this.Message) {
+        return
       }
-    },
-    methods: {
-      timestamp: Date.now(),
-      toggleMainMenu() {
-        this.mainMenuVisible = !this.mainMenuVisible
-      },
-      sendMessage(direction) {
-        if (!this.Message && !this.Message) {
-          return
-        }
 
-        if (direction === "from") {
-          this.messages.push({ body: this.Message, user: "From" })
-          this.SenderMessage = ""
-          this.messages.push({ body: this.Message, user: "To" })
-          this.Message = ""
-        } else {
-          alert(this.$t("components.project.error"))
-        }
+      if (direction === "from") {
+        this.messages.push({ body: this.Message, user: "From" })
+        this.SenderMessage = ""
+        this.messages.push({ body: this.Message, user: "To" })
+        this.Message = ""
+      } else {
+        alert(this.$t("components.project.error"))
+      }
 
-        //TODO: this needs to scroll to last messasge that was received.
-        this.$nextTick(() => {
-          let messageDisplay = this.$refs.chatArea
-          messageDisplay.scrollTop = messageDisplay.scrollHeight
-        })
-      },
+      //TODO: this needs to scroll to last messasge that was received.
+      this.$nextTick(() => {
+        let messageDisplay = this.$refs.chatArea
+        messageDisplay.scrollTop = messageDisplay.scrollHeight
+      })
     },
-  }
+  },
+}
 </script>
 
 <style lang="scss" scoped>
-  @import "./style.scss";
+@import "./style.scss";
 </style>
