@@ -7,7 +7,9 @@
     :breakpoints="{ '960px': '75vw', '640px': '100vw' }"
   >
     <template #header>
-      <span class="p-dialog-title"> New Connections </span>
+      <span class="p-dialog-title">
+        {{ $t("components.dialog.connections.header") }}
+      </span>
       <div class="p-dialog-header-icons">
         <button
           class="p-dialog-header-icon p-dialog-header-close p-link"
@@ -20,30 +22,43 @@
       </div>
     </template>
     <div class="field">
-      <label for="expand">Projects</label>
+      <label for="expand">{{
+        $t("components.dialog.connections.info.project")
+      }}</label>
       <Dropdown
         :options="projectList"
         v-model="selected"
         optionLabel="name"
         optionValue="key"
-        placeholder="Select Project "
+        :placeholder="$t(`components.dialog.connections.info.select`)"
         class="p-invalid"
       />
     </div>
-    <h3><u>Connections Info</u></h3>
+    <h3>
+      <u>{{ $t("components.dialog.connections.info.connection-info") }}</u>
+    </h3>
     <div class="field">
-      <label for="name">Name</label>
+      <label for="name">{{
+        $t("components.dialog.connections.info.name")
+      }}</label>
       <InputText id="name" v-model="name" class="p-invalid" />
     </div>
     <div class="field">
-      <label for="des">Description</label>
+      <label for="des">{{
+        $t("components.dialog.connections.info.description")
+      }}</label>
       <InputText id="des" v-model="des" class="p-invalid" />
     </div>
     <div class="field">
-      <label for="icon">Icon</label>
+      <label for="icon">{{
+        $t("components.dialog.connections.info.icon")
+      }}</label>
       <InputText id="icon" v-model="icon" class="p-invalid" />
     </div>
-    <Button label="Submit" @click="handleconnectionstore" />
+    <Button
+      :label="$t(`components.dialog.connections.info.submit`)"
+      @click="handleconnectionstore"
+    />
   </Dialog>
 </template>
 
@@ -78,10 +93,7 @@ export default {
       description: "",
       icon: "",
       display: true,
-      selectedBoolean: null,
       selected: null,
-      value1: [],
-      value: [{ name: "True" }, { name: "False" }],
     }
   },
   computed: {
@@ -111,9 +123,6 @@ export default {
 }
 </script>
 <style  lang="scss">
-.p-float-label {
-  margin-bottom: 10px;
-}
 input {
   width: 80%;
 }
@@ -122,7 +131,7 @@ input {
 }
 .connection-dialog {
   height: 100vh;
-  width: 50vw;
+  width: 40vw;
   .p-dropdown {
     width: 80%;
   }

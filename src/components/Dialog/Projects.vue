@@ -25,37 +25,38 @@
       <label for="type">
         {{ $t("components.dialog.projects.info.type") }}</label
       >
-      <InputText id="type" v-model="type" />
+      <InputText id="type" v-model="type" class="p-invalid"/>
     </div>
     <div class="field">
       <label for="name">
           {{ $t("components.dialog.projects.info.name") }}</label
       >
-      <InputText id="name" v-model="name" />
+      <InputText id="name" v-model="name" class="p-invalid"/>
     </div>
-    <div class="field">
+    <div class="field dropdown1">
       <label for="expand">
         {{ $t("components.dialog.projects.info.expanded") }}</label
       >
       <Dropdown
         :options="value"
         optionLabel="name"
-        placeholder="Select "
+        :placeholder="$t(`components.dialog.projects.info.select`)"
         v-model="selectedBoolean"
         optionValue="code"
+        class="p-invalid"
       />
     </div>
     <div class="field">
       <label for="des">
          {{ $t("components.dialog.projects.info.description") }}</label
       >
-      <InputText id="des" v-model="des" />
+      <InputText id="des" v-model="des" class="p-invalid"/>
     </div>
     <div class="field">
       <label for="icon">
         {{ $t("components.dialog.projects.info.icon") }}</label
       >
-      <InputText id="icon" v-model="icon" />
+      <InputText id="icon" v-model="icon" class="p-invalid"/>
     </div>
     <Button :label="$t(`components.dialog.projects.info.submit`)" @click="handleProjectstore" />
   </Dialog>
@@ -112,18 +113,14 @@ export default {
         icon: this.icon,
       }
       appProjects.addToList(data)
-      this.type = ""
-      this.name = ""
-      this.expand = ""
-      this.des = ""
-      this.icon = ""
+      this.$emit("close")
     },
   },
 }
 </script>
 <style  lang="scss">
-.p-float-label {
-  margin-bottom: 10px;
+.dropdown1{
+  width: 100% !important;;
 }
 input {
   width: 80%;

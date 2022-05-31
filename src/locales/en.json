@@ -70,6 +70,19 @@
           "type": "Type",
           "name": "Name",
           "expanded": "Expanded",
+          "select": "Select",
+          "description": "Description",
+          "icon": "Icon",
+          "submit": "Submit"
+        }
+      },
+      "connections": {
+        "header": "New connections ",
+        "info": {
+          "project": "Projects",
+          "select": "Select project",
+          "connection-info": "Connections Info",
+          "name": "Name",
           "description": "Description",
           "icon": "Icon",
           "submit": "Submit"

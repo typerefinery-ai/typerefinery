@@ -71,6 +71,19 @@
           "type": "प्रकार",
           "name": "नाम",
           "expanded": "विस्तारित",
+          "select": "परियोजना का चयन करें",
+          "description": "विवरण",
+          "icon": "आइकन",
+          "submit": "प्रस्तुत"
+        }
+      },
+      "connections": {
+        "header": "नए कनेक्शन ",
+        "info": {
+          "project": "परियोजनाओं",
+          "select": "परियोजना का चयन करें",
+          "connection-info": "कनेक्शन जानकारी",
+          "name": "नाम",
           "description": "विवरण",
           "icon": "आइकन",
           "submit": "प्रस्तुत"
