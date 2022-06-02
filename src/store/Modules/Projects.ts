@@ -66,14 +66,14 @@ export default class Projects extends VuexModule {
         type: "transformers",
         list: [
           {
-            name: "transformer 1",
+            name: "Transformer 1",
             title: "Transformer 1",
             icon: "connection",
             description: "",
             type: "transformer",
           },
           {
-            name: "transformer 2",
+            name: "Transformer 2",
             title: "Transformer 2",
             icon: "connection",
             description: "",
@@ -94,15 +94,15 @@ export default class Projects extends VuexModule {
         icon: "connection",
         list: [
           {
-            name: "connection 1",
-            title: "connection 1",
+            name: "connection 3",
+            title: "connection 3",
             icon: "connection",
             description: "",
             type: "connection",
           },
           {
-            name: "connection 2",
-            title: "Connection 2",
+            name: "connection 4",
+            title: "Connection 4",
             icon: "connection",
             description: "",
             type: "connection",
@@ -133,13 +133,64 @@ export default class Projects extends VuexModule {
           },
         ],
       },
+      transformers: {
+        type: "transformers",
+        list: [
+          {
+            name: "Transformer 3",
+            title: "Transformer 3",
+            icon: "connection",
+            description: "",
+            type: "transformer",
+          },
+          {
+            name: "Transformer 4",
+            title: "Transformer 4",
+            icon: "connection",
+            description: "",
+            type: "transformer",
+          },
+        ],
+      },
     },
   ]
+  value: "" | undefined
   get projectList() {
     let name = this.list.map((el) => {
       return { name: el.name, key: el.name }
     })
     return name
+  }
+  get connectionList() {
+    for (const index in this.list) {
+      if (this.list[index].name === this.value) {
+        return this.list[index].connections.list.map((el) => {
+          return { name: el.name, key: el.name }
+        })
+      }
+    }
+  }
+  get transformerList() {
+    for (const index in this.list) {
+      if (this.list[index].name === this.value) {
+        return this.list[index].transformers.list.map((el) => {
+          return { name: el.name, key: el.name }
+        })
+      }
+    }
+  }
+  @Mutation
+  selectedProject(l) {
+    this.value = l
+    console.log(this.value)
+  }
+  @Mutation
+  addNewQuery(l) {
+    for (const index in this.list) {
+      if (this.list[index].name === l.name) {
+        this.list[index].queries.list.push(l.list)
+      }
+    }
   }
   @Mutation
   addNewConnection(l) {
