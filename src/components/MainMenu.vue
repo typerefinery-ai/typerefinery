@@ -15,7 +15,11 @@
         >
          <Projects v-if="projectdialog" @close="closemodal"/>
          <NewConnections v-if="connectiondialog" @close="connectionclosemodal"/>
+<<<<<<< Updated upstream
           <NewQuery v-if="querydialog" @close="queryclosemodal"/>
+=======
+          <NewTransformer v-if="transformerdialog" @close="transformernclosemodal"/>
+>>>>>>> Stashed changes
           {{ $t(`components.project.${item.id}`) }}
         </div>
       </div>
@@ -63,6 +67,8 @@ export default {
             { id: "new-project", to: "#" },
             { id: "new-query", to: "#" },
             { id: "new-connection", to: "#" },
+             { id: "new-transformer", to: "#" },
+            
           ],
         },
         {
