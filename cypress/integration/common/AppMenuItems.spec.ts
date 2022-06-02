@@ -5,10 +5,14 @@ describe("App Menu Items", () => {
     cy.visit("/")
   })
 
+  it("login as default user", () => {
+    cy.get(".login").should("be.visible").find(".submit-button").click()
+  })
+
   it("Has Github link in Help menu.", () => {
     cy.get("#help-button").click()
     cy.get(".p-menu")
-      .should("not.be.visible")
+      .should("be.visible")
       .and(($menu) => {
         expect($menu.find(".p-menuitem-link")).to.contain("Github")
       })
@@ -18,7 +22,7 @@ describe("App Menu Items", () => {
   it("Has English in Change Language menu.", () => {
     cy.get("#change-language-button").click()
     cy.get(".p-menu")
-      .should("not.be.visible")
+      .should("be.visible")
       .and(($menu) => {
         expect($menu.find(".p-menuitem-link")).to.contain("English")
       })

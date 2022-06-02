@@ -5,6 +5,10 @@ describe("Main Menu Tabs", () => {
     cy.visit("/")
   })
 
+  it("login as default user", () => {
+    cy.get(".login").should("be.visible").find(".submit-button").click()
+  })
+
   it("Has Project tab in main menu.", () => {
     cy.get(".main-menu-wrapper")
       .should("be.visible")
