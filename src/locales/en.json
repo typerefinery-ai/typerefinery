@@ -87,6 +87,29 @@
           "icon": "Icon",
           "submit": "Submit"
         }
+      },
+      "new-query": {
+        "header": "New Query ",
+        "panel1": {
+          "header": "Connection Info",
+          "label1": "Projects",
+          "label2": "Connections",
+          "select1": "Select project",
+          "select2": "Select connection"
+        },
+        "panel2": {
+          "header": "Query Info",
+          "name": "Name",
+          "description": "Description",
+          "icon": "Icon",
+          "query": "Query",
+          "transformer": "Tranformer",
+          "select1": "Select transformer"
+        },
+        "footer": {
+          "cancel": "Cancel",
+          "save": "Save"
+        }
       }
     }
   },
