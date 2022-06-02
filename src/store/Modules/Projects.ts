@@ -66,14 +66,14 @@ export default class Projects extends VuexModule {
         type: "transformers",
         list: [
           {
-            name: "transformer 1",
+            name: "Transformer 1",
             title: "Transformer 1",
             icon: "connection",
             description: "",
             type: "transformer",
           },
           {
-            name: "transformer 2",
+            name: "Transformer 2",
             title: "Transformer 2",
             icon: "connection",
             description: "",
@@ -133,6 +133,25 @@ export default class Projects extends VuexModule {
           },
         ],
       },
+      transformers: {
+        type: "transformers",
+        list: [
+          {
+            name: "Transformer 3",
+            title: "Transformer 3",
+            icon: "connection",
+            description: "",
+            type: "transformer",
+          },
+          {
+            name: "Transformer 4",
+            title: "Transformer 4",
+            icon: "connection",
+            description: "",
+            type: "transformer",
+          },
+        ],
+      },
     },
   ]
   value: "" | undefined
@@ -146,6 +165,15 @@ export default class Projects extends VuexModule {
     for (const index in this.list) {
       if (this.list[index].name === this.value) {
         return this.list[index].connections.list.map((el) => {
+          return { name: el.name, key: el.name }
+        })
+      }
+    }
+  }
+  get transformerList() {
+    for (const index in this.list) {
+      if (this.list[index].name === this.value) {
+        return this.list[index].transformers.list.map((el) => {
           return { name: el.name, key: el.name }
         })
       }
