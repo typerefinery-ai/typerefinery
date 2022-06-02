@@ -34,7 +34,7 @@ jobs:
 
     strategy:
       matrix:
-        node: [17.6.0]
+        node: [18.3.0]
         os: [macos-latest, ubuntu-latest, windows-latest]
         include:
           - os: ubuntu-latest
@@ -101,7 +101,8 @@ jobs:
 
       - name: Run Cypress using Docker
         run: |
-          docker compose up --exit-code-from server
+          docker compose up --exit-code-from reports
+          
       - name: Deploy Reports to gh-pages
         uses: JamesIves/github-pages-deploy-action@v4.2.5
         with:
