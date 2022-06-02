@@ -88,7 +88,7 @@
         }}</label>
         <Dropdown
           v-model="tranformerselected"
-          :options="transformer"
+          :options="transformerList"
           option-label="name"
           option-value="name"
            :placeholder="$t(`components.dialog.new-query.panel2.select1`)"
@@ -149,11 +149,6 @@ export default {
       projectselected: null,
       connectionselected: null,
       tranformerselected: null,
-      value: "",
-      transformer: [
-        { name: "Tranformer 1", code: "T1" },
-        { name: "Tranformer 2", code: "T2" },
-      ],
     }
   },
   computed: {
@@ -166,15 +161,12 @@ export default {
       return appProjects.connectionList
       // }
     },
+    transformerList()
+    {
+      return appProjects.transformerList
+    }
   },
   methods: {
-    // getProjectList() {
-    //   for (let i = 0; i < 10; i++) {
-    //     const name1 = appProjects.projectList
-    //     this.value1.push({ name: name1[i].name, code: name1[i].id })
-    //   }
-    //   console.log(this.value1)
-    // },
     collectProject() {
       console.log(this.projectselected)
       appProjects.selectedProject(this.projectselected)
