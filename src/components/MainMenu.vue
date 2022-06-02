@@ -15,6 +15,7 @@
         >
          <Projects v-if="projectdialog" @close="closemodal"/>
          <NewConnections v-if="connectiondialog" @close="connectionclosemodal"/>
+          <NewQuery v-if="querydialog" @close="queryclosemodal"/>
           {{ $t(`components.project.${item.id}`) }}
         </div>
       </div>
@@ -35,9 +36,10 @@
 import TabMenu from "primevue/tabmenu"
 import Projects from "@/components/Dialog/Projects.vue"
 import NewConnections from "@/components/Dialog/Newconnections.vue"
+import NewQuery from "@/components/Dialog/NewQueries.vue"
 export default {
   name: "MainMenu",
-  components: { TabMenu,Projects,NewConnections },
+  components: { TabMenu,Projects,NewConnections,NewQuery },
   props: {
     mainMenuVisible: { type: Boolean, required: true },
   },
@@ -45,8 +47,9 @@ export default {
   data() {
     return {
       showSubMenuOverlay: false,
-       projectdialog:false,
-        connectiondialog:false,
+      projectdialog:false,
+      connectiondialog:false,
+      querydialog: false,
     }
   },
   computed: {
@@ -103,6 +106,9 @@ export default {
       connectionclosemodal(){
         this.connectiondialog=false
       },
+      queryclosemodal() {
+        this.querydialog = false
+      },
      handleProject(id){     
        if(id==='new-project')
        {
@@ -111,6 +117,10 @@ export default {
         if(id==='new-connection'){       
          this.connectiondialog=!this.connectiondialog
        }
+        if (id === "new-query") {
+          //  { console.log(appProjects.getConnections)
+          this.querydialog = !this.querydialog
+        }
       },
     handleRoutes(route) {
       const url = `/home/${route}`
