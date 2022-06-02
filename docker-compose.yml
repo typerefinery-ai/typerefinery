@@ -40,6 +40,7 @@ services:
 
   reports:
     image: node:latest
+    entrypoint: ""
     command: "/bin/bash -c 'npm run posttest'"
     working_dir: /build/source
     volumes:
