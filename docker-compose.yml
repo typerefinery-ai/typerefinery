@@ -10,14 +10,12 @@ services:
       interval: 10s
       timeout: 5s
       retries: 60
-      start_period: 60s
+      start_period: 360s
     volumes:
       - ./:/build/source
     working_dir: /build/source
     entrypoint: ""
     command: "/bin/bash -c 'npm i && npm run build && npm run preview'"
-    ports:
-      - "8080:8080"
     profiles:
       - testing
     networks:
@@ -42,19 +40,19 @@ services:
    networks:
      - default
 
-  reports:
-    image: node:latest
-    entrypoint: ""
-    command: "/bin/bash -c 'npm run report:merge && npm run report:generate && npm run report:moveScreenshots && npm run report:moveVideos && npm run report:moveData'"
-    working_dir: /build/source
-    volumes:
-      - ./:/build/source
-    profiles:
-      - reports
-    networks:
-      default:
-        aliases:
-          - reports
+  # reports:
+  #   image: node:latest
+  #   entrypoint: ""
+  #   command: "/bin/bash -c 'npm run report:merge && npm run report:generate && npm run report:moveScreenshots && npm run report:moveVideos && npm run report:moveData'"
+  #   working_dir: /build/source
+  #   volumes:
+  #     - ./:/build/source
+  #   profiles:
+  #     - reports
+  #   networks:
+  #     default:
+  #       aliases:
+  #         - reports
 
 networks:
   default:
