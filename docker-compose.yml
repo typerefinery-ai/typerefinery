@@ -18,6 +18,8 @@ services:
     command: "/bin/bash -c 'npm i && npm run build && npm run preview'"
     ports:
       - "8080:8080"
+    profiles:
+      - testing
     networks:
       default:
         aliases:
@@ -31,7 +33,9 @@ services:
      - ./:/source
    environment:
     - CYPRESS_BASE_URL=http://server:8080
-   command: run || true
+   command: run
+   profiles:
+    - testing
    depends_on:
      server:
        condition: service_healthy
@@ -41,15 +45,12 @@ services:
   reports:
     image: node:latest
     entrypoint: ""
-    command: "/bin/bash -c 'npm run posttest'"
+    command: "/bin/bash -c 'npm run report:merge && npm run report:generate && npm run report:moveScreenshots && npm run report:moveVideos && npm run report:moveData'"
     working_dir: /build/source
     volumes:
       - ./:/build/source
-    depends_on:
-      server:
-        condition: service_healthy
-      cypress:
-        condition: service_completed_successfully
+    profiles:
+      - reports
     networks:
       default:
         aliases:
