@@ -103,12 +103,12 @@ jobs:
         id: cypress
         continue-on-error: true
         run: |
-          docker-compose --profile testing up --exit-code-from cypress
+          docker compose --profile testing up --exit-code-from cypress
 
       - name: Generate Reports using Docker
         continue-on-error: true
         run: |
-          docker-compose --profile reports up reports
+          docker compose --profile reports up reports
 
       - name: Deploy Reports to gh-pages
         continue-on-error: true
