@@ -10,11 +10,13 @@ services:
       interval: 10s
       timeout: 5s
       retries: 60
-      start_period: 360s
+      start_period: 60s
     volumes:
       - ./:/build/source
     working_dir: /build/source
     entrypoint: ""
+    environment:
+      - NODE_OPTIONS='--max_old_space_size=4096'
     command: "/bin/bash -c 'npm i && npm run build && npm run preview'"
     profiles:
       - testing
@@ -31,6 +33,7 @@ services:
      - ./:/source
    environment:
     - CYPRESS_BASE_URL=http://server:8080
+    - NODE_OPTIONS='--max_old_space_size=4096'
    command: run
    profiles:
     - testing
@@ -40,19 +43,21 @@ services:
    networks:
      - default
 
-  # reports:
-  #   image: node:latest
-  #   entrypoint: ""
-  #   command: "/bin/bash -c 'npm run report:merge && npm run report:generate && npm run report:moveScreenshots && npm run report:moveVideos && npm run report:moveData'"
-  #   working_dir: /build/source
-  #   volumes:
-  #     - ./:/build/source
-  #   profiles:
-  #     - reports
-  #   networks:
-  #     default:
-  #       aliases:
-  #         - reports
+  reports:
+    image: node:latest
+    entrypoint: ""
+    command: "/bin/bash -c 'npm run report:merge && npm run report:generate && npm run report:moveScreenshots && npm run report:moveVideos && npm run report:moveData'"
+    working_dir: /build/source
+    volumes:
+      - ./:/build/source
+    environment:
+      - NODE_OPTIONS='--max_old_space_size=4096'
+    profiles:
+      - reports
+    networks:
+      default:
+        aliases:
+          - reports
 
 networks:
   default:

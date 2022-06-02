@@ -81,6 +81,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     env:
       NODE_ENV: development
+      NODE_OPTIONS: '--max_old_space_size=4096'
 
     strategy:
       matrix:
