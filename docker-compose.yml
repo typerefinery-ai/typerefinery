@@ -6,7 +6,7 @@ services:
     image: aemdesign/java-buildpack:jdk11
     command: /bin/bash -l /build/source/scripts/automation-test.sh
     working_dir: /build/source
-    user: 1001:1001
+    # user: 1001:1001
     volumes:
       - ./:/build/source
     environment:
