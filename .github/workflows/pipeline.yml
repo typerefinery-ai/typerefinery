@@ -205,6 +205,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
 
+      - name: Run Install
+        run: |
+          npm install
+
       # - name: Install Snapcraft
       #   uses: samuelmeuli/action-snapcraft@v1
       #   # Only install Snapcraft on Ubuntu
