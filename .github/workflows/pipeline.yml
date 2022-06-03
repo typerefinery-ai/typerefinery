@@ -125,7 +125,6 @@ jobs:
         with:
           config: pageLoadTimeout=100000,baseUrl=http://localhost:8080
           wait-on: 'http://localhost:8080'
-          working-directory: cypress
           build: |
             npm run build
           start: |
