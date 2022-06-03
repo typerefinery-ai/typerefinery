@@ -12,6 +12,7 @@
       "new-project": "New Project",
       "new-query": "New Query",
       "new-connection": "New Connection",
+      "new-transformer": "New Transformer",
       "load-data": "Load Data",
       "load-links": "Load Links",
       "connections": "Connections",
@@ -66,19 +67,20 @@
     "dialog": {
       "projects": {
         "header": "Projects ",
+        "panelheader": "Project Info",
         "info": {
-          "type": "Type",
           "name": "Name",
-          "expanded": "Expanded",
-          "select": "Select",
           "description": "Description",
           "icon": "Icon",
-          "submit": "Submit"
+          "cancel": "Cancel",
+          "save": "Save"
         }
       },
       "connections": {
         "header": "New connections ",
         "info": {
+          "panelheader": "Project Info",
+          "panel2header": "Connection Info",
           "project": "Projects",
           "select": "Select project",
           "connection-info": "Connections Info",
@@ -105,6 +107,24 @@
           "query": "Query",
           "transformer": "Tranformer",
           "select1": "Select transformer"
+        },
+        "footer": {
+          "cancel": "Cancel",
+          "save": "Save"
+        }
+      },
+      "new-transformer": {
+        "header": "New Transformer ",
+        "panel1": {
+          "header": "Project Info",
+          "label1": "Projects",
+          "select": "Select project"
+        },
+        "panel2": {
+          "header": "Transformer Info",
+          "name": "Name",
+          "description": "Description",
+          "icon": "Icon"
         },
         "footer": {
           "cancel": "Cancel",
