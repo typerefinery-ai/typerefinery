@@ -87,7 +87,7 @@ jobs:
 
     strategy:
       matrix:
-        node: [18.2.0]
+        node: [18.3.0]
         os: [ubuntu-latest]
         include:
           - os: ubuntu-latest
@@ -168,7 +168,7 @@ jobs:
       NODE_ENV: develop
     strategy:
       matrix:
-        node: [17.6.0]
+        node: [18.3.0]
         os: [macos-latest, ubuntu-latest, windows-latest]
         include:
           - os: ubuntu-latest
@@ -179,16 +179,31 @@ jobs:
             friendlyName: Release - Windows
     steps:
       - name: Check out Git repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Install Node.js, NPM and Yarn
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node }}
 
+      - name: Get npm cache directory
+        id: npm-cache-dir
+        run: |
+          echo "::set-output name=dir::$(npm config get cache)"
+
+      - name: Cache node modules
+        uses: actions/cache@v3
+        id: npm-cache # use this to check for `cache-hit` ==> if: steps.npm-cache.outputs.cache-hit != 'true'
+        with:
+          path: ${{ steps.npm-cache-dir.outputs.dir }}
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
       - name: Run Install
         run: |
           npm install
+
       - name: Build electron
         run: |
           npm run app:build
