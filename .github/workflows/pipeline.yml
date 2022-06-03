@@ -125,6 +125,7 @@ jobs:
         with:
           config: pageLoadTimeout=100000,baseUrl=http://localhost:8080
           wait-on: 'http://localhost:8080'
+          install: false
           build: |
             npm run build
           start: |
