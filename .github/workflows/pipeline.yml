@@ -153,15 +153,11 @@ jobs:
       #     docker compose --profile reports up reports
 
       - name: Deploy Reports to gh-pages
-        continue-on-error: true
+        if: always()
         uses: JamesIves/github-pages-deploy-action@v4.2.5
         with:
           branch: gh-pages
           folder: cypress/reports
-
-      - name: Check on failures
-        if: job.steps.cypress.status == failure()
-        run: exit 1
 
   release:
     needs: [unit-test, functional-test]
