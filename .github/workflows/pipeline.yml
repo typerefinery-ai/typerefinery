@@ -176,10 +176,10 @@ jobs:
         node: [18.3.0]
         os: [macos-latest, ubuntu-latest, windows-latest]
         include:
-          - os: ubuntu-latest
-            friendlyName: Release - Ubuntu
-          - os: macos-latest
-            friendlyName: Release - MacOS
+          # - os: ubuntu-latest
+          #   friendlyName: Release - Ubuntu
+          # - os: macos-latest
+          #   friendlyName: Release - MacOS
           - os: windows-latest
             friendlyName: Release - Windows
     steps:
@@ -204,6 +204,14 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
+
+      # - name: Install Snapcraft
+      #   uses: samuelmeuli/action-snapcraft@v1
+      #   # Only install Snapcraft on Ubuntu
+      #   if: startsWith(matrix.os, 'ubuntu')
+      #   with:
+      #     # Log in to Snap Store
+      #     snapcraft_token: ${{ secrets.SNAPCRAFT_TOKEN }}
 
       - name: Build/release Electron app
         uses: samuelmeuli/action-electron-builder@v1
