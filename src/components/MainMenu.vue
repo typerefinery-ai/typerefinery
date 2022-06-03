@@ -16,6 +16,7 @@
          <Projects v-if="projectdialog" @close="closemodal"/>
          <NewConnections v-if="connectiondialog" @close="connectionclosemodal"/>
           <NewQuery v-if="querydialog" @close="queryclosemodal"/>
+           <NewTransformer v-if="transformerdialog" @close="transformerclosemodal"/>
           {{ $t(`components.project.${item.id}`) }}
         </div>
       </div>
@@ -37,9 +38,10 @@ import TabMenu from "primevue/tabmenu"
 import Projects from "@/components/Dialog/Projects.vue"
 import NewConnections from "@/components/Dialog/Newconnections.vue"
 import NewQuery from "@/components/Dialog/NewQueries.vue"
+import NewTransformer from "@/components/Dialog/NewTransformer.vue"
 export default {
   name: "MainMenu",
-  components: { TabMenu,Projects,NewConnections,NewQuery },
+  components: { TabMenu,Projects,NewConnections,NewQuery,NewTransformer },
   props: {
     mainMenuVisible: { type: Boolean, required: true },
   },
@@ -50,6 +52,7 @@ export default {
       projectdialog:false,
       connectiondialog:false,
       querydialog: false,
+      transformerdialog:false
     }
   },
   computed: {
@@ -111,6 +114,9 @@ export default {
       queryclosemodal() {
         this.querydialog = false
       },
+      transformerclosemodal() {
+        this.transformerdialog = false
+      },
      handleProject(id){     
        if(id==='new-project')
        {
@@ -122,6 +128,10 @@ export default {
         if (id === "new-query") {
           //  { console.log(appProjects.getConnections)
           this.querydialog = !this.querydialog
+        }
+        if (id === "new-transformer") {
+          //  { console.log(appProjects.getConnections)
+          this.transformerdialog = !this.transformerdialog
         }
       },
     handleRoutes(route) {

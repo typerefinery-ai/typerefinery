@@ -11,6 +11,7 @@
       "new-project": "नया काम",
       "new-query": "नया प्रश्न",
       "new-connection": "नया कनेक्शन",
+      "new-transformer": "नया ट्रांसफार्मर",
       "load-data": "लोड डेटा",
       "load-links": "लोड लिंक",
       "connections": "कनेक्शन",
@@ -67,19 +68,20 @@
     "dialog": {
       "projects": {
         "header": "परियोजना",
+        "panelheader": "परियोजना की जानकारी",
         "info": {
-          "type": "प्रकार",
           "name": "नाम",
-          "expanded": "विस्तारित",
-          "select": "परियोजना का चयन करें",
           "description": "विवरण",
           "icon": "आइकन",
-          "submit": "प्रस्तुत"
+          "cancel": "रद्द करना",
+          "save": "बचाना"
         }
       },
       "connections": {
         "header": "नए कनेक्शन ",
         "info": {
+          "panelheader": "परियोजना का चयन करें",
+          "panel2header": "कनेक्शन जानकारी",
           "project": "परियोजनाओं",
           "select": "परियोजना का चयन करें",
           "connection-info": "कनेक्शन जानकारी",
@@ -106,6 +108,24 @@
           "query": "प्रश्न",
           "transformer": "ट्रांसफार्मर",
           "select1": "ट्रांसफार्मर का चयन करें"
+        },
+        "footer": {
+          "cancel": "रद्द करना",
+          "save": "बचाना"
+        }
+      },
+      "new-transformer": {
+        "header": "नया ट्रांसफार्मर",
+        "panel1": {
+          "header": "परियोजना की जानकारी",
+          "label1": "परियोजनाओं",
+          "select": "परियोजना का चयन करें"
+        },
+        "panel2": {
+          "header": "ट्रांसफार्मर की जानकारी",
+          "name": "नाम",
+          "description": "विवरण",
+          "icon": "आइकन"
         },
         "footer": {
           "cancel": "रद्द करना",
