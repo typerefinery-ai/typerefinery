@@ -207,20 +207,23 @@ jobs:
       - name: Build electron
         run: |
           npm run app:build
-          ls -l dist_electron
-      - name: Release
-        uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          fail_on_unmatched_files: false
-          generate_release_notes: true
-          files: |
-            dist_electron/*.exe
-            dist_electron/*.exe.blockmap
-            dist_electron/*.AppImage
-            dist_electron/*.snap
-            dist_electron/*-mac.zip
-            dist_electron/*.dmg
-            dist_electron/*.dmg.blockmap
-            dist_electron/latest*.yml
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # - name: Release
+      #   uses: softprops/action-gh-release@v1
+      #   if: startsWith(github.ref, 'refs/tags/')
+      #   with:
+      #     token: ${{ secrets.GITHUB_TOKEN }}
+      #     fail_on_unmatched_files: false
+      #     generate_release_notes: true
+      #     files: |
+      #       dist_electron/*.exe
+      #       dist_electron/*.exe.blockmap
+      #       dist_electron/*.AppImage
+      #       dist_electron/*.snap
+      #       dist_electron/*-mac.zip
+      #       dist_electron/*.dmg
+      #       dist_electron/*.dmg.blockmap
+      #       dist_electron/latest*.yml
+
