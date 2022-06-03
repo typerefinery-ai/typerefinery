@@ -1,7 +1,7 @@
 # TypeRefinery
 
 [![build_status](https://github.com/innovolve-ai/typerefinery/workflows/build-release/badge.svg)](https://github.com/innovolve-ai/typerefinery/actions?workflow=Build/release)
-[![Coverage Status](https://coveralls.io/repos/github/innovolve-ai/typerefinery/badge.svg?branch=master)](https://coveralls.io/github/innovolve-ai/typerefinery?branch=master)
+[![TypeRefinery](https://img.shields.io/endpoint?url=https://dashboard.cypress.io/badge/detailed/8v1kna&style=flat-square&logo=cypress)](https://dashboard.cypress.io/projects/8v1kna/runs)
 [![github license](https://img.shields.io/github/license/innovolve-ai/typerefinery)](https://github.com/innovolve-ai/typerefinery)
 [![github issues](https://img.shields.io/github/issues/innovolve-ai/typerefinery)](https://github.com/innovolve-ai/typerefinery)
 [![github last commit](https://img.shields.io/github/last-commit/innovolve-ai/typerefinery)](https://github.com/innovolve-ai/typerefinery)
