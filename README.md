@@ -135,6 +135,9 @@ When you want to create a new release, follow these steps:
 3. Tag and sign your commit (`git tag -s -a 2022.3.24 -m "2022.3.24"`). Make sure your tag name's format is `{YYYY}.{M}.{DD}`. Your workflow will use this tag to detect when to create a release
 4. Push your changes to GitHub (git push && git push --tags)
 
+### Cypress Reports
+
+You can check cypress reports here https://dashboard.cypress.io/projects/8v1kna/runs
 
 ### Snapcraft
 
