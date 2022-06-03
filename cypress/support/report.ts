@@ -16,9 +16,9 @@ Cypress.on("test:after:run", (test, runnable) => {
     const imageUrl = `screenshots/${Cypress.spec.name}/${fullTestName} (failed).png`
 
     addContext({ test }, imageUrl)
-
-    //attach video to the test report
-    const videoUrl = `videos/${Cypress.spec.name}.mp4`
-    addContext({ test }, videoUrl)
   }
+
+  //attach video to the test report
+  const videoUrl = `videos/${Cypress.spec.name}.mp4`
+  addContext({ test }, videoUrl)
 })
