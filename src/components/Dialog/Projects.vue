@@ -21,30 +21,12 @@
         </button>
       </div>
     </template>
-    <div class="field">
-      <label for="type">
-        {{ $t("components.dialog.projects.info.type") }}</label
-      >
-      <InputText id="type" v-model="type" class="p-invalid"/>
-    </div>
+    <Panel :header="$t(`components.dialog.projects.panelheader`)" >
     <div class="field">
       <label for="name">
           {{ $t("components.dialog.projects.info.name") }}</label
       >
       <InputText id="name" v-model="name" class="p-invalid"/>
-    </div>
-    <div class="field dropdown1">
-      <label for="expand">
-        {{ $t("components.dialog.projects.info.expanded") }}</label
-      >
-      <Dropdown
-        :options="value"
-        optionLabel="name"
-        :placeholder="$t(`components.dialog.projects.info.select`)"
-        v-model="selectedBoolean"
-        optionValue="code"
-        class="p-invalid"
-      />
     </div>
     <div class="field">
       <label for="des">
@@ -58,14 +40,28 @@
       >
       <InputText id="icon" v-model="icon" class="p-invalid"/>
     </div>
-    <Button :label="$t(`components.dialog.projects.info.submit`)" @click="handleProjectstore" />
+    </Panel>
+    <template #footer>
+      <Button
+        :label="$t(`components.dialog.projects.info.cancel`)"
+        icon="pi pi-times"
+        class="p-button-text"
+        @click="closeDialog"
+      />
+      <Button
+        :label="$t(`components.dialog.projects.info.save`)"
+        icon="pi pi-check"
+        autofocus
+        @click="handleProjectstore"
+      />
+    </template>
   </Dialog>
 </template>
 
 <script>
 import Dialog from "primevue/dialog"
-import Avatar from "primevue/avatar"
 import Dropdown from "primevue/dropdown"
+import Panel from "primevue/panel"
 import InputText from "primevue/inputtext"
 import Button from "primevue/button"
 import Projects from "@/store/Modules/Projects"
@@ -76,7 +72,7 @@ export default {
   name: "NewProject",
   components: {
     Dialog,
-    Avatar,
+    Panel,
     InputText,
     Button,
     Dropdown,
@@ -92,11 +88,6 @@ export default {
       description: "",
       icon: "",
       display: true,
-      selectedBoolean: null,
-      value: [
-        { name: "True", code: "NY" },
-        { name: "False", code: "ZM" },
-      ],
     }
   },
   emits: ["close"],
@@ -106,9 +97,8 @@ export default {
     },
     handleProjectstore() {
       const data = {
-        type: this.type,
+        type: "project",
         name: this.name,
-        expanded: this.expand,
         description: this.des,
         icon: this.icon,
       }

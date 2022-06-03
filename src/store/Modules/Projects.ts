@@ -185,6 +185,14 @@ export default class Projects extends VuexModule {
     console.log(this.value)
   }
   @Mutation
+  addNewTransformer(l) {
+    for (const index in this.list) {
+      if (this.list[index].name === l.name) {
+        this.list[index].transformers.list.push(l.list)
+      }
+    }
+  }
+  @Mutation
   addNewQuery(l) {
     for (const index in this.list) {
       if (this.list[index].name === l.name) {

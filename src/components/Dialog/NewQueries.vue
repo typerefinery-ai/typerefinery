@@ -33,6 +33,7 @@
           option-value="key"
          :placeholder="$t(`components.dialog.new-query.panel1.select1`)"
           @change="collectProject"
+          class="p-invalid"
         />
       </div>
       <div class="field">
@@ -45,6 +46,7 @@
           option-label="name"
           option-value="key"
            :placeholder="$t(`components.dialog.new-query.panel1.select2`)"
+           class="p-invalid"
         />
       </div>
     </Panel>
@@ -61,26 +63,26 @@
         <label for="name">{{
           $t("components.dialog.new-query.panel2.name")
         }}</label>
-        <InputText id="name" v-model="name" />
+        <InputText id="name" v-model="name" class="p-invalid" />
       </div>
       <div class="field">
         <label>{{
           $t("components.dialog.new-query.panel2.description")
         }}</label>
-        <InputText v-model="des" />
+        <InputText v-model="des" class="p-invalid" />
       </div>
       <div class="field">
         <label for="icon">{{
           $t("components.dialog.new-query.panel2.icon")
         }}</label>
-        <InputText id="icon" v-model="icon" />
+        <InputText id="icon" v-model="icon" class="p-invalid"/>
       </div>
 
       <div class="field">
         <label for="query">{{
           $t("components.dialog.new-query.panel2.query")
         }}</label>
-        <InputText id="query" v-model="query" />
+        <InputText id="query" v-model="query" class="p-invalid" />
       </div>
       <div class="field">
         <label for="expand">{{
@@ -92,6 +94,7 @@
           option-label="name"
           option-value="name"
            :placeholder="$t(`components.dialog.new-query.panel2.select1`)"
+           class="p-invalid"
         />
       </div>
     </Panel>
@@ -107,7 +110,7 @@
         :label="$t(`components.dialog.new-query.footer.save`)"
         icon="pi pi-check"
         autofocus
-        @click="handleconnectionstore"
+        @click="handlequerystore"
       />
     </template>
   </Dialog>
@@ -125,7 +128,7 @@ const appProjects = getModule(Projects)
 //   console.log(appProjects.projectList)
 
 export default {
-  name: "NewConnections",
+  name: "NewQuery",
   components: {
     Dialog,
     InputText,
@@ -174,7 +177,7 @@ export default {
     querycloseDialog() {
       this.$emit("close")
     },
-    handleconnectionstore() {
+    handlequerystore() {
       const data = {
         name: this.projectselected,
         list: {

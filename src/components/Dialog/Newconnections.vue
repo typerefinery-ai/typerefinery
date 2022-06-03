@@ -21,6 +21,7 @@
         </button>
       </div>
     </template>
+     <Panel :header="$t(`components.dialog.connections.info.panelheader`)">
     <div class="field">
       <label for="expand">{{
         $t("components.dialog.connections.info.project")
@@ -34,9 +35,8 @@
         class="p-invalid"
       />
     </div>
-    <h3>
-      <u>{{ $t("components.dialog.connections.info.connection-info") }}</u>
-    </h3>
+     </Panel>
+     <Panel :header="$t(`components.dialog.connections.info.panel2header`)"  class="panel2">
     <div class="field">
       <label for="name">{{
         $t("components.dialog.connections.info.name")
@@ -55,10 +55,21 @@
       }}</label>
       <InputText id="icon" v-model="icon" class="p-invalid" />
     </div>
-    <Button
-      :label="$t(`components.dialog.connections.info.submit`)"
-      @click="handleconnectionstore"
-    />
+     </Panel>
+    <template #footer>
+      <Button
+        :label="$t(`components.dialog.new-transformer.footer.cancel`)"
+        icon="pi pi-times"
+        class="p-button-text"
+        @click="conncetioncloseDialog"
+      />
+      <Button
+        :label="$t(`components.dialog.new-transformer.footer.save`)"
+        icon="pi pi-check"
+        autofocus
+        @click="handleconnectionstore"
+      />
+    </template>
   </Dialog>
 </template>
 
@@ -68,6 +79,7 @@ import Avatar from "primevue/avatar"
 import Dropdown from "primevue/dropdown"
 import InputText from "primevue/inputtext"
 import Button from "primevue/button"
+import Panel from "primevue/panel"
 import Projects from "@/store/Modules/Projects"
 import { getModule } from "vuex-module-decorators"
 const appProjects = getModule(Projects)
@@ -78,6 +90,7 @@ export default {
   components: {
     Dialog,
     Avatar,
+    Panel,
     InputText,
     Button,
     Dropdown,
@@ -138,7 +151,9 @@ input {
   .p-dialog-content {
     height: 100%;
   }
-
+  .panel2 {
+      margin-top: 10px;
+    }
   .p-dialog-header {
     padding: 1.25rem 1.8rem;
 
