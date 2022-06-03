@@ -1,0 +1,51 @@
+.p-rating .p-rating-icon {
+  color: #3f51b5;
+  margin-left: 0.5rem;
+  transition: background-color 0.2s, border-color 0.2s, color 0.2s,
+    box-shadow 0.2s, background-size 0.2s cubic-bezier(0.64, 0.09, 0.08, 1);
+  font-size: 1rem;
+}
+.p-rating .p-rating-icon.p-rating-cancel {
+  color: #b00020;
+}
+.p-rating .p-rating-icon:focus {
+  outline: 0 none;
+  outline-offset: 0;
+  box-shadow: none;
+}
+.p-rating .p-rating-icon:first-child {
+  margin-left: 0;
+}
+.p-rating .p-rating-icon.pi-star-fill {
+  color: #3f51b5;
+}
+.p-rating:not(.p-disabled):not(.p-readonly) .p-rating-icon:hover {
+  color: #3f51b5;
+}
+.p-rating:not(.p-disabled):not(.p-readonly)
+  .p-rating-icon.p-rating-cancel:hover {
+  color: #b00020;
+}
+
+.p-rating .p-rating-icon {
+  border-radius: 50%;
+  width: 2rem;
+  height: 2rem;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 0;
+}
+.p-rating .p-rating-icon:focus {
+  background: rgba(63, 81, 181, 0.12);
+}
+.p-rating .p-rating-icon.p-rating-cancel:focus {
+  background: rgba(176, 0, 32, 0.12);
+}
+.p-rating:not(.p-disabled):not(.p-readonly) .p-rating-icon:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+}
+.p-rating:not(.p-disabled):not(.p-readonly)
+  .p-rating-icon.p-rating-cancel:hover {
+  background: rgba(176, 0, 32, 0.04);
+}

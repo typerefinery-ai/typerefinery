@@ -1,0 +1,28 @@
+{
+  "id": "fastapi",
+  "name": "API",
+  "description": "Fast API",
+  "enabled": false,
+  "status": "-1",
+  "logoutput": "...",
+  "icon": "pi pi-cog",
+  "servicetype": 10,
+  "config": {
+    "type": "python",
+    "pythonrequirements": "requirements.txt",
+    "commandline": "-m uvicorn main:app --host localhost",
+    "serviceorder": 1
+  },
+  "actions": {
+    "stop": {
+      "name": "stop",
+      "path": "...",
+      "commanline": "..."
+    },
+    "start": {
+      "name": "start",
+      "path": "...",
+      "commanline": "..."
+    }
+  }
+}

@@ -3,6 +3,7 @@
     <div class="tabs-wrapper">
       <TabView
         class="tab-view-wrapper"
+        :class="{ draggable: focus }"
         :active-index="activeIndex"
         @tab-click="onTabClick($event)"
       >
@@ -51,15 +52,15 @@
 
       <div
         v-show="!contentToolsVisible && !focus"
-        v-tooltip="'Show Content Tools'"
-        class="icon-wrapper-down hover:text-indigo-500"
+        v-tooltip="$t(`tooltips.show-content-tools`)"
+        class="icon-wrapper-down hover:text-primary"
         @click="toggleContentTools"
       >
         <i class="pi pi-angle-double-down"></i>
       </div>
 
       <menu-bar
-        v-if="focus"
+        v-if="focus && paneId === panes[panes.length - 1].id"
         :menu-bar-visible="contentToolsVisible"
         @toggle="toggleContentTools"
       />
@@ -93,6 +94,7 @@
       focus: { type: Boolean, required: true },
       tabs: { type: Array, required: true },
       paneId: { type: String, required: true },
+      panes: { type: Array, required: true },
     },
     emits: ["split-view", "close-split-view"],
     data() {
@@ -111,7 +113,6 @@
 
     methods: {
       onTabClick(e) {
-        console.log(e)
         const ctrl = e.originalEvent?.ctrlKey
         if (ctrl) {
           this.splitView(`tab${++e.index}`)
@@ -125,7 +126,6 @@
       },
 
       splitView(id) {
-        console.log("clicked")
         this.$emit("split-view", id)
       },
 
@@ -137,59 +137,43 @@
 </script>
 
 <style lang="scss">
-  .tabs-wrapper {
-    position: relative;
-    height: 100%;
-
-    .tab-item {
-      display: flex;
-      align-items: center;
-
-      .pi-times {
-        margin-left: 10px;
-        color: #495057;
-        font-size: 90%;
+  #body {
+    .content-area {
+      .tabs-wrapper {
         position: relative;
-        top: 1px;
-      }
-    }
-
-    .icon-wrapper-down {
-      position: absolute;
-      top: 12px;
-      right: 10px;
-      cursor: pointer;
-    }
-
-    .tab-view-wrapper {
-      height: 100%;
-    }
-
-    .p-tabview {
-      .p-tabview-panels {
-        height: calc(100% - 39px);
-        padding: 0;
-      }
-
-      .p-tabview-panel {
         height: 100%;
-      }
 
-      .p-tabview-nav {
-        .p-tabview-ink-bar {
-          display: none;
+        .tab-item {
+          display: flex;
+          align-items: center;
+
+          .pi-times {
+            margin-left: 10px;
+            font-size: 90%;
+            position: relative;
+            top: 1px;
+          }
         }
 
-        li.p-highlight {
-          position: relative;
+        .icon-wrapper-down {
+          position: absolute;
+          top: 12px;
+          right: 10px;
+          cursor: pointer;
+        }
 
-          &::after {
-            content: "";
-            width: 100%;
-            height: 2px;
-            background: #3f51b5;
-            position: absolute;
-            bottom: 0;
+        .tab-view-wrapper {
+          height: 100%;
+        }
+
+        .p-tabview {
+          .p-tabview-panels {
+            height: calc(100% - 39px);
+            padding: 0;
+          }
+
+          .p-tabview-panel {
+            height: 100%;
           }
         }
       }

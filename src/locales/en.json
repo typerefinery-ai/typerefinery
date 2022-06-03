@@ -1,37 +1,155 @@
 {
   "components": {
-    "helloworld": {
-      "heading": "Welcome to Vue3 + Vite + Vuetify Electron app.",
-      "sub-heading": "Your template for making great apps.",
-      "frameworks-heading": "Frameworks",
-      "frameworks": ["Electron", "Vue3", "Vite2", "Vuex4", "Vuetify3"],
-      "tools-heading": "Tools",
-      "tools": [
-        "Cypress",
-        "Github Actions",
-        "JsDom",
-        "TypeScript",
-        "Prettier",
-        "ESLint"
-      ]
-    },
-    "project": {
+    "mainmenu": {
       "project": "Project",
       "charts": "Charts",
       "maps": "Maps",
+      "chats": "Chat",
+      "editor": "Editor"
+    },
+
+    "project": {
       "new-project": "New Project",
       "new-query": "New Query",
       "new-connection": "New Connection",
+      "new-transformer": "New Transformer",
       "load-data": "Load Data",
       "load-links": "Load Links",
       "connections": "Connections",
       "queries": "Queries",
       "tab": "Tab",
       "name": "Name",
+      "calories": "Calories"
+    },
+    "setting": {
+      "settings": "Settings",
+      "general-settings": "General Settings",
+      "privacy-settings": "Privacy Settings",
+      "section": {
+        "general": "General",
+        "profile": "Profile",
+        "privacy": "Privacy",
+        "services": "Services"
+      },
+      "services": {
+        "info": {
+          "name": "Name",
+          "enabled": "Enabled",
+          "status": "Status",
+          "type": "Type",
+          "description": "Description"
+        }
+      }
+    },
+    "profile": {
+      "username": "Username",
+      "email": "Email",
+      "alias": "Alias Name"
+    },
+    "chat": {
+      "send": "Send",
+      "messageplaceholder": "Type your message here...",
+      "error": "something went wrong",
+      "to": "To",
+      "From": "From"
+    },
+    "tab": {
       "query": "Query",
-      "calories": "Calories",
+      "data": "Data",
+      "graph": "Graph"
+    },
+    "graph": {
       "properties": "Properties",
-      "data": "Data"
+      "no-node": "No Node Selected",
+      "index": "Index",
+      "label": "Label"
+    },
+    "dialog": {
+      "projects": {
+        "header": "Projects ",
+        "panelheader": "Project Info",
+        "info": {
+          "name": "Name",
+          "description": "Description",
+          "icon": "Icon",
+          "cancel": "Cancel",
+          "save": "Save"
+        }
+      },
+      "connections": {
+        "header": "New connections ",
+        "info": {
+          "panelheader": "Project Info",
+          "panel2header": "Connection Info",
+          "project": "Projects",
+          "select": "Select project",
+          "connection-info": "Connections Info",
+          "name": "Name",
+          "description": "Description",
+          "icon": "Icon",
+          "submit": "Submit"
+        }
+      },
+      "new-query": {
+        "header": "New Query ",
+        "panel1": {
+          "header": "Connection Info",
+          "label1": "Projects",
+          "label2": "Connections",
+          "select1": "Select project",
+          "select2": "Select connection"
+        },
+        "panel2": {
+          "header": "Query Info",
+          "name": "Name",
+          "description": "Description",
+          "icon": "Icon",
+          "query": "Query",
+          "transformer": "Tranformer",
+          "select1": "Select transformer"
+        },
+        "footer": {
+          "cancel": "Cancel",
+          "save": "Save"
+        }
+      },
+      "new-transformer": {
+        "header": "New Transformer ",
+        "panel1": {
+          "header": "Project Info",
+          "label1": "Projects",
+          "select": "Select project"
+        },
+        "panel2": {
+          "header": "Transformer Info",
+          "name": "Name",
+          "description": "Description",
+          "icon": "Icon"
+        },
+        "footer": {
+          "cancel": "Cancel",
+          "save": "Save"
+        }
+      }
     }
+  },
+
+  "tooltips": {
+    "hide-menu-bar": "Hide Menu Bar",
+    "show-menu-bar": "Show Menu Bar",
+    "change-language": "Change Language",
+    "toggle-theme": "Toggle Theme",
+    "toggle-focus": "Toggle Focus",
+    "minimize": "Minimize",
+    "maximize": "Maximize",
+    "close": "Close",
+    "hide-content-tools": "Hide Content Tools",
+    "show-content-tools": "Show Content Tools",
+    "project": "Project",
+    "search": "Search",
+    "logout": "Logout",
+    "help": "Help",
+    "profile": "User profile",
+    "settings": "Open Settings"
   }
 }

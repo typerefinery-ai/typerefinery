@@ -1,0 +1,21 @@
+.p-progressbar {
+  border-radius: 0;
+}
+.p-progressbar.p-progressbar-determinate .p-progressbar-label {
+  display: none;
+}
+.p-progressbar {
+  border: 0 none;
+  height: 4px;
+  background: rgba(63, 81, 181, 0.32);
+  border-radius: 4px;
+}
+.p-progressbar .p-progressbar-value {
+  border: 0 none;
+  margin: 0;
+  background: #3f51b5;
+}
+.p-progressbar .p-progressbar-label {
+  color: #ffffff;
+  line-height: 4px;
+}

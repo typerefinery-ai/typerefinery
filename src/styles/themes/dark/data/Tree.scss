@@ -1,0 +1,123 @@
+.p-tree .p-tree-container .p-treenode .p-treenode-content:focus {
+  background: rgba(255, 255, 255, 0.12);
+}
+.p-tree .p-tree-container .p-treenode .p-treenode-content:focus.p-highlight {
+  background: rgba(159, 168, 218, 0.24);
+}
+
+.p-tree {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: #1e1e1e;
+  color: rgba(255, 255, 255, 0.87);
+  padding: 0.75rem;
+  border-radius: 4px;
+}
+.p-tree .p-tree-container .p-treenode {
+  padding: 0.25rem;
+}
+.p-tree .p-tree-container .p-treenode .p-treenode-content {
+  border-radius: 4px;
+  transition: none;
+  padding: 0.25rem;
+}
+.p-tree .p-tree-container .p-treenode .p-treenode-content .p-tree-toggler {
+  margin-right: 0.5rem;
+  width: 2rem;
+  height: 2rem;
+  color: rgba(255, 255, 255, 0.6);
+  border: 0 none;
+  background: transparent;
+  border-radius: 50%;
+  transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
+}
+.p-tree
+  .p-tree-container
+  .p-treenode
+  .p-treenode-content
+  .p-tree-toggler:enabled:hover {
+  color: rgba(255, 255, 255, 0.6);
+  border-color: transparent;
+  background: rgba(255, 255, 255, 0.04);
+}
+.p-tree
+  .p-tree-container
+  .p-treenode
+  .p-treenode-content
+  .p-tree-toggler:focus {
+  outline: 0 none;
+  outline-offset: 0;
+  box-shadow: none;
+}
+.p-tree .p-tree-container .p-treenode .p-treenode-content .p-treenode-icon {
+  margin-right: 0.5rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+.p-tree .p-tree-container .p-treenode .p-treenode-content .p-checkbox {
+  margin-right: 0.5rem;
+}
+.p-tree
+  .p-tree-container
+  .p-treenode
+  .p-treenode-content
+  .p-checkbox
+  .p-indeterminate
+  .p-checkbox-icon {
+  color: rgba(255, 255, 255, 0.87);
+}
+.p-tree .p-tree-container .p-treenode .p-treenode-content:focus {
+  outline: 0 none;
+  outline-offset: 0;
+  box-shadow: none;
+}
+.p-tree .p-tree-container .p-treenode .p-treenode-content.p-highlight {
+  background: rgba(159, 168, 218, 0.16);
+  color: #9fa8da;
+}
+.p-tree
+  .p-tree-container
+  .p-treenode
+  .p-treenode-content.p-highlight
+  .p-tree-toggler,
+.p-tree
+  .p-tree-container
+  .p-treenode
+  .p-treenode-content.p-highlight
+  .p-treenode-icon {
+  color: #9fa8da;
+}
+.p-tree
+  .p-tree-container
+  .p-treenode
+  .p-treenode-content.p-highlight
+  .p-tree-toggler:hover,
+.p-tree
+  .p-tree-container
+  .p-treenode
+  .p-treenode-content.p-highlight
+  .p-treenode-icon:hover {
+  color: #9fa8da;
+}
+.p-tree
+  .p-tree-container
+  .p-treenode
+  .p-treenode-content.p-treenode-selectable:not(.p-highlight):hover {
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.87);
+}
+.p-tree .p-tree-filter-container {
+  margin-bottom: 0.5rem;
+}
+.p-tree .p-tree-filter-container .p-tree-filter {
+  width: 100%;
+  padding-right: 1.75rem;
+}
+.p-tree .p-tree-filter-container .p-tree-filter-icon {
+  right: 0.75rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+.p-tree .p-treenode-children {
+  padding: 0 0 0 1rem;
+}
+.p-tree .p-tree-loading-icon {
+  font-size: 2rem;
+}

@@ -1,12 +1,18 @@
 {
   "extends": "@vue/tsconfig/tsconfig.node.json",
-  "include": ["src/**/__tests__/*"],
+  "include": ["src/*","src/locales/*.json"],
   "compilerOptions": {
     "composite": true,
+    "experimentalDecorators": true,
+    "suppressImplicitAnyIndexErrors": true,
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
     },
-    "types": ["node", "jsdom"]
-  }
+    "types": ["node", "jsdom"],
+    "typeRoots": [
+      "src/types",
+      "node_modules/@types",
+    ],
+  },
 }

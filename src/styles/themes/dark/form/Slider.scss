@@ -1,0 +1,51 @@
+.p-slider {
+  background: rgba(255, 255, 255, 0.3);
+  border: 0 none;
+  border-radius: 4px;
+}
+.p-slider.p-slider-horizontal {
+  height: 2px;
+}
+.p-slider.p-slider-horizontal .p-slider-handle {
+  margin-top: -10px;
+  margin-left: -10px;
+}
+.p-slider.p-slider-vertical {
+  width: 2px;
+}
+.p-slider.p-slider-vertical .p-slider-handle {
+  margin-left: -10px;
+  margin-bottom: -10px;
+}
+.p-slider .p-slider-handle {
+  height: 20px;
+  width: 20px;
+  background: #9fa8da;
+  border: 0 none;
+  border-radius: 50%;
+  transition: background-color 0.2s, border-color 0.2s, color 0.2s,
+    box-shadow 0.2s, background-size 0.2s cubic-bezier(0.64, 0.09, 0.08, 1);
+}
+.p-slider .p-slider-handle:focus {
+  outline: 0 none;
+  outline-offset: 0;
+  box-shadow: none;
+}
+.p-slider .p-slider-range {
+  background: #9fa8da;
+}
+.p-slider:not(.p-disabled) .p-slider-handle:hover {
+  background: #9fa8da;
+  border-color: 0 none;
+}
+
+.p-slider .p-slider-handle {
+  transition: transform 0.2s, box-shadow 0.2s;
+  transform: scale(0.7);
+}
+.p-slider .p-slider-handle:focus {
+  box-shadow: 0 0 1px 10px rgba(244, 143, 177, 0.2);
+}
+.p-slider.p-slider-sliding .p-slider-handle {
+  transform: scale(1);
+}

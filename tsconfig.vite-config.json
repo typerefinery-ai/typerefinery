@@ -3,6 +3,12 @@
   "include": ["vite.config.*"],
   "compilerOptions": {
     "composite": true,
-    "types": ["node", "vitest"]
+    "experimentalDecorators": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "types": ["node", "vitest"],
+    "typeRoots": [
+      "src/types",
+      "node_modules/@types",
+    ],
   }
 }

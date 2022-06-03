@@ -1,0 +1,19 @@
+.p-fluid .p-inputgroup .p-button {
+  width: auto;
+}
+.p-fluid .p-inputgroup .p-button.p-button-icon-only {
+  width: 2.25rem;
+}
+
+.p-fluid .p-button {
+  width: 100%;
+}
+.p-fluid .p-button-icon-only {
+  width: 2.25rem;
+}
+.p-fluid .p-buttonset {
+  display: flex;
+}
+.p-fluid .p-buttonset .p-button {
+  flex: 1;
+}

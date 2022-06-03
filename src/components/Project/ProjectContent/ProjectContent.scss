@@ -1,22 +1,24 @@
-.app-main {
-  flex: 1;
-  display: flex;
-  width: 100%;
-
-  .sidbar-pane {
-    min-width: 50px;
-  }
-
-  .content-pane:last-of-type {
+#body {
+  .app-main {
     flex: 1;
-  }
+    display: flex;
+    width: 100%;
 
-  .content-area {
-    flex: 1;
-    height: 100%;
+    .sidebar-pane {
+      min-width: 50px;
+    }
 
-    .splitpanes__splitter {
-      display: block;
+    .content-pane:last-of-type {
+      flex: 1;
+    }
+
+    .content-area {
+      flex: 1;
+      height: 100%;
+
+      .splitpanes__splitter {
+        display: block;
+      }
     }
   }
 }

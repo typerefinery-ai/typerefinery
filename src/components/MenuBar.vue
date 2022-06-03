@@ -1,144 +1,252 @@
 <template>
   <div class="menu-bar" :class="{ focus: focus }">
-    <div
+    <!-- service icons -->
+    <services-info :variant="'buttons'" />
+
+    <!-- menu icons -->
+    <menu-item
       v-if="!menuBarVisible"
-      v-tooltip.bottom="'Show Menu Bar'"
-      class="menu-item hover:text-indigo-600 hover:border-indigo-600"
-      @click="$emit('toggle')"
+      tooltip="show-menu-bar"
+      :on-click="() => $emit('toggle')"
     >
-      <chevron-down :size="18" />
-    </div>
-    <div
-      v-tooltip.bottom="'Toggle Language'"
-      class="menu-item hover:text-indigo-600 hover:border-indigo-600"
-      @click="toggleLanguage"
-    >
-      <globe-icon :size="18" />
-    </div>
-    <div
-      v-tooltip.bottom="'Toggle Theme'"
-      class="menu-item hover:text-indigo-600 hover:border-indigo-600"
-      @click="toggleTheme"
-    >
-      <palette-icon :size="18" />
-    </div>
-    <div
-      v-tooltip.bottom="'Toggle Focus'"
-      class="menu-item hover:text-indigo-600 hover:border-indigo-600"
-      @click="toggleFocus"
-    >
+      <i class="pi pi-angle-double-down"></i>
+    </menu-item>
+    <menu-item tooltip="help" :on-click="toggleHelp">
+      <i class="pi pi-info-circle"></i>
+    </menu-item>
+    <menu-item tooltip="change-language" :on-click="toggleMenu">
+      <i class="pi pi-globe"></i>
+    </menu-item>
+    <menu-item tooltip="toggle-theme" :on-click="toggleTheme">
+      <i v-if="theme === 'light'" class="pi pi-sun font-bold"></i>
+      <i v-else class="pi pi-moon"></i>
+    </menu-item>
+    <menu-item tooltip="toggle-focus" :on-click="toggleFocus">
       <focus-icon :size="18" />
-    </div>
-    <div
-      v-tooltip.bottom="'Minimize'"
-      class="menu-item hover:text-indigo-600 hover:border-indigo-600"
+    </menu-item>
+    <menu-item tooltip="profile" :on-click="openSettings">
+      <span v-if="nickname" class="mr-1">{{ nickname }}</span>
+      <user-icon :size="18" />
+    </menu-item>
+
+    <!-- electron only icons -->
+    <menu-item
+      v-if="isElectron"
+      tooltip="minimize"
+      :on-click="() => handleMenu('min')"
     >
-      <minus-icon :size="18" />
-    </div>
-    <div
-      v-tooltip.bottom="'Maximize'"
-      class="menu-item hover:text-indigo-600 hover:border-indigo-600"
+      <i class="pi pi-minus"></i>
+    </menu-item>
+    <menu-item
+      v-if="isElectron"
+      tooltip="maximize"
+      :on-click="() => handleMenu('max')"
     >
       <max-icon :size="18" />
-    </div>
-    <div
-      v-tooltip.left="'Close'"
-      class="menu-item hover:text-indigo-600 hover:border-indigo-600"
+    </menu-item>
+    <menu-item
+      v-if="isElectron"
+      tooltip="close"
+      :on-click="() => handleMenu('close')"
     >
       <close-icon :size="18" />
-    </div>
+    </menu-item>
   </div>
+
+  <!-- language options -->
+  <Menu ref="menu" :model="langs" :popup="true">
+    <template #item="{ item }">
+      <div
+        class="p-menuitem-link"
+        :class="{ active: item.value === $i18n.locale }"
+        @click="toggleLanguage(item.value)"
+      >
+        {{ item.label }}
+      </div>
+    </template>
+  </Menu>
+
+  <!-- help options -->
+  <Menu ref="help" class="help-menu" :model="helpMenu" :popup="true">
+    <template #item="{ item }">
+      <div class="p-menuitem-link" @click="openLink(item.value)">
+        {{ item.label }} <i class="pi pi-external-link"></i>
+      </div>
+    </template>
+  </Menu>
 </template>
 
 <script>
-  import ChevronDown from "vue-material-design-icons/ChevronDoubleDown.vue"
-  import FocusIcon from "vue-material-design-icons/BullseyeArrow.vue"
-  import PaletteIcon from "vue-material-design-icons/PaletteOutline.vue"
-  import CloseIcon from "vue-material-design-icons/Close.vue"
-  import MinusIcon from "vue-material-design-icons/Minus.vue"
-  import MaxIcon from "vue-material-design-icons/CheckboxMultipleBlankOutline.vue"
-  import GlobeIcon from "vue-material-design-icons/Web.vue"
-
-  import AppSettings from "@/store/Modules/AppSettings"
+  import Menu from "primevue/menu"
   import { getModule } from "vuex-module-decorators"
+  import UserIcon from "vue-material-design-icons/AccountCircle.vue"
+  import FocusIcon from "vue-material-design-icons/BullseyeArrow.vue"
+  import CloseIcon from "vue-material-design-icons/Close.vue"
+  import MaxIcon from "vue-material-design-icons/CheckboxMultipleBlankOutline.vue"
+  import AppSettings from "@/store/Modules/AppSettings"
+  import ServicesInfo from "./Services"
+  import { setThemeURL } from "@/utils/theme"
+  import * as electronHelpers from "@/utils/electron"
+  import { locales } from "@/i18n"
+  import MenuItem from "./MenuItem.vue"
   const appSettings = getModule(AppSettings)
+  import Auth from "@/store/Modules/Auth"
+  const appAuth = getModule(Auth)
 
-  console.log(appSettings)
   export default {
     name: "MenuBar",
     components: {
-      ChevronDown,
       FocusIcon,
-      PaletteIcon,
       CloseIcon,
-      MinusIcon,
       MaxIcon,
-      GlobeIcon,
+      ServicesInfo,
+      UserIcon,
+      Menu,
+      MenuItem,
     },
+
     props: {
       menuBarVisible: { type: Boolean, required: true },
     },
+
     emits: ["toggle"],
+
+    data() {
+      return {
+        langs: [
+          {
+            label: "English",
+            value: "en",
+            command: (e) => {
+              this.toggleLanguage(e)
+            },
+          },
+          {
+            label: "हिन्दी",
+            value: "hi",
+            command: (e) => {
+              this.toggleLanguage(e)
+            },
+          },
+        ],
+        helpMenu: [
+          {
+            label: "Docs",
+            value: "https://typerefinery.ai/",
+          },
+          {
+            label: "Github",
+            value: "https://github.com/innovolve-ai/typerefinery",
+          },
+        ],
+      }
+    },
+
     computed: {
+      nickname() {
+        return appAuth.alias ? appAuth.alias : appAuth.username
+      },
       focus() {
         return appSettings.focus
       },
+      theme() {
+        return appSettings.theme
+      },
+      isElectron() {
+        return electronHelpers.isElectron()
+      },
     },
+
+    created() {
+      const systemLang = navigator.language.substring(0, 2)
+      const theme = appSettings?.theme || "light"
+      const langInStore = appSettings?.language
+      setThemeURL(theme)
+
+      if (systemLang && !langInStore) {
+        if (locales.includes(systemLang)) {
+          this.setLanguage(systemLang)
+          window.api?.request("lang-change", systemLang)
+        }
+      } else {
+        window.api?.request("lang-change", langInStore)
+      }
+    },
+
     methods: {
-      toggleLanguage() {
-        const value = this.$i18n.locale === "hi" ? "en" : "hi"
-        appSettings.setLanguage(value)
-        this.$i18n.locale = value
+      toggleLanguage(value) {
+        this.setLanguage(value)
+        window.api?.request("lang-change", value)
+        this.$refs.menu.toggle()
+      },
+
+      setLanguage(lang) {
+        appSettings.setLanguage(lang)
+        this.$i18n.locale = lang
       },
 
       toggleTheme() {
-        const theme = appSettings.theme
-        if (theme === "greenTheme") {
-          appSettings.setTheme("redTheme")
-        } else {
-          appSettings.setTheme("greenTheme")
-        }
+        const theme = this.theme === "dark" ? "light" : "dark"
+        appSettings.setTheme(theme)
+        setThemeURL(theme)
       },
 
       toggleFocus() {
         appSettings.toggleFocus()
+      },
+
+      toggleMenu(event) {
+        this.$refs.menu.toggle(event)
+      },
+
+      toggleHelp(event) {
+        this.$refs.help.toggle(event)
+      },
+
+      handleMenu(e) {
+        window.api?.request("menu-click", e)
+      },
+
+      openLink(url) {
+        window.open(url, "_blank")
+      },
+
+      openSettings() {
+        appSettings.openSettingsDialog("profile/alias")
       },
     },
   }
 </script>
 
 <style lang="scss">
-  .menu-bar {
-    display: flex;
-    position: absolute;
-    right: 5px;
-    top: 5px;
-    /* padding: 5px; */
-    /* border-bottom: 1px solid #dee2e6;
-    border-left: 1px solid #dee2e6; */
-    color: #495057;
-
-    &.focus {
-      right: 6px;
-      top: 6px;
+  #body {
+    .menu-bar {
+      display: flex;
+      position: absolute;
+      right: 5px;
+      top: 5px;
+      -webkit-app-region: no-drag;
     }
 
-    .menu-item {
-      cursor: pointer;
-      width: 25px;
-      height: 25px;
-      border: 1px solid #dee2e6;
+    .help-menu.p-menu {
+      width: auto;
+      font-size: 14px;
 
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      .p-menuitem-link {
+        width: 8rem;
 
-      &:not(:last-of-type) {
-        margin-right: 2px;
+        i {
+          margin-left: 5px;
+          font-size: 10px;
+          position: relative;
+          top: 1px;
+        }
       }
+    }
 
-      .material-design-icon {
-        display: flex;
+    .p-menuitem-link {
+      &.active {
+        background: var(--surface-c);
       }
     }
   }

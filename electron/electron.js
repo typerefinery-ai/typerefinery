@@ -1,20 +1,26 @@
-// electron/electron.js
 const path = require("path")
-const { app, BrowserWindow } = require("electron")
+const { app, BrowserWindow, ipcMain, Tray, dialog } = require("electron")
+const i18n = require("./i18next.config")
+const config = require("../package.json")
+const servicesUtils = require("./services")
+require("dotenv").config()
 
 const isDev = process.env.NODE_ENV == "dev"
+let mainWindow
+let tray
 
 function createWindow() {
   // Create the browser window.
-  const mainWindow = new BrowserWindow({
-    width: 1366,
-    height: 768,
+  mainWindow = new BrowserWindow({
+    width: +config.appWidth,
+    height: +config.appHeight,
+    show: false,
     frame: false,
+    icon: path.join(__dirname, "./assets/icon.png"),
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
       nodeIntegration: true,
     },
-    title: require("../package.json").electronWindowTitle,
   })
 
   // and load the index.html of the app.
@@ -24,9 +30,38 @@ function createWindow() {
       ? "http://localhost:3000"
       : `file://${path.join(__dirname, "../dist/index.html")}`
   )
+
+  //splash screen
+  var splash = new BrowserWindow({ 
+    width: 500, 
+    height: 550, 
+    transparent: true, 
+    frame: false, 
+    alwaysOnTop: true,
+    icon: path.join(__dirname, "./assets/icon.png"),     //added icon for loader.
+  });
+  
+  splash.loadURL(path.join(__dirname, "./loader/splash.html"));
+  splash.center();
+  setTimeout(function () {
+    splash.close();
+    mainWindow.center();
+    mainWindow.show();
+  }, 5000);
+
+  
+  //tray
+  tray = new Tray(path.join(__dirname, "./assets/icon.png"))
+
+  tray.setToolTip("Innovolve app")
+
+  tray.on("click", () => {
+    mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show()
+  })
+
   // Open the DevTools.
   if (isDev) {
-    // mainWindow.webContents.openDevTools()
+    mainWindow.webContents.openDevTools()
   }
 }
 
@@ -40,12 +75,48 @@ app.whenReady().then(() => {
     // dock icon is clicked and there are no other windows open.
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })
+
+  ipcMain.on("menu-click", (e, action) => {
+    if (action === "min") {
+      mainWindow.minimize()
+    } else if (action === "max") {
+      mainWindow.isMaximized() ? mainWindow.unmaximize() : mainWindow.maximize()
+    } else if (action === "close") {
+      mainWindow.close()
+    }
+  })
+
+  ipcMain.on("lang-change", (e, lang) => {
+    i18n.changeLanguage(lang)
+    mainWindow.setTitle(i18n.t("app.title"))
+  })
+
+  mainWindow.on("close", function (e) {
+    const choice = dialog.showMessageBoxSync(this, {
+      type: "question",
+      buttons: [i18n.t("prompt.quit"), i18n.t("prompt.minimize")],
+      title: i18n.t("prompt.confirm"),
+      message: i18n.t("prompt.msg"),
+    })
+    if (choice === 1) {
+      e.preventDefault()
+      mainWindow.hide()
+    } else {
+      servicesUtils.stopServices()
+    }
+  })
+
+  // wait for window to be ready before loading services.
+  mainWindow.on("ready", function () {
+    servicesUtils.init(mainWindow)
+  })
 })
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
 app.on("window-all-closed", () => {
+  servicesUtils.stopServices()
   if (process.platform !== "darwin") {
     app.quit()
   }

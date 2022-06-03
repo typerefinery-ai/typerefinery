@@ -1,0 +1,28 @@
+.p-tag {
+  background: #9fa8da;
+  color: #121212;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.25rem 0.4rem;
+  border-radius: 4px;
+}
+.p-tag.p-tag-success {
+  background-color: #c5e1a5;
+  color: #212121;
+}
+.p-tag.p-tag-info {
+  background-color: #90caf9;
+  color: #212121;
+}
+.p-tag.p-tag-warning {
+  background-color: #fff59d;
+  color: #212121;
+}
+.p-tag.p-tag-danger {
+  background-color: #ef9a9a;
+  color: #212121;
+}
+.p-tag .p-tag-icon {
+  margin-right: 0.25rem;
+  font-size: 0.75rem;
+}

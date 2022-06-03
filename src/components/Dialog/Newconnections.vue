@@ -1,0 +1,165 @@
+<template>
+  <Dialog
+    class="connection-dialog"
+    :visible="true"
+    modal
+    :closable="true"
+    :breakpoints="{ '960px': '75vw', '640px': '100vw' }"
+  >
+    <template #header>
+      <span class="p-dialog-title">
+        {{ $t("components.dialog.connections.header") }}
+      </span>
+      <div class="p-dialog-header-icons">
+        <button
+          class="p-dialog-header-icon p-dialog-header-close p-link"
+          aria-label="close"
+          type="button"
+          @click="conncetioncloseDialog"
+        >
+          <span class="p-dialog-header-close-icon pi pi-times"></span>
+        </button>
+      </div>
+    </template>
+     <Panel :header="$t(`components.dialog.connections.info.panelheader`)">
+    <div class="field">
+      <label for="expand">{{
+        $t("components.dialog.connections.info.project")
+      }}</label>
+      <Dropdown
+        :options="projectList"
+        v-model="selected"
+        optionLabel="name"
+        optionValue="key"
+        :placeholder="$t(`components.dialog.connections.info.select`)"
+        class="p-invalid"
+      />
+    </div>
+     </Panel>
+     <Panel :header="$t(`components.dialog.connections.info.panel2header`)"  class="panel2">
+    <div class="field">
+      <label for="name">{{
+        $t("components.dialog.connections.info.name")
+      }}</label>
+      <InputText id="name" v-model="name" class="p-invalid" />
+    </div>
+    <div class="field">
+      <label for="des">{{
+        $t("components.dialog.connections.info.description")
+      }}</label>
+      <InputText id="des" v-model="des" class="p-invalid" />
+    </div>
+    <div class="field">
+      <label for="icon">{{
+        $t("components.dialog.connections.info.icon")
+      }}</label>
+      <InputText id="icon" v-model="icon" class="p-invalid" />
+    </div>
+     </Panel>
+    <template #footer>
+      <Button
+        :label="$t(`components.dialog.new-transformer.footer.cancel`)"
+        icon="pi pi-times"
+        class="p-button-text"
+        @click="conncetioncloseDialog"
+      />
+      <Button
+        :label="$t(`components.dialog.new-transformer.footer.save`)"
+        icon="pi pi-check"
+        autofocus
+        @click="handleconnectionstore"
+      />
+    </template>
+  </Dialog>
+</template>
+
+<script>
+import Dialog from "primevue/dialog"
+import Avatar from "primevue/avatar"
+import Dropdown from "primevue/dropdown"
+import InputText from "primevue/inputtext"
+import Button from "primevue/button"
+import Panel from "primevue/panel"
+import Projects from "@/store/Modules/Projects"
+import { getModule } from "vuex-module-decorators"
+const appProjects = getModule(Projects)
+console.log(appProjects.projectList)
+
+export default {
+  name: "NewConnections",
+  components: {
+    Dialog,
+    Avatar,
+    Panel,
+    InputText,
+    Button,
+    Dropdown,
+  },
+  props: {
+    connectiondialog: { type: Boolean, default: false },
+  },
+  data() {
+    return {
+      type: "Connection",
+      name: "",
+      expanded: "",
+      description: "",
+      icon: "",
+      display: true,
+      selected: null,
+    }
+  },
+  computed: {
+    projectList() {
+      return appProjects.projectList
+    },
+  },
+  emits: ["close"],
+  methods: {
+    conncetioncloseDialog() {
+      this.$emit("close")
+    },
+    handleconnectionstore() {
+      const data = {
+        name: this.selected,
+        list: {
+          name: this.name,
+          icon: this.icon,
+          description: this.des,
+          type: "connection",
+        },
+      }
+      appProjects.addNewConnection(data)
+      this.$emit("close")
+    },
+  },
+}
+</script>
+<style  lang="scss">
+input {
+  width: 80%;
+}
+.field {
+  display: grid;
+}
+.connection-dialog {
+  height: 100vh;
+  width: 40vw;
+  .p-dropdown {
+    width: 80%;
+  }
+  .p-dialog-content {
+    height: 100%;
+  }
+  .panel2 {
+      margin-top: 10px;
+    }
+  .p-dialog-header {
+    padding: 1.25rem 1.8rem;
+
+    .p-dialog-header-icons:last-of-type {
+      display: none;
+    }
+  }
+}
+</style>

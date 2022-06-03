@@ -1,15 +1,12 @@
 import { createApp } from "vue"
 import PrimeVue from "primevue/config"
+import InputText from "primevue/inputtext"
 import Tooltip from "primevue/tooltip"
 import i18n from "./i18n"
 import App from "./App.vue"
 import router from "./router"
 import store from "./store"
 import { loadFonts } from "./plugins/webfontloader"
-import "primevue/resources/themes/mdc-light-indigo/theme.css"
-import "primevue/resources/primevue.min.css"
-import "primeicons/primeicons.css"
-import "primeflex/primeflex.css"
 
 loadFonts()
 
@@ -21,3 +18,4 @@ app.use(store)
 app.use(PrimeVue)
 app.directive("tooltip", Tooltip)
 app.mount("#app")
+app.component("InputText", InputText)

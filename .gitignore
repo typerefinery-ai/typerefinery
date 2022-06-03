@@ -1,7 +1,9 @@
 .DS_Store
 node_modules
 /dist
+.prettierignore
 
+# Cypress report files
 /cypress/videos/
 /cypress/screenshots/
 /cypress/reports/
@@ -36,3 +38,14 @@ lerna-debug.log*
 
 #Electron-builder output
 /dist_electron
+
+# python cache files
+services/_python/Lib
+services/_python/Scripts
+
+# service specific folders
+__pycache__
+__packages__
+
+# type db data
+services/typedb/server/data/**/*

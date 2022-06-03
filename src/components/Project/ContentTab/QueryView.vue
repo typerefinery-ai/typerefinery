@@ -5,7 +5,7 @@
         <div class="block p-4 pb-2">
           <span class="p-float-label">
             <InputText id="name" v-model="name" class="w-full" type="text" />
-            <label for="name">Name</label>
+            <label for="name">{{ $t(`components.project.name`) }}</label>
           </span>
         </div>
 
@@ -19,7 +19,7 @@
               cols="30"
               class="w-full"
             />
-            <label for="query">Query</label>
+            <label for="query">{{ $t(`components.tab.query`) }}</label>
           </span>
         </div>
       </div>
@@ -28,14 +28,14 @@
 </template>
 
 <script>
-  import InputText from "primevue/inputtext"
-  import Textarea from "primevue/textarea"
-  export default {
-    name: "QueryView",
-    components: { InputText, Textarea },
-    data: () => ({
-      query: "",
-      name: "",
-    }),
-  }
+import InputText from "primevue/inputtext"
+import Textarea from "primevue/textarea"
+export default {
+  name: "QueryView",
+  components: { InputText, Textarea },
+  data: () => ({
+    query: "",
+    name: "",
+  }),
+}
 </script>

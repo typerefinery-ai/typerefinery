@@ -7,7 +7,7 @@ on:
     tags:
       - "*"
   pull_request:
-    types: [opened, reopened]
+    types: [opened, reopened, synchronize]
 
 jobs:
   branch-naming-rules:
@@ -18,9 +18,9 @@ jobs:
         uses: deepakputhraya/action-branch-name@master
         if: "!startsWith(github.ref, 'refs/tags/')"
         with:
-          regex: '([a-z])+\/([a-z])+' # Regex the branch should match. This example enforces grouping
+          regex: '([a-z])+\/([#0-9a-z-])+' # Regex the branch should match. This example enforces grouping
           allowed_prefixes: "feature,stable,fix" # All branches should start with the given prefix
-          ignore: master,develop # Ignore exactly matching branch names from convention
+          ignore: main,master,develop # Ignore exactly matching branch names from convention
           min_length: 5 # Min length of the branch name
           max_length: 200 # Max length of the branch name
       - name: Skipped
@@ -34,7 +34,7 @@ jobs:
 
     strategy:
       matrix:
-        node: [17.6.0]
+        node: [18.3.0]
         os: [macos-latest, ubuntu-latest, windows-latest]
         include:
           - os: ubuntu-latest
@@ -45,30 +45,36 @@ jobs:
             friendlyName: Unit Test - Windows
     steps:
       - name: Check out Git repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Install Node.js, NPM and Yarn
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node }}
 
+      - name: Get npm cache directory
+        id: npm-cache-dir
+        run: |
+          echo "::set-output name=dir::$(npm config get cache)"
+
       - name: Cache node modules
-        uses: actions/cache@v2
-        env:
-          cache-name: cache-node-modules
+        uses: actions/cache@v3
+        id: npm-cache # use this to check for `cache-hit` ==> if: steps.npm-cache.outputs.cache-hit != 'true'
         with:
-          # npm cache files are stored in `~/.npm` on Linux/macOS
-          path: ~/.npm
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          path: ${{ steps.npm-cache-dir.outputs.dir }}
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
+            ${{ runner.os }}-node-
+
       - name: Run Install
         run: |
           npm install
-      - name: Run Unit Test
-        run: npm run test:unit
+      - name: Run Lint
+        run: |
+          npm run lint:style
+      - name: Run Typecheck
+        run: |
+          npm run typecheck
 
   functional-test:
     needs: [unit-test]
@@ -77,10 +83,11 @@ jobs:
     runs-on: ${{ matrix.os }}
     env:
       NODE_ENV: development
+      NODE_OPTIONS: '--max_old_space_size=4096'
 
     strategy:
       matrix:
-        node: [17.6.0]
+        node: [18.3.0]
         os: [ubuntu-latest]
         include:
           - os: ubuntu-latest
@@ -88,12 +95,65 @@ jobs:
 
     steps:
       - name: Check out Git repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      - name: Run Cypress using Docker
+      - name: Install Node.js, NPM and Yarn
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Get npm cache directory
+        id: npm-cache-dir
         run: |
-          docker compose up --exit-code-from server
+          echo "::set-output name=dir::$(npm config get cache)"
+
+      - name: Cache node modules
+        uses: actions/cache@v3
+        id: npm-cache # use this to check for `cache-hit` ==> if: steps.npm-cache.outputs.cache-hit != 'true'
+        with:
+          path: ${{ steps.npm-cache-dir.outputs.dir }}
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Run Install
+        run: |
+          npm install
+
+      - name: Cypress run
+        uses: cypress-io/github-action@v4
+        with:
+          config: pageLoadTimeout=100000,baseUrl=http://localhost:8080
+          wait-on: 'http://localhost:8080'
+          install: false
+          build: |
+            npm run build
+          start: |
+            npm run preview
+          command: |
+            npm run test:ci
+
+      - name: Generate Reports
+        run: |
+          npm run posttest
+      # # This workaround is required for running npm install
+      # - name: Set permissions
+      #   run: |
+      #     chmod -R 777 ./
+
+      # - name: Run Cypress using Docker
+      #   id: cypress
+      #   continue-on-error: true
+      #   run: |
+      #     docker compose --profile testing up --exit-code-from cypress
+
+      # - name: Generate Reports using Docker
+      #   continue-on-error: true
+      #   run: |
+      #     docker compose --profile reports up reports
+
       - name: Deploy Reports to gh-pages
+        if: always()
         uses: JamesIves/github-pages-deploy-action@v4.2.5
         with:
           branch: gh-pages
@@ -101,14 +161,14 @@ jobs:
 
   release:
     needs: [unit-test, functional-test]
-    if: "!contains(github.event.head_commit.message, 'skip ci')"
+    if: "!contains(github.event.head_commit.message, 'skip ci') && startsWith(github.ref, 'refs/tags/v')"
     name: ${{ matrix.friendlyName }}
     runs-on: ${{ matrix.os }}
     env:
       NODE_ENV: develop
     strategy:
       matrix:
-        node: [17.6.0]
+        node: [18.3.0]
         os: [macos-latest, ubuntu-latest, windows-latest]
         include:
           - os: ubuntu-latest
@@ -119,33 +179,58 @@ jobs:
             friendlyName: Release - Windows
     steps:
       - name: Check out Git repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Install Node.js, NPM and Yarn
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node }}
 
-      - name: Run Install
+      - name: Get npm cache directory
+        id: npm-cache-dir
         run: |
-          npm install
-      - name: Build electron
-        run: |
-          npm run app:build
-          ls -l dist_electron
-      - name: Release
-        uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
+          echo "::set-output name=dir::$(npm config get cache)"
+
+      - name: Cache node modules
+        uses: actions/cache@v3
+        id: npm-cache # use this to check for `cache-hit` ==> if: steps.npm-cache.outputs.cache-hit != 'true'
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          fail_on_unmatched_files: false
-          generate_release_notes: true
-          files: |
-            dist_electron/*.exe
-            dist_electron/*.exe.blockmap
-            dist_electron/*.AppImage
-            dist_electron/*.snap
-            dist_electron/*-mac.zip
-            dist_electron/*.dmg
-            dist_electron/*.dmg.blockmap
-            dist_electron/latest*.yml
+          path: ${{ steps.npm-cache-dir.outputs.dir }}
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Build/release Electron app
+        uses: samuelmeuli/action-electron-builder@v1
+        with:
+          # GitHub token, automatically provided to the action
+          # (No need to define this secret in the repo settings)
+          github_token: ${{ secrets.github_token }}
+
+          # If the commit is tagged with a version (e.g. "v1.0.0"),
+          # release the app after building
+          release: ${{ startsWith(github.ref, 'refs/tags/v') }}
+
+      # - name: Build electron
+      #   run: |
+      #     npm run app:build
+      #   env:
+      #     GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # - name: Release
+      #   uses: softprops/action-gh-release@v1
+      #   if: startsWith(github.ref, 'refs/tags/')
+      #   with:
+      #     token: ${{ secrets.GITHUB_TOKEN }}
+      #     fail_on_unmatched_files: false
+      #     generate_release_notes: true
+      #     files: |
+      #       dist_electron/*.exe
+      #       dist_electron/*.exe.blockmap
+      #       dist_electron/*.AppImage
+      #       dist_electron/*.snap
+      #       dist_electron/*-mac.zip
+      #       dist_electron/*.dmg
+      #       dist_electron/*.dmg.blockmap
+      #       dist_electron/latest*.yml
+

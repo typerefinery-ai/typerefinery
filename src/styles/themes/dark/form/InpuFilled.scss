@@ -1,0 +1,947 @@
+.p-input-filled
+  .p-autocomplete.p-autocomplete-multiple
+  .p-autocomplete-multiple-container {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border: 1px solid transparent;
+  background: rgba(255, 255, 255, 0.06) no-repeat;
+  background-image: linear-gradient(to bottom, #9fa8da, #9fa8da),
+    linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.3),
+      rgba(255, 255, 255, 0.3)
+    );
+  background-size: 0 2px, 100% 1px;
+  background-position: 50% 100%, 50% 100%;
+  background-origin: border-box;
+}
+.p-input-filled
+  .p-autocomplete.p-autocomplete-multiple
+  .p-autocomplete-multiple-container
+  .p-inputtext {
+  background-image: none;
+  background: transparent;
+}
+.p-input-filled
+  .p-autocomplete.p-autocomplete-multiple
+  .p-autocomplete-multiple-container:not(.p-disabled):hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  border-color: transparent;
+  background-image: linear-gradient(to bottom, #9fa8da, #9fa8da),
+    linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.87),
+      rgba(255, 255, 255, 0.87)
+    );
+}
+.p-input-filled
+  .p-autocomplete.p-autocomplete-multiple
+  .p-autocomplete-multiple-container:not(.p-disabled).p-focus,
+.p-input-filled
+  .p-autocomplete.p-autocomplete-multiple
+  .p-autocomplete-multiple-container:not(.p-disabled).p-inputwrapper-focus {
+  box-shadow: none;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: transparent;
+  background-size: 100% 2px, 100% 1px;
+}
+.p-input-filled
+  .p-autocomplete.p-autocomplete-multiple
+  .p-autocomplete-multiple-container
+  .p-inputtext:enabled:hover,
+.p-input-filled
+  .p-autocomplete.p-autocomplete-multiple
+  .p-autocomplete-multiple-container
+  .p-inputtext:enabled:focus {
+  background-image: none;
+  background: transparent;
+}
+
+.p-float-label .p-autocomplete-multiple-container .p-autocomplete-token {
+  padding: 0.25rem 1rem;
+}
+
+.p-input-filled
+  .p-float-label
+  .p-autocomplete
+  .p-autocomplete-multiple-container
+  .p-autocomplete-token {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.p-input-filled
+  .p-float-label
+  .p-autocomplete
+  .p-autocomplete-multiple-container
+  .p-autocomplete-token
+  .p-autocomplete-token-icon {
+  font-size: 75%;
+}
+.p-input-filled
+  .p-float-label
+  .p-autocomplete
+  .p-autocomplete-multiple-container
+  .p-autocomplete-input-token {
+  padding: 0;
+}
+.p-input-filled .p-autocomplete.p-invalid > .p-inputtext {
+  border-color: transparent;
+  background-image: linear-gradient(to bottom, #f44435, #f44435),
+    linear-gradient(to bottom, #f44435, #f44435);
+}
+.p-input-filled .p-autocomplete.p-invalid > .p-inputtext:enabled:hover {
+  border-color: transparent;
+  background-image: linear-gradient(to bottom, #f44435, #f44435),
+    linear-gradient(to bottom, #f44435, #f44435);
+}
+.p-input-filled .p-autocomplete.p-invalid > .p-inputtext:enabled:focus {
+  box-shadow: none;
+  border-color: transparent;
+}
+.p-input-filled .p-autocomplete.p-invalid > .p-autocomplete-multiple-container {
+  border-color: transparent;
+  background-image: linear-gradient(to bottom, #f44435, #f44435),
+    linear-gradient(to bottom, #f44435, #f44435);
+}
+.p-input-filled
+  .p-autocomplete.p-invalid
+  > .p-autocomplete-multiple-container:not(.p-disabled):hover {
+  background-image: linear-gradient(to bottom, #f44435, #f44435),
+    linear-gradient(to bottom, #f44435, #f44435);
+}
+.p-input-filled
+  .p-autocomplete.p-invalid
+  > .p-autocomplete-multiple-container:not(.p-disabled).p-focus,
+.p-input-filled
+  .p-autocomplete.p-invalid
+  > .p-autocomplete-multiple-container:not(.p-disabled).p-inputwrapper-focus {
+  box-shadow: none;
+  background-image: linear-gradient(to bottom, #f44435, #f44435),
+    linear-gradient(to bottom, #f44435, #f44435);
+}
+.p-input-filled .p-treeselect {
+  background: rgba(255, 255, 255, 0.06);
+}
+.p-input-filled .p-treeselect:not(.p-disabled):hover {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+.p-input-filled .p-treeselect:not(.p-disabled).p-focus {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.p-input-filled .p-radiobutton .p-radiobutton-box {
+  background-color: rgba(255, 255, 255, 0.06);
+}
+.p-input-filled .p-radiobutton .p-radiobutton-box:not(.p-disabled):hover {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+.p-input-filled .p-radiobutton .p-radiobutton-box.p-highlight {
+  background: #121212;
+}
+.p-input-filled
+  .p-radiobutton
+  .p-radiobutton-box.p-highlight:not(.p-disabled):hover {
+  background: #121212;
+}
+
+.p-input-filled .p-checkbox .p-checkbox-box {
+  background-color: rgba(255, 255, 255, 0.06);
+}
+.p-input-filled .p-checkbox .p-checkbox-box.p-highlight {
+  background: #9fa8da;
+}
+.p-input-filled .p-checkbox:not(.p-checkbox-disabled) .p-checkbox-box:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+.p-input-filled
+  .p-checkbox:not(.p-checkbox-disabled)
+  .p-checkbox-box.p-highlight:hover {
+  background: #9fa8da;
+}
+
+.p-input-filled .p-dropdown {
+  background: rgba(255, 255, 255, 0.06);
+}
+.p-input-filled .p-dropdown:not(.p-disabled):hover {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+.p-input-filled .p-dropdown:not(.p-disabled).p-focus {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+.p-input-filled .p-dropdown:not(.p-disabled).p-focus .p-inputtext {
+  background-color: transparent;
+}
+
+.p-input-filled .p-inputtext {
+  background-color: rgba(255, 255, 255, 0.06);
+}
+.p-input-filled .p-inputtext:enabled:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+.p-input-filled .p-inputtext:enabled:focus {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.p-inputtext-sm .p-inputtext {
+  font-size: 0.875rem;
+  padding: 0.65625rem 0.65625rem;
+}
+
+.p-inputtext-lg .p-inputtext {
+  font-size: 1.25rem;
+  padding: 0.9375rem 0.9375rem;
+}
+
+.p-input-filled .p-cascadeselect {
+  background: rgba(255, 255, 255, 0.06);
+}
+.p-input-filled .p-cascadeselect:not(.p-disabled):hover {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+.p-input-filled .p-cascadeselect:not(.p-disabled).p-focus {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.p-input-filled .p-multiselect {
+  background: rgba(255, 255, 255, 0.06);
+}
+.p-input-filled .p-multiselect:not(.p-disabled):hover {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+.p-input-filled .p-multiselect:not(.p-disabled).p-focus {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.p-input-filled .p-float-label .p-treeselect .p-treeselect-label {
+  padding-top: 1.25rem;
+  padding-bottom: 0.25rem;
+}
+.p-input-filled
+  .p-float-label
+  .p-inputwrapper-filled.p-treeselect
+  .p-treeselect-label {
+  padding-top: 1.25rem;
+  padding-bottom: 0.25rem;
+}
+.p-input-filled
+  .p-float-label
+  .p-inputwrapper-filled.p-treeselect.p-treeselect-chip
+  .p-treeselect-token {
+  padding-top: 0;
+  padding-bottom: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+.p-input-filled
+  .p-float-label
+  .p-inputwrapper-filled.p-treeselect.p-treeselect-chip
+  .p-treeselect-token
+  .p-treeselect-token-icon {
+  font-size: 75%;
+}
+.p-input-filled .p-treeselect.p-invalid {
+  border-color: transparent;
+  background-image: linear-gradient(to bottom, #f44435, #f44435),
+    linear-gradient(to bottom, #f44435, #f44435);
+}
+.p-input-filled .p-treeselect.p-invalid:not(.p-disabled):hover {
+  background-image: linear-gradient(to bottom, #f44435, #f44435),
+    linear-gradient(to bottom, #f44435, #f44435);
+}
+.p-input-filled .p-treeselect.p-invalid:not(.p-disabled).p-focus,
+.p-input-filled .p-treeselect.p-invalid:not(.p-disabled).p-inputwrapper-focus {
+  box-shadow: none;
+  background-image: linear-gradient(to bottom, #f44435, #f44435),
+    linear-gradient(to bottom, #f44435, #f44435);
+}
+
+.p-input-filled .p-treeselect {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border: 1px solid transparent;
+  background: rgba(255, 255, 255, 0.06) no-repeat;
+  background-image: linear-gradient(to bottom, #9fa8da, #9fa8da),
+    linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.3),
+      rgba(255, 255, 255, 0.3)
+    );
+  background-size: 0 2px, 100% 1px;
+  background-position: 50% 100%, 50% 100%;
+  background-origin: border-box;
+}
+.p-input-filled .p-treeselect .p-inputtext {
+  background-image: none;
+  background: transparent;
+}
+.p-input-filled .p-treeselect:not(.p-disabled):hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  border-color: transparent;
+  background-image: linear-gradient(to bottom, #9fa8da, #9fa8da),
+    linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.87),
+      rgba(255, 255, 255, 0.87)
+    );
+}
+.p-input-filled .p-treeselect:not(.p-disabled).p-focus,
+.p-input-filled .p-treeselect:not(.p-disabled).p-inputwrapper-focus {
+  box-shadow: none;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: transparent;
+  background-size: 100% 2px, 100% 1px;
+}
+.p-input-filled .p-treeselect .p-inputtext:enabled:hover,
+.p-input-filled .p-treeselect .p-inputtext:enabled:focus {
+  background-image: none;
+  background: transparent;
+}
+.p-input-filled .p-treeselect .p-treeselect-label:hover {
+  background-image: none;
+  background: transparent;
+}
+
+.p-input-filled .p-radiobutton .p-radiobutton-box {
+  background-color: #1e1e1e;
+}
+.p-input-filled .p-radiobutton .p-radiobutton-box:not(.p-disabled):hover {
+  background-color: #1e1e1e;
+}
+
+.p-input-filled .p-password.p-invalid > .p-inputtext {
+  border-color: transparent;
+  background-image: linear-gradient(to bottom, #f44435, #f44435),
+    linear-gradient(to bottom, #f44435, #f44435);
+}
+.p-input-filled .p-password.p-invalid > .p-inputtext:enabled:hover {
+  border-color: transparent;
+  background-image: linear-gradient(to bottom, #f44435, #f44435),
+    linear-gradient(to bottom, #f44435, #f44435);
+}
+.p-input-filled .p-password.p-invalid > .p-inputtext:enabled:focus {
+  box-shadow: none;
+  border-color: transparent;
+}
+
+.p-input-filled .p-multiselect.p-invalid:not(.p-disabled).p-focus,
+.p-input-filled .p-multiselect.p-invalid:not(.p-disabled).p-inputwrapper-focus {
+  box-shadow: none;
+  background-image: linear-gradient(to bottom, #f44435, #f44435),
+    linear-gradient(to bottom, #f44435, #f44435);
+}
+
+.p-input-filled .p-multiselect {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border: 1px solid transparent;
+  background: rgba(255, 255, 255, 0.06) no-repeat;
+  background-image: linear-gradient(to bottom, #9fa8da, #9fa8da),
+    linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.3),
+      rgba(255, 255, 255, 0.3)
+    );
+  background-size: 0 2px, 100% 1px;
+  background-position: 50% 100%, 50% 100%;
+  background-origin: border-box;
+}
+.p-input-filled .p-multiselect .p-inputtext {
+  background-image: none;
+  background: transparent;
+}
+.p-input-filled .p-multiselect:not(.p-disabled):hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  border-color: transparent;
+  background-image: linear-gradient(to bottom, #9fa8da, #9fa8da),
+    linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.87),
+      rgba(255, 255, 255, 0.87)
+    );
+}
+.p-input-filled .p-multiselect:not(.p-disabled).p-focus,
+.p-input-filled .p-multiselect:not(.p-disabled).p-inputwrapper-focus {
+  box-shadow: none;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: transparent;
+  background-size: 100% 2px, 100% 1px;
+}
+.p-input-filled .p-multiselect .p-inputtext:enabled:hover,
+.p-input-filled .p-multiselect .p-inputtext:enabled:focus {
+  background-image: none;
+  background: transparent;
+}
+.p-input-filled .p-multiselect .p-multiselect-label:hover {
+  background-image: none;
+  background: transparent;
+}
+
+.p-input-filled .p-inputnumber.p-invalid .p-inputtext {
+  border-color: transparent;
+  background-image: linear-gradient(to bottom, #f44435, #f44435),
+    linear-gradient(to bottom, #f44435, #f44435);
+}
+.p-input-filled .p-inputnumber.p-invalid .p-inputtext:enabled:hover {
+  border-color: transparent;
+  background-image: linear-gradient(to bottom, #f44435, #f44435),
+    linear-gradient(to bottom, #f44435, #f44435);
+}
+.p-input-filled .p-inputnumber.p-invalid .p-inputtext:enabled:focus {
+  box-shadow: none;
+  border-color: transparent;
+}
+
+.p-float-label .p-multiselect-label .p-multiselect-token {
+  padding: 0.25rem 1rem;
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
+}
+
+.p-input-filled .p-float-label .p-multiselect .p-multiselect-label {
+  padding-top: 1.25rem;
+  padding-bottom: 0.25rem;
+}
+.p-input-filled
+  .p-float-label
+  .p-inputwrapper-filled.p-multiselect
+  .p-multiselect-label {
+  padding-top: 1.25rem;
+  padding-bottom: 0.25rem;
+}
+.p-input-filled
+  .p-float-label
+  .p-inputwrapper-filled.p-multiselect.p-multiselect-chip
+  .p-multiselect-token {
+  padding-top: 0;
+  padding-bottom: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+.p-input-filled
+  .p-float-label
+  .p-inputwrapper-filled.p-multiselect.p-multiselect-chip
+  .p-multiselect-token
+  .p-multiselect-token-icon {
+  font-size: 75%;
+}
+.p-input-filled .p-multiselect.p-invalid {
+  border-color: transparent;
+  background-image: linear-gradient(to bottom, #f44435, #f44435),
+    linear-gradient(to bottom, #f44435, #f44435);
+}
+.p-input-filled .p-multiselect.p-invalid:not(.p-disabled):hover {
+  background-image: linear-gradient(to bottom, #f44435, #f44435),
+    linear-gradient(to bottom, #f44435, #f44435);
+}
+
+.p-input-filled .p-float-label .p-inputtext {
+  padding-top: 1.25rem;
+  padding-bottom: 0.25rem;
+}
+.p-input-filled .p-float-label input:focus ~ label,
+.p-input-filled .p-float-label input.p-filled ~ label,
+.p-input-filled .p-float-label textarea:focus ~ label,
+.p-input-filled .p-float-label textarea.p-filled ~ label,
+.p-input-filled .p-float-label .p-inputwrapper-focus ~ label,
+.p-input-filled .p-float-label .p-inputwrapper-filled ~ label {
+  top: 0.25rem !important;
+  margin-top: 0;
+  background: transparent;
+}
+
+.p-input-filled .p-inputtext {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border: 1px solid transparent;
+  background: rgba(255, 255, 255, 0.06) no-repeat;
+  background-image: linear-gradient(to bottom, #9fa8da, #9fa8da),
+    linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.3),
+      rgba(255, 255, 255, 0.3)
+    );
+  background-size: 0 2px, 100% 1px;
+  background-position: 50% 100%, 50% 100%;
+  background-origin: border-box;
+}
+.p-input-filled .p-inputtext:enabled:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  border-color: transparent;
+  background-image: linear-gradient(to bottom, #9fa8da, #9fa8da),
+    linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.6),
+      rgba(255, 255, 255, 0.6)
+    );
+}
+.p-input-filled .p-inputtext:enabled:focus {
+  box-shadow: none;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: transparent;
+  background-size: 100% 2px, 100% 1px;
+}
+.p-input-filled .p-inputtext.p-invalid.p-component {
+  border-color: transparent;
+  background-image: linear-gradient(to bottom, #f44435, #f44435),
+    linear-gradient(to bottom, #f44435, #f44435);
+}
+.p-input-filled .p-inputtext.p-invalid.p-component:enabled:hover {
+  border-color: transparent;
+  background-image: linear-gradient(to bottom, #f44435, #f44435),
+    linear-gradient(to bottom, #f44435, #f44435);
+}
+.p-input-filled .p-inputtext.p-invalid.p-component:enabled:focus {
+  box-shadow: none;
+  border-color: transparent;
+}
+
+.p-input-filled .p-inputgroup .p-inputgroup-addon {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border: 1px solid transparent;
+  background: rgba(255, 255, 255, 0.06) no-repeat;
+  background-image: linear-gradient(to bottom, #9fa8da, #9fa8da),
+    linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.3),
+      rgba(255, 255, 255, 0.3)
+    );
+  background-size: 0 2px, 100% 1px;
+  background-position: 50% 100%, 50% 100%;
+  background-origin: border-box;
+}
+.p-input-filled .p-inputgroup .p-inputgroup-addon:last-child {
+  border-right-color: transparent;
+}
+.p-input-filled .p-inputgroup-addon:first-child,
+.p-input-filled .p-inputgroup button:first-child,
+.p-input-filled .p-inputgroup input:first-child {
+  border-bottom-left-radius: 0;
+}
+.p-input-filled .p-inputgroup .p-float-label:first-child input {
+  border-bottom-left-radius: 0;
+}
+.p-input-filled .p-inputgroup-addon:last-child,
+.p-input-filled .p-inputgroup button:last-child,
+.p-input-filled .p-inputgroup input:last-child {
+  border-bottom-right-radius: 0;
+}
+.p-input-filled .p-inputgroup .p-float-label:last-child input {
+  border-bottom-right-radius: 0;
+}
+
+.p-input-filled .p-inputnumber.p-invalid .p-inputtext {
+  border-color: transparent;
+  background-image: linear-gradient(to bottom, #f44435, #f44435),
+    linear-gradient(to bottom, #f44435, #f44435);
+}
+.p-input-filled .p-inputnumber.p-invalid .p-inputtext:enabled:hover {
+  border-color: transparent;
+  background-image: linear-gradient(to bottom, #f44435, #f44435),
+    linear-gradient(to bottom, #f44435, #f44435);
+}
+.p-input-filled .p-inputnumber.p-invalid .p-inputtext:enabled:focus {
+  box-shadow: none;
+  border-color: transparent;
+}
+
+.p-input-filled .p-inputtext {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border: 1px solid transparent;
+  background: rgba(255, 255, 255, 0.06) no-repeat;
+  background-image: linear-gradient(to bottom, #9fa8da, #9fa8da),
+    linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.3),
+      rgba(255, 255, 255, 0.3)
+    );
+  background-size: 0 2px, 100% 1px;
+  background-position: 50% 100%, 50% 100%;
+  background-origin: border-box;
+}
+.p-input-filled .p-inputtext:enabled:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  border-color: transparent;
+  background-image: linear-gradient(to bottom, #9fa8da, #9fa8da),
+    linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.6),
+      rgba(255, 255, 255, 0.6)
+    );
+}
+.p-input-filled .p-inputtext:enabled:focus {
+  box-shadow: none;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: transparent;
+  background-size: 100% 2px, 100% 1px;
+}
+.p-input-filled .p-inputtext.p-invalid.p-component {
+  border-color: transparent;
+  background-image: linear-gradient(to bottom, #f44435, #f44435),
+    linear-gradient(to bottom, #f44435, #f44435);
+}
+.p-input-filled .p-inputtext.p-invalid.p-component:enabled:hover {
+  border-color: transparent;
+  background-image: linear-gradient(to bottom, #f44435, #f44435),
+    linear-gradient(to bottom, #f44435, #f44435);
+}
+.p-input-filled .p-inputtext.p-invalid.p-component:enabled:focus {
+  box-shadow: none;
+  border-color: transparent;
+}
+
+.p-input-filled .p-inputgroup .p-inputgroup-addon {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border: 1px solid transparent;
+  background: rgba(255, 255, 255, 0.06) no-repeat;
+  background-image: linear-gradient(to bottom, #9fa8da, #9fa8da),
+    linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.3),
+      rgba(255, 255, 255, 0.3)
+    );
+  background-size: 0 2px, 100% 1px;
+  background-position: 50% 100%, 50% 100%;
+  background-origin: border-box;
+}
+.p-input-filled .p-inputgroup .p-inputgroup-addon:last-child {
+  border-right-color: transparent;
+}
+.p-input-filled .p-inputgroup-addon:first-child,
+.p-input-filled .p-inputgroup button:first-child,
+.p-input-filled .p-inputgroup input:first-child {
+  border-bottom-left-radius: 0;
+}
+.p-input-filled .p-inputgroup .p-float-label:first-child input {
+  border-bottom-left-radius: 0;
+}
+.p-input-filled .p-inputgroup-addon:last-child,
+.p-input-filled .p-inputgroup button:last-child,
+.p-input-filled .p-inputgroup input:last-child {
+  border-bottom-right-radius: 0;
+}
+.p-input-filled .p-inputgroup .p-float-label:last-child input {
+  border-bottom-right-radius: 0;
+}
+
+.p-input-filled .p-dropdown {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border: 1px solid transparent;
+  background: rgba(255, 255, 255, 0.06) no-repeat;
+  background-image: linear-gradient(to bottom, #9fa8da, #9fa8da),
+    linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.3),
+      rgba(255, 255, 255, 0.3)
+    );
+  background-size: 0 2px, 100% 1px;
+  background-position: 50% 100%, 50% 100%;
+  background-origin: border-box;
+}
+.p-input-filled .p-dropdown .p-inputtext {
+  background-image: none;
+  background: transparent;
+}
+.p-input-filled .p-dropdown:not(.p-disabled):hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  border-color: transparent;
+  background-image: linear-gradient(to bottom, #9fa8da, #9fa8da),
+    linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.87),
+      rgba(255, 255, 255, 0.87)
+    );
+}
+.p-input-filled .p-dropdown:not(.p-disabled).p-focus,
+.p-input-filled .p-dropdown:not(.p-disabled).p-inputwrapper-focus {
+  box-shadow: none;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: transparent;
+  background-size: 100% 2px, 100% 1px;
+}
+.p-input-filled .p-dropdown .p-inputtext:enabled:hover,
+.p-input-filled .p-dropdown .p-inputtext:enabled:focus {
+  background-image: none;
+  background: transparent;
+}
+.p-input-filled .p-dropdown .p-inputtext {
+  border: 0 none;
+}
+.p-input-filled .p-dropdown.p-invalid {
+  border-color: transparent;
+  background-image: linear-gradient(to bottom, #f44435, #f44435),
+    linear-gradient(to bottom, #f44435, #f44435);
+}
+.p-input-filled .p-dropdown.p-invalid:not(.p-disabled):hover {
+  background-image: linear-gradient(to bottom, #f44435, #f44435),
+    linear-gradient(to bottom, #f44435, #f44435);
+}
+.p-input-filled .p-dropdown.p-invalid:not(.p-disabled).p-focus,
+.p-input-filled .p-dropdown.p-invalid:not(.p-disabled).p-inputwrapper-focus {
+  box-shadow: none;
+  background-image: linear-gradient(to bottom, #f44435, #f44435),
+    linear-gradient(to bottom, #f44435, #f44435);
+}
+.p-input-filled
+  .p-float-label
+  .p-chips
+  .p-chips-multiple-container
+  .p-chips-token {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.p-input-filled
+  .p-float-label
+  .p-chips
+  .p-chips-multiple-container
+  .p-chips-token
+  .p-chips-token-icon {
+  font-size: 75%;
+}
+.p-input-filled
+  .p-float-label
+  .p-chips
+  .p-chips-multiple-container
+  .p-chips-input-token {
+  padding: 0;
+}
+.p-input-filled .p-chips.p-invalid .p-chips-multiple-container {
+  border-color: transparent;
+  background-image: linear-gradient(to bottom, #f44435, #f44435),
+    linear-gradient(to bottom, #f44435, #f44435);
+}
+.p-input-filled
+  .p-chips.p-invalid
+  .p-chips-multiple-container:not(.p-disabled):hover {
+  background-image: linear-gradient(to bottom, #f44435, #f44435),
+    linear-gradient(to bottom, #f44435, #f44435);
+}
+.p-input-filled
+  .p-chips.p-invalid
+  .p-chips-multiple-container:not(.p-disabled).p-focus,
+.p-input-filled
+  .p-chips.p-invalid
+  .p-chips-multiple-container:not(.p-disabled).p-inputwrapper-focus {
+  box-shadow: none;
+  background-image: linear-gradient(to bottom, #f44435, #f44435),
+    linear-gradient(to bottom, #f44435, #f44435);
+}
+
+.p-input-filled .p-chips-multiple-container {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border: 1px solid transparent;
+  background: rgba(255, 255, 255, 0.06) no-repeat;
+  background-image: linear-gradient(to bottom, #9fa8da, #9fa8da),
+    linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.3),
+      rgba(255, 255, 255, 0.3)
+    );
+  background-size: 0 2px, 100% 1px;
+  background-position: 50% 100%, 50% 100%;
+  background-origin: border-box;
+}
+.p-input-filled .p-chips-multiple-container .p-inputtext {
+  background-image: none;
+  background: transparent;
+}
+.p-input-filled .p-chips-multiple-container:not(.p-disabled):hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  border-color: transparent;
+  background-image: linear-gradient(to bottom, #9fa8da, #9fa8da),
+    linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.87),
+      rgba(255, 255, 255, 0.87)
+    );
+}
+.p-input-filled .p-chips-multiple-container:not(.p-disabled).p-focus,
+.p-input-filled
+  .p-chips-multiple-container:not(.p-disabled).p-inputwrapper-focus {
+  box-shadow: none;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: transparent;
+  background-size: 100% 2px, 100% 1px;
+}
+.p-input-filled .p-chips-multiple-container .p-inputtext:enabled:hover,
+.p-input-filled .p-chips-multiple-container .p-inputtext:enabled:focus {
+  background-image: none;
+  background: transparent;
+}
+
+.p-input-filled .p-checkbox .p-checkbox-box {
+  background-color: #1e1e1e;
+}
+.p-input-filled .p-checkbox .p-checkbox-box:not(.p-disabled):hover {
+  background-color: #1e1e1e;
+}
+
+.p-input-filled .p-cascadeselect {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border: 1px solid transparent;
+  background: rgba(255, 255, 255, 0.06) no-repeat;
+  background-image: linear-gradient(to bottom, #9fa8da, #9fa8da),
+    linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.3),
+      rgba(255, 255, 255, 0.3)
+    );
+  background-size: 0 2px, 100% 1px;
+  background-position: 50% 100%, 50% 100%;
+  background-origin: border-box;
+}
+.p-input-filled .p-cascadeselect .p-inputtext {
+  background-image: none;
+  background: transparent;
+}
+.p-input-filled .p-cascadeselect:not(.p-disabled):hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  border-color: transparent;
+  background-image: linear-gradient(to bottom, #9fa8da, #9fa8da),
+    linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.87),
+      rgba(255, 255, 255, 0.87)
+    );
+}
+.p-input-filled .p-cascadeselect:not(.p-disabled).p-focus,
+.p-input-filled .p-cascadeselect:not(.p-disabled).p-inputwrapper-focus {
+  box-shadow: none;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: transparent;
+  background-size: 100% 2px, 100% 1px;
+}
+.p-input-filled .p-cascadeselect .p-inputtext:enabled:hover,
+.p-input-filled .p-cascadeselect .p-inputtext:enabled:focus {
+  background-image: none;
+  background: transparent;
+}
+.p-input-filled .p-cascadeselect .p-cascadeselect-label:hover {
+  background-image: none;
+  background: transparent;
+}
+
+.p-input-filled .p-float-label .p-cascadeselect .p-cascadeselect-label {
+  padding-top: 1.25rem;
+  padding-bottom: 0.25rem;
+}
+.p-input-filled
+  .p-float-label
+  .p-inputwrapper-filled.p-cascadeselect
+  .p-cascadeselect-label {
+  padding-top: 1.25rem;
+  padding-bottom: 0.25rem;
+}
+.p-input-filled .p-cascadeselect.p-invalid {
+  border-color: transparent;
+  background-image: linear-gradient(to bottom, #f44435, #f44435),
+    linear-gradient(to bottom, #f44435, #f44435);
+}
+.p-input-filled .p-cascadeselect.p-invalid:not(.p-disabled):hover {
+  background-image: linear-gradient(to bottom, #f44435, #f44435),
+    linear-gradient(to bottom, #f44435, #f44435);
+}
+.p-input-filled .p-cascadeselect.p-invalid:not(.p-disabled).p-focus,
+.p-input-filled
+  .p-cascadeselect.p-invalid:not(.p-disabled).p-inputwrapper-focus {
+  box-shadow: none;
+  background-image: linear-gradient(to bottom, #f44435, #f44435),
+    linear-gradient(to bottom, #f44435, #f44435);
+}
+
+.p-input-filled .p-calendar-w-btn {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border: 1px solid transparent;
+  background: rgba(255, 255, 255, 0.06) no-repeat;
+  background-image: linear-gradient(to bottom, #9fa8da, #9fa8da),
+    linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.3),
+      rgba(255, 255, 255, 0.3)
+    );
+  background-size: 0 2px, 100% 1px;
+  background-position: 50% 100%, 50% 100%;
+  background-origin: border-box;
+}
+.p-input-filled .p-calendar-w-btn .p-inputtext {
+  background-image: none;
+  background: transparent;
+}
+.p-input-filled
+  .p-calendar-w-btn:not(.p-calendar-disabled):not(.p-disabled):hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  border-color: transparent;
+  background-image: linear-gradient(to bottom, #9fa8da, #9fa8da),
+    linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.87),
+      rgba(255, 255, 255, 0.87)
+    );
+}
+.p-input-filled
+  .p-calendar-w-btn:not(.p-calendar-disabled):not(.p-disabled).p-focus,
+.p-input-filled
+  .p-calendar-w-btn:not(.p-calendar-disabled):not(.p-disabled).p-inputwrapper-focus {
+  box-shadow: none;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: transparent;
+  background-size: 100% 2px, 100% 1px;
+}
+.p-input-filled
+  .p-calendar-w-btn:not(.p-calendar-disabled)
+  .p-inputtext:enabled:hover,
+.p-input-filled
+  .p-calendar-w-btn:not(.p-calendar-disabled)
+  .p-inputtext:enabled:focus {
+  background-image: none;
+  background: transparent;
+}
+.p-input-filled .p-calendar-w-btn .p-inputtext {
+  border: 0 none;
+}
+.p-input-filled .p-calendar.p-invalid .p-inputtext {
+  border-color: transparent;
+  background-image: linear-gradient(to bottom, #f44435, #f44435),
+    linear-gradient(to bottom, #f44435, #f44435);
+}
+.p-input-filled .p-calendar.p-invalid .p-inputtext:enabled:hover {
+  border-color: transparent;
+  background-image: linear-gradient(to bottom, #f44435, #f44435),
+    linear-gradient(to bottom, #f44435, #f44435);
+}
+.p-input-filled .p-calendar.p-invalid .p-inputtext:enabled:focus {
+  box-shadow: none;
+  border-color: transparent;
+}
+.p-input-filled .p-calendar.p-invalid.p-calendar-w-btn {
+  border-color: transparent;
+  background-image: linear-gradient(to bottom, #f44435, #f44435),
+    linear-gradient(to bottom, #f44435, #f44435);
+}
+.p-input-filled .p-calendar.p-invalid.p-calendar-w-btn:not(.p-disabled):hover {
+  background-image: linear-gradient(to bottom, #f44435, #f44435),
+    linear-gradient(to bottom, #f44435, #f44435);
+}
+.p-input-filled .p-calendar.p-invalid.p-calendar-w-btn:not(.p-disabled).p-focus,
+.p-input-filled
+  .p-calendar.p-invalid.p-calendar-w-btn:not(.p-disabled).p-inputwrapper-focus {
+  box-shadow: none;
+  background-image: linear-gradient(to bottom, #f44435, #f44435),
+    linear-gradient(to bottom, #f44435, #f44435);
+}
+.p-input-filled .p-calendar.p-invalid.p-calendar-w-btn .p-inputtext,
+.p-input-filled
+  .p-calendar.p-invalid.p-calendar-w-btn
+  .p-inputtext:enabled:hover,
+.p-input-filled
+  .p-calendar.p-invalid.p-calendar-w-btn
+  .p-inputtext:enabled:focus {
+  border: 0 none;
+  background-image: none;
+}

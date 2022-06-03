@@ -1,0 +1,42 @@
+.p-organizationchart
+  .p-organizationchart-node-content.p-organizationchart-selectable-node:not(.p-highlight):hover {
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.87);
+}
+.p-organizationchart .p-organizationchart-node-content.p-highlight {
+  background: rgba(159, 168, 218, 0.16);
+  color: #9fa8da;
+}
+.p-organizationchart
+  .p-organizationchart-node-content.p-highlight
+  .p-node-toggler
+  i {
+  color: rgba(69, 86, 180, 0.16);
+}
+.p-organizationchart .p-organizationchart-line-down {
+  background: rgba(255, 255, 255, 0.12);
+}
+.p-organizationchart .p-organizationchart-line-left {
+  border-right: 1px solid rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+.p-organizationchart .p-organizationchart-line-top {
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+.p-organizationchart .p-organizationchart-node-content {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: #1e1e1e;
+  color: rgba(255, 255, 255, 0.87);
+  padding: 0.75rem;
+}
+.p-organizationchart .p-organizationchart-node-content .p-node-toggler {
+  background: inherit;
+  color: inherit;
+  border-radius: 50%;
+}
+.p-organizationchart .p-organizationchart-node-content .p-node-toggler:focus {
+  outline: 0 none;
+  outline-offset: 0;
+  box-shadow: none;
+}

@@ -1,0 +1,19 @@
+.p-component {
+  font-family: Roboto, Helvetica Neue Light, Helvetica Neue, Helvetica, Arial,
+    Lucida Grande, sans-serif;
+  font-size: 1rem;
+  font-weight: normal;
+}
+
+.p-component-overlay {
+  background-color: rgba(0, 0, 0, 0.32);
+  transition-duration: 0.2s;
+}
+
+.p-component-overlay-enter {
+  animation: p-component-overlay-enter-animation 150ms forwards;
+}
+
+.p-component-overlay-leave {
+  animation: p-component-overlay-leave-animation 150ms forwards;
+}
