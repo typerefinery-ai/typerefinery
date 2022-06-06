@@ -78,32 +78,4 @@
       }
     }
   }
-
-  .content-area-properties {
-    .tab-3-container {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 10px;
-      border-bottom: 1px solid var(--surface-border);
-      flex-flow: wrap;
-
-      button {
-        margin: 5px;
-      }
-    }
-    .tab-3-content {
-      display: block;
-      text-align: center;
-
-      .tab-3-content-item {
-        display: none;
-        margin: 1rem;
-
-        &.show {
-          display: block;
-        }
-      }
-    }
-  }
 }

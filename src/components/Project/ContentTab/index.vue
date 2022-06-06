@@ -27,6 +27,14 @@
           @click="handleView('D')"
         />
         <Button
+          :label="$t(`components.tab.transform`)"
+          class="p-button-raised"
+          :class="{
+            'p-button-text p-button-plain': activeView !== 'T',
+          }"
+          @click="handleView('T')"
+        />
+        <Button
           :label="$t(`components.tab.graph`)"
           class="p-button-raised"
           :class="{
@@ -58,22 +66,26 @@
           <div class="query-window-container"><query-view /></div>
         </div>
 
+        <div class="content-area-window" :class="{ show: activeView === 'T' }">
+          <transformer-view />
+        </div>
+
         <div class="content-area-window" :class="{ show: activeView === 'G' }">
-          <Button class="p-button-raised m-3" @click="showD3Chart"
+          <Button class="p-button-raised m-3 hidden" @click="showD3Chart"
             >Show D3 Graph</Button
           >
           <Button
-            class="p-button-raised p-button-success m-3"
+            class="p-button-raised p-button-success m-3 hidden"
             @click="showWebcolaChart"
             >Show Webcola Graph</Button
           >
           <Button
-            class="p-button-raised p-button-warning m-3"
+            class="p-button-raised p-button-warning m-3 hidden"
             @click="showD3LabelsChart"
             >Show D3 Labels Graph</Button
           >
-          <div v-if="activeView === 'G'" class="graph-container">
-            <graph ref="graphPRef" />
+          <div class="graph-container">
+            <graph :graph-id="`graph-${tabId}-${paneId}`" />
           </div>
 
           <div class="graph-toolbar shadow-4">
@@ -92,125 +104,121 @@
       </pane>
 
       <pane :ref="`p-${tabId}-${paneId}`" max-size="30">
-        <div class="content-area-properties">
-          <div class="tab-3-container">
-            <Button
-              :label="$t(`components.graph.properties`)"
-              class="p-button-raised"
-              :class="{
-                'p-button-text p-button-plain': activeTab3 !== 1,
-              }"
-              @click="handleTab3(1)"
-            />
-            <!-- TODO: Uncomment this to open Data Tab -->
-            <!-- <Button
-              :label="$t(`components.project.data`)"
-              class="p-button-raised"
-              :class="{
-                'p-button-text p-button-plain': activeTab3 !== 2,
-              }"
-              @click="handleTab3(2)"
-            /> -->
-          </div>
-          <div class="tab-3-content">
-            <div class="tab-3-content-item" :class="{ show: activeTab3 === 1 }">
-              <properties :data="nodeData" />
-            </div>
-            <!-- TODO: Uncomment this to open Data Tab -->
-            <!-- <div class="tab-3-content-item" :class="{ show: activeTab3 === 2 }">
-              <p class="text-lg">
-                {{ $t("components.project.data") }}
-              </p>
-            </div> -->
-          </div>
-        </div>
+        <side-panel :node-data="nodeData" :active-view="activeView" />
       </pane>
     </splitpanes>
   </div>
 </template>
 
 <script>
-import FullIcon from "vue-material-design-icons/Fullscreen.vue"
-import MinusIcon from "vue-material-design-icons/MagnifyMinus.vue"
-import PlusIcon from "vue-material-design-icons/MagnifyPlus.vue"
-import ControlIcon from "vue-material-design-icons/CameraControl.vue"
-import InputText from "primevue/inputtext"
-import Button from "primevue/button"
-import { Splitpanes, Pane } from "splitpanes"
-import DataView from "./DataView.vue"
-import QueryView from "./QueryView.vue"
-import Properties from "./Properties.vue"
-import Graph from "../../Graph/Graph.vue"
-import renderD3 from "../../Transformer/D3/d3"
-import renderWebcola from "../../Transformer/WebCola/webcola"
-import renderD3LabelsChart from "../../Transformer/D3Labels/d3labels"
-export default {
-  name: "ContentTab",
-  components: {
-    Splitpanes,
-    Pane,
-    DataView,
-    QueryView,
-    InputText,
-    Button,
-    FullIcon,
-    MinusIcon,
-    PlusIcon,
-    ControlIcon,
-    Graph,
-    Properties,
-  },
-  props: {
-    toolsVisible: { type: Boolean, required: true },
-    focus: { type: Boolean, required: true },
-    tabId: { type: String, required: true },
-    paneId: { type: String, required: true },
-  },
-  emits: ["toggle"],
-  data() {
-    return {
-      activeView: "Q",
-      activeTab3: 1,
-      nodeData: {},
-    }
-  },
-  watch: {
-    focus(isTrue) {
-      if (isTrue) this.handleSplitterClick()
+  import * as d3 from "d3"
+  import FullIcon from "vue-material-design-icons/Fullscreen.vue"
+  import MinusIcon from "vue-material-design-icons/MagnifyMinus.vue"
+  import PlusIcon from "vue-material-design-icons/MagnifyPlus.vue"
+  import ControlIcon from "vue-material-design-icons/CameraControl.vue"
+  import InputText from "primevue/inputtext"
+  import Button from "primevue/button"
+  import { Splitpanes, Pane } from "splitpanes"
+  import DataView from "./Views/DataView.vue"
+  import QueryView from "./Views/QueryView.vue"
+  import TransformerView from "./Views/TransformerView.vue"
+  import SidePanel from "./SidePanel"
+  import Graph from "../../Graph/Graph.vue"
+  import renderD3 from "../../Transformer/D3/d3"
+  import renderWebcola from "../../Transformer/WebCola/webcola"
+  import renderD3LabelsChart from "../../Transformer/D3Labels/d3labels"
+  export default {
+    name: "ContentTab",
+    components: {
+      Splitpanes,
+      Pane,
+      DataView,
+      QueryView,
+      TransformerView,
+      InputText,
+      Button,
+      FullIcon,
+      MinusIcon,
+      PlusIcon,
+      ControlIcon,
+      Graph,
+      SidePanel,
     },
-  },
-  methods: {
-    handleView(view) {
-      this.activeView = view
+    props: {
+      toolsVisible: { type: Boolean, required: true },
+      focus: { type: Boolean, required: true },
+      tabId: { type: String, required: true },
+      paneId: { type: String, required: true },
     },
-    handleTab3(index) {
-      this.activeTab3 = index
-    },
-    handleSplitterClick() {
-      const rightPanel = this.$refs[`p-${this.tabId}-${this.paneId}`]
-      if (rightPanel.style.width == "0") {
-        rightPanel.style.width = "30%"
-      } else {
-        this.$refs[`w-${this.tabId}-${this.paneId}`].style.width = "100%"
-        rightPanel.style.width = 0
+    emits: ["toggle"],
+    data() {
+      return {
+        activeView: "Q",
+        nodeData: {},
+        error: "",
       }
     },
-    showD3Chart() {
-      this.nodeData = {}
-      renderD3(this.$refs.graphPRef, this)
+    watch: {
+      focus(isTrue) {
+        if (isTrue) this.handleSplitterClick()
+      },
     },
-    showWebcolaChart() {
-      this.nodeData = {}
-      renderWebcola(this.$refs.graphPRef, this)
+    methods: {
+      handleView(view) {
+        this.activeView = view
+      },
+      handleSplitterClick() {
+        const rightPanel = this.$refs[`p-${this.tabId}-${this.paneId}`]
+        if (rightPanel.style.width == "0") {
+          rightPanel.style.width = "30%"
+        } else {
+          this.$refs[`w-${this.tabId}-${this.paneId}`].style.width = "100%"
+          rightPanel.style.width = 0
+        }
+      },
+      showD3Chart() {
+        this.nodeData = {}
+        const id = `graph-${this.tabId}-${this.paneId}`
+        const wrapper = document.getElementById(id)
+        this.removeInnerItems(wrapper)
+        renderD3(wrapper, this)
+      },
+      showWebcolaChart() {
+        this.nodeData = {}
+        renderWebcola(this.$refs.graphPRef, this)
+      },
+      showD3LabelsChart() {
+        this.nodeData = {}
+        renderD3LabelsChart(this.$refs.graphPRef, this)
+      },
+      //   renderGraph(code) {
+      //     this.activeView = "G"
+      //     const id = `graph-${this.tabId}-${this.paneId}`
+      //     try {
+      //       const func = new Function("wapper", "self", "d3", code)
+      //       const wrapper = document.getElementById(id)
+      //       this.removeInnerItems(wrapper)
+      //       func(wrapper, this, d3)
+      //       this.error = ""
+      //     } catch (err) {
+      //       this.error = String(err)
+      //       console.log(err)
+      //       console.log(err.message)
+      //       console.log(err.name)
+      //     }
+      //   },
+      //   removeInnerItems(wrapper) {
+      //     // remove child elements
+      //     if (wrapper.childNodes.length) {
+      //       while (wrapper.hasChildNodes()) {
+      //         wrapper.removeChild(wrapper.firstChild)
+      //       }
+      //     }
+      //   },
     },
-    showD3LabelsChart() {
-      this.nodeData = {}
-      renderD3LabelsChart(this.$refs.graphPRef, this)
-    },
-  },
-}
+  }
 </script>
 
 <style lang="scss" scoped>
-@import "./ContentTab.scss";
+  @import "./ContentTab.scss";
 </style>
