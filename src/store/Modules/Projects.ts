@@ -155,6 +155,9 @@ export default class Projects extends VuexModule {
     },
   ]
   value: "" | undefined
+  get storedata() {
+    return this.list
+  }
   get projectList() {
     let name = this.list.map((el) => {
       return { name: el.name, key: el.name }

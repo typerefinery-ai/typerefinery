@@ -126,7 +126,65 @@ export default {
        appProjects.addToList(data)
         this.$emit("close")
     },
-  },
+    emits: ["close"],
+    methods: {
+      closeDialog() {
+        this.$emit("close")
+      },
+      handleProjectstore() {
+        const data = {
+          type: "project",
+          name: this.name,
+          description: this.des,
+          icon: this.icon,
+          queries: {
+            type: "queries",
+            expanded: true,
+            list: [
+              {
+                name: "query ",
+                description: "",
+                type: "query",
+                connection: "connection 2",
+                icon: "connection",
+                query: "",
+                transformer: "transformer 1",
+              },
+            ],
+          },
+          connections: {
+            type: "connections",
+            expanded: true,
+            icon: "connection",
+            list: [
+              {
+                name: "connection ",
+                title: "connection 1",
+                icon: "connection",
+                description: "",
+                type: "connection",
+              },
+            ],
+          },
+
+          transformers: {
+            type: "transformers",
+            list: [
+              {
+                name: "Transformer ",
+                title: "Transformer 1",
+                icon: "connection",
+                description: "",
+                type: "transformer",
+              },
+            ],
+          },
+        }
+        appProjects.addToList(data)
+        this.$emit("close")
+      },
+    },
+  }
 }
 </script>
 <style  lang="scss">
@@ -146,12 +204,22 @@ input {
   .p-dialog-content {
     height: 100%;
   }
+  .projects-dialog {
+    height: 100vh;
+    width: 40vw;
+    .p-dropdown {
+      width: 80%;
+    }
+    .p-dialog-content {
+      height: 100%;
+    }
 
-  .p-dialog-header {
-    padding: 1.25rem 1.8rem;
+    .p-dialog-header {
+      padding: 1.25rem 1.8rem;
 
-    .p-dialog-header-icons:last-of-type {
-      display: none;
+      .p-dialog-header-icons:last-of-type {
+        display: none;
+      }
     }
   }
 }
