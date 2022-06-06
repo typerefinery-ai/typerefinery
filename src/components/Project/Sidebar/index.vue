@@ -59,7 +59,6 @@
       nodesData() {
         const index = 0
         return this.storeList.map((el, i) => {
-          console.log(el)
           return {
             key: i,
             id: el.name.toLowerCase(),

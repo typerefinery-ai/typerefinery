@@ -114,7 +114,7 @@ export default class Projects extends VuexModule {
         expanded: true,
         list: [
           {
-            name: "query 1",
+            name: "query 3",
             description: "",
             type: "query",
             connection: "connection 2",
@@ -123,7 +123,7 @@ export default class Projects extends VuexModule {
             transformer: "transformer 1",
           },
           {
-            name: "query 2",
+            name: "query 4",
             description: "",
             type: "connection",
             connection: "connection1",
