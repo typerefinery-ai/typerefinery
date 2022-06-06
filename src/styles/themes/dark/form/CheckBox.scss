@@ -66,6 +66,7 @@
   transform: rotate(45deg);
   transform-origin: 0% 100%;
   animation: checkbox-check 125ms 50ms linear forwards;
+  box-sizing: content-box;
 }
 .p-checkbox:not(.p-checkbox-disabled):hover {
   box-shadow: 0 0 1px 10px rgba(255, 255, 255, 0.04);
@@ -78,4 +79,24 @@
 }
 .p-checkbox.p-checkbox-checked:not(.p-checkbox-disabled).p-checkbox-focused {
   box-shadow: 0 0 1px 10px rgba(159, 168, 218, 0.12);
+}
+
+@keyframes checkbox-check {
+  0% {
+    width: 0;
+    height: 0;
+    border-color: #121212;
+    transform: translate3d(0, 0, 0) rotate(45deg);
+  }
+  33% {
+    width: 4px;
+    height: 0;
+    transform: translate3d(0, 0, 0) rotate(45deg);
+  }
+  100% {
+    width: 4px;
+    height: 10px;
+    border-color: #121212;
+    transform: translate3d(0, -10px, 0) rotate(45deg);
+  }
 }
