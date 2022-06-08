@@ -7,11 +7,12 @@ import App from "./App.vue"
 import router from "./router"
 import store from "./store"
 import { loadFonts } from "./plugins/webfontloader"
+import Vuelidate from "vuelidate"
 
 loadFonts()
 
 const app = createApp(App)
-
+app.directive("vuelidate", Vuelidate)
 app.use(i18n)
 app.use(router)
 app.use(store)
