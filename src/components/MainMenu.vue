@@ -17,6 +17,7 @@
          <NewConnections v-if="connectiondialog" @close="connectionclosemodal"/>
           <NewQuery v-if="querydialog" @close="queryclosemodal"/>
            <NewTransformer v-if="transformerdialog" @close="transformerclosemodal"/>
+             <i :class="item.icon"></i>
           {{ $t(`components.project.${item.id}`) }}
         </div>
       </div>
@@ -63,10 +64,11 @@ export default {
           icon: "pi pi-briefcase",
           to: "/home/project",
           subMenu: [
-            { id: "new-project", to: "#" },
-            { id: "new-query", to: "#" },
-            { id: "new-connection", to: "#" },
-             { id: "new-transformer", to: "#" },
+            { id: "new-project", icon: "pi pi-book",to: "#" },
+            { id: "new-query",  icon: "pi pi-file",to: "#" },
+            { id: "new-connection",  icon: "pi pi-server",to: "#" },
+             { id: "new-transformer", icon: "pi pi-cog", to: "#" },
+            
             
           ],
         },

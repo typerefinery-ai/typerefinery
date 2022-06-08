@@ -21,25 +21,26 @@
         </button>
       </div>
     </template>
-    <Panel :header="$t(`components.dialog.projects.panelheader`)" >
-    <div class="field">
-      <label for="name">
-          {{ $t("components.dialog.projects.info.name") }}</label
-      >
-      <InputText id="name" v-model="name" class="p-invalid"/>
-    </div>
-    <div class="field">
-      <label for="des">
-         {{ $t("components.dialog.projects.info.description") }}</label
-      >
-      <InputText id="des" v-model="des" class="p-invalid"/>
-    </div>
-    <div class="field">
-      <label for="icon">
-        {{ $t("components.dialog.projects.info.icon") }}</label
-      >
-      <InputText id="icon" v-model="icon" class="p-invalid"/>
-    </div>
+    <Panel :header="$t(`components.dialog.projects.panelheader`)">
+       <div class="field">
+          <label for="name" :class="{'p-error':v$.name.$invalid && submitted}">{{ $t("components.dialog.projects.info.name")+"*" }}</label>
+          <InputText id="name" v-model="v$.name.$model" :class="{'p-invalid':v$.name.$invalid && submitted}" />
+          <small v-if="(v$.name.$invalid && submitted) || v$.name.$pending.$response" class="p-error">{{v$.name.required.$message.replace('Value', 'Name')}}</small>
+      </div>
+      <div class="field">
+         <label for="description" :class="{'p-error':v$.description.$invalid && submitted}">
+          {{ $t("components.dialog.projects.info.description")+"*"  }}</label
+        >
+        <InputText id="description" v-model="v$.description.$model" :class="{'p-invalid':v$.description.$invalid && submitted}" />
+          <small v-if="(v$.description.$invalid && submitted) || v$.description.$pending.$response" class="p-error">{{v$.description.required.$message.replace('Value', 'Description')}}</small>
+      </div>
+      <div class="field">
+        <label for="icon" :class="{'p-error':v$.icon.$invalid && submitted}">
+          {{ $t("components.dialog.projects.info.icon")+"*"  }}</label
+        >
+        <InputText id="icon" v-model="v$.icon.$model" :class="{'p-invalid':v$.icon.$invalid && submitted}" />
+          <small v-if="(v$.icon.$invalid && submitted) || v$.icon.$pending.$response" class="p-error">{{v$.icon.required.$message.replace('Value', 'Icon')}}</small>
+      </div>
     </Panel>
     <template #footer>
       <Button
@@ -52,7 +53,7 @@
         :label="$t(`components.dialog.projects.info.save`)"
         icon="pi pi-check"
         autofocus
-        @click="handleProjectstore"
+        @click="handleProjectstore(!v$.$invalid)"
       />
     </template>
   </Dialog>
@@ -66,6 +67,8 @@ import InputText from "primevue/inputtext"
 import Button from "primevue/button"
 import Projects from "@/store/Modules/Projects"
 import { getModule } from "vuex-module-decorators"
+import { required } from "@vuelidate/validators"
+import { useVuelidate } from "@vuelidate/core"
 const appProjects = getModule(Projects)
 
 export default {
@@ -80,6 +83,7 @@ export default {
   props: {
     projectdialog: { type: Boolean, default: false },
   },
+  setup: () => ({ v$: useVuelidate() }),
   data() {
     return {
       type: "",
@@ -88,6 +92,16 @@ export default {
       description: "",
       icon: "",
       display: true,
+      submitted: false,
+    }
+  },
+  // setup: () => ({ v$: useVuelidate() }),
+  validations() {
+    return {
+      name: { required 
+      },
+      description:{required},
+       icon:{required},
     }
   },
   emits: ["close"],
@@ -95,35 +109,40 @@ export default {
     closeDialog() {
       this.$emit("close")
     },
-    handleProjectstore() {
+    handleProjectstore(isFormValid) {
       const data = {
         type: "project",
         name: this.name,
-        description: this.des,
+        description: this.description,
         icon: this.icon,
       }
-      appProjects.addToList(data)
-      this.$emit("close")
+      this.submitted = true
+
+      // stop here if form is invalid
+
+      if (!isFormValid) {
+       return
+      }
+       appProjects.addToList(data)
+        this.$emit("close")
     },
   },
 }
 </script>
 <style  lang="scss">
-.dropdown1{
-  width: 100% !important;;
-}
+
+.projects-dialog {
+  height: 100vh;
+  width: 40vw;
+  .p-dropdown {
+    width: 80%;
+  }
 input {
   width: 80%;
 }
 .field {
   display: grid;
 }
-.projects-dialog {
-  height: 100vh;
-  width: 40vw;
-  .p-dropdown{
-    width: 80%;
-  }
   .p-dialog-content {
     height: 100%;
   }
@@ -135,7 +154,5 @@ input {
       display: none;
     }
   }
-
- 
 }
 </style>
