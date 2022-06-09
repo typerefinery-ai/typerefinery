@@ -137,7 +137,6 @@
   import { required } from "@vuelidate/validators"
   import { useVuelidate } from "@vuelidate/core"
   const appProjects = getModule(Projects)
-  console.log(appProjects.projectList)
 
   export default {
     name: "NewConnections",
