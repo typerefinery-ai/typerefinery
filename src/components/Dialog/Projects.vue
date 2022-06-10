@@ -1,9 +1,8 @@
 <template>
   <Dialog
+    v-model:visible="displayModal"
     class="projects-dialog"
-    :closable="false"
     modal
-    :visible="true"
     :breakpoints="{ '960px': '75vw', '640px': '100vw' }"
   >
     <template #header>
@@ -119,6 +118,7 @@
     props: {
       projectdialog: { type: Boolean, default: false },
     },
+    emits: ["close"],
     setup: () => ({ v$: useVuelidate() }),
     data() {
       return {
@@ -129,6 +129,7 @@
         icon: "",
         display: true,
         submitted: false,
+        displayModal: true,
       }
     },
     // setup: () => ({ v$: useVuelidate() }),
@@ -139,7 +140,6 @@
         icon: { required },
       }
     },
-    emits: ["close"],
     methods: {
       closeDialog() {
         this.$emit("close")
