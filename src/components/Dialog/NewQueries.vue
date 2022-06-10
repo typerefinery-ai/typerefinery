@@ -1,7 +1,7 @@
 <template>
   <Dialog
+    v-model:visible="displayModal"
     class="query-dialog"
-    :visible="true"
     modal
     :closable="true"
     :breakpoints="{ '960px': '75vw', '640px': '100vw' }"
@@ -35,8 +35,8 @@
           option-label="name"
           option-value="key"
           :placeholder="$t(`components.dialog.new-query.panel1.select1`)"
-          @change="collectProject"
           :class="{ 'p-error': v$.projectselected.$invalid && submitted }"
+          @change="collectProject"
         />
         <small
           v-if="
@@ -221,11 +221,11 @@
       Panel,
       Dropdown,
     },
-    setup: () => ({ v$: useVuelidate() }),
     props: {
       querydialog: { type: Boolean, default: false },
     },
     emits: ["close"],
+    setup: () => ({ v$: useVuelidate() }),
     data() {
       return {
         type: "Query",
@@ -233,12 +233,13 @@
         expanded: "",
         description: "",
         icon: "",
-        query:"",
+        query: "",
         display: true,
         projectselected: null,
         connectionselected: null,
         tranformerselected: null,
         submitted: false,
+        displayModal: true,
       }
     },
     validations() {
@@ -258,7 +259,6 @@
       },
       connectionList() {
         // if(this.projectselected===this.projectList.name){
-        console.log(appProjects.connectionList)
         return appProjects.connectionList
         // }
       },
@@ -268,7 +268,6 @@
     },
     methods: {
       collectProject() {
-        console.log(this.projectselected)
         appProjects.selectedProject(this.projectselected)
       },
       querycloseDialog() {

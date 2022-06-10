@@ -1,7 +1,7 @@
 <template>
   <Dialog
+    v-model:visible="displayModal"
     class="connection-dialog"
-    :visible="true"
     modal
     :closable="true"
     :breakpoints="{ '960px': '75vw', '640px': '100vw' }"
@@ -29,10 +29,10 @@
           >{{ $t("components.dialog.connections.info.project") }}</label
         >
         <Dropdown
-          :options="projectList"
           v-model="v$.selected.$model"
-          optionLabel="name"
-          optionValue="key"
+          :options="projectList"
+          option-label="name"
+          option-value="key"
           :placeholder="$t(`components.dialog.connections.info.select`)"
           :class="{ 'p-error': v$.selected.$invalid && submitted }"
         />
@@ -137,7 +137,7 @@
   import { required } from "@vuelidate/validators"
   import { useVuelidate } from "@vuelidate/core"
   const appProjects = getModule(Projects)
-  console.log(appProjects.projectList)
+  // console.log(appProjects.projectList)
 
   export default {
     name: "NewConnections",
@@ -149,10 +149,11 @@
       Button,
       Dropdown,
     },
-    setup: () => ({ v$: useVuelidate() }),
     props: {
       connectiondialog: { type: Boolean, default: false },
     },
+    emits: ["close"],
+    setup: () => ({ v$: useVuelidate() }),
     data() {
       return {
         type: "Connection",
@@ -163,6 +164,7 @@
         display: true,
         selected: null,
         submitted: false,
+        displayModal: true,
       }
     },
     validations() {
@@ -178,7 +180,6 @@
         return appProjects.projectList
       },
     },
-    emits: ["close"],
     methods: {
       conncetioncloseDialog() {
         this.$emit("close")
