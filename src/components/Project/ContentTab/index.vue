@@ -1,14 +1,14 @@
 <template>
   <div class="window-wrapper">
     <div v-show="toolsVisible" class="content-tools-wrapper">
-      <div class="grid">
+      <!-- <div class="grid">
         <div class="col-12">
           <div class="p-inputgroup">
             <InputText :placeholder="$t(`components.tab.query`)" />
             <Button icon="pi pi-search" class="p-button-primary" />
           </div>
         </div>
-      </div>
+      </div> -->
       <div class="content-tools">
         <Button
           :label="$t(`components.tab.query`)"
@@ -46,7 +46,7 @@
       <div
         v-tooltip="$t(`tooltips.hide-content-tools`)"
         class="icon-wrapper hover:text-primary"
-        @click="$emit('toggle')"
+        @click="toggleTabs"
       >
         <i class="pi pi-angle-double-up"></i>
       </div>
@@ -85,7 +85,10 @@
             >Show D3 Labels Graph</Button
           >
           <div class="graph-container">
-            <graph :graph-id="`graph-${tabId}-${paneId}`" />
+            <graph
+              :graph-id="`graph-${tabId}-${paneId}`"
+              :dependencies="dependencies"
+            />
           </div>
 
           <div class="graph-toolbar shadow-4">
@@ -104,19 +107,22 @@
       </pane>
 
       <pane :ref="`p-${tabId}-${paneId}`" max-size="30">
-        <side-panel :node-data="nodeData" :active-view="activeView" />
+        <side-panel
+          :node-data="nodeData"
+          :active-view="activeView"
+          @handle-dependencies="handleDependencies"
+        />
       </pane>
     </splitpanes>
   </div>
 </template>
 
 <script>
-  import * as d3 from "d3"
   import FullIcon from "vue-material-design-icons/Fullscreen.vue"
   import MinusIcon from "vue-material-design-icons/MagnifyMinus.vue"
   import PlusIcon from "vue-material-design-icons/MagnifyPlus.vue"
   import ControlIcon from "vue-material-design-icons/CameraControl.vue"
-  import InputText from "primevue/inputtext"
+  //   import InputText from "primevue/inputtext"
   import Button from "primevue/button"
   import { Splitpanes, Pane } from "splitpanes"
   import DataView from "./Views/DataView.vue"
@@ -127,6 +133,9 @@
   import renderD3 from "../../Transformer/D3/d3"
   import renderWebcola from "../../Transformer/WebCola/webcola"
   import renderD3LabelsChart from "../../Transformer/D3Labels/d3labels"
+  import AppSettings from "@/store/Modules/AppSettings"
+  import { getModule } from "vuex-module-decorators"
+  const appSettings = getModule(AppSettings)
   export default {
     name: "ContentTab",
     components: {
@@ -135,7 +144,7 @@
       DataView,
       QueryView,
       TransformerView,
-      InputText,
+      //   InputText,
       Button,
       FullIcon,
       MinusIcon,
@@ -155,7 +164,7 @@
       return {
         activeView: "Q",
         nodeData: {},
-        error: "",
+        dependencies: [],
       }
     },
     watch: {
@@ -166,6 +175,9 @@
     methods: {
       handleView(view) {
         this.activeView = view
+        if (view === "T") {
+          appSettings.resizeView()
+        }
       },
       handleSplitterClick() {
         const rightPanel = this.$refs[`p-${this.tabId}-${this.paneId}`]
@@ -190,6 +202,13 @@
       showD3LabelsChart() {
         this.nodeData = {}
         renderD3LabelsChart(this.$refs.graphPRef, this)
+      },
+      handleDependencies(d) {
+        this.dependencies = d
+      },
+      toggleTabs() {
+        this.$emit("toggle")
+        // appSettings.resizeView()
       },
       //   renderGraph(code) {
       //     this.activeView = "G"

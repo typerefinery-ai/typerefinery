@@ -23,31 +23,34 @@
         <div class="field">
           <label>{{ $t(`components.transformer.dependencies`) }}</label>
           <MultiSelect
-            v-model="selectedDependencies"
+            :model-value="selectedDependencies"
             class="mb-2"
             :options="dependencies"
             option-label="name"
             :placeholder="$t(`components.transformer.select-dependencies`)"
+            @change="handleDependency"
           />
         </div>
         <div class="field">
           <label>{{ $t(`components.transformer.transformer`) }}</label>
           <Dropdown
-            v-model="selectedTransformer"
+            :model-value="selectedTransformer"
+            :options="transformers"
             option-label="name"
-            option-value="code"
+            option-value="key"
             :placeholder="$t(`components.transformer.select`)"
+            @change="handleTransformer"
           />
         </div>
         <div class="field">
           <Button
             :label="$t(`components.transformer.save`)"
             class="p-button-raised p-button-info"
-            @click="displayModal = true"
+            @click="saveDialog = true"
           />
         </div>
         <Dialog
-          v-model:visible="displayModal"
+          v-model:visible="saveDialog"
           modal
           class="save-tranformer-dialog"
           :header="$t(`components.transformer.save`)"
@@ -55,7 +58,7 @@
         >
           <div class="dialog-content">
             <span class="p-float-label">
-              <InputText id="name" v-model="value2" type="text" />
+              <InputText id="name" v-model="transformerName" type="text" />
               <label for="name">{{ $t(`components.transformer.name`) }}</label>
             </span>
           </div>
@@ -64,13 +67,14 @@
               :label="$t(`buttons.cancel`)"
               icon="pi pi-times"
               class="p-button-text"
-              @click="displayModal = false"
+              @click="saveDialog = false"
             />
             <Button
               :label="$t(`buttons.save`)"
               icon="pi pi-check"
               autofocus
-              @click="displayModal = false"
+              :disabled="!transformerName.length"
+              @click="saveTransformer"
             />
           </template>
         </Dialog>
@@ -79,6 +83,7 @@
         <code>log()</code>
         <span>{{ $t("help.log") }}</span>
       </div>
+      <ConfirmDialog></ConfirmDialog>
     </div>
   </div>
 </template>
@@ -87,16 +92,31 @@
   import Button from "primevue/button"
   import Dropdown from "primevue/dropdown"
   import MultiSelect from "primevue/multiselect"
+  import ConfirmDialog from "primevue/confirmdialog"
   import Dialog from "primevue/dialog"
   import InputText from "primevue/inputtext"
+  import { getModule } from "vuex-module-decorators"
+  import Transformer from "@/store/Modules/Transformer"
+  import Projects from "@/store/Modules/Projects"
+  const transformer = getModule(Transformer)
+  const projects = getModule(Projects)
+
   export default {
     name: "TransformerConfig",
-    components: { MultiSelect, Button, Dropdown, Dialog, InputText },
+    components: {
+      MultiSelect,
+      Button,
+      Dropdown,
+      Dialog,
+      InputText,
+      ConfirmDialog,
+    },
+    emits: ["handle-dependencies"],
     data() {
       return {
-        value2: "",
+        transformerName: "",
         activeView: "config",
-        displayModal: false,
+        saveDialog: false,
         selectedTransformer: null,
         selectedDependencies: null,
         dependencies: [
@@ -105,9 +125,57 @@
         ],
       }
     },
+    computed: {
+      transformers() {
+        return transformer.list.map((el) => {
+          return { name: el.name, key: el.name }
+        })
+      },
+    },
     methods: {
       handleView(view) {
         this.activeView = view
+      },
+      handleDependency(d) {
+        this.selectedDependencies = d.value
+        const dependencies = d.value.map((el) => el.code)
+        this.$emit("handle-dependencies", dependencies)
+      },
+      handleTransformer(t) {
+        this.showConfirmDialog(t)
+      },
+      showConfirmDialog(t) {
+        this.$confirm.require({
+          message: this.$t("components.transformer.confirm-msg"),
+          header: this.$t("components.transformer.sure"),
+          acceptLabel: this.$t("buttons.yes"),
+          rejectLabel: this.$t("buttons.no"),
+          icon: "pi pi-exclamation-triangle",
+          accept: () => {
+            this.setTransformerCode(t)
+          },
+          reject: () => {
+            return
+          },
+        })
+      },
+      setTransformerCode(t) {
+        const idx = transformer.list.findIndex((el) => el.name === t.value)
+        const code = transformer.list[idx].code
+        const data = { code, projectId: 0, queryId: 0 }
+        projects.setCode(data)
+        this.selectedTransformer = t.value
+      },
+      saveTransformer() {
+        this.saveDialog = false
+        const code = projects.list[0].queries.list[0].transformer.code
+        const data = {
+          name: this.transformerName,
+          code,
+          error: "",
+          logs: [],
+        }
+        transformer.saveTransformer(data)
       },
     },
   }

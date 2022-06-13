@@ -5,19 +5,28 @@
 <script>
   import * as d3 from "d3"
   import * as cola from "webcola"
-  import Transformer from "@/store/Modules/Transformer"
+  import Projects from "@/store/Modules/Projects"
   import { getModule } from "vuex-module-decorators"
-  const transformer = getModule(Transformer)
+  const projects = getModule(Projects)
   export default {
     name: "Graph",
-    props: { graphId: { type: String, required: true } },
+    props: {
+      graphId: { type: String, required: true },
+      dependencies: { type: Array, required: true },
+    },
     computed: {
       code() {
-        return transformer.code
+        return projects.transformerCode(0, 0)
+      },
+      params() {
+        return this.dependencies
       },
     },
     watch: {
       code() {
+        this.renderGraph()
+      },
+      params() {
         this.renderGraph()
       },
     },
@@ -28,17 +37,21 @@
     methods: {
       renderGraph() {
         try {
-          window.log = function (x) {
-            transformer.setLogs(x)
+          window.log = function (log) {
+            projects.setLogs({ log, projectId: 0, queryId: 0 })
           }
-          transformer.clearLogs() // clear logs before each execution
-          const func = new Function("wrapper", "self", "d3", "cola", this.code)
+          projects.clearLogs({ projectId: 0, queryId: 0 }) // clear logs before each execution
+          const params = ["wrapper", "self", ...this.params]
+          const func = new Function(...params, this.code)
           const wrapper = document.getElementById(this.graphId)
           this.removeInnerItems(wrapper)
-          func(wrapper, this, d3, cola)
-          transformer.setError("")
+          const args = [wrapper, this]
+          const existingDependencies = { d3: d3, cola: cola }
+          this.params.forEach((el) => args.push(existingDependencies[el]))
+          func.apply(this, args)
+          projects.setError({ error: "", projectId: 0, queryId: 0 })
         } catch (err) {
-          transformer.setError(err.stack)
+          projects.setError({ error: err.stack, projectId: 0, queryId: 0 })
         }
       },
       removeInnerItems(wrapper) {

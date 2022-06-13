@@ -1,5 +1,5 @@
 <template>
-  <div class="transformer-wrapper">
+  <div ref="wrapper" class="transformer-wrapper">
     <div class="code-wrapper shadow-3" :class="{ error: isError }">
       <div class="code-tabs">
         <div class="code-tabs-head">
@@ -23,7 +23,7 @@
         v-if="tab == 'editor'"
         :model-value="code"
         placeholder="Code goes here..."
-        :style="{ height: '350px' }"
+        :style="{ height: '70vh' }"
         :autofocus="true"
         :indent-with-tab="true"
         :tab-zize="2"
@@ -39,7 +39,6 @@
         :indent-with-tab="true"
         :tab-zize="2"
         :extensions="extensions"
-        @change="handleChange"
       />
     </div>
   </div>
@@ -51,10 +50,10 @@
   import { javascript } from "@codemirror/lang-javascript"
   import { oneDark } from "@codemirror/theme-one-dark"
   import AppSettings from "@/store/Modules/AppSettings"
-  import Transformer from "@/store/Modules/Transformer"
+  import Projects from "@/store/Modules/Projects"
   import { getModule } from "vuex-module-decorators"
   const appSettings = getModule(AppSettings)
-  const transformer = getModule(Transformer)
+  const projects = getModule(Projects)
   export default {
     name: "TransformerView",
     components: { Codemirror, Button },
@@ -71,21 +70,43 @@
           : [javascript()]
       },
       errorText() {
-        return transformer.consoleMessage
+        return projects.consoleMessage(0, 0)
       },
       isError() {
-        return transformer.error
+        return projects.transformerError(0, 0)
       },
       code() {
-        return transformer.code
+        return projects.transformerCode(0, 0)
       },
+      viewResized() {
+        return appSettings.viewResized
+      },
+    },
+    watch: {
+      viewResized() {
+        setTimeout(() => this.setEditorHeight(), 0)
+      },
+    },
+    mounted() {
+      setTimeout(() => this.setEditorHeight(), 0)
     },
     methods: {
       handleChange(c) {
-        transformer.setCode(c)
+        const data = { code: c, projectId: 0, queryId: 0 }
+        projects.setCode(data)
       },
       handleTabs(tab) {
         this.tab = tab
+        appSettings.resizeView()
+      },
+      setEditorHeight() {
+        const wrapper = this.$refs.wrapper
+        const editor = document.getElementsByClassName("cm-editor")[0]
+        if (wrapper) {
+          editor.style.setProperty("display", "none", "important")
+          editor.style.height = wrapper.clientHeight - 65 + "px"
+          editor.style.setProperty("display", "flex", "important")
+        }
       },
     },
   }
@@ -94,6 +115,7 @@
 <style scoped lang="scss">
   .transformer-wrapper {
     padding: 1rem;
+    height: 100%;
 
     .code-wrapper {
       &.error {

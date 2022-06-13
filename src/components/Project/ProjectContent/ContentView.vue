@@ -55,6 +55,9 @@
   import TabPanel from "primevue/tabpanel"
   import MenuBar from "@/components/MenuBar.vue"
   import ContentTab from "../ContentTab"
+  import AppSettings from "@/store/Modules/AppSettings"
+  import { getModule } from "vuex-module-decorators"
+  const appSettings = getModule(AppSettings)
 
   TabView.methods.onTabClick = function (event, i) {
     this.$emit("tab-click", {
@@ -105,6 +108,7 @@
 
       toggleContentTools() {
         this.contentToolsVisible = !this.contentToolsVisible
+        appSettings.resizeView()
       },
 
       splitView(id) {

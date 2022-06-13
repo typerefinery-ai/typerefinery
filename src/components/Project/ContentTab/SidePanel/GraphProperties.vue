@@ -29,7 +29,7 @@
 
 <script>
   export default {
-    name: "Properties",
+    name: "GraphProperties",
     props: { data: { type: Object, required: true } },
   }
 </script>

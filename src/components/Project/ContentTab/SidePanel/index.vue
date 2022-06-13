@@ -1,28 +1,29 @@
 <template>
   <div class="content-side-panel">
-    <properties v-if="activeView === 'G'" :data="nodeData" />
-    <transformer-config v-if="activeView === 'T'" />
+    <query-info v-show="activeView === 'Q'" />
+    <graph-properties v-show="activeView === 'G'" :data="nodeData" />
+    <transformer-config
+      v-show="activeView === 'T'"
+      @handle-dependencies="handleDependencies"
+    />
   </div>
 </template>
 
 <script>
-  import Properties from "./Properties.vue"
+  import GraphProperties from "./GraphProperties.vue"
   import TransformerConfig from "./TransformerConfig.vue"
+  import QueryInfo from "./QueryInfo.vue"
   export default {
     name: "ContentSidePanel",
-    components: { Properties, TransformerConfig },
+    components: { GraphProperties, TransformerConfig, QueryInfo },
     props: {
       nodeData: { type: Object, required: true },
       activeView: { type: String, required: true },
     },
-    data() {
-      return {
-        activeTab: 1,
-      }
-    },
+    emits: ["handle-dependencies"],
     methods: {
-      handleTab(id) {
-        this.activeTab = id
+      handleDependencies(d) {
+        this.$emit("handle-dependencies", d)
       },
     },
   }
