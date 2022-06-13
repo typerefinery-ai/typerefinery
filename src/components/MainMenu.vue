@@ -107,6 +107,9 @@
           },
         ]
       },
+      subItems() {
+        return this.items.filter((el) => el.to == this.$route.path)[0].subMenu
+      },
     },
 
     methods: {

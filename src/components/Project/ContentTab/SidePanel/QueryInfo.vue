@@ -49,7 +49,9 @@
   .query-info-wrapperr {
     margin: 1rem;
 
-    input {
+    input,
+    textarea,
+    .p-inputwrapper {
       width: 100%;
     }
   }

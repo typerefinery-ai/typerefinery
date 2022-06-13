@@ -363,7 +363,6 @@ function dragended(d) {
 
   @Mutation
   setLogs({ log, projectId, queryId }) {
-    console.log("setLogs is running")
     let logs: string
     if (typeof log == "object") {
       logs = JSON.stringify(log)
@@ -379,7 +378,6 @@ function dragended(d) {
 
   get consoleMessage() {
     return (projectId: number, queryId: number) => {
-      console.log(projectId, queryId)
       let myString = ""
       this.list[projectId].queries.list[queryId].transformer.logs.forEach(
         (el, i) => {
