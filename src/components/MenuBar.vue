@@ -7,7 +7,7 @@
     <menu-item
       v-if="!menuBarVisible"
       tooltip="show-menu-bar"
-      :on-click="() => $emit('toggle')"
+      :on-click="toggleView"
     >
       <i class="pi pi-angle-double-down"></i>
     </menu-item>
@@ -193,6 +193,7 @@
 
       toggleFocus() {
         appSettings.toggleFocus()
+        appSettings.resizeView()
       },
 
       toggleMenu(event) {
@@ -213,6 +214,11 @@
 
       openSettings() {
         appSettings.openSettingsDialog("profile/alias")
+      },
+
+      toggleView() {
+        this.$emit("toggle")
+        appSettings.resizeView()
       },
     },
   }
