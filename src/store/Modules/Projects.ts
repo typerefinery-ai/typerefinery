@@ -215,4 +215,14 @@ export default class Projects extends VuexModule {
   addToList(l) {
     this.list.push(l)
   }
+  nodeSelected = false
+  @Mutation
+  selectNode() {
+    this.nodeSelected = !this.nodeSelected
+  }
+  clickednode = []
+  @Mutation
+  selectedNode(data) {
+    return (this.clickednode = data)
+  }
 }

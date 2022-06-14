@@ -26,6 +26,11 @@
         filter-mode="lenient"
         :expanded-keys="expandedKeys"
       >
+        <template #default="slotProps">
+          <div @dblclick="selectNode(slotProps.node)">
+            {{ slotProps.node.label }}
+          </div>
+        </template>
       </Tree>
     </div>
   </div>
@@ -118,6 +123,12 @@
       logout() {
         localStorage.clear()
         this.$router.push({ name: "Login" })
+      },
+
+      selectNode(data) {
+        console.log(data.label)
+        appProjects.selectNode(data.label)
+        appProjects.selectedNode(data.label)
       },
     },
   }
