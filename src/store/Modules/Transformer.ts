@@ -33,7 +33,7 @@ export default class Transformer extends VuexModule {
   ]
 
   @Mutation
-  saveTransformer(transformer: object) {
+  saveTransformer(transformer) {
     this.list.push(transformer)
   }
 }

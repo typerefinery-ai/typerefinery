@@ -162,7 +162,7 @@ function dragended(d) {
   d.fy = null
 }`,
               error: "",
-              logs: [],
+              logs: [""],
             },
           },
           {
@@ -175,7 +175,7 @@ function dragended(d) {
             transformer: {
               code: "",
               error: "",
-              logs: [],
+              logs: [""],
             },
           },
         ],
