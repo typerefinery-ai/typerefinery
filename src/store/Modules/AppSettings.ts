@@ -29,6 +29,12 @@ export default class AppSettings extends VuexModule {
     this.focus = !this.focus
   }
 
+  viewResized = false
+  @Mutation
+  resizeView() {
+    this.viewResized = !this.viewResized
+  }
+
   settingsDialogVisible = false
   @Mutation
   toggleSettingsDialog() {
