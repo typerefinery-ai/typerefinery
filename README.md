@@ -17,6 +17,11 @@ This template should help get you started developing `Electron` app using `Vue 3
 
 <img width="400px" src="https://raw.githubusercontent.com/innovolve-ai/typerefinery/master/public/assets/electron-app.png" />
 
+## Prerequisites
+
+- Install powershell 7 or above , windows-terminal
+- setup git for EOL to lf
+
 ## Run Setup
 
 ```sh

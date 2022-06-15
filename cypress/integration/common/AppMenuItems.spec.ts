@@ -28,6 +28,17 @@ describe("App Menu Items", () => {
       })
     cy.get("#change-language-button").click()
   })
+
+  it("Has Hindi in Change Language menu.", () => {
+    cy.get("#change-language-button").click()
+    cy.get(".p-menu")
+      .should("be.visible")
+      .and(($menu) => {
+        expect($menu.find(".p-menuitem-link")).to.contain("हिन्दी")
+      })
+    cy.get("#change-language-button").click()
+  })
+
   it("Has Toggle Theme button.", () => {
     expect(cy.get("#toggle-theme-button"))
   })

@@ -17,6 +17,7 @@ describe("Projecty Tab", () => {
         expect($tab.find(".main-submenu--item")).to.contain("New Project")
         expect($tab.find(".main-submenu--item")).to.contain("New Query")
         expect($tab.find(".main-submenu--item")).to.contain("New Connection")
+        expect($tab.find(".main-submenu--item")).to.contain("New Transformer")
       })
   })
 })
