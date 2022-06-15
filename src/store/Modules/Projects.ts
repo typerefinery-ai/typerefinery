@@ -232,7 +232,7 @@ function dragended(d) {
         expanded: true,
         list: [
           {
-            name: "query 1",
+            name: "query 3 ",
             description: "",
             type: "query",
             connection: "connection 2",
@@ -245,7 +245,7 @@ function dragended(d) {
             },
           },
           {
-            name: "query 2",
+            name: "query 4",
             description: "",
             type: "connection",
             connection: "connection1",
@@ -281,6 +281,9 @@ function dragended(d) {
     },
   ]
   value: "" | undefined
+  get storedata() {
+    return this.list
+  }
   get projectList() {
     const name = this.list.map((el) => {
       return { name: el.name, key: el.name }
@@ -336,6 +339,16 @@ function dragended(d) {
   @Mutation
   addToList(l) {
     this.list.push(l)
+  }
+  nodeSelected = false
+  @Mutation
+  selectNode() {
+    this.nodeSelected = !this.nodeSelected
+  }
+  clickednode = []
+  @Mutation
+  selectedNode(data) {
+    return (this.clickednode = data)
   }
 
   // Transformer Code
