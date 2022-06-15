@@ -1,6 +1,6 @@
 import { Module, VuexModule, Mutation } from "vuex-module-decorators"
 import store from "../index"
-const storeValue = localStorage.getItem("vuex")
+const storeValue = localStorage.getItem("typerefinery")
 const projectsInStore = storeValue ? JSON.parse(storeValue).Projects : false
 @Module({
   name: "Projects",
