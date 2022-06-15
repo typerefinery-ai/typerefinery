@@ -28,14 +28,14 @@
 </template>
 
 <script>
-import InputText from "primevue/inputtext"
-import Textarea from "primevue/textarea"
-export default {
-  name: "QueryView",
-  components: { InputText, Textarea },
-  data: () => ({
-    query: "",
-    name: "",
-  }),
-}
+  import InputText from "primevue/inputtext"
+  import Textarea from "primevue/textarea"
+  export default {
+    name: "QueryView",
+    components: { InputText, Textarea },
+    data: () => ({
+      query: "",
+      name: "",
+    }),
+  }
 </script>
