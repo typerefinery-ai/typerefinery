@@ -1,4 +1,4 @@
-import { createI18n } from "vue-i18n"
+import { createI18n } from "vue-i18n/index"
 import en from "./locales/en.json"
 import hi from "./locales/hi.json"
 import AppSettings from "@/store/Modules/AppSettings"
