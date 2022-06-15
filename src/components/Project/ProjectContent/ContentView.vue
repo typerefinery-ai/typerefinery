@@ -22,29 +22,11 @@
           </template>
           <!-- tab 1 -->
           <content-tab
-            v-show="activeIndex === 0"
+            v-if="activeIndex === i"
             :pane-id="paneId"
             :focus="focus"
             :tools-visible="contentToolsVisible"
-            tab-id="tab1"
-            @toggle="toggleContentTools"
-          />
-          <!-- tab 1 -->
-          <content-tab
-            v-show="activeIndex === 1"
-            :pane-id="paneId"
-            :focus="focus"
-            :tools-visible="contentToolsVisible"
-            tab-id="tab2"
-            @toggle="toggleContentTools"
-          />
-          <!-- tab 1 -->
-          <content-tab
-            v-show="activeIndex === 2"
-            :pane-id="paneId"
-            :focus="focus"
-            :tools-visible="contentToolsVisible"
-            tab-id="tab3"
+            :tab-id="`tab${i + 1}`"
             @toggle="toggleContentTools"
           />
         </TabPanel>
@@ -73,6 +55,9 @@
   import TabPanel from "primevue/tabpanel"
   import MenuBar from "@/components/MenuBar.vue"
   import ContentTab from "../ContentTab"
+  import AppSettings from "@/store/Modules/AppSettings"
+  import { getModule } from "vuex-module-decorators"
+  const appSettings = getModule(AppSettings)
 
   TabView.methods.onTabClick = function (event, i) {
     this.$emit("tab-click", {
@@ -123,6 +108,7 @@
 
       toggleContentTools() {
         this.contentToolsVisible = !this.contentToolsVisible
+        appSettings.resizeView()
       },
 
       splitView(id) {

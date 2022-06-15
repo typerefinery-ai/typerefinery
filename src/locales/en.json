@@ -19,7 +19,9 @@
       "queries": "Queries",
       "tab": "Tab",
       "name": "Name",
-      "calories": "Calories"
+      "calories": "Calories",
+      "description": "Description",
+      "icon": "Icon"
     },
     "setting": {
       "settings": "Settings",
@@ -56,13 +58,16 @@
     "tab": {
       "query": "Query",
       "data": "Data",
-      "graph": "Graph"
+      "graph": "Graph",
+      "transform": "Transform"
     },
     "graph": {
       "properties": "Properties",
       "no-node": "No Node Selected",
       "index": "Index",
-      "label": "Label"
+      "label": "Label",
+      "config": "Config",
+      "help": "Help"
     },
     "dialog": {
       "projects": {
@@ -131,6 +136,18 @@
           "save": "Save"
         }
       }
+    },
+    "transformer": {
+      "editor": "Editor",
+      "console": "Console",
+      "dependencies": "Dependencies",
+      "transformer": "Transformer",
+      "select-dependencies": "Select Dependencies",
+      "select": "Select a Transformer",
+      "save": "Save Transformer",
+      "name": "Transformer Name",
+      "sure": "Are you sure?",
+      "confirm-msg": "Transformer code inside editor will be overwritten."
     }
   },
 
@@ -151,5 +168,16 @@
     "help": "Help",
     "profile": "User profile",
     "settings": "Open Settings"
+  },
+  "buttons": {
+    "submit": "Submit",
+    "clear": "Clear",
+    "cancel": "Cancel",
+    "save": "Save",
+    "no": "No",
+    "yes": "Yes"
+  },
+  "help": {
+    "log": "Log to the console"
   }
 }
