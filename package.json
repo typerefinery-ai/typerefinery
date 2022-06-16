@@ -4,12 +4,30 @@
   "productName": "TypeRefinery",
   "productAppId": "appId",
   "electronWindowTitle": "TypeRefinery",
+  "companyName": "Innovolve.ai",
   "author": "TypeRefinery.ai",
   "version": "2022.6.4",
   "appWidth": 1366,
   "appHeight": 768,
+  "env": {
+    "VITE_DEV_SERVER_HOST": "localhost",
+    "VITE_DEV_SERVER_PORT": 3000,
+    "VITE_DEV_SERVER_SCHEMA": "http",
+    "NODE_ENV": "dev",
+    "CRASH_REPORTED_ENABLED": true,
+    "CRASH_REPORTER_SUBMIT_URL": "https://o1271501.ingest.sentry.io/api/6463906/minidump/?sentry_key=11633f20925d4be2ba055e901f7d95e3",
+    "ERROR_REPORT_ENABLED": true,
+    "ERROR_REPORT_SENTURY_DSN": "https://11633f20925d4be2ba055e901f7d95e3@o1271501.ingest.sentry.io/6463906",
+    "ERROR_REPORT_LEVEL": [
+      "error",
+      "war,ning",
+      "info",
+      "debug"
+    ],
+    "LOCAL_SERVICES_PATH": "./services"
+  },
   "scripts": {
-    "build": "vue-tsc --noEmit && vite build",
+    "build": "vue-tsc --noEmit && vite build && node scripts/build.mjs",
     "test:unit": "vitest",
     "test:e2e": "start-server-and-test preview 8080 'cypress open'",
     "lint:script": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
@@ -17,9 +35,12 @@
     "dev": "vite",
     "dev2": "vite --host localhost",
     "electron": "wait-on tcp:3000 && cross-env NODE_ENV=dev electron .",
+    "electron:start2": "cross-env NODE_ENV=dev electron .",
     "electron:pack": "electron-builder --dir",
     "electron:dev": "concurrently -k \"cross-env BROWSER=none npm run dev\" \"npm run electron\"",
     "electron:builder": "electron-builder",
+    "electron:start": "npm run build && electron ./dist/main/index.cjs",
+    "electron:run": "electron ./dist/main/index.cjs",
     "build:for:electron": "vue-tsc --noEmit && cross-env ELECTRON=true vite build",
     "app:build": "npm run build:for:electron && npm run electron:builder",
     "postinstall": "electron-builder install-app-deps",
@@ -38,29 +59,43 @@
     "report:moveVideos": "echo moveVideos && cp -r cypress/videos cypress/reports/videos 2>/dev/null || true",
     "report:moveData": "echo moveData && cp -r cypress/results/data cypress/reports/data 2>/dev/null || true",
     "posttest": "npm run report:merge && npm run report:generate && npm run report:moveScreenshots && npm run report:moveVideos && npm run report:moveData",
-    "services": "npx ts-node --esm electron/services.ts"
+    "services": "npx ts-node --esm electron/app/main/Services.ts"
   },
-  "main": "electron/electron.js",
+  "main": "dist/main/index.cjs",
   "dependencies": {
     "@achrinza/node-ipc": "^10.1.6",
     "@mdi/font": "5.9.55",
     "@rauschma/stringio": "^1.4.0",
+    "@sentry/electron": "^3.0.7",
+    "@sentry/integrations": "^7.1.1",
+    "@sentry/types": "^7.1.1",
+    "@types/i18next-node-fs-backend": "^2.1.1",
     "core-js": "^3.8.3",
     "d3": "^4.13.0",
     "dotenv": "^16.0.0",
+    "electron-context-menu": "^3.1.2",
     "electron-log": "^4.4.7",
+    "electron-updater": "^5.0.1",
+    "electron-window-state": "^5.0.3",
+    "eventemitter3": "^4.0.7",
     "execa": "^5.1.1",
     "express": "^4.18.1",
+    "get-port": "^6.1.2",
+    "glob": "^8.0.3",
     "i18next": "^21.6.16",
     "i18next-fs-backend": "^1.1.4",
+    "i18next-node-fs-backend": "^2.1.3",
     "monaco-editor": "^0.33.0",
+    "node-fetch": "^3.2.6",
     "p-retry": "^5.1.1",
+    "portfinder": "^1.0.28",
     "primeflex": "^3.1.3",
     "primeicons": "^5.0.0",
     "primevue": "^3.12.2",
     "register-service-worker": "^1.7.2",
     "roboto-fontface": "*",
     "splitpanes": "^3.1.1",
+    "tree-kill": "^1.2.2",
     "vue": "^3.2.31",
     "vue-i18n": "^9.1.9",
     "vue-material-design-icons": "^5.0.0",
@@ -73,6 +108,8 @@
     "winston": "^3.7.2"
   },
   "devDependencies": {
+    "@rollup/plugin-node-resolve": "^13.3.0",
+    "@rollup/plugin-typescript": "^8.3.2",
     "@rushstack/eslint-patch": "^1.1.0",
     "@types/electron-devtools-installer": "^2.2.1",
     "@types/jsdom": "^16.2.14",
@@ -97,9 +134,10 @@
     "cross-env": "^7.0.3",
     "cypress": "^10.0.1",
     "cypress-multi-reporters": "^1.5.0",
-    "electron": "^17.0.1",
+    "electron": "^19.0.0",
     "electron-builder": "^22.14.13",
     "electron-devtools-installer": "^3.2.0",
+    "electron-notarize": "^1.2.1",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
@@ -112,6 +150,13 @@
     "mochawesome-report-generator": "^6.0.1",
     "postcss-html": "^1.3.0",
     "prettier": "^2.4.1",
+    "rollup": "^2.75.6",
+    "rollup-plugin-copy": "^3.4.0",
+    "rollup-plugin-inject-process-env": "^1.3.1",
+    "rollup-plugin-postcss": "^4.0.2",
+    "rollup-plugin-serve": "^1.1.0",
+    "rollup-plugin-svg": "^2.0.0",
+    "rollup-plugin-vue": "^6.0.0",
     "sass": "^1.38.0",
     "sass-loader": "^12.0.0",
     "simple-git-hooks": "^2.7.0",
@@ -119,9 +164,10 @@
     "stylelint": "^14.5.1",
     "stylelint-config-recommended": "^7.0.0",
     "stylelint-config-standard": "^25.0.0",
-    "typescript": "~4.5.5",
-    "vite": "^2.7.13",
-    "vitest": "^0.4.1",
+    "typed-emitter": "^2.1.0",
+    "typescript": "~4.7.2",
+    "vite": "^2.9.12",
+    "vitest": "^0.6.1",
     "vue-cli-plugin-electron-builder": "~2.1.1",
     "vue-tsc": "^0.31.4",
     "wait-on": "^6.0.1"
@@ -137,15 +183,25 @@
   "build": {
     "appId": "typerfinery",
     "copyright": "Copyright © 2022 ${author}",
+    "asar": true,
     "mac": {
-      "category": "public.app-category.utilities"
+      "category": "public.app-category.utilities",
+      "icon": "dist/main/assets/logo.icns"
     },
     "win": {
-      "target": "nsis"
+      "target": "nsis",
+      "icon": "logo.png"
     },
     "nsis": {
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": true
+      "menuCategory": false,
+      "oneClick": true,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": false,
+      "deleteAppDataOnUninstall": false,
+      "runAfterFinish": true,
+      "installerHeaderIcon": "dist/main/assets/icon.ico",
+      "installerIcon": "dist/main/assets/icon.ico",
+      "uninstallerIcon": "dist/main/assets/icon.ico"
     },
     "linux": {
       "target": "AppImage"
@@ -155,10 +211,10 @@
     },
     "files": [
       "dist/**/*",
-      "electron/**/*"
+      "electron/static/**/*"
     ],
     "directories": {
-      "buildResources": "electron/assets",
+      "buildResources": "electron/build",
       "output": "dist_electron"
     },
     "extraFiles": [
