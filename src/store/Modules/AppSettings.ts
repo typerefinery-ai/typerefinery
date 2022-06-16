@@ -1,7 +1,7 @@
 import { Module, VuexModule, Mutation } from "vuex-module-decorators"
 import store from "../index"
 
-const storeValue = localStorage.getItem("appsettings")
+const storeValue = localStorage.getItem("typerefinery")
 const settingsInStore = storeValue ? JSON.parse(storeValue).AppSettings : false
 
 @Module({
@@ -27,6 +27,12 @@ export default class AppSettings extends VuexModule {
   @Mutation
   toggleFocus() {
     this.focus = !this.focus
+  }
+
+  viewResized = false
+  @Mutation
+  resizeView() {
+    this.viewResized = !this.viewResized
   }
 
   settingsDialogVisible = false

@@ -7,15 +7,18 @@ import App from "./App.vue"
 import router from "./router"
 import store from "./store"
 import { loadFonts } from "./plugins/webfontloader"
+import Vuelidate from "vuelidate"
+import ConfirmationService from "primevue/confirmationservice"
 
 loadFonts()
 
 const app = createApp(App)
-
+app.directive("vuelidate", Vuelidate)
 app.use(i18n)
 app.use(router)
 app.use(store)
 app.use(PrimeVue)
 app.directive("tooltip", Tooltip)
+app.use(ConfirmationService)
 app.mount("#app")
 app.component("InputText", InputText)

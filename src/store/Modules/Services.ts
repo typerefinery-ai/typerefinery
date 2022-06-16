@@ -1,7 +1,7 @@
 import { Module, VuexModule, Mutation, Action } from "vuex-module-decorators"
 import store from "../index"
 
-const storeValue = localStorage.getItem("services")
+const storeValue = localStorage.getItem("typerefinery")
 const servicesInStore = storeValue ? JSON.parse(storeValue).Services : false
 
 @Module({

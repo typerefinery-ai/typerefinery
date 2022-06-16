@@ -1,14 +1,14 @@
 <template>
   <Dialog
+    v-model:visible="displayModal"
     class="transformer-dialog"
-    :visible="true"
     modal
     :closable="true"
     :breakpoints="{ '960px': '75vw', '640px': '100vw' }"
   >
     <template #header>
       <span class="p-dialog-title">
-       {{ $t("components.dialog.new-transformer.header") }}</span
+        {{ $t("components.dialog.new-transformer.header") }}</span
       >
       <div class="p-dialog-header-icons">
         <button
@@ -23,18 +23,31 @@
     </template>
     <Panel :header="$t(`components.dialog.new-transformer.panel1.header`)">
       <div class="field">
-        <label for="expand">
-         {{ $t("components.dialog.new-transformer.panel1.label1") }}</label
+        <label
+          for="expand"
+          :class="{ 'p-error': v$.projectselected.$invalid && submitted }"
+        >
+          {{ $t("components.dialog.new-transformer.panel1.label1") }}</label
         >
         <Dropdown
-          v-model="projectselected"
+          v-model="v$.projectselected.$model"
           :options="projectList"
           option-label="name"
           option-value="key"
-           :placeholder="$t(`components.dialog.new-transformer.panel1.select`)"
+          :placeholder="$t(`components.dialog.new-transformer.panel1.select`)"
+          :class="{ 'p-error': v$.projectselected.$invalid && submitted }"
           @change="collectProject"
-          class="p-invalid"
         />
+        <small
+          v-if="
+            (v$.projectselected.$invalid && submitted) ||
+            v$.projectselected.$pending.$response
+          "
+          class="p-error"
+          >{{
+            v$.projectselected.required.$message.replace("Value", "Project")
+          }}</small
+        >
       </div>
     </Panel>
     <!-- <h3><u>Query Info</u></h3> -->
@@ -43,26 +56,63 @@
       <InputText id="type" v-model="type" />
     </div> -->
     <Panel
-     :header="$t(`components.dialog.new-transformer.panel2.header`)"
+      :header="$t(`components.dialog.new-transformer.panel2.header`)"
       class="panel2"
     >
       <div class="field">
-        <label for="name">{{
-          $t("components.dialog.new-transformer.panel2.name")
-        }}</label>
-        <InputText id="name" v-model="name" class="p-invalid"/>
+        <label
+          for="name"
+          :class="{ 'p-error': v$.name.$invalid && submitted }"
+          >{{ $t("components.dialog.projects.info.name") + "*" }}</label
+        >
+        <InputText
+          id="name"
+          v-model="v$.name.$model"
+          :class="{ 'p-invalid': v$.name.$invalid && submitted }"
+        />
+        <small
+          v-if="(v$.name.$invalid && submitted) || v$.name.$pending.$response"
+          class="p-error"
+          >{{ v$.name.required.$message.replace("Value", "Name") }}</small
+        >
       </div>
       <div class="field">
-        <label>{{
-          $t("components.dialog.new-transformer.panel2.description")
-        }}</label>
-        <InputText v-model="des" class="p-invalid"/>
+        <label
+          for="description"
+          :class="{ 'p-error': v$.description.$invalid && submitted }"
+        >
+          {{ $t("components.dialog.projects.info.description") + "*" }}</label
+        >
+        <InputText
+          id="description"
+          v-model="v$.description.$model"
+          :class="{ 'p-invalid': v$.description.$invalid && submitted }"
+        />
+        <small
+          v-if="
+            (v$.description.$invalid && submitted) ||
+            v$.description.$pending.$response
+          "
+          class="p-error"
+          >{{
+            v$.description.required.$message.replace("Value", "Description")
+          }}</small
+        >
       </div>
-       <div class="field">
-        <label for="icon">{{
-          $t("components.dialog.new-transformer.panel2.icon")
-        }}</label>
-        <InputText id="icon" v-model="icon" class="p-invalid" />
+      <div class="field">
+        <label for="icon" :class="{ 'p-error': v$.icon.$invalid && submitted }">
+          {{ $t("components.dialog.projects.info.icon") + "*" }}</label
+        >
+        <InputText
+          id="icon"
+          v-model="v$.icon.$model"
+          :class="{ 'p-invalid': v$.icon.$invalid && submitted }"
+        />
+        <small
+          v-if="(v$.icon.$invalid && submitted) || v$.icon.$pending.$response"
+          class="p-error"
+          >{{ v$.icon.required.$message.replace("Value", "Icon") }}</small
+        >
       </div>
     </Panel>
     <!-- <Button label="Submit" @click="handleconnectionstore" /> -->
@@ -77,7 +127,7 @@
         :label="$t(`components.dialog.new-transformer.footer.save`)"
         icon="pi pi-check"
         autofocus
-        @click="handletransformerstore"
+        @click="handletransformerstore(!v$.$invalid)"
       />
     </template>
   </Dialog>
@@ -89,9 +139,12 @@
   import InputText from "primevue/inputtext"
   import Button from "primevue/button"
   import Panel from "primevue/panel"
+  import { required } from "@vuelidate/validators"
+  import { useVuelidate } from "@vuelidate/core"
   import Projects from "@/store/Modules/Projects"
   import { getModule } from "vuex-module-decorators"
   const appProjects = getModule(Projects)
+
   //   console.log(appProjects.projectList)
 
   export default {
@@ -107,6 +160,7 @@
       transformerdialog: { type: Boolean, default: false },
     },
     emits: ["close"],
+    setup: () => ({ v$: useVuelidate() }),
     data() {
       return {
         type: "",
@@ -116,6 +170,16 @@
         icon: "",
         display: true,
         projectselected: null,
+        submitted: false,
+        displayModal: true,
+      }
+    },
+    validations() {
+      return {
+        projectselected: { required },
+        name: { required },
+        description: { required },
+        icon: { required },
       }
     },
     computed: {
@@ -125,21 +189,28 @@
     },
     methods: {
       collectProject() {
-        console.log(this.projectselected)
+        // console.log(this.projectselected)
         appProjects.selectedProject(this.projectselected)
       },
       transformercloseDialog() {
         this.$emit("close")
       },
-      handletransformerstore() {
+      handletransformerstore(isFormValid) {
         const data = {
           name: this.projectselected,
           list: {
             name: this.name,
-            description: this.des,
+            description: this.description,
             icon: this.icon,
-            type: "transformer",   
+            type: "transformer",
           },
+        }
+        this.submitted = true
+
+        // stop here if form is invalid
+
+        if (!isFormValid) {
+          return
         }
         appProjects.addNewTransformer(data)
         this.$emit("close")
