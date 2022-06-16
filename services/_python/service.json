@@ -1,0 +1,19 @@
+{
+  "id": "python",
+  "name": "Python 3.10",
+  "description": "Embeded Python 3.10",
+  "enabled": true,
+  "status": "-1",
+  "logoutput": "",
+  "icon": "pi pi-cog",
+  "servicetype": 10,
+  "serviceorder": 0,
+  "execconfig": {
+    "executable": {
+      "win32": "python.exe",
+      "default": "python"
+    },
+    "pythonrequirements": "requirements.txt",
+    "commandline": [ "get-pip.py --no-warn-script-location", "-m pip install --no-warn-script-location -r requirements.txt" ]
+  }
+}

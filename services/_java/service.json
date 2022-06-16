@@ -1,0 +1,17 @@
+{
+  "id": "java",
+  "name": "Java JRE 17",
+  "description": "Embeded Java JRE 17",
+  "enabled": true,
+  "status": "-1",
+  "logoutput": "",
+  "icon": "pi pi-cog",
+  "servicetype": 10,
+  "serviceorder": 0,
+  "execconfig": {
+    "executable": {
+      "win32": "java.exe",
+      "default": "java"
+    }
+  }
+}

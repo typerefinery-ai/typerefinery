@@ -2,3 +2,6 @@ requests
 jsonify
 Sockets
 simple-websocket-server
+fastapi
+loguru
+psutil

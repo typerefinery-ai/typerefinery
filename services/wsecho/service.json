@@ -6,5 +6,31 @@
   "status": "30",
   "logoutput": "",
   "icon": "pi pi-globe",
-  "servicetype": 10
+  "servicetype": 10,
+  "execconfig": {
+    "execservice": "python",
+    "pythonrequirements": "requirements.txt",
+    "commandline": "-m uvicorn main:app --host localhost --port ${SERVICE_PORT} --app-dir ${SERVICE_PATH}",
+    "serviceport": 8000,
+    "depend_on": [
+      "python"
+    ],
+    "healthcheck": {
+      "type": "http",
+      "url": "http://localhost:${SERVICE_PORT}/",
+      "expected_status": 200
+    }
+  },
+  "actions": {
+    "stop": {
+      "name": "stop",
+      "path": "...",
+      "commanline": "..."
+    },
+    "start": {
+      "name": "start",
+      "path": "...",
+      "commanline": "..."
+    }
+  }
 }
