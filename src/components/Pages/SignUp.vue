@@ -1,5 +1,7 @@
 <template>
-  <PageMenubar />
+  <div class="menu-bar">
+    <window-controls v-if="isElectron" />
+  </div>
   <div class="sign-up">
     <img class="logo" alt="app logo" src="/assets/logo.png" />
     <h2>Sign Up to Proceed...</h2>
@@ -40,9 +42,9 @@
         </span>
       </div>
       <br />
-      <Button label="Submit" v-on:click="login"
-        ><span class="submit-button">SignUp</span></Button
-      >
+      <Button label="Submit" @click="login">
+        <span class="submit-button">SignUp</span>
+      </Button>
       <p>
         <router-link to="/">Login</router-link>
       </p>
@@ -51,55 +53,55 @@
 </template>
 
 <script>
-import InputText from "primevue/inputtext"
-import Password from "primevue/password"
-import Button from "primevue/button"
-import PageMenubar from "./PageMenubar.vue"
-// import axios from "axios"
-export default {
-  name: "SignUp",
-  components: {
-    InputText,
-    Password,
-    Button,
-    PageMenubar,
-  },
-  data() {
-    return {
-      name: "",
-      email: "",
-      password: "",
-    }
-  },
-  components: {},
-  methods: {
-    async signUp() {
-      /* commented part use for db connection.. */
-
-      //     let result = await axios.post("http://localhost:4000/user",{
-      //     email:this.email,
-      //    password:this.password,
-      //    name:this.name
-      //     })
-      // console.warn(result);
-      // if(result.status==201)
-      // {
-
-      //     localStorage.setItem("user-info",JSON.stringify(result.data))
-      //     this.$router.push({name:'home'})
-      // }
-      this.$router.push({ name: "home" })
+  import InputText from "primevue/inputtext"
+  import Password from "primevue/password"
+  import Button from "primevue/button"
+  import WindowControls from "../WindowControls.vue"
+  // import axios from "axios"
+  export default {
+    name: "SignUp",
+    components: {
+      InputText,
+      Password,
+      Button,
+      WindowControls,
     },
-  },
-  //   mounted() {
-  // let user = localStorage.getItem("user-info")
-  // if (user) {
-  //   this.$router.push({ name: "home" })
-  // }
-  //   },
-}
+    components: {},
+    data() {
+      return {
+        name: "",
+        email: "",
+        password: "",
+      }
+    },
+    methods: {
+      async signUp() {
+        /* commented part use for db connection.. */
+
+        //     let result = await axios.post("http://localhost:4000/user",{
+        //     email:this.email,
+        //    password:this.password,
+        //    name:this.name
+        //     })
+        // console.warn(result);
+        // if(result.status==201)
+        // {
+
+        //     localStorage.setItem("user-info",JSON.stringify(result.data))
+        //     this.$router.push({name:'home'})
+        // }
+        this.$router.push({ name: "home" })
+      },
+    },
+    //   mounted() {
+    // let user = localStorage.getItem("user-info")
+    // if (user) {
+    //   this.$router.push({ name: "home" })
+    // }
+    //   },
+  }
 </script>
 
 <style lang="scss">
-@import "./Pages.scss";
+  @import "./Pages.scss";
 </style>
