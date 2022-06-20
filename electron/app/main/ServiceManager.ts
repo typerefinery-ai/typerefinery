@@ -8,32 +8,11 @@ import {
 import fs from "fs"
 import glob from "glob"
 import { Logger } from "./Logger"
-import { createWriteStream, WriteStream } from "fs"
-// import { dataPath, resourceBinary } from "./Resources"
-import portfinder from "portfinder"
-import { Readable, Writable } from "node:stream"
+import { createWriteStream } from "fs"
+import { Writable } from "node:stream"
+import { getPortFree } from "./Utils"
 
 const serviceManagerLog = "servicemanager.log"
-
-async function getPortFree(port: number, host: string) {
-  // return new Promise((res) => {
-  //   const srv = net.createServer()
-  //   srv.listen(0, () => {
-  //     const port: AddressInfo = srv.address() as AddressInfo
-  //     srv.close((err) => res(port.port))
-  //   })
-  // })
-  return portfinder
-    .getPortPromise({ host: host, port: port })
-    .then((port) => {
-      return port
-    })
-    .catch((err) => {
-      //
-      // Could not get a free port, `err` contains the reason.
-      //
-    })
-}
 
 interface ServiceManagerEvents {
   sendServiceList: (serviceConfigList: object) => void
@@ -64,12 +43,7 @@ class ServiceManager {
     this.#servicesroot = servicesroot
     this.#serviceEvents = serviceEvents
     this.#serviceManagerEvents = serviceManagerEvents
-    this.#serviceConfigList = this.findServiceConfigs(this.#servicesroot)
-    this.loadServices()
-    // send list of services to app
-    if (this.#serviceManagerEvents.sendServiceList) {
-      this.#serviceManagerEvents.sendServiceList(this.#services)
-    }
+
     this.#logWritablePath = path.join(logsDir, serviceManagerLog)
     this.#logWritable = createWriteStream(this.#logWritablePath, {
       flags: "a",
@@ -78,14 +52,34 @@ class ServiceManager {
     })
 
     this.#logger.log("service manager log", this.#logWritablePath)
+    this.#serviceConfigList = []
+    this.reload()
   }
 
   get log(): Writable {
     return this.#logWritable
   }
 
+  reload(restart = false) {
+    if (restart) {
+      this.stopAll()
+    }
+
+    this.#loadServiceConfigs()
+    this.#loadServices()
+
+    // send list of services to app
+    if (this.#serviceManagerEvents.sendServiceList) {
+      this.#serviceManagerEvents.sendServiceList(this.#services)
+    }
+
+    if (restart) {
+      this.startAll()
+    }
+  }
+
   // process all service configs and load Service objects
-  loadServices() {
+  #loadServices() {
     this.#serviceConfigList.forEach((serviceConfig: ServiceConfig) => {
       // name, servicepath, servicesroot, servicetype, options
       this.#services.push(
@@ -101,8 +95,12 @@ class ServiceManager {
     })
   }
 
+  #loadServiceConfigs() {
+    this.#serviceConfigList = this.#findServiceConfigs(this.#servicesroot)
+  }
+
   // find all service.json in services folder recursively
-  findServiceConfigs(servicesPath: string): ServiceConfig[] {
+  #findServiceConfigs(servicesPath: string): ServiceConfig[] {
     const serviceConfigList: ServiceConfig[] = []
     const servicesPathResolved = path.resolve(servicesPath)
     const globOptions = {
@@ -167,54 +165,12 @@ class ServiceManager {
     }
   }
 
-  // // start a service
-  // start(serviceConfig) {
-  //   const service = new Service(serviceConfig)
-  //   this.services.push(service)
-  //   service.start()
-  // }
-
   // stop all services
   stopAll() {
     for (const service of this.#services) {
       service.stop()
     }
   }
-
-  // // add a service to the list
-  // addService(service) {
-  //   this.services.push(service)
-  // }
-
-  // // get a service by name
-  // getService(name) {
-  //   for (const service of this.services) {
-  //     if (service.name == name) {
-  //       return service
-  //     }
-  //   }
-  //   return null
-  // }
-
-  // // get a service by file
-  // getServiceByFile(file) {
-  //   for (const service of this.services) {
-  //     if (service.file == file) {
-  //       return service
-  //     }
-  //   }
-  //   return null
-  // }
-
-  // // get a service by path
-  // getServiceByPath(path) {
-  //   for (const service of this.services) {
-  //     if (service.path == path) {
-  //       return service
-  //     }
-  //   }
-  //   return null
-  // }
 }
 
 export { type ServiceManagerEvents, ServiceManager }
