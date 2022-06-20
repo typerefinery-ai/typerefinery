@@ -6,16 +6,26 @@
       v-show="activeView === 'T'"
       @handle-dependencies="handleDependencies"
     />
+    <algorithm-config v-show="activeView === 'A'" />
   </div>
+  <ConfirmDialog></ConfirmDialog>
 </template>
 
 <script>
   import GraphProperties from "./GraphProperties.vue"
   import TransformerConfig from "./TransformerConfig.vue"
+  import AlgorithmConfig from "./AlgorithmConfig.vue"
   import QueryInfo from "./QueryInfo.vue"
+  import ConfirmDialog from "primevue/confirmdialog"
   export default {
     name: "ContentSidePanel",
-    components: { GraphProperties, TransformerConfig, QueryInfo },
+    components: {
+      GraphProperties,
+      TransformerConfig,
+      QueryInfo,
+      AlgorithmConfig,
+      ConfirmDialog,
+    },
     props: {
       nodeData: { type: Object, required: true },
       activeView: { type: String, required: true },

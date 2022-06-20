@@ -16,6 +16,7 @@
     name: "App",
 
     created() {
+      localStorage.clear()
       window.addEventListener("keydown", this.keyListener)
 
       // monitor service events
