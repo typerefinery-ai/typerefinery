@@ -22,24 +22,22 @@
       <div v-if="activeView === 'config'">
         <div class="field">
           <label>{{ $t(`components.transformer.dependencies`) }}</label>
-          <MultiSelect
-            :model-value="selectedDependencies"
-            class="mb-2"
-            :options="dependencies"
-            option-label="name"
-            :placeholder="$t(`components.transformer.select-dependencies`)"
-            @change="handleDependency"
+          <Textarea
+            v-model="dependencies"
+            :auto-resize="true"
+            rows="5"
+            cols="30"
           />
         </div>
         <div class="field">
-          <label>{{ $t(`components.transformer.transformer`) }}</label>
+          <label>{{ $t(`components.algorithm.label`) }}</label>
           <Dropdown
-            :model-value="selectedTransformer"
-            :options="transformers"
+            :model-value="selectedAlgorithm"
+            :options="algorithms"
             option-label="name"
             option-value="key"
-            :placeholder="$t(`components.transformer.select`)"
-            @change="handleTransformer"
+            :placeholder="$t(`components.algorithm.select`)"
+            @change="showConfirmDialog"
           />
         </div>
         <div class="field">
@@ -53,13 +51,13 @@
           v-model:visible="saveDialog"
           modal
           class="save-tranformer-dialog"
-          :header="$t(`components.transformer.save`)"
+          :header="$t(`components.algorithm.save`)"
           :style="{ width: '400px' }"
         >
           <div class="dialog-content">
             <span class="p-float-label">
-              <InputText id="name" v-model="transformerName" type="text" />
-              <label for="name">{{ $t(`components.transformer.name`) }}</label>
+              <InputText id="name" v-model="algorithmName" type="text" />
+              <label for="name">{{ $t(`components.algorithm.name`) }}</label>
             </span>
           </div>
           <template #footer>
@@ -73,15 +71,11 @@
               :label="$t(`buttons.save`)"
               icon="pi pi-check"
               autofocus
-              :disabled="!transformerName.length"
-              @click="saveTransformer"
+              :disabled="!algorithmName.length"
+              @click="saveAlgorithm"
             />
           </template>
         </Dialog>
-      </div>
-      <div v-if="activeView === 'help'" class="help">
-        <code>log()</code>
-        <span>{{ $t("help.log") }}</span>
       </div>
     </div>
   </div>
@@ -90,41 +84,37 @@
 <script>
   import Button from "primevue/button"
   import Dropdown from "primevue/dropdown"
-  import MultiSelect from "primevue/multiselect"
   import Dialog from "primevue/dialog"
   import InputText from "primevue/inputtext"
+  import Textarea from "primevue/textarea"
   import { getModule } from "vuex-module-decorators"
-  import Transformer from "@/store/Modules/Transformer"
+  import Algorithm from "@/store/Modules/Algorithm"
   import Projects from "@/store/Modules/Projects"
-  const transformer = getModule(Transformer)
+  const algorithm = getModule(Algorithm)
   const projects = getModule(Projects)
 
   export default {
-    name: "TransformerConfig",
+    name: "AlgorithmConfig",
     components: {
-      MultiSelect,
       Button,
       Dropdown,
       Dialog,
       InputText,
+      Textarea,
     },
     emits: ["handle-dependencies"],
     data() {
       return {
-        transformerName: "",
+        algorithmName: "",
         activeView: "config",
         saveDialog: false,
-        selectedTransformer: null,
-        selectedDependencies: null,
-        dependencies: [
-          { name: "D3", code: "d3" },
-          { name: "WebCola", code: "webcola" },
-        ],
+        selectedAlgorithm: null,
+        dependencies: "",
       }
     },
     computed: {
-      transformers() {
-        return transformer.list.map((el) => {
+      algorithms() {
+        return algorithm.list.map((el) => {
           return { name: el.name, key: el.name }
         })
       },
@@ -133,46 +123,38 @@
       handleView(view) {
         this.activeView = view
       },
-      handleDependency(d) {
-        this.selectedDependencies = d.value
-        const dependencies = d.value.map((el) => el.code)
-        this.$emit("handle-dependencies", dependencies)
-      },
-      handleTransformer(t) {
-        this.showConfirmDialog(t)
-      },
-      showConfirmDialog(t) {
+      showConfirmDialog(a) {
         this.$confirm.require({
-          message: this.$t("components.transformer.confirm-msg"),
+          message: this.$t("components.algorithm.confirm-msg"),
           header: this.$t("components.transformer.sure"),
           acceptLabel: this.$t("buttons.yes"),
           rejectLabel: this.$t("buttons.no"),
           icon: "pi pi-exclamation-triangle",
           accept: () => {
-            this.setTransformerCode(t)
+            this.setAlgorithmCode(a)
           },
           reject: () => {
             this.$confirm.close()
           },
         })
       },
-      setTransformerCode(t) {
-        const idx = transformer.list.findIndex((el) => el.name === t.value)
-        const code = transformer.list[idx].code
+      setAlgorithmCode(t) {
+        const idx = algorithm.list.findIndex((el) => el.name === t.value)
+        const code = algorithm.list[idx].code
         const data = { code, projectId: 0, queryId: 0 }
-        projects.setCode(data)
-        this.selectedTransformer = t.value
+        projects.setAlgoCode(data)
+        this.selectedAlgorithm = t.value
       },
-      saveTransformer() {
+      saveAlgorithm() {
         this.saveDialog = false
-        const code = projects.list[0].queries.list[0].transformer.code
+        const code = projects.list[0].queries.list[0].algorithm.code
         const data = {
-          name: this.transformerName,
+          name: this.algorithmName,
           code,
           error: "",
           logs: [],
         }
-        transformer.saveTransformer(data)
+        algorithm.saveAlgorithm(data)
       },
     },
   }
@@ -199,6 +181,9 @@
       .field {
         label {
           display: block;
+        }
+        textarea {
+          width: 100%;
         }
       }
 

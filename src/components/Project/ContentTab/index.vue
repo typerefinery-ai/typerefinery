@@ -19,6 +19,14 @@
           @click="handleView('Q')"
         />
         <Button
+          :label="$t(`components.tab.algorithm`)"
+          class="p-button-raised"
+          :class="{
+            'p-button-text p-button-plain': activeView !== 'A',
+          }"
+          @click="handleView('A')"
+        />
+        <Button
           :label="$t(`components.tab.data`)"
           class="p-button-raised"
           :class="{
@@ -60,6 +68,10 @@
       <pane :ref="`w-${tabId}-${paneId}`">
         <div class="content-area-window" :class="{ show: activeView === 'D' }">
           <data-view />
+        </div>
+
+        <div class="content-area-window" :class="{ show: activeView === 'A' }">
+          <algorithm-view />
         </div>
 
         <div class="content-area-window" :class="{ show: activeView === 'Q' }">
@@ -128,6 +140,7 @@
   import DataView from "./Views/DataView.vue"
   import QueryView from "./Views/QueryView.vue"
   import TransformerView from "./Views/TransformerView.vue"
+  import AlgorithmView from "./Views/AlgorithmView.vue"
   import SidePanel from "./SidePanel"
   import Graph from "../../Graph/Graph.vue"
   import renderD3 from "../../Transformer/D3/d3"
@@ -144,7 +157,7 @@
       DataView,
       QueryView,
       TransformerView,
-      //   InputText,
+      AlgorithmView,
       Button,
       FullIcon,
       MinusIcon,
@@ -175,7 +188,7 @@
     methods: {
       handleView(view) {
         this.activeView = view
-        if (view === "T") {
+        if (view === "T" || view === "A") {
           appSettings.resizeView()
         }
       },

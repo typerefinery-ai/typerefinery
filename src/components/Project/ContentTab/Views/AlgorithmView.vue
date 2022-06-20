@@ -1,5 +1,5 @@
 <template>
-  <div ref="algoWrapper" class="transformer-wrapper">
+  <div ref="wrapper" class="transformer-wrapper">
     <div class="code-wrapper shadow-3" :class="{ error: isError }">
       <div class="code-tabs">
         <div class="code-tabs-head">
@@ -32,7 +32,7 @@
       />
       <codemirror
         v-else
-        :model-value="errorText"
+        :model-value="consoleText"
         :disabled="true"
         :style="{ height: '350px' }"
         :autofocus="true"
@@ -55,12 +55,13 @@
   const appSettings = getModule(AppSettings)
   const projects = getModule(Projects)
   export default {
-    name: "TransformerView",
+    name: "AlgorithmView",
     components: { Codemirror, Button },
     emits: ["render"],
     data() {
       return {
         tab: "editor",
+        consoleText: "",
       }
     },
     computed: {
@@ -69,17 +70,14 @@
           ? [javascript(), oneDark]
           : [javascript()]
       },
-      errorText() {
-        return projects.consoleMessage(0, 0)
-      },
       isError() {
-        return projects.transformerError(0, 0)
-      },
-      code() {
-        return projects.transformerCode(0, 0)
+        return false
       },
       viewResized() {
         return appSettings.viewResized
+      },
+      code() {
+        return projects.algorithmCode(0, 0)
       },
     },
     watch: {
@@ -93,15 +91,15 @@
     methods: {
       handleChange(c) {
         const data = { code: c, projectId: 0, queryId: 0 }
-        projects.setCode(data)
+        projects.setAlgoCode(data)
       },
       handleTabs(tab) {
         this.tab = tab
         appSettings.resizeView()
       },
       setEditorHeight() {
-        const wrapper = this.$refs.algoWrapper
-        const editor = document.getElementsByClassName("cm-editor")[1]
+        const wrapper = this.$refs.wrapper
+        const editor = document.getElementsByClassName("cm-editor")[0]
         if (wrapper) {
           editor.style.setProperty("display", "none", "important")
           editor.style.height = wrapper.clientHeight - 65 + "px"
