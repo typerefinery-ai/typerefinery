@@ -102,7 +102,7 @@ export interface SericeConfigFile {
   logoutput?: string
   icon?: string
   servicetype?: ServiceType
-  execconfig?: ExecConfig
+  execconfig: ExecConfig
 }
 
 const os = {
@@ -468,20 +468,14 @@ export class Service extends EventEmitter<ServiceEvent> {
 
   // run health check tcp
   #runHealthCheckTcp(): void {
-    if (
-      this.#healthCheck &&
-      this.#healthCheck.tcpport &&
-      this.#healthCheck.tcphost
-    ) {
-      const socket = net.createConnection(
-        this.#healthCheck.tcpport,
-        this.#healthCheck.tcphost,
-        () => {
-          this.#log("health check success")
-          this.#status = ServiceStatus.STARTED
-          socket.end()
-        }
-      )
+    if (this.#healthCheck && this.#serviceport) {
+      const hostname = this.#servicehost
+      const port = this.#serviceport
+      const socket = net.createConnection(port, hostname, () => {
+        this.#log("health check success")
+        this.#status = ServiceStatus.STARTED
+        socket.end()
+      })
       socket.on("error", () => {
         this.#log("health check failed")
         this.#status = ServiceStatus.STOPPED
@@ -511,8 +505,10 @@ export class Service extends EventEmitter<ServiceEvent> {
     this.#setStatus(ServiceStatus.STARTING)
 
     const serviceExecutable = this.getServiceExecutable()
+    this.#log(`service executable ${serviceExecutable}`)
 
     this.#serviceport = await this.#getOpenPort()
+    this.#log(`service port ${this.#serviceport}`)
 
     if (serviceExecutable) {
       let commandline = new Array<string>()
@@ -523,8 +519,8 @@ export class Service extends EventEmitter<ServiceEvent> {
       ) {
         commandline =
           this.#options.execconfig.commandline
-            .replace("${SERVICE_PATH}", this.#servicepath)
-            .replace("${SERVICE_PORT}", this.#serviceport.toString())
+            .replaceAll("${SERVICE_PATH}", this.#servicepath)
+            .replaceAll("${SERVICE_PORT}", this.#serviceport.toString())
             .split(" ") || []
       }
 
