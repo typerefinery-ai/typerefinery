@@ -57,6 +57,7 @@
     },
     "tab": {
       "query": "Query",
+      "algorithm": "Algorithm",
       "data": "Data",
       "graph": "Graph",
       "transform": "Transform"
@@ -148,6 +149,13 @@
       "name": "Transformer Name",
       "sure": "Are you sure?",
       "confirm-msg": "Transformer code inside editor will be overwritten."
+    },
+    "algorithm": {
+      "label": "Algorithm",
+      "select": "Select an Algorithm",
+      "save": "Save Algorithm",
+      "name": "Algorithm Name",
+      "confirm-msg": "Algorithm code inside editor will be overwritten."
     }
   },
 
@@ -174,6 +182,7 @@
     "clear": "Clear",
     "cancel": "Cancel",
     "save": "Save",
+    "save-as": "Save as",
     "no": "No",
     "yes": "Yes"
   },

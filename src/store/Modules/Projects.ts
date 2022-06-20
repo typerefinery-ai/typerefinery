@@ -164,6 +164,11 @@ function dragended(d) {
               error: "",
               logs: [""],
             },
+            algorithm: {
+              code: "",
+              error: "",
+              logs: [""],
+            },
           },
           {
             name: "query 2",
@@ -173,6 +178,11 @@ function dragended(d) {
             icon: "connection",
             query: "",
             transformer: {
+              code: "",
+              error: "",
+              logs: [""],
+            },
+            algorithm: {
               code: "",
               error: "",
               logs: [""],
@@ -243,6 +253,11 @@ function dragended(d) {
               error: "",
               logs: [],
             },
+            algorithm: {
+              code: "",
+              error: "",
+              logs: [""],
+            },
           },
           {
             name: "query 4",
@@ -255,6 +270,11 @@ function dragended(d) {
               code: "",
               error: "",
               logs: [],
+            },
+            algorithm: {
+              code: "",
+              error: "",
+              logs: [""],
             },
           },
         ],
@@ -404,5 +424,17 @@ function dragended(d) {
         this.list[projectId].queries.list[queryId].transformer.error
       )
     }
+  }
+
+  //   Algorithm Code
+  get algorithmCode() {
+    return (projectId: number, queryId: number) => {
+      return this.list[projectId].queries.list[queryId].algorithm.code
+    }
+  }
+
+  @Mutation
+  setAlgoCode({ code, projectId, queryId }) {
+    this.list[projectId].queries.list[queryId].algorithm.code = code
   }
 }

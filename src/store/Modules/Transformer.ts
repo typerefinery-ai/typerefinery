@@ -1,7 +1,7 @@
 import { Module, VuexModule, Mutation } from "vuex-module-decorators"
 import store from "../index"
 
-const storeValue = localStorage.getItem("transformer")
+const storeValue = localStorage.getItem("typerefinery")
 const settingsInStore = storeValue ? JSON.parse(storeValue).Transformer : false
 
 @Module({
