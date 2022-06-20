@@ -16,6 +16,8 @@
     name: "App",
 
     created() {
+      // TODO: Remove this in next commit
+      localStorage.clear()
       window.addEventListener("keydown", this.keyListener)
 
       // monitor service events

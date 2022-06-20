@@ -1,5 +1,13 @@
 const path = require("path")
-const { app, BrowserWindow, ipcMain, Tray, dialog } = require("electron")
+const {
+  app,
+  BrowserWindow,
+  ipcMain,
+  Tray,
+  dialog,
+  Menu,
+  MenuItem,
+} = require("electron")
 const i18n = require("./i18next.config")
 const config = require("../package.json")
 const servicesUtils = require("./services")
@@ -32,24 +40,23 @@ function createWindow() {
   )
 
   //splash screen
-  var splash = new BrowserWindow({ 
-    width: 500, 
-    height: 550, 
-    transparent: true, 
-    frame: false, 
+  var splash = new BrowserWindow({
+    width: 500,
+    height: 550,
+    transparent: true,
+    frame: false,
     alwaysOnTop: true,
-    icon: path.join(__dirname, "./assets/icon.png"),     //added icon for loader.
-  });
-  
-  splash.loadURL(path.join(__dirname, "./loader/splash.html"));
-  splash.center();
-  setTimeout(function () {
-    splash.close();
-    mainWindow.center();
-    mainWindow.show();
-  }, 5000);
+    icon: path.join(__dirname, "./assets/icon.png"), //added icon for loader.
+  })
 
-  
+  splash.loadURL(path.join(__dirname, "./loader/splash.html"))
+  splash.center()
+  setTimeout(function () {
+    splash.close()
+    mainWindow.center()
+    mainWindow.show()
+  }, 5000)
+
   //tray
   tray = new Tray(path.join(__dirname, "./assets/icon.png"))
 
@@ -63,6 +70,18 @@ function createWindow() {
   if (isDev) {
     mainWindow.webContents.openDevTools()
   }
+
+  //   Context Menu
+  const ctxMenu = new Menu()
+  ctxMenu.append(new MenuItem({ role: "copy" }))
+  ctxMenu.append(new MenuItem({ role: "paste" }))
+  ctxMenu.append(new MenuItem({ role: "minimize" }))
+  ctxMenu.append(new MenuItem({ role: "reload" }))
+  ctxMenu.append(new MenuItem({ role: "toggleDevTools", visible: isDev }))
+
+  mainWindow.webContents.on("context-menu", function (e, params) {
+    ctxMenu.popup(mainWindow, params.x, params.y)
+  })
 }
 
 // This method will be called when Electron has finished
