@@ -101,12 +101,13 @@ function getServicesPage(services: Service[]) {
       </ul>
 
       <p>
-      <button onclick="triggerServiceAPI_exit()">Exit</button>
+      <button onclick="triggerServiceAPI('/exit')">Exit</button>
+      <button onclick="triggerServiceAPI('/services/reload')">Reload</button>
       </p>
 
       <script>
-          function triggerServiceAPI_exit() {
-            fetch("/exit", {
+          function triggerServiceAPI(path) {
+            fetch(path, {
               method: "POST",
               headers: {"Content-Type": "application/json"},
             }).then(res => {
@@ -176,6 +177,14 @@ app.post("/service/:serviceId/:serviceAction", (req, res, next) => {
     action: serviceAction,
     status: service.status,
     executable: service.getServiceExecutable(),
+  })
+})
+
+app.post("/services/reload", (req, res, next) => {
+  logger.log("Reloading config.")
+  serviceManager.reload()
+  res.json({
+    status: "ok",
   })
 })
 

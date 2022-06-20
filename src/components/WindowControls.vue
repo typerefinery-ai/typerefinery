@@ -3,10 +3,10 @@
     <window-minimize-icon :size="18" />
   </menu-item>
   <menu-item v-if="!isMaximized" tooltip="maximize" @click.prevent="onMaximize">
-    <window-maximize-icon v-if="!isMaximized" :size="18" />
+    <window-maximize-icon :size="18" />
   </menu-item>
-  <menu-item v-if="isMaximized" tooltip="maximize" @click.prevent="onRestore">
-    <window-restore-icon v-if="isMaximized" :size="18" />
+  <menu-item v-if="isMaximized" tooltip="restore" @click.prevent="onRestore">
+    <window-restore-icon :size="18" />
   </menu-item>
   <menu-item tooltip="close" @click.prevent="onClose">
     <window-close-icon :size="18" />
