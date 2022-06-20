@@ -10,8 +10,8 @@
   "serviceorder": 0,
   "execconfig": {
     "executable": {
-      "win32": "java.exe",
-      "default": "java"
+      "win32": "jre17\\bin\\java.exe",
+      "default": "jre17\\bin\\java"
     }
   }
 }

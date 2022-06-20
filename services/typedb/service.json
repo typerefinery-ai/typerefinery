@@ -14,7 +14,10 @@
     "serviceport": 1729,
     "depend_on": [
       "java"
-    ]
+    ],
+    "healthcheck": {
+      "type": "tcp"
+    }
   },
   "actions": {
     "stop": {
