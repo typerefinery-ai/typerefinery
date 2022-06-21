@@ -25,7 +25,6 @@
     },
     "setting": {
       "settings": "Settings",
-      "general-settings": "General Settings",
       "privacy-settings": "Privacy Settings",
       "section": {
         "general": "General",
@@ -41,13 +40,19 @@
           "type": "Type",
           "description": "Description"
         }
+      },
+      "profile": {
+        "username": "Username",
+        "email": "Email",
+        "alias": "Alias Name"
+      },
+      "general": {
+        "experimental": "Experimental Features",
+        "chat": "Chat",
+        "editor": "Editor"
       }
     },
-    "profile": {
-      "username": "Username",
-      "email": "Email",
-      "alias": "Alias Name"
-    },
+
     "chat": {
       "send": "Send",
       "messageplaceholder": "Type your message here...",

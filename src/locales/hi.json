@@ -5,7 +5,7 @@
       "charts": "चार्ट",
       "maps": "नक़्शे",
       "chats": "चैट",
-      "editor": "संपादक"
+      "editor": "एडीटर"
     },
     "project": {
       "new-project": "नया काम",
@@ -25,7 +25,6 @@
     },
     "setting": {
       "settings": "सेटिंग्स",
-      "general-settings": "साधारण सेटिंग्स",
       "privacy-settings": "गोपनीयता सेटिंग्स",
       "section": {
         "general": "साधारण",
@@ -41,12 +40,17 @@
           "type": "प्रकार",
           "description": "विवरण"
         }
+      },
+      "profile": {
+        "username": "उपयोगकर्ता नाम",
+        "email": "ईमेल",
+        "alias": "उर्फ"
+      },
+      "general": {
+        "experimental": "प्रायोगिक विशेषताएं",
+        "chat": "चैट",
+        "editor": "एडीटर"
       }
-    },
-    "profile": {
-      "username": "उपयोगकर्ता नाम",
-      "email": "ईमेल",
-      "alias": "उर्फ"
     },
 
     "chat": {

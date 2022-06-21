@@ -4,17 +4,18 @@
       <div class="sidebar-fixed-items text-primary">
         <file-icon v-tooltip="$t(`tooltips.project`)" :size="20" />
       </div>
-      <div class="sidebar-fixed-items hover:text-primary">
+      <!-- SEARCH ICON -->
+      <!-- <div class="sidebar-fixed-items hover:text-primary">
         <magnify-icon v-tooltip="$t(`tooltips.search`)" :size="20" />
-      </div>
+      </div> -->
       <div class="sidebar-fixed-items hover:text-primary" @click="openSettings">
         <tune-icon v-tooltip="$t(`tooltips.settings`)" :size="25" />
       </div>
       <div class="sidebar-fixed-items hover:text-primary">
         <logout-icon
-          v-on:click="logout"
           v-tooltip="$t(`tooltips.logout`)"
           :size="25"
+          @click="logout"
         />
       </div>
     </div>
@@ -39,7 +40,7 @@
 <script>
   import Tree from "primevue/tree"
   import FileIcon from "vue-material-design-icons/FileMultipleOutline.vue"
-  import MagnifyIcon from "vue-material-design-icons/Magnify.vue"
+  //   import MagnifyIcon from "vue-material-design-icons/Magnify.vue"
   import LogoutIcon from "vue-material-design-icons/Logout.vue"
   import TuneIcon from "vue-material-design-icons/Tune.vue"
   import { getModule } from "vuex-module-decorators"
@@ -50,7 +51,7 @@
 
   export default {
     name: "Sidebar",
-    components: { LogoutIcon, MagnifyIcon, FileIcon, Tree, TuneIcon },
+    components: { LogoutIcon, FileIcon, Tree, TuneIcon },
     data() {
       return {
         expandedKeys: {},

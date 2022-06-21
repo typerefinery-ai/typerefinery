@@ -75,4 +75,32 @@ export default class AppSettings extends VuexModule {
       icon: "pi pi-cog",
     },
   ]
+
+  experimentalFeatures = [
+    {
+      id: "chat",
+      label: "Chat",
+      enabled: false,
+    },
+    {
+      id: "editor",
+      label: "Editor",
+      enabled: false,
+    },
+  ]
+
+  @Mutation
+  toggleExperimentalFeatures(args: { id: string; enabled: boolean }) {
+    const expIdx = this.experimentalFeatures.findIndex(
+      (el) => el.id === args.id
+    )
+    this.experimentalFeatures[expIdx].enabled = args.enabled
+  }
+
+  get featureStatus() {
+    return (id: string) => {
+      const expIdx = this.experimentalFeatures.findIndex((el) => el.id === id)
+      return this.experimentalFeatures[expIdx].enabled
+    }
+  }
 }
