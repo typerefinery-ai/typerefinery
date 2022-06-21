@@ -197,7 +197,7 @@ async function createWindow() {
   // if (isDev) {
   //   mainWindow.webContents.openDevTools()
   // }
-  // mainWindow.webContents.openDevTools()
+  mainWindow.webContents.openDevTools()
 
   loadResource(mainWindow, "../index.html", "")
 
@@ -320,30 +320,39 @@ function loadResource(window: BrowserWindow, uri: string, arg: any) {
 function addIpcEvents(window: BrowserWindow) {
   const ipcImplementation: AppIPC = {
     isAuthenticated() {
+      logger.log("isAuthenticated")
       return true
     },
     minimize() {
+      logger.log("minimize")
       window?.minimize()
     },
     maximize() {
+      logger.log("maximize")
       window?.maximize()
     },
     unmaximize() {
+      logger.log("unmaximize")
       window?.unmaximize()
     },
     close() {
+      logger.log("close")
       window?.close()
     },
     isMaximized() {
+      logger.log("isMaximized")
       return window?.isMaximized() ?? false
     },
     isMinimized() {
+      logger.log("isMinimized")
       return window?.isMinimized() ?? false
     },
     isNormal() {
+      logger.log("isNormal")
       return window?.isNormal() ?? false
     },
     setBadgeCount(n: number) {
+      logger.log(`setBadgeCount ${n}`)
       return app.setBadgeCount(n)
     },
   }
