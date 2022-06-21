@@ -47,7 +47,7 @@
     "preview": "vite preview --port 8080 --host 0.0.0.0",
     "test:e2e:ci2": "start-server-and-test preview 8080 'cypress run'",
     "test:e2e:ci3": "start-server-and-test dev2 http-get://localhost:3000 test:ci",
-    "test:e2e:ci": "concurrently -k \"cross-env BROWSER=none npm run preview\" \"wait-on --verbose http://localhost:8080 && cypress run\"",
+    "test:e2e:ci": "concurrently -k \"cross-env BROWSER=none npm run preview\" \"wait-on -c .waiton.json http://localhost:8080 && cypress run\"",
     "typecheck": "vue-tsc --noEmit && vue-tsc --noEmit -p tsconfig.vitest.json --composite false",
     "test": "npm run report:clean && cypress run",
     "test:ci": "npm run report:clean && cypress run --record --config baseUrl=http://localhost:8080",
