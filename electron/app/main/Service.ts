@@ -1,22 +1,13 @@
 import * as path from "path"
 import { ChildProcess, spawn, type SpawnOptions } from "child_process"
 import { type ServiceManager } from "./ServiceManager"
-// import pRetry from "p-retry"
 import { Logger } from "./Logger"
 import fs, { createWriteStream, WriteStream } from "fs"
-// import { dataPath, resourceBinary } from "./Resources"
-// import stream, { Readable, Writable } from "node:stream"
-// import { nextTick } from "process"
-// import { Duplex } from "stream"
-// import { Stream } from "winston/lib/winston/transports"
 import http, { type RequestOptions } from "node:http"
 import net from "net"
 import EventEmitter from "eventemitter3"
-// import EventEmitter from "events"
-// import TypedEmitter from "typed-emitter"
-// import { TypedEventEmitter } from "./TypedEventEmitter"
-// const { execaSync } = await import("execa")
 import kill from "tree-kill"
+import { os } from "./Utils"
 
 export interface ServiceConfig {
   servicepath: string
@@ -41,8 +32,12 @@ export enum SignalType {
 }
 
 export enum ServiceStatus {
+  INVALIDCOFNIG = "-10",
   ERROR = "-1",
   DISABLED = "0",
+  AVAILABLE = "10",
+  INSTALLING = "15",
+  INSTALLED = "20",
   STOPPING = "30",
   STOPPED = "60",
   STARTING = "90",
@@ -78,7 +73,7 @@ export interface ExecConfig {
     win32?: string
     default?: string
   }
-  pythonrequirements?: string
+  setup?: string[]
   commandline?: string
   serviceorder?: 0
   depend_on?: string[]
@@ -105,62 +100,8 @@ export interface SericeConfigFile {
   execconfig: ExecConfig
 }
 
-const os = {
-  isWindows: process.platform === "win32",
-  isMac: process.platform === "darwin",
-  isLinux: process.platform === "linux",
-  //check if path exists using fs.existsSync
-  isPathExist: (path: string) => {
-    try {
-      return fs.existsSync(path)
-    } catch (err) {
-      console.error(err)
-    }
-    return false
-  },
-
-  //run a process on os and return when finished
-  async runProcess(
-    command: string,
-    args: string[],
-    options: SpawnOptions = {}
-  ) {
-    return await new Promise<string>((resolve) => {
-      // set options
-      if (options) {
-        if (!options.shell) {
-          options.shell = true
-        }
-        if (!options.stdio) {
-          options.stdio = ["ignore", "pipe", "pipe"]
-        }
-      }
-      const child = spawn(command, args, options)
-      if (child.stdout) {
-        child.stdout.on("data", (data) => {
-          resolve(data.toString())
-        })
-      }
-    })
-  },
-
-  //run command with call back
-  async runCommandWithCallBack(
-    command: string,
-    args: string[],
-    options: SpawnOptions = {},
-    callback: (data: string) => void
-  ) {
-    const result = await os.runProcess(command, args, options)
-    if (callback) {
-      callback(result)
-      return
-    }
-    return result
-  },
-}
-
 export class Service extends EventEmitter<ServiceEvent> {
+
   #process?: ChildProcess
   #id: string
   #servicepath: string
@@ -175,6 +116,8 @@ export class Service extends EventEmitter<ServiceEvent> {
   #stderr: WriteStream
   #logger: Logger
   #healthCheck?: HealthCheck
+  #setupstatefile: string
+  #setup: string[]
   #status: ServiceStatus
   #abortController: AbortController
   constructor(
@@ -195,6 +138,7 @@ export class Service extends EventEmitter<ServiceEvent> {
     this.#serviceport = this.#options.execconfig?.serviceport || 0
     this.#servicehost = this.#options.execconfig?.servicehost || "localhost"
     this.#healthCheck = this.#options.execconfig?.healthcheck
+    this.#setup = this.#options.execconfig?.setup || []
     this.#status = this.#options.status || ServiceStatus.DISABLED
     // create logger for service
     this.#logger = logger.forService(this.#id)
@@ -236,56 +180,19 @@ export class Service extends EventEmitter<ServiceEvent> {
     }
 
     this.#servicesroot = path.resolve(path.dirname(servicepath))
+
+    // set service setup check
+    this.#setupstatefile = path.join(
+      this.#servicepath,
+      path.basename(this.#servicepath) + ".setup"
+    )
+
+    // set service pid and check if its not running
     this.#servicepidfile = path.join(
       this.#servicepath,
       path.basename(this.#servicepath) + ".pid"
     )
-    // this.executable = this.getServiceExecutable()
-    // check if service is already running
-    if (os.isPathExist(this.#servicepidfile)) {
-      const pid = fs.readFileSync(this.#servicepidfile, "utf8")
-
-      //check if service pid is runnin on linux
-      if (process.platform == "win32") {
-        os.runCommandWithCallBack(
-          'tasklist /fi "PID eq ' + pid + '"',
-          [],
-          { signal: this.#abortController.signal },
-          (data) => {
-            if (data.includes("No tasks are running")) {
-              // no process running
-              this.#removeServicePidFile()
-              this.#status = ServiceStatus.STOPPED
-            } else {
-              // process is running
-              this.#status = ServiceStatus.STARTED
-              this.#setStatus("running")
-              return
-            }
-          }
-        )
-      } else {
-        os.runCommandWithCallBack(
-          "ps -p " + pid + " -o pid=",
-          [],
-          { signal: this.#abortController.signal },
-          (data) => {
-            if (data.includes("No such process")) {
-              // no process running
-              this.#removeServicePidFile()
-              this.#status = ServiceStatus.STOPPED
-            } else {
-              // process is running
-              this.#status = ServiceStatus.STARTED
-              this.#setStatus("running")
-              return
-            }
-          }
-        )
-      }
-    } else {
-      this.#status = ServiceStatus.STOPPED
-    }
+    this.#checkRunning()
   }
 
   // get log(): Readable {
@@ -316,12 +223,34 @@ export class Service extends EventEmitter<ServiceEvent> {
     return this.#serviceport
   }
 
+  public getSimple(): any {
+    return Object.assign(
+      {},
+      {
+        id: this.#id,
+        name: this.#options.name,
+        description: this.#options.description,
+        enabled: this.#options.enabled,
+        status: this.#status,
+        icon: this.#options.icon,
+        servicetype: this.#options.servicetype,
+        servicepath: this.#servicepath,
+        servicepidfile: this.#servicepidfile,
+      }
+    )
+  }
   public toString = (): string => {
     return JSON.stringify(
       Object.assign(
         {},
         {
           id: this.#id,
+          name: this.#options.name,
+          description: this.#options.description,
+          enabled: this.#options.enabled,
+          status: this.#status,
+          icon: this.#options.icon,
+          servicetype: this.#options.servicetype,
           servicepath: this.#servicepath,
           servicepidfile: this.#servicepidfile,
         }
@@ -380,6 +309,7 @@ export class Service extends EventEmitter<ServiceEvent> {
       }
     } else {
       this.#log("service is missing execconfig.")
+      this.#setStatus(ServiceStatus.INVALIDCOFNIG)
     }
     return serviceExecutable
   }
@@ -432,8 +362,8 @@ export class Service extends EventEmitter<ServiceEvent> {
   #runHealthCheckHttp(): void {
     if (this.#healthCheck && this.#healthCheck.url) {
       const urlFixed = this.#healthCheck.url
-        .replace("${SERVICE_PATH}", this.#servicepath)
-        .replace("${SERVICE_PORT}", this.#serviceport + "")
+        .replaceAll("${SERVICE_PATH}", this.#servicepath)
+        .replaceAll("${SERVICE_PORT}", this.#serviceport + "")
       const url: URL = new URL(urlFixed)
       const hostname = url.hostname
       const port = url.port
@@ -494,6 +424,8 @@ export class Service extends EventEmitter<ServiceEvent> {
 
   // start service and store its process id in a file based on os type
   async start() {
+    this.#doSetup()
+
     if (this.#status == ServiceStatus.STARTED) {
       this.#log(
         `service ${this.#id} already started with pid ${this.#process?.pid}`
@@ -520,7 +452,7 @@ export class Service extends EventEmitter<ServiceEvent> {
         commandline =
           this.#options.execconfig.commandline
             .replaceAll("${SERVICE_PATH}", this.#servicepath)
-            .replaceAll("${SERVICE_PORT}", this.#serviceport.toString())
+            .replaceAll("${SERVICE_PORT}", this.#serviceport + "")
             .split(" ") || []
       }
 
@@ -602,10 +534,87 @@ export class Service extends EventEmitter<ServiceEvent> {
     this.emit("log", this.#id, message)
   }
 
-  #setStatus(output: string) {
+  #setStatus(output: ServiceStatus) {
     if (this.#events.sendServiceStatus) {
       this.#events.sendServiceStatus(this.#id, output)
       this.emit("status", this.#id, output)
+    }
+  }
+
+  #doSetup() {
+    if (this.#setup && this.#setup.length > 0) {
+      if (!os.isPathExist(this.#setupstatefile)) {
+        this.#log(
+          `service ${
+            this.#id
+          } has not been been configured, executing setup commands.`
+        )
+        this.#status = ServiceStatus.INSTALLING
+        //for each setup command in #setup, execute it
+        this.#setup.forEach((command) => {
+          os.runCommandWithCallBack(
+            command.replaceAll("${SERVICE_PATH}", this.#servicepath),
+            [],
+            { signal: this.#abortController.signal },
+            (data) => {
+              this.#status = ServiceStatus.INSTALLING
+            }
+          )
+        })
+        this.#status = ServiceStatus.INSTALLED
+        // create setup file to mark that setup already happened
+        fs.writeFileSync(this.#setupstatefile, "")
+      } else {
+        this.#log(`service ${this.#id} has already has been configured.`)
+      }
+    }
+  }
+
+  #checkRunning() {
+    // check if service is already running
+    if (os.isPathExist(this.#servicepidfile)) {
+      const pid = fs.readFileSync(this.#servicepidfile, "utf8")
+
+      //check if service pid is runnin on linux
+      if (process.platform == "win32") {
+        os.runCommandWithCallBack(
+          'tasklist /fi "PID eq ' + pid + '"',
+          [],
+          { signal: this.#abortController.signal },
+          (data) => {
+            if (data.includes("No tasks are running")) {
+              // no process running
+              this.#removeServicePidFile()
+              this.#status = ServiceStatus.STOPPED
+            } else {
+              // process is running
+              this.#status = ServiceStatus.STARTED
+              this.#setStatus(ServiceStatus.STARTED)
+              return
+            }
+          }
+        )
+      } else {
+        os.runCommandWithCallBack(
+          "ps -p " + pid + " -o pid=",
+          [],
+          { signal: this.#abortController.signal },
+          (data) => {
+            if (data.includes("No such process")) {
+              // no process running
+              this.#removeServicePidFile()
+              this.#status = ServiceStatus.STOPPED
+            } else {
+              // process is running
+              this.#status = ServiceStatus.STARTED
+              this.#setStatus(ServiceStatus.STARTED)
+              return
+            }
+          }
+        )
+      }
+    } else {
+      this.#status = ServiceStatus.STOPPED
     }
   }
 }

@@ -57,6 +57,7 @@ export const sharedAppIpc = {
   isMinimized: new IPCMethod<[], boolean>("isMinimized"),
   isNormal: new IPCMethod<[], boolean>("isNormal"),
   setBadgeCount: new IPCMethod<[number], boolean>("setBadgeCount"),
+  getServices: new IPCMethod<[], any[]>("getServices"),
 }
 
 export type AppIPC = {

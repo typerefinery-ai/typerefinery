@@ -147,6 +147,13 @@ class ServiceManager {
     return this.#services
   }
 
+  // get list of all seervices
+  getServicesSimple(): any[] {
+    return this.#services.map((service: Service) => {
+      return service.getSimple()
+    })
+  }
+
   // get service by id
   getService(id: string): Service {
     return this.#services.find((service: Service) => {
