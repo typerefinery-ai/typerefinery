@@ -47,6 +47,7 @@ services/_python/Scripts
 __pycache__
 __packages__
 services/*.pid
+services/*.setup
 
 # type db data
 services/typedb/server/data/**/*
