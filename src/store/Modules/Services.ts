@@ -68,8 +68,12 @@ export default class Services extends VuexModule {
   }
 
   serviceStatusEnum = {
+    "-10": { name: "invalidconfig", color: "red" },
     "-1": { name: "error", color: "red" },
     "0": { name: "disabled", color: "gray" },
+    "10": { name: "available", color: "gray" },
+    "15": { name: "installing", color: "gray" },
+    "20": { name: "installed", color: "gray" },
     "30": { name: "stopping", color: "blue" },
     "60": { name: "stopped", color: "purple" },
     "90": { name: "starting", color: "yellow" },

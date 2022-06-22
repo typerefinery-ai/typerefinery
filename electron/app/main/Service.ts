@@ -101,7 +101,6 @@ export interface SericeConfigFile {
 }
 
 export class Service extends EventEmitter<ServiceEvent> {
-
   #process?: ChildProcess
   #id: string
   #servicepath: string
@@ -278,6 +277,33 @@ export class Service extends EventEmitter<ServiceEvent> {
   }
 
   // get service executable from options by platform
+  getServiceExecutableRoot(): string {
+    let serviceExecutable: any = ""
+    if (this.#options && this.#options.execconfig) {
+      // if service is being executed by another service
+      if (this.#options.execconfig.execservice) {
+        // find service executable
+        const execservice = this.#options.execconfig.execservice
+        const serviceExecutableService =
+          this.#serviceManager.getService(execservice)
+        serviceExecutable = serviceExecutableService?.getServiceExecutableRoot()
+        return serviceExecutable
+      } else if (this.#options.execconfig.executable) {
+        // if service is being executed by a file
+        return this.#servicepath
+      }
+      if (serviceExecutable == null) {
+        this.#log("could not determine service executable")
+        // this.disable()
+      }
+    } else {
+      this.#log("service is missing execconfig.")
+      this.#setStatus(ServiceStatus.INVALIDCOFNIG)
+    }
+    return serviceExecutable
+  }
+
+  // get service executable from options by platform
   getServiceExecutable(): string {
     let serviceExecutable: any = ""
     if (this.#options && this.#options.execconfig) {
@@ -424,7 +450,7 @@ export class Service extends EventEmitter<ServiceEvent> {
 
   // start service and store its process id in a file based on os type
   async start() {
-    this.#doSetup()
+    await this.#doSetup()
 
     if (this.#status == ServiceStatus.STARTED) {
       this.#log(
@@ -541,7 +567,7 @@ export class Service extends EventEmitter<ServiceEvent> {
     }
   }
 
-  #doSetup() {
+  async #doSetup() {
     if (this.#setup && this.#setup.length > 0) {
       if (!os.isPathExist(this.#setupstatefile)) {
         this.#log(
@@ -551,16 +577,22 @@ export class Service extends EventEmitter<ServiceEvent> {
         )
         this.#status = ServiceStatus.INSTALLING
         //for each setup command in #setup, execute it
-        this.#setup.forEach((command) => {
-          os.runCommandWithCallBack(
-            command.replaceAll("${SERVICE_PATH}", this.#servicepath),
-            [],
-            { signal: this.#abortController.signal },
-            (data) => {
-              this.#status = ServiceStatus.INSTALLING
-            }
-          )
-        })
+        for (let i = 0; i < this.#setup.length; i++) {
+          const setupCommand = this.#setup[i]
+          this.#log(`executing setup command ${setupCommand}`)
+
+          const serviceExecutable = this.getServiceExecutable()
+          const serviceExecutableRoot = this.getServiceExecutableRoot()
+          const execCommand =
+            serviceExecutable +
+            " " +
+            setupCommand.replaceAll("${SERVICE_PATH}", this.#servicepath)
+          this.#log(`execCommand: ${execCommand} in ${serviceExecutableRoot}`)
+          await os.runProcess(execCommand, [], {
+            signal: this.#abortController.signal,
+            cwd: serviceExecutableRoot,
+          })
+        }
         this.#status = ServiceStatus.INSTALLED
         // create setup file to mark that setup already happened
         fs.writeFileSync(this.#setupstatefile, "")
