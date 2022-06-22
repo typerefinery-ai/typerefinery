@@ -13,19 +13,16 @@
           class="main-submenu--item hover:text-primary cursor-pointer"
           @click="handleProject(item.id)"
         >
-          <Projects v-if="projectdialog" @close="closemodal" />
-          <NewConnections
-            v-if="connectiondialog"
-            @close="connectionclosemodal"
-          />
-          <NewQuery v-if="querydialog" @close="queryclosemodal" />
-          <NewTransformer
-            v-if="transformerdialog"
-            @close="transformerclosemodal"
-          />
           <i :class="item.icon"></i>
           {{ $t(`components.project.${item.id}`) }}
         </div>
+        <Projects v-if="projectdialog" @close="closemodal" />
+        <NewConnections v-if="connectiondialog" @close="connectionclosemodal" />
+        <NewQuery v-if="querydialog" @close="queryclosemodal" />
+        <NewTransformer
+          v-if="transformerdialog"
+          @close="transformerclosemodal"
+        />
       </div>
       <!-- icon -->
       <div
