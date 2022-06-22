@@ -4,6 +4,8 @@
     <!-- show serviceCountByStatus list -->
     <span
       v-for="item in serviceCountByStatus()"
+      :id="item.name"
+      :key="item.name"
       class="menu-item service-button"
       :status="item.value"
     >
