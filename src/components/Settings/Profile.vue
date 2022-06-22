@@ -10,69 +10,71 @@
   </div>
 
   <div ref="username" class="field">
-    <label for="username"> {{ $t("components.profile.username") }}</label>
+    <label for="username">
+      {{ $t("components.setting.profile.username") }}</label
+    >
     <InputText id="username" :value="username" @input="setUsername" />
   </div>
   <div ref="alias" class="field">
-    <label for="alias">{{ $t("components.profile.alias") }}</label>
+    <label for="alias">{{ $t("components.setting.profile.alias") }}</label>
     <InputText id="alias" :value="alias" @input="setAlias" />
   </div>
   <div ref="email" class="field">
-    <label for="email">{{ $t("components.profile.email") }}</label>
+    <label for="email">{{ $t("components.setting.profile.email") }}</label>
     <InputText id="email" :value="email" @input="setEmail" />
   </div>
 </template>
 
 <script>
-import InputText from "primevue/inputtext"
-import { getModule } from "vuex-module-decorators"
-import Auth from "@/store/Modules/Auth"
-const appAuth = getModule(Auth)
+  import InputText from "primevue/inputtext"
+  import { getModule } from "vuex-module-decorators"
+  import Auth from "@/store/Modules/Auth"
+  const appAuth = getModule(Auth)
 
-export default {
-  name: "Profile",
-  components: { InputText },
-  props: { field: { type: String, default: "" } },
+  export default {
+    name: "Profile",
+    components: { InputText },
+    props: { field: { type: String, default: "" } },
 
-  computed: {
-    username() {
-      return appAuth.username
+    computed: {
+      username() {
+        return appAuth.username
+      },
+      alias() {
+        return appAuth.alias
+      },
+      email() {
+        return appAuth.email
+      },
     },
-    alias() {
-      return appAuth.alias
+    mounted() {
+      if (this.field) {
+        console.log(this.$refs)
+        const el = this.$refs[this.field]
+        console.log(el)
+        el.scrollIntoView()
+      }
     },
-    email() {
-      return appAuth.email
+    methods: {
+      setUsername(e) {
+        return appAuth.setUsername(e.target.value)
+      },
+      setAlias(e) {
+        return appAuth.setAliasname(e.target.value)
+      },
+      setEmail(e) {
+        return appAuth.setEmail(e.target.value)
+      },
     },
-  },
-  mounted() {
-    if (this.field) {
-      console.log(this.$refs)
-      const el = this.$refs[this.field]
-      console.log(el)
-      el.scrollIntoView()
-    }
-  },
-  methods: {
-    setUsername(e) {
-      return appAuth.setUsername(e.target.value)
-    },
-    setAlias(e) {
-      return appAuth.setAliasname(e.target.value)
-    },
-    setEmail(e) {
-      return appAuth.setEmail(e.target.value)
-    },
-  },
-}
+  }
 </script>
 
 <style>
-.p-float-label {
-  margin-bottom: 10px;
-}
+  .p-float-label {
+    margin-bottom: 10px;
+  }
 
-input {
-  width: 80%;
-}
+  input {
+    width: 80%;
+  }
 </style>

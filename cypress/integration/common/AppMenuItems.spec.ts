@@ -45,4 +45,16 @@ describe("App Menu Items", () => {
   it("Has Toggle Focus button.", () => {
     expect(cy.get("#toggle-focus-button"))
   })
+  it("Has Profile button.", () => {
+    cy.get("#profile-button").click()
+    cy.get(".p-dialog-header-close-icon").click()
+  })
+  it("Has as API button", () => {
+    cy.get("#fastapi").click()
+    cy.get(".p-dialog-header-close-icon").click()
+  })
+  it("Has as DB button", () => {
+    cy.get("#typedb").click()
+    cy.get(".p-dialog-header-close-icon").click()
+  })
 })
