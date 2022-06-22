@@ -13,7 +13,9 @@
       "win32": "python.exe",
       "default": "python"
     },
-    "pythonrequirements": "requirements.txt",
-    "commandline": [ "get-pip.py --no-warn-script-location", "-m pip install --no-warn-script-location -r requirements.txt" ]
+    "setup": [
+      "get-pip.py --no-warn-script-location",
+      "-m pip install --no-warn-script-location -r requirements.txt"
+    ]
   }
 }
