@@ -1,6 +1,6 @@
 <template>
   <div class="main-menu-wrapper" @mouseleave="closeMainMenu">
-    <TabMenu :model="items" @mouseover="openMainMenu" />
+    <TabMenu :model="items" @mouseover="openMainMenu"> </TabMenu>
 
     <div
       class="main-submenu"
@@ -69,6 +69,7 @@
             label: this.$t("components.mainmenu.project"),
             icon: "pi pi-briefcase",
             to: "/home/project",
+            type: "regular",
             subMenu: [
               { id: "new-project", icon: "pi pi-book", to: "#" },
               { id: "new-query", icon: "pi pi-file", to: "#" },
@@ -80,6 +81,7 @@
             label: this.$t("components.mainmenu.charts"),
             icon: "pi pi-chart-pie",
             to: "/home/charts",
+            type: "regular",
             subMenu: [
               { id: "load-data", to: "#" },
               { id: "load-links", to: "#" },
@@ -89,20 +91,28 @@
             label: this.$t("components.mainmenu.maps"),
             icon: "pi pi-sitemap",
             to: "/home/maps",
+            type: "regular",
+
             subMenu: [{ id: "load-data", to: "#" }],
           },
           {
             label: this.$t("components.mainmenu.chats"),
             icon: "pi pi-comment",
             to: "/home/chats",
-            subMenu: [{ id: "load-data", to: "#" }],
+            type: "experimental",
+            enabled: appSettings.featureStatus("chat"),
           },
           {
             label: this.$t("components.mainmenu.editor"),
             icon: "pi pi-code",
             to: "/home/editor",
+            type: "experimental",
+            enabled: appSettings.featureStatus("editor"),
           },
-        ]
+        ].filter((el) => {
+          if (el.type === "regular") return el
+          else return el.enabled
+        })
       },
       subItems() {
         return this.items.filter((el) => el.to == this.$route.path)[0].subMenu
