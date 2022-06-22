@@ -232,8 +232,10 @@ async function createWindow() {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
+  logger.log("app.whenReady")
   createWindow()
   app.on("activate", function () {
+    logger.log("app on activate")
     const allWindows = BrowserWindow.getAllWindows()
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
@@ -245,6 +247,7 @@ app.whenReady().then(() => {
   })
 
   ipcMain.on("menu-click", (e, action) => {
+    logger.log("ipc menu-click", action)
     if (action === "min") {
       mainWindow.minimize()
     } else if (action === "max") {
@@ -255,11 +258,13 @@ app.whenReady().then(() => {
   })
 
   ipcMain.on("lang-change", (e, lang) => {
+    logger.log("ipc lang-change", lang)
     i18n.changeLanguage(lang)
     mainWindow.setTitle(i18n.t("app.title"))
   })
 
   mainWindow.on("close", function (e) {
+    logger.log("mainWindow.on close")
     const choice = dialog.showMessageBoxSync(mainWindow, {
       type: "question",
       buttons: [i18n.t("prompt.quit"), i18n.t("prompt.minimize")],
@@ -276,7 +281,22 @@ app.whenReady().then(() => {
 
   // wait for window to be ready before loading services.
   mainWindow.webContents.on("did-finish-load", function () {
-    //serviceManager.startAll()
+    logger.log("mainWindow.webContents.on did-finish-load")
+    serviceManager.startAll()
+  })
+
+  // update dependencies
+  window.addEventListener("DOMContentLoaded", () => {
+    logger.log("window DOMContentLoaded")
+    const replaceText = (selector: string, text: string) => {
+      const element = document.getElementById(selector)
+      if (element) element.innerText = text
+    }
+
+    for (const dependency of ["chrome", "node", "electron"]) {
+      const replaceWith: string = process.versions[dependency] || ""
+      replaceText(`${dependency}-version`, replaceWith)
+    }
   })
 })
 
@@ -284,6 +304,7 @@ app.whenReady().then(() => {
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
 app.on("window-all-closed", () => {
+  logger.log("app window-all-closed")
   serviceManager.stopAll()
   if (process.platform !== "darwin") {
     app.quit()
@@ -292,6 +313,7 @@ app.on("window-all-closed", () => {
 
 // new window example arg: new windows url
 ipcMain.handle("open-win", (event, arg) => {
+  logger.log("ipc open-win")
   const childWindow = new BrowserWindow({
     webPreferences: {
       preload: SCRIPT_PRELOAD,
@@ -320,40 +342,44 @@ function loadResource(window: BrowserWindow, uri: string, arg: any) {
 function addIpcEvents(window: BrowserWindow) {
   const ipcImplementation: AppIPC = {
     isAuthenticated() {
-      logger.log("isAuthenticated")
+      logger.log("ipc isAuthenticated")
       return true
     },
     minimize() {
-      logger.log("minimize")
+      logger.log("ipc minimize")
       window?.minimize()
     },
     maximize() {
-      logger.log("maximize")
+      logger.log("ipc maximize")
       window?.maximize()
     },
     unmaximize() {
-      logger.log("unmaximize")
+      logger.log("ipc unmaximize")
       window?.unmaximize()
     },
     close() {
-      logger.log("close")
+      logger.log("ipc close")
       window?.close()
     },
     isMaximized() {
-      logger.log("isMaximized")
+      logger.log("ipc isMaximized")
       return window?.isMaximized() ?? false
     },
     isMinimized() {
-      logger.log("isMinimized")
+      logger.log("ipc isMinimized")
       return window?.isMinimized() ?? false
     },
     isNormal() {
-      logger.log("isNormal")
+      logger.log("ipc isNormal")
       return window?.isNormal() ?? false
     },
     setBadgeCount(n: number) {
-      logger.log(`setBadgeCount ${n}`)
+      logger.log(`ipc setBadgeCount ${n}`)
       return app.setBadgeCount(n)
+    },
+    getServices() {
+      logger.log(`ipc getServices`)
+      return serviceManager.getServicesSimple()
     },
   }
 
