@@ -1,6 +1,6 @@
 @echo off
 
-SET "TYPEDB_HOME=%cd%\_typedb"
+SET "TYPEDB_HOME=%cd%\typedb"
 SET "JAVA_HOME=%cd%\_java\jre17"
 SET "PATH=%JAVA_HOME%\bin"
 
@@ -38,8 +38,7 @@ if exist %TYPEDB_HOME%\console\ (
   java %CONSOLE_JAVAOPTS% -cp "%G_CP%" -Dtypedb.dir="%TYPEDB_HOME%" com.vaticle.typedb.console.TypeDBConsole %2 %3 %4 %5 %6 %7 %8 %9
   goto exit
 ) else (
-  echo TypeDB Console is not included in this TypeDB distribution^.
-  echo You may want to install TypeDB Console or TypeDB ^(all^)^.
+  echo Direcotory [%TYPEDB_HOME%\console\] is missing.
   goto exiterror
 )
 
@@ -52,8 +51,7 @@ if exist %TYPEDB_HOME%\server\ (
   java %SERVER_JAVAOPTS% -cp "%G_CP%" -Dtypedb.dir="%TYPEDB_HOME%" com.vaticle.typedb.core.server.TypeDBServer %2 %3 %4 %5 %6 %7 %8 %9
   goto exit
 ) else (
-  echo TypeDB Server is not included in this TypeDB distribution^.
-  echo You may want to install TypeDB Server or TypeDB ^(all^)^.
+  echo Direcotory [%TYPEDB_HOME%\server\] is missing.
   goto exiterror
 )
 
@@ -65,8 +63,7 @@ if exist %TYPEDB_HOME%\server\ (
   java %SERVER_JAVAOPTS% -cp "%G_CP%" -Dtypedb.dir="%TYPEDB_HOME%" com.vaticle.typedb.cluster.server.TypeDBClusterServer %2 %3 %4 %5 %6 %7 %8 %9
   goto exit
 ) else (
-  echo TypeDB Cluster is not included in this TypeDB distribution^.
-  echo You may want to install TypeDB Cluster or TypeDB Cluster ^(all^)^.
+  echo Direcotory [%TYPEDB_HOME%\server\] is missing.
   goto exiterror
 )
 

@@ -3,7 +3,6 @@ export function isElectron(): boolean {
   if (
     typeof window !== "undefined" &&
     typeof window.process === "object" &&
-    // @ts-expect-error ts-migrate(2339) FIXME: Property 'type' does not exist on type 'Process'
     window.process.type === "renderer"
   ) {
     return true
