@@ -12,7 +12,6 @@ import basic_logs as classic
 import datetime
 from typedb.client import *
 from loguru import logger
-import os
 import argparse
 
 
