@@ -1,3 +1,12 @@
+# allow importing og service local packages
+import os
+import sys
+
+where_am_i = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, where_am_i+"/__packages__")
+sys.path.append(where_am_i)
+# end of local package imports
+
 from typedb.client import *
 from loguru import logger
 import json
@@ -306,13 +315,19 @@ def main(gConnect):
 
 
 
-
+parser = argparse.ArgumentParser(description="Script params",
+                              formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+parser.add_argument("--host", nargs='?', default="localhost", help="server host")
+parser.add_argument("--port", nargs='?', default="1729", help="server port")
+parser.add_argument("--db", nargs='?', default="typerefinery", help="server database")
+parser.add_argument("--query", nargs='?', default=gquery, help="query to use")
+args = parser.parse_args()
 
 def_gConnect = {
-        "url": os.environ.get('TYPEDB_HOST', 'localhost'),
-        "port": os.environ.get('TYPEDB_PORT', '1729'),
-        "database": os.environ.get('TYPEDB_DB', 'pm_4'),
-        "gQuery": gquery
+        "url": args.host,
+        "port": args.port,
+        "database": args.db,
+        "gQuery": args.query
       }
 
 
