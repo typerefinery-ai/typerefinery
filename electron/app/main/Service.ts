@@ -452,12 +452,27 @@ export class Service extends EventEmitter<ServiceEvent> {
 
   // start service and store its process id in a file based on os type
   async start() {
-    await this.#doSetup()
-
+    //quick fail already started
     if (this.#status == ServiceStatus.STARTED) {
       this.#log(
         `service ${this.#id} already started with pid ${this.#process?.pid}`
       )
+      return
+    }
+
+    //run setup if it exists
+    await this.#doSetup()
+
+    //quick fail no command
+    if (
+      this.#options &&
+      this.#options.execconfig &&
+      this.#options.execconfig.commandline
+    ) {
+      if (!(this.#setup && this.#setup.length > 0)) {
+        this.#log(`can't start service ${this.#id} no command specified.`)
+      }
+      //silently backout as setup exists
       return
     }
 
