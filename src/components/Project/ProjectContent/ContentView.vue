@@ -7,17 +7,11 @@
         :active-index="activeIndex"
         @tab-click="onTabClick($event)"
       >
-        <TabPanel v-for="(tab, i) in tabs" :key="tab.id">
+        <TabPanel v-for="(tab, i) in allTabs" :key="tab.id">
           <template #header>
             <div class="tab-item" :class="{ active: activeIndex === i }">
-              <span>{{
-                $t("components.project.tab") + " " + tab.id[tab.id.length - 1]
-              }}</span>
-              <i
-                v-if="paneId !== 'pane1'"
-                class="pi pi-times"
-                @click.stop="closeSplitView"
-              ></i>
+              <span>{{ tab.name }}</span>
+              <i class="pi pi-times" @click.stop="closeSplitView(tab)"></i>
             </div>
           </template>
           <!-- tab 1 -->
@@ -26,7 +20,7 @@
             :pane-id="paneId"
             :focus="focus"
             :tools-visible="contentToolsVisible"
-            :tab-id="`tab${i + 1}`"
+            :tab="tab"
             @toggle="toggleContentTools"
           />
         </TabPanel>
@@ -56,8 +50,10 @@
   import MenuBar from "@/components/MenuBar.vue"
   import ContentTab from "../ContentTab"
   import AppSettings from "@/store/Modules/AppSettings"
+  import Projects from "@/store/Modules/Projects"
   import { getModule } from "vuex-module-decorators"
   const appSettings = getModule(AppSettings)
+  const projects = getModule(Projects)
 
   TabView.methods.onTabClick = function (event, i) {
     this.$emit("tab-click", {
@@ -89,10 +85,24 @@
       }
     },
 
+    computed: {
+      allTabs() {
+        return this.tabs.map((el) => ({
+          ...el,
+          name: projects.list[el.projectIdx].queries.list[el.queryIdx].name,
+        }))
+      },
+    },
+
     watch: {
       focus(isTrue) {
         if (isTrue) this.contentToolsVisible = false
         else this.contentToolsVisible = true
+      },
+      tabs(newVal) {
+        if (newVal.length === 1) {
+          this.activeIndex = 0
+        }
       },
     },
 
@@ -100,7 +110,7 @@
       onTabClick(e) {
         const ctrl = e.originalEvent?.ctrlKey
         if (ctrl) {
-          this.splitView(`tab${++e.index}`)
+          this.splitView(e.index)
         } else {
           this.activeIndex = e.index
         }
@@ -111,12 +121,16 @@
         appSettings.resizeView()
       },
 
-      splitView(id) {
-        this.$emit("split-view", id)
+      splitView(idx) {
+        this.$emit("split-view", idx)
       },
 
-      closeSplitView() {
-        this.$emit("close-split-view")
+      closeSplitView(tab) {
+        if (this.paneId == "pane2") {
+          return this.$emit("close-split-view")
+        }
+        projects.removeSelectedNodes(tab.id)
+        projects.toggleNodeSelection()
       },
     },
   }
