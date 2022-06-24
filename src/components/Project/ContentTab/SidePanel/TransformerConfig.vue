@@ -108,6 +108,9 @@
       Dialog,
       InputText,
     },
+    props: {
+      tab: { type: Object, required: true },
+    },
     emits: ["handle-dependencies"],
     data() {
       return {
@@ -159,13 +162,16 @@
       setTransformerCode(t) {
         const idx = transformer.list.findIndex((el) => el.name === t.value)
         const code = transformer.list[idx].code
-        const data = { code, projectId: 0, queryId: 0 }
+        const { projectIdx, queryIdx } = this.tab
+        const data = { code, projectIdx, queryIdx }
         projects.setCode(data)
         this.selectedTransformer = t.value
       },
       saveTransformer() {
         this.saveDialog = false
-        const code = projects.list[0].queries.list[0].transformer.code
+        const { projectIdx, queryIdx } = this.tab
+        const code =
+          projects.list[projectIdx].queries.list[queryIdx].transformer.code
         const data = {
           name: this.transformerName,
           code,

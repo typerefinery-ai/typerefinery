@@ -29,7 +29,7 @@
       >
         <template #default="slotProps">
           <div @dblclick="selectNode(slotProps.node)">
-            {{ slotProps.node.label }}
+            {{ slotProps.node.name }}
           </div>
         </template>
       </Tree>
@@ -62,53 +62,63 @@
         return appProjects.storedata
       },
       nodesData() {
-        const index = 0
         return this.storeList.map((el, i) => {
           return {
             key: i,
-            id: el.name.toLowerCase(),
-            label: el.name,
+            id: el.id,
+            name: el.name,
             data: "Project Folder",
             icon: "pi pi-fw pi-book",
             children: [
               {
-                key: `${index}-${i}`,
-                label: "Query",
+                key: `${i}-0`,
+                name: "Query",
                 data: "Query Folder",
                 icon: "pi pi-fw pi-database",
-                children: el.queries.list.map((el) => {
+                children: el.queries.list.map((q, qIdx) => {
                   return {
-                    key: "0-0-0",
-                    label: el.name,
+                    key: `${i}-0-${qIdx}`,
+                    id: q.id,
+                    type: q.type,
+                    name: q.name,
                     data: "Query Folder",
                     icon: "pi pi-fw pi-file",
+                    connection: q.connection,
+                    parent: el.name,
                   }
                 }),
               },
               {
-                key: `${index + 1}-${i}`,
-                label: "Connection",
+                key: `${i}-1`,
+                name: "Connection",
                 data: "Connection Folder",
                 icon: "pi pi-fw pi-server",
-                children: el.connections.list.map((el) => {
+                children: el.connections.list.map((c, cIdx) => {
                   return {
-                    label: el.name,
+                    key: `${i}-1-${cIdx}`,
+                    id: c.id,
+                    type: c.type,
+                    name: c.name,
                     data: "Connection Folder",
                     icon: "pi pi-fw pi-file",
+                    parent: el.name,
                   }
                 }),
               },
               {
-                key: `${index + 2}-${i}`,
-                label: "Transformer",
+                key: `${i}-2`,
+                name: "Transformer",
                 data: "Transformer Folder",
                 icon: "pi pi-fw pi-cog",
-                children: el.transformers.list.map((el) => {
+                children: el.transformers.list.map((t, tIdx) => {
                   return {
-                    key: "0-0-i",
-                    label: el.name,
+                    key: `${i}-2-${tIdx}`,
+                    id: t.id,
+                    type: t.type,
+                    name: t.name,
                     data: "Transformer Folder",
                     icon: "pi pi-fw pi-file",
+                    parent: el.name,
                   }
                 }),
               },
@@ -125,11 +135,27 @@
         localStorage.clear()
         this.$router.push({ name: "Login" })
       },
-
       selectNode(data) {
-        console.log(data.label)
-        appProjects.selectNode(data.label)
-        appProjects.selectedNode(data.label)
+        switch (data.type) {
+          case "query":
+            this.openTab(data)
+            return
+          default:
+            return
+        }
+      },
+      openTab(data) {
+        const { id, parent } = data
+        const projectIdx = appProjects.list.findIndex((el) => el.name == parent)
+        const queryIdx = appProjects.list[projectIdx].queries.list.findIndex(
+          (el) => el.id == id
+        )
+        const queryData = { id, projectIdx, queryIdx }
+        const isNew = !appProjects.selectedNodes.list.includes(id)
+        if (isNew) {
+          appProjects.toggleNodeSelection()
+          appProjects.setSelectedNodes(queryData)
+        }
       },
     },
   }

@@ -6,7 +6,7 @@
           <Button
             :label="$t(`components.transformer.editor`)"
             class="p-button-raised shadow-1"
-            :class="{ 'p-button-text': tab !== 'editor' }"
+            :class="{ 'p-button-text': activeTab !== 'editor' }"
             @click="handleTabs('editor')"
           />
           <Button
@@ -14,13 +14,13 @@
             :badge="isError ? '1' : ''"
             badge-class="p-badge-danger"
             class="p-button-raised shadow-1"
-            :class="{ 'p-button-text': tab !== 'console' }"
+            :class="{ 'p-button-text': activeTab !== 'console' }"
             @click="handleTabs('console')"
           />
         </div>
       </div>
       <codemirror
-        v-if="tab == 'editor'"
+        v-if="activeTab == 'editor'"
         :model-value="code"
         placeholder="Code goes here..."
         :style="{ height: '70vh' }"
@@ -57,10 +57,13 @@
   export default {
     name: "AlgorithmView",
     components: { Codemirror, Button },
+    props: {
+      tab: { type: Object, required: true },
+    },
     emits: ["render"],
     data() {
       return {
-        tab: "editor",
+        activeTab: "editor",
         consoleText: "",
       }
     },
@@ -77,7 +80,8 @@
         return appSettings.viewResized
       },
       code() {
-        return projects.algorithmCode(0, 0)
+        const { projectIdx, queryIdx } = this.tab
+        return projects.algorithmCode(projectIdx, queryIdx)
       },
     },
     watch: {
@@ -90,11 +94,12 @@
     },
     methods: {
       handleChange(c) {
-        const data = { code: c, projectId: 0, queryId: 0 }
+        const { projectIdx, queryIdx } = this.tab
+        const data = { code: c, projectIdx, queryIdx }
         projects.setAlgoCode(data)
       },
       handleTabs(tab) {
-        this.tab = tab
+        this.activeTab = tab
         appSettings.resizeView()
       },
       setEditorHeight() {

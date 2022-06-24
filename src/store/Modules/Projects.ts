@@ -13,6 +13,7 @@ export default class Projects extends VuexModule {
   list = [
     {
       type: "project",
+      id: "project1",
       name: "Project 1",
       expanded: true,
       description: "",
@@ -23,15 +24,15 @@ export default class Projects extends VuexModule {
         icon: "connection",
         list: [
           {
+            id: "connection1",
             name: "connection 1",
-            title: "connection 1",
             icon: "connection",
             description: "",
             type: "connection",
           },
           {
+            id: "connection2",
             name: "connection 2",
-            title: "Connection 2",
             icon: "connection",
             description: "",
             type: "connection",
@@ -41,14 +42,17 @@ export default class Projects extends VuexModule {
       queries: {
         type: "queries",
         expanded: true,
+        icon: "query",
         list: [
           {
+            id: "query1",
             name: "query 1",
+            icon: "query",
             description: "",
             type: "query",
-            connection: "connection 2",
-            icon: "connection",
+            connection: "connection2", // connection id
             query: "",
+            transformerName: "",
             transformer: {
               code: `var svg = d3.select(wrapper).append("svg"),
   width = +svg.attr("width") || 960,
@@ -171,12 +175,14 @@ function dragended(d) {
             },
           },
           {
+            id: "query2",
             name: "query 2",
+            icon: "query",
             description: "",
-            type: "connection",
-            connection: "connection1",
-            icon: "connection",
+            type: "query",
+            connection: "connection1", // connection id
             query: "",
+            transformerName: "",
             transformer: {
               code: "",
               error: "",
@@ -194,15 +200,15 @@ function dragended(d) {
         type: "transformers",
         list: [
           {
+            id: "transformer1",
             name: "Transformer 1",
-            title: "Transformer 1",
             icon: "connection",
             description: "",
             type: "transformer",
           },
           {
+            id: "transformer2",
             name: "Transformer 2",
-            title: "Transformer 2",
             icon: "connection",
             description: "",
             type: "transformer",
@@ -212,6 +218,7 @@ function dragended(d) {
     },
     {
       type: "project",
+      id: "project2",
       name: "Project 2",
       expanded: true,
       description: "",
@@ -222,15 +229,15 @@ function dragended(d) {
         icon: "connection",
         list: [
           {
+            id: "connection3",
             name: "connection 3",
-            title: "connection 3",
             icon: "connection",
             description: "",
             type: "connection",
           },
           {
+            id: "connection4",
             name: "connection 4",
-            title: "Connection 4",
             icon: "connection",
             description: "",
             type: "connection",
@@ -242,16 +249,18 @@ function dragended(d) {
         expanded: true,
         list: [
           {
-            name: "query 3 ",
+            id: "query3",
+            name: "query 3",
+            icon: "query",
             description: "",
             type: "query",
-            connection: "connection 2",
-            icon: "connection",
+            connection: "connection3", // connection id
             query: "",
+            transformerName: "",
             transformer: {
               code: "",
               error: "",
-              logs: [],
+              logs: [""],
             },
             algorithm: {
               code: "",
@@ -260,12 +269,14 @@ function dragended(d) {
             },
           },
           {
+            id: "query4",
             name: "query 4",
+            icon: "query",
             description: "",
-            type: "connection",
-            connection: "connection1",
-            icon: "connection",
+            type: "query",
+            connection: "connection4", // connection id
             query: "",
+            transformerName: "",
             transformer: {
               code: "",
               error: "",
@@ -283,15 +294,15 @@ function dragended(d) {
         type: "transformers",
         list: [
           {
+            id: "transformer3",
             name: "Transformer 3",
-            title: "Transformer 3",
             icon: "connection",
             description: "",
             type: "transformer",
           },
           {
+            id: "transformer4",
             name: "Transformer 4",
-            title: "Transformer 4",
             icon: "connection",
             description: "",
             type: "transformer",
@@ -300,6 +311,24 @@ function dragended(d) {
       },
     },
   ]
+
+  @Mutation
+  updateQuery(data) {
+    const { projectIdx, queryIdx, key, value } = data
+    const project = JSON.parse(JSON.stringify(this.list))
+    project[projectIdx].queries.list[queryIdx][key] = value
+    this.list = project
+  }
+
+  get transformersList() {
+    return (projectIdx) => {
+      return this.list[projectIdx].transformers.list.map((el) => ({
+        name: el.name,
+        key: el.name,
+      }))
+    }
+  }
+
   value: "" | undefined
   get storedata() {
     return this.list
@@ -319,6 +348,7 @@ function dragended(d) {
       }
     }
   }
+
   get transformerList() {
     for (const index in this.list) {
       if (this.list[index].name === this.value) {
@@ -360,59 +390,74 @@ function dragended(d) {
   addToList(l) {
     this.list.push(l)
   }
+
   nodeSelected = false
   @Mutation
-  selectNode() {
+  toggleNodeSelection() {
     this.nodeSelected = !this.nodeSelected
   }
-  clickednode = []
+
+  selectedNodes: { list: string[] } = {
+    list: [],
+  }
   @Mutation
-  selectedNode(data) {
-    return (this.clickednode = data)
+  setSelectedNodes(node: { id: string }) {
+    const nodes = JSON.parse(JSON.stringify(this.selectedNodes))
+    nodes.list.push(node.id)
+    nodes[node.id] = node
+    this.selectedNodes = nodes
+  }
+  @Mutation
+  removeSelectedNodes(id: string) {
+    const nodes = JSON.parse(JSON.stringify(this.selectedNodes))
+    const idx = nodes.list.findIndex((el) => el == id)
+    nodes.list.splice(idx, 1)
+    delete nodes[id]
+    this.selectedNodes = nodes
   }
 
   // Transformer Code
   get transformerCode() {
-    return (projectId: number, queryId: number) => {
-      return this.list[projectId].queries.list[queryId].transformer.code
+    return (projectIdx: number, queryIdx: number) => {
+      return this.list[projectIdx].queries.list[queryIdx].transformer.code
     }
   }
 
   get transformerError() {
-    return (projectId: number, queryId: number) => {
-      return this.list[projectId].queries.list[queryId].transformer.error
+    return (projectIdx: number, queryIdx: number) => {
+      return this.list[projectIdx].queries.list[queryIdx].transformer.error
     }
   }
 
   @Mutation
-  setCode({ code, projectId, queryId }) {
-    this.list[projectId].queries.list[queryId].transformer.code = code
+  setCode({ code, projectIdx, queryIdx }) {
+    this.list[projectIdx].queries.list[queryIdx].transformer.code = code
   }
 
   @Mutation
-  setError({ error, projectId, queryId }) {
-    this.list[projectId].queries.list[queryId].transformer.error = error
+  setError({ error, projectIdx, queryIdx }) {
+    this.list[projectIdx].queries.list[queryIdx].transformer.error = error
   }
 
   @Mutation
-  setLogs({ log, projectId, queryId }) {
+  setLogs({ log, projectIdx, queryIdx }) {
     let logs: string
     if (typeof log == "object") {
       logs = JSON.stringify(log)
     } else if (typeof log != "string") return
     logs = log
-    this.list[projectId].queries.list[queryId].transformer.logs.push(logs)
+    this.list[projectIdx].queries.list[queryIdx].transformer.logs.push(logs)
   }
 
   @Mutation
-  clearLogs({ projectId, queryId }) {
-    this.list[projectId].queries.list[queryId].transformer.logs = []
+  clearLogs({ projectIdx, queryIdx }) {
+    this.list[projectIdx].queries.list[queryIdx].transformer.logs = []
   }
 
   get consoleMessage() {
-    return (projectId: number, queryId: number) => {
+    return (projectIdx: number, queryIdx: number) => {
       let myString = ""
-      this.list[projectId].queries.list[queryId].transformer.logs.forEach(
+      this.list[projectIdx].queries.list[queryIdx].transformer.logs.forEach(
         (el, i) => {
           if (i === 0) myString = JSON.stringify(el)
           else myString = myString + "\n" + JSON.stringify(el)
@@ -421,20 +466,20 @@ function dragended(d) {
       return (
         myString +
         "\n" +
-        this.list[projectId].queries.list[queryId].transformer.error
+        this.list[projectIdx].queries.list[queryIdx].transformer.error
       )
     }
   }
 
   //   Algorithm Code
   get algorithmCode() {
-    return (projectId: number, queryId: number) => {
-      return this.list[projectId].queries.list[queryId].algorithm.code
+    return (projectIdx: number, queryIdx: number) => {
+      return this.list[projectIdx].queries.list[queryIdx].algorithm.code
     }
   }
 
   @Mutation
-  setAlgoCode({ code, projectId, queryId }) {
-    this.list[projectId].queries.list[queryId].algorithm.code = code
+  setAlgoCode({ code, projectIdx, queryIdx }) {
+    this.list[projectIdx].queries.list[queryIdx].algorithm.code = code
   }
 }
