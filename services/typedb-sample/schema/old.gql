@@ -1,0 +1,51 @@
+define
+###########################
+#  basic log, trace and event definitions
+#############################
+
+    name sub attribute, datatype string;
+    index sub attribute, datatype long;
+    traceid sub attribute, datatype long;
+    
+    event sub entity, 
+        has name,
+        plays item,
+        plays input,
+        plays output;
+
+    log sub entity,
+        has name, 
+        plays owner;
+
+    trace sub relation,
+        has traceid,
+        has index,
+        relates owner,
+        relates item;
+
+    after sub relation,
+        relates input,
+        relates output;
+
+########################
+# Transitive Rule Within Traces
+#######################
+
+    follows sub vv_group,
+        when {
+            ## the condition
+            $a isa log, has name $b;
+            $c isa event;
+            $e isa event;
+            $g (owner: $a, item: $c) isa trace, 
+                has traceid $h, 
+                has index $i;
+            $j (owner: $a, item: $e) isa trace, 
+                has traceid $h, 
+                has index $k;
+            $c != $e;
+            $i < $k;
+        }, then {
+            ## the conclusion
+            (input: $c, output: $e) isa after;            
+        };

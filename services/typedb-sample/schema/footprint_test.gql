@@ -1,0 +1,185 @@
+define
+###########################
+#  basic log, trace and event definitions
+#############################
+
+    index sub attribute, 
+        datatype long;
+    traceId sub attribute, 
+        datatype long;
+    logName sub attribute,
+        datatype string;
+
+    eventName sub attribute, 
+        plays transition,
+        plays baseTransition,
+        plays inlet,
+        plays outlet,
+        datatype string;      
+    
+    event sub entity, 
+        has eventName,
+        plays item,
+        plays input,
+        plays output;
+
+    log sub entity,
+        has logName, 
+        plays owner;
+
+    trace sub relation,
+        has traceId,
+        has index,
+        relates owner,
+        relates item;
+
+    follows sub relation,
+        relates input,
+        relates output;
+
+#########################
+# Algorithm and Petri Net relations
+#########################
+
+    place sub entity,
+        plays aPlace,
+        plays inlet,
+        plays outlet;  
+        
+    printType sub attribute, datatype string;
+
+    footprint sub relation,
+        has printType,
+        relates owner,
+        relates baseTransition,
+        relates transition;
+
+    transitions sub relation,
+        relates owner,
+        relates transition;
+    
+    firstTransition sub relation,
+        relates owner,
+        relates transition;
+    
+    lastTransition sub relation,
+        relates owner,
+        relates transition;
+
+    places sub relation,
+        relates owner,
+        relates aPlace;
+    
+    flows sub relation,
+        relates owner,
+        relates inlet,
+        relates outlet;
+        
+
+############################
+# myGRAKN Alpha Algorithm Footprint Rules
+# assumes footprint and transitions are already setup
+# The Objective is to setup places and flows by 
+# atomic reasoning, it does not follow the standard algorithm numbering 
+############################
+# Step 4 - Setup a Place in Front of and Behind the First/Last Transition
+# A - Add a place in front of first transition via flows
+# 
+    link_first_transition_prior sub rule,
+        when {
+            $o isa log;
+            $p isa place; not { (owner:$o, aPlace: $p) isa places;};  
+            $t isa eventName;
+            (owner:$o, transition: $t) isa firstTransition;
+                        
+        }, then {
+            (owner:$o, input:$p, output: $t) isa flows;
+        };
+
+# B - Add a place after the first transition via flows
+# 
+    link_first_transition_post sub rule,
+        when {
+            $o isa log;
+            $p isa place; not { (owner:$o, aPlace: $p) isa places;};  
+            $t isa eventName;
+            (owner:$o, transition: $t) isa firstTransition;
+                        
+        }, then {
+            (owner:$o, input:$t, output: $p) isa flows;
+        };
+
+# C - Add a place before the last transition via flows
+# 
+    link_last_transition_prior sub rule,
+        when {
+            $o isa log;
+            $p isa place; not { (owner:$o, aPlace: $p) isa places;};  
+            $t isa eventName;
+            (owner:$o, transition: $t) isa lastTransition;
+                        
+        }, then {
+            (owner:$o, input:$p, output: $t) isa flows;
+        };
+
+# D - Add a place after the last transition via flows
+# 
+    link_last_transition_post sub rule,
+        when {
+            $o isa log;
+            $p isa place; not { (owner:$o, aPlace: $p) isa places;};  
+            $t isa eventName;
+            (owner:$o, transition: $t) isa lastTransition;
+                        
+        }, then {
+            (owner:$o, input:$t, output: $p) isa flows;
+        };
+
+#############################################
+# Step 4-b: Connect any place participating in a flows to the places list
+# Place that is not in places, but is in flows, is added to places
+# 
+    link_any_place sub rule,
+        when {
+            $o isa log;
+            $p isa place; not { (owner:$o, aPlace: $p) isa places;};   
+            $t isa eventName;
+            (owner:$o, transition: $t) isa transitions;
+            {(owner:$o, input:$t, output: $p) isa flows;} 
+            or {(owner:$o, input:$p, output: $t) isa flows;};
+                        
+        }, then {
+            (owner:$o, aPlace: $p) isa places;
+        };
+
+
+###################################
+# Step 5 - Use Footprint to Deduce Structure After First Transition (i.e. connect to place post transition)
+# A - Connect all '->' to Post
+# 
+    link_first_transition_to_causal sub rule,
+        when {
+            $o isa log;
+            $p isa place; 
+            (owner:$o, aPlace: $p) isa places;
+            $tA isa eventName;
+            (owner:$o, transition: $tA) isa firstTransition;
+            (owner:$o, input:$tA, output: $p) isa flows;
+            $tB isa eventName;
+            (owner:$o, transition: $tB) isa transitions;
+            $tA != $tB;         
+            $ftA_B (owner:$o, baseTransition: $tA, transition: $tB) isa footprint;     
+            $ftA_B has printType "->";
+            
+            not {
+                $tC isa eventName;
+                (owner:$o, transition: $tC) isa transitions;
+                $tC != $tB; 
+                (owner:$o, input:$p, output: $tC) isa flows;
+                $ftD (owner:$o, baseTransition: $tB, transition: $tC) isa footprint;     
+                $ftC has printType "||";
+            };
+                        
+        }, then {
+            (owner:$o, input:$p, output: $tB) isa flows;
+        };
