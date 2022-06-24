@@ -37,7 +37,7 @@
     "electron:pack": "electron-builder --dir",
     "electron:dev": "concurrently -k \"npm run build && npm run dev\" \"npm run electron\"",
     "electron:builder": "electron-builder",
-    "electron:start": "npm run build && electron ./dist/main/index.cjs",
+    "electron:start": "node scripts/build.mjs && electron ./dist/main/index.cjs",
     "electron:run": "electron ./dist/main/index.cjs",
     "build:for:electron": "vue-tsc --noEmit && cross-env ELECTRON=true vite build",
     "app:build": "npm run build:for:electron && npm run electron:builder",
