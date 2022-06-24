@@ -267,7 +267,7 @@ export class Service extends EventEmitter<ServiceEvent> {
     process.once("exit", () => {
       this.#removeServicePidFile()
       this.#status = ServiceStatus.STOPPED
-      this.#log(`stopped ${this.#id} with pid ${this.#process?.pid}`)
+      this.#log(`process ${this.#id} with pid ${this.#process?.pid} existed.`)
       this.#process = void 0
     })
     // run health check if defined
@@ -404,19 +404,21 @@ export class Service extends EventEmitter<ServiceEvent> {
       try {
         const req = http.get(options, (res) => {
           if (res.statusCode == 200) {
-            this.#log("health check success")
+            this.#log("http health check success")
             this.#status = ServiceStatus.STARTED
           } else {
-            this.#log("health check failed")
+            this.#log(
+              `http health check failed with status code ${res.statusCode}`
+            )
             this.#status = ServiceStatus.STOPPED
           }
         })
         req.on("error", (e) => {
-          this.#log("health check failed")
+          this.#log(`http health check request failed with error ${e}`)
           this.#status = ServiceStatus.STOPPED
         })
       } catch (error) {
-        this.#log("health check failed")
+        this.#log(`http could not execute health check error is ${error}`)
         this.#status = ServiceStatus.STOPPED
       }
     }
@@ -428,12 +430,12 @@ export class Service extends EventEmitter<ServiceEvent> {
       const hostname = this.#servicehost
       const port = this.#serviceport
       const socket = net.createConnection(port, hostname, () => {
-        this.#log("health check success")
+        this.#log("tcp health check success")
         this.#status = ServiceStatus.STARTED
         socket.end()
       })
       socket.on("error", () => {
-        this.#log("health check failed")
+        this.#log(`tcp health check failed with error ${error}`)
         this.#status = ServiceStatus.STOPPED
       })
     }

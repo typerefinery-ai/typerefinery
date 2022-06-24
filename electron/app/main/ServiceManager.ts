@@ -135,7 +135,7 @@ class ServiceManager {
 
             serviceConfigList.push(serviceConfig)
           } catch (error) {
-            console.error(["findServiceConfigs", file, error])
+            this.#logger.log("findServiceConfigs", file, error)
           }
         }
       })
@@ -166,16 +166,20 @@ class ServiceManager {
   }
 
   // start all services
-  startAll() {
+  async startAll() {
     for (const service of this.#services) {
-      service.start()
+      this.#logger.log(`starting service ${service.id}`)
+      await service.start()
     }
+    this.#logger.log("all services started.")
   }
 
   // stop all services
   stopAll() {
     for (const service of this.#services) {
+      this.#logger.log(`stopping service ${service.id}`)
       service.stop()
+      this.#logger.log("all services stopped.")
     }
   }
 }
