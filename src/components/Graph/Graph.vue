@@ -13,10 +13,12 @@
     props: {
       graphId: { type: String, required: true },
       dependencies: { type: Array, required: true },
+      tab: { type: Object, required: true },
     },
     computed: {
       code() {
-        return projects.transformerCode(0, 0)
+        const { projectIdx, queryIdx } = this.tab
+        return projects.transformerCode(projectIdx, queryIdx)
       },
       params() {
         return this.dependencies
@@ -36,11 +38,12 @@
 
     methods: {
       renderGraph() {
+        const { projectIdx, queryIdx } = this.tab
         try {
           window.log = function (log) {
-            projects.setLogs({ log, projectId: 0, queryId: 0 })
+            projects.setLogs({ log, projectIdx, queryIdx })
           }
-          projects.clearLogs({ projectId: 0, queryId: 0 }) // clear logs before each execution
+          projects.clearLogs({ projectIdx, queryIdx }) // clear logs before each execution
           const params = ["wrapper", "self", ...this.params]
           const func = new Function(...params, this.code)
           const wrapper = document.getElementById(this.graphId)
@@ -49,9 +52,9 @@
           const existingDependencies = { d3: d3, cola: cola }
           this.params.forEach((el) => args.push(existingDependencies[el]))
           func.apply(this, args)
-          projects.setError({ error: "", projectId: 0, queryId: 0 })
+          projects.setError({ error: "", projectIdx, queryIdx })
         } catch (err) {
-          projects.setError({ error: err.stack, projectId: 0, queryId: 0 })
+          projects.setError({ error: err.stack, projectIdx, queryIdx })
         }
       },
       removeInnerItems(wrapper) {

@@ -102,6 +102,9 @@
       InputText,
       Textarea,
     },
+    props: {
+      tab: { type: Object, required: true },
+    },
     emits: ["handle-dependencies"],
     data() {
       return {
@@ -141,13 +144,16 @@
       setAlgorithmCode(t) {
         const idx = algorithm.list.findIndex((el) => el.name === t.value)
         const code = algorithm.list[idx].code
-        const data = { code, projectId: 0, queryId: 0 }
+        const { projectIdx, queryIdx } = this.tab
+        const data = { code, projectIdx, queryIdx }
         projects.setAlgoCode(data)
         this.selectedAlgorithm = t.value
       },
       saveAlgorithm() {
         this.saveDialog = false
-        const code = projects.list[0].queries.list[0].algorithm.code
+        const { projectIdx, queryIdx } = this.tab
+        const code =
+          projects.list[projectIdx].queries.list[queryIdx].algorithm.code
         const data = {
           name: this.algorithmName,
           code,

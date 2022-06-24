@@ -65,21 +65,23 @@
       :push-other-panes="false"
       @splitter-click="handleSplitterClick"
     >
-      <pane :ref="`w-${tabId}-${paneId}`">
+      <pane :ref="`w-${tab.id}-${paneId}`">
         <div class="content-area-window" :class="{ show: activeView === 'D' }">
-          <data-view />
+          <data-view :tab="tab" />
         </div>
 
         <div class="content-area-window" :class="{ show: activeView === 'A' }">
-          <algorithm-view />
+          <algorithm-view :tab="tab" />
         </div>
 
         <div class="content-area-window" :class="{ show: activeView === 'Q' }">
-          <div class="query-window-container"><query-view /></div>
+          <div class="query-window-container">
+            <query-view :tab="tab" />
+          </div>
         </div>
 
         <div class="content-area-window" :class="{ show: activeView === 'T' }">
-          <transformer-view />
+          <transformer-view :tab="tab" />
         </div>
 
         <div class="content-area-window" :class="{ show: activeView === 'G' }">
@@ -98,8 +100,9 @@
           >
           <div class="graph-container">
             <graph
-              :graph-id="`graph-${tabId}-${paneId}`"
+              :graph-id="`graph-${tab.id}-${paneId}`"
               :dependencies="dependencies"
+              :tab="tab"
             />
           </div>
 
@@ -118,8 +121,9 @@
         </div>
       </pane>
 
-      <pane :ref="`p-${tabId}-${paneId}`" max-size="30">
+      <pane :ref="`p-${tab.id}-${paneId}`" max-size="30">
         <side-panel
+          :tab="tab"
           :node-data="nodeData"
           :active-view="activeView"
           @handle-dependencies="handleDependencies"
@@ -169,7 +173,7 @@
     props: {
       toolsVisible: { type: Boolean, required: true },
       focus: { type: Boolean, required: true },
-      tabId: { type: String, required: true },
+      tab: { type: Object, required: true },
       paneId: { type: String, required: true },
     },
     emits: ["toggle"],
@@ -193,17 +197,17 @@
         }
       },
       handleSplitterClick() {
-        const rightPanel = this.$refs[`p-${this.tabId}-${this.paneId}`]
+        const rightPanel = this.$refs[`p-${this.tab.id}-${this.paneId}`]
         if (rightPanel.style.width == "0") {
           rightPanel.style.width = "30%"
         } else {
-          this.$refs[`w-${this.tabId}-${this.paneId}`].style.width = "100%"
+          this.$refs[`w-${this.tab.id}-${this.paneId}`].style.width = "100%"
           rightPanel.style.width = 0
         }
       },
       showD3Chart() {
         this.nodeData = {}
-        const id = `graph-${this.tabId}-${this.paneId}`
+        const id = `graph-${this.tab.id}-${this.paneId}`
         const wrapper = document.getElementById(id)
         this.removeInnerItems(wrapper)
         renderD3(wrapper, this)
@@ -221,32 +225,7 @@
       },
       toggleTabs() {
         this.$emit("toggle")
-        // appSettings.resizeView()
       },
-      //   renderGraph(code) {
-      //     this.activeView = "G"
-      //     const id = `graph-${this.tabId}-${this.paneId}`
-      //     try {
-      //       const func = new Function("wapper", "self", "d3", code)
-      //       const wrapper = document.getElementById(id)
-      //       this.removeInnerItems(wrapper)
-      //       func(wrapper, this, d3)
-      //       this.error = ""
-      //     } catch (err) {
-      //       this.error = String(err)
-      //       console.log(err)
-      //       console.log(err.message)
-      //       console.log(err.name)
-      //     }
-      //   },
-      //   removeInnerItems(wrapper) {
-      //     // remove child elements
-      //     if (wrapper.childNodes.length) {
-      //       while (wrapper.hasChildNodes()) {
-      //         wrapper.removeChild(wrapper.firstChild)
-      //       }
-      //     }
-      //   },
     },
   }
 </script>
