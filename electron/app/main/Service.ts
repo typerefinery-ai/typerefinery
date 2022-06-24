@@ -272,7 +272,7 @@ export class Service extends EventEmitter<ServiceEvent> {
     })
     // run health check if defined
     if (this.#healthCheck) {
-      this.#startHealthCheck(this.#healthCheck.retries || 1)
+      this.#startHealthCheck(this.#healthCheck.retries || 10)
     }
   }
 
@@ -357,18 +357,18 @@ export class Service extends EventEmitter<ServiceEvent> {
   #startHealthCheck(retries: number) {
     if (this.#healthCheck && this.#status != ServiceStatus.STARTED) {
       if (retries > 0) {
-        const firtRun = retries == (this.#healthCheck?.retries || 1)
-        let timeoutInterval = this.#healthCheck?.interval || 1000
-        let nextRetry = retries--
-        //wait for start period
-        if (firtRun) {
-          timeoutInterval = this.#healthCheck.start_period || 1000
-          nextRetry = this.#healthCheck?.retries || 10
-        }
+        const timeoutInterval = this.#healthCheck?.interval || 1000
+        const nextRetry = retries - 1
         this.#runHealthCheck()
-        setTimeout(() => {
-          this.#startHealthCheck(nextRetry)
-        }, timeoutInterval)
+        setTimeout(
+          (nextRetry) => {
+            this.#startHealthCheck(nextRetry)
+          },
+          timeoutInterval,
+          nextRetry
+        )
+      } else {
+        this.#log(`health check finished`)
       }
     }
   }
