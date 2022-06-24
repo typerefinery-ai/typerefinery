@@ -62,7 +62,7 @@ export const os = {
     args: string[],
     options: SpawnOptions = {}
   ) {
-    return await new Promise<string>((resolve) => {
+    return await new Promise<string>((resolve, reject) => {
       // set options
       if (options) {
         if (!options.shell) {
@@ -78,6 +78,21 @@ export const os = {
           resolve(data.toString())
         })
       }
+      if (child.stderr) {
+        child.stderr.on("data", (data) => {
+          reject(data.toString())
+        })
+      }
+      child.on("error", (err) => {
+        reject(err)
+      })
+      child.on("exit", (code) => {
+        if (code !== 0) {
+          reject(`Process exited with code ${code}`)
+        } else {
+          resolve(`Process exited with code ${code}`)
+        }
+      })
     })
   },
 

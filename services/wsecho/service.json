@@ -8,7 +8,7 @@
   "icon": "pi pi-globe",
   "servicetype": 10,
   "execconfig": {
-    "execservice": "python",
+    "execservice": { "id": "python" },
     "setup": [
       "get-pip.py",
       "-m pip install uvicorn[standard]",

@@ -1,0 +1,355 @@
+define
+###########################
+#  basic log, trace and event definitions
+#############################
+
+    index sub attribute, # 0-based index
+        datatype long
+        plays Index;
+    traceId sub attribute, # case ID
+        datatype long,
+        plays TraceID;
+    logName sub attribute,
+        datatype string;
+
+    otherData sub attribute, # proxy for other fields
+        datatype string,     # could be JSON string or
+        plays OtherData;     # value
+
+    eventName sub attribute, 
+        plays Ename,
+        plays Transition,
+        plays BaseTransition,
+        plays Inlet,
+        plays Outlet,
+        datatype string;      
+    
+    event sub relation, 
+        relates TraceId,
+        relates Index,
+        relates Owner,
+        relates Ename,
+        relates OtherData,
+        plays Input,
+        plays Output;
+
+    log sub entity,
+        has logName, 
+        plays Owner;
+
+    follows sub relation,
+        relates Owner,
+        relates Input,
+        relates Output;
+
+#########################
+# Algorithm and Dependency relations
+#########################
+
+    footType sub attribute, 
+        datatype string; # enum values inserted during import
+    frequency sub attribute, 
+        datatype long, plays Frequency; # 0.0 must be imported
+    dependency sub attribute, 
+        datatype double, plays Dependency;
+    
+    thresh_freq sub attribute, datatype double;
+    thresh_dep sub attribute, datatype double;
+
+    footprint sub relation,
+        has footType,
+        has frequency,
+        has dependency,
+        relates Owner,
+        relates BaseTransition,
+        relates Transition;
+
+    transitions sub relation,
+        relates Owner,
+        relates Transition;
+    
+    firstTransition sub relation,
+        relates Owner,
+        relates Transition;
+    
+    lastTransition sub relation,
+        relates Owner,
+        relates Transition;
+
+    arc sub relation,
+        relates Owner,
+        relates Inlet,
+        relates Outlet,
+        relates Frequency,
+        relates Dependency,
+        plays Arcs;
+
+    binding sub relation,
+        relates Owner,
+        relates Arcs,
+        relates Frequency,
+        relates Transition;
+
+    input_binding sub binding;
+    output_binding sub binding;
+
+############################
+# GRAKN Heuristic Algorithm Rules
+############################
+# Step 1 - Setup Transitions
+# A - All: 
+# Select the distinct set of event names from every log
+    find_transitions sub rule,
+        when {
+            $o isa log;
+            $eN1 isa eventName;
+            not { $eN1 == "TraceStop";};
+	        $e1 (Owner: $o, Index: $i, TraceID: $t,
+                Ename: $eN1, OtherData: $d) isa event;
+                        
+        }, then {
+            (Owner:$o, Transition: $eN1) isa transitions;
+        };
+
+# B - First
+# Select the set of first event names from every log
+    find_first_transitions sub rule,
+        when {
+            $o isa log;
+            $i isa index; $i 0;
+	        $e1 (Owner: $o, Index: $i, TraceID: $t,
+                Ename: $eN1, OtherData: $d) isa event;
+            
+        }, then {
+            (Owner: $o, Transition: $eN1) isa firstTransition;
+        };
+
+# C - Last
+# Select the set of last event names from every log
+    find_last_transitions sub rule,
+        when {
+            $o isa log;
+	        $e1 (Owner: $o, Index: $i, TraceID: $t1,
+                Ename: $eN1, OtherData: $d1) isa event;
+            $eN2 isa eventName; $eN2 "TraceStop";
+            $e2 (Owner: $o, Index: $j, TraceID: $t1,
+                Ename: $eN2, OtherData: $d2) isa event;
+            (Owner: $o, Input:$e1, Output:$e2) isa follows;
+            
+        }, then {
+            (Owner:$o, Transition: $eN1) isa lastTransition;
+        };    
+
+# Step 2 - Setup Footprint Names
+# A - Row and Column Names
+# Fill the footprint column event names in (base Transition) and the
+# column event names in (base Transition X Transition), include the
+# identity diagonal elements 
+
+    find_base_footprint sub rule,
+        when {
+            $o isa log;
+	        $eN1 isa eventName;
+            $eN2 isa eventName;
+            (Owner: $o, Transition: $eN1) isa transitions;   
+            (Owner: $o, Transition: $eN2) isa transitions;                   
+            
+        }, then {
+            (Owner:$o, BaseTransition: $eN1, Transition: $eN2) isa footprint;
+        };    
+
+
+
+# (Note: The rules use the directly 'follows' relation, inserted during log import)
+# NB2: The assumption is that the traces do not need to be referenced because
+# it is azssumed that directly follows relations only hold within traces, but
+# we need to use the index to check arrow direction
+# A - Directly Follows (">")
+# Y follows X
+    find_forward_follows_footprint sub rule,
+        when {
+            $o isa log;
+	        $e1 (Owner: $o, Index: $i, TraceID: $t1,
+                Ename: $eN1, OtherData: $d1) isa event;
+            $e2 (Owner: $o, Index: $j, TraceID: $t1,
+                Ename: $eN2, OtherData: $d2) isa event;
+            $i<$j;
+            (Owner: $o, Input: $e1, Output: $e2) isa follows; 
+            $ft (Owner:$o, BaseTransition: $eN1, Transition: $eN2) isa footprint;                                                          
+            $z isa footType; $z ">";
+        }, then {
+            $ft has footType $z;
+        };
+
+    find_not_forward_follows_footprint sub rule,
+        when {
+            $o isa log;
+	        $e1 (Owner: $o, Index: $i, TraceID: $t1,
+                Ename: $eN1, OtherData: $d1) isa event;
+            $e2 (Owner: $o, Index: $j, TraceID: $t1,
+                Ename: $eN2, OtherData: $d2) isa event;
+            $i<$j;
+            not {(Owner: $o, Input: $e1, Output: $e2) isa follows;};                                               
+            $ft (Owner:$o, BaseTransition: $eN1, Transition: $eN2) isa footprint;
+            $z isa footType; $z "";
+        }, then {
+            $ft has footType $z;
+        };    
+        
+###################################
+# Step 3 - Setup Frequency and Dependency
+# A - Frequency of Directly Follows
+# number of Y follows X relations 
+##################################
+    find_frequency_follows_footprint sub rule,
+        when {
+            $o isa log;
+	        $e1 (Owner: $o, Index: $i, TraceID: $t1,
+                Ename: $eN1, OtherData: $d1) isa event;
+            $e2 (Owner: $o, Index: $j, TraceID: $t1,
+                Ename: $eN2, OtherData: $d2) isa event;
+            $i<$j;
+            (Owner: $o, Input: $e1, Output: $e2) isa follows;    
+            $ft (Owner:$o, BaseTransition: $eN1, Transition: $eN2) 
+                isa footprint, has footType ">";
+            $freq = count $ft
+        }, then {
+            $ft has frequency $freq;
+        };
+
+    find_frequency_not_follows_footprint sub rule,
+        when {
+            $o isa log;
+	        $e1 (Owner: $o, Index: $i, TraceID: $t1,
+                Ename: $eN1, OtherData: $d1) isa event;
+            $e2 (Owner: $o, Index: $j, TraceID: $t1,
+                Ename: $eN2, OtherData: $d2) isa event;
+            $i<$j;
+            (Owner: $o, Input: $e1, Output: $e2) isa follows;    
+            $ft (Owner:$o, BaseTransition: $eN1, Transition: $eN2) 
+                isa footprint, has footType "";
+            $freq isa frequency, $freq 0.0;
+        }, then {
+            $ft has frequency $freq;
+        };    
+
+# B - Dependency of Directly Follows
+# dependency measures
+    find_dependency_footprint sub rule,
+        when {
+            $o isa log;
+	        $ft1 (Owner:$o, BaseTransition: $eN1, Transition: $eN2) 
+                isa footprint, has footType '>', has frequency $freq1;     
+            $ft2 (Owner:$o, BaseTransition: $eN2, Transition: $eN1) 
+                isa footprint, has frequency $freq2;   
+            $eN1 != $eN2;
+            $dep = ($freq1 - $freq2) / ($freq1 + $freq2 + 1); 
+        }, then {
+            $ft1 has dependency $dep;
+        };    
+
+    find_dependency_identity_footprint sub rule,
+        when {
+            $o isa log;
+	        $ft1 (Owner:$o, BaseTransition: $eN1, Transition: $eN2) 
+                isa footprint, has footType '>', has frequency $freq1;     
+            $eN1 = $eN2;
+            $dep = ($freq1) / ($freq1 + 1); 
+        }, then {
+            $ft has dependency $dep;
+        };    
+                
+#######################################################
+# Step 4. Setup Dependency Graph
+# add arcs, starting from the first Transition
+########################################################
+
+    find_first_arcs sub rule,
+        when {
+            $o isa log;
+            (Owner:$o, Transition: $eN1) isa firstTransition;
+            (Owner:$o, Transition: $eN2) isa Transition;
+            $ft1 (Owner:$o, BaseTransition: $eN1, Transition: $eN2) 
+                isa footprint, has footType '>', has frequency $freq, 
+                has dependency $dep;     
+        }, then {
+            (Owner:$o, Inlet: $eN1, Outlet: $eN2, Frequency: $freq, 
+                Dependency: $dep) isa arc; 
+        };
+
+    find_next_arcs sub rule,
+        when {
+            $o isa log;
+            (Owner:$o, Transition: $eN1) isa firstTransition;
+            (Owner:$o, Transition: $eN2) isa Transition;
+            (Owner:$o, Transition: $eN3) isa Transition;
+            $eN1 != $eN2;
+            $eN1 != $eN3;
+            (Owner:$o, Inlet: $eN1, Outlet: $eN2, Frequency: $freq1, 
+                Dependency: $dep1) isa arc; 
+            $ft1 (Owner:$o, BaseTransition: $eN2, Transition: $eN3) 
+                isa footprint, has footType '>', has frequency $freq2, 
+                has dependency $dep2;   
+        }, then {
+            (Owner:$o, Inlet: $eN2, Outlet: $eN3, Frequency: $freq2, 
+                Dependency: $dep2) isa arc; 
+        };
+
+    find_final_arcs sub rule,
+        when {
+            $o isa log;
+            (Owner:$o, Transition: $eN1) isa Transition;
+            (Owner:$o, Transition: $eN2) isa Transition;
+            (Owner:$o, Transition: $eN3) isa lastTransition;
+            $eN1 != $eN2;
+            $eN2 != $eN3;
+            (Owner:$o, Inlet: $eN1, Outlet: $eN2, Frequency: $freq1, 
+                Dependency: $dep1) isa arc; 
+            $ft1 (Owner:$o, BaseTransition: $eN2, Transition: $eN3) 
+                isa footprint, has footType '>', has frequency $freq2, 
+                has dependency $dep2;   
+        }, then {
+            (Owner:$o, Inlet: $eN2, Outlet: $eN3, Frequency: $freq2, 
+                Dependency: $dep2) isa arc; 
+        };
+
+######################################################
+# Setup Causal Net
+# XOR/AND Bindings only at the moment
+#########################################################
+
+    find_AND_bindings sub rule,
+        when {
+            $o isa log;
+            (Owner:$o, Transition: $eN1) isa Transition;
+            (Owner:$o, Transition: $eN2) isa Transition;
+            (Owner:$o, Transition: $eN3) isa Transition;
+            $eN1 != $eN2;
+            $eN2 != $eN3;
+            $arc1 (Owner:$o, Inlet: $eN1, Outlet: $eN2, Frequency: $freq1, 
+                Dependency: $dep1) isa arc; 
+            $arc2 (Owner:$o, Inlet: $eN1, Outlet: $eN3, Frequency: $freq2, 
+                Dependency: $dep2) isa arc; 
+            $ft1 (Owner:$o, BaseTransition: $eN2, Transition: $eN3) 
+                isa footprint, has frequency $freq3;   
+            $ft2 (Owner:$o, BaseTransition: $eN3, Transition: $eN2) 
+                isa footprint, has frequency $freq4;  
+            $and = ($freq3 - $freq4) / ($freq1 + $freq2 + 1)
+            $and > 0.2 # And threshold            
+        }, then {
+            (Owner: $o, Arcs: $arc1, Arcs: $arc2)
+        }
+
+###########################################################
+# MAtch Statements:
+# 1. Dependency Graph, for Log L2
+######################################################
+
+    match
+        $o isa log, has logname 'L2';
+        $eN1 isa eventName;
+        $eN2 isa eventName;
+        $arc1 (Owner:$o, Inlet: $eN1, Outlet: $eN2, Frequency: $freq1, 
+                Dependency: $dep1) isa arc; 
+        get;
+        

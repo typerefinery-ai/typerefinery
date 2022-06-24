@@ -1,1 +1,3 @@
 uvicorn[standard]
+typedb-client
+argparse

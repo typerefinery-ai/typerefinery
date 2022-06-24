@@ -1,0 +1,71 @@
+define
+###########################
+#  group definitions
+#############################
+
+    v_event_rec isa viz_group,
+        leaf {
+            $a isa main_leaf, $a 'event';
+            $b isa sub_leaf, $b 'eventName';
+            (has: $b) $a;
+        }, groups {
+
+        }, ops {
+            $d isa color_list, $d 'Yellows';
+            $e isa color_index, $e 0;
+            $f isa group_label, $f 'Event Core'
+        };
+
+    v_event isa viz_group,
+        leaf {
+            $a isa main_leaf, $a 'trace';
+            $b isa sub_leaf, $b 'index';
+            (has: $b) $a;
+            $c isa sub_leaf, $c 'traceId';
+            (has: $c) $a;
+        }, groups {
+            $d isa sub_group, $d v_event_rec;
+            $e isa condition, $e 'leaf';
+            $f isa leaf_name, $f 'trace';
+            $g isa leaf_role, $g 'item';
+        }, ops {
+            $d isa color_list, $d 'Yellows';
+            $e isa color_index, $e 1;
+            $f isa group_label, $f 'Event Record'
+        };
+
+    v_trace isa viz_group,
+        leaf {                        
+        }, groups {
+            $d isa sub_group, $d v_event;
+            $e isa condition, $e 'value';
+            $f isa group_name, $f 'trace';
+            $g isa group_role, $g 'item';
+            $h isa value_name, $h 'traceId';
+        }, ops {
+            $i isa color_list, $i 'Yellows';
+            $j isa color_index, $j 2;
+            $k isa group_label, $k 'Event Record'
+        };
+
+
+    v_log isa viz_group,
+        leaf {                
+            $a isa main_leaf, $a 'log';
+            $b isa sub_leaf, $b 'logName';
+            (has: $b) $a;        
+        }, groups {
+            $d isa sub_group, $d v_trace;
+            $e isa condition, $e 'group';
+            $f isa leaf_name, $f 'log';
+            $g isa leaf_role, $g 'owner';
+            $h isa group_name, $h 'trace';
+            $i isa group_role, $i 'has';
+            $j isa value_name, $j 'traceId';
+        }, ops {
+            $k isa color_list, $k 'Yellows';
+            $l isa color_index, $l 3;
+            $m isa group_label, $m 'Process Log'
+        };
+
+
