@@ -2,3 +2,4 @@ fastapi
 typedb-client
 loguru
 python-multipart
+uvicorn[standard]

@@ -1,7 +1,19 @@
 <template>
   <!-- if prop variant is set to buttons then load template from Buttons.vue -->
   <span v-if="variant == 'buttons'" class="service-buttons-list">
+    <!-- show serviceCountByStatus list -->
     <span
+      v-for="item in serviceCountByStatus()"
+      :id="item.name"
+      :key="item.name"
+      class="menu-item service-button"
+      :status="item.value"
+    >
+      <i class="pi pi-cog"></i>&nbsp;
+      <span class="service-button-text">{{ item.count }}</span>
+    </span>
+    <!-- show list of services -->
+    <!-- <span
       v-for="service in serviceList()"
       :id="service.id"
       :key="service.id"
@@ -10,7 +22,7 @@
       @click="openSettings(service.id)"
     >
       <i :class="service.icon"></i>
-    </span>
+    </span> -->
   </span>
   <!-- if prop variant is set to table then load template from Table.vue -->
   <span v-else-if="variant == 'table'">
@@ -73,26 +85,12 @@
             cols="30"
           />
         </div>
-        <Panel
-          id="service-panel"
-          header="Log Output"
-          :toggleable="true"
-          :collapsed="true"
-        >
-          <Textarea
-            id="logoutput"
-            v-model="service.logoutput"
-            rows="5"
-            cols="30"
-          />
-        </Panel>
       </AccordionTab>
     </Accordion>
   </span>
 </template>
 
 <script>
-  import Panel from "primevue/panel"
   import { getModule } from "vuex-module-decorators"
   import AppSettings from "@/store/Modules/AppSettings"
   const appSettings = getModule(AppSettings)
@@ -102,12 +100,11 @@
   import Checkbox from "primevue/checkbox"
   import InputText from "primevue/inputtext"
   import Textarea from "primevue/textarea"
-  import { mapGetters } from "vuex"
+  import { mapActions, mapGetters } from "vuex"
 
   export default {
     name: "ServicesSettings",
     components: {
-      Panel,
       Accordion,
       AccordionTab,
       Dropdown,
@@ -124,6 +121,9 @@
         activeIndex: -1,
       }
     },
+    created() {
+      this.getServices()
+    },
     mounted() {
       if (this.field) {
         const serviceIndex = this.serviceList().findIndex(
@@ -135,11 +135,15 @@
       }
     },
     methods: {
+      ...mapActions({
+        getServices: "Services/getServices",
+      }),
       ...mapGetters({
         serviceTypeList: "Services/serviceTypeList",
         serviceStatusList: "Services/serviceStatusList",
         serviceStatusColorList: "Services/serviceStatusColorList",
         serviceList: "Services/serviceList",
+        serviceCountByStatus: "Services/serviceCountByStatus",
       }),
       openSettings(serviceId) {
         appSettings.openSettingsDialog("services/" + serviceId)

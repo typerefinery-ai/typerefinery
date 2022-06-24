@@ -160,7 +160,7 @@
       "select": "Select an Algorithm",
       "save": "Save Algorithm",
       "name": "Algorithm Name",
-	  "confirm-msg": "Algorithm code inside editor will be overwritten."
+      "confirm-msg": "Algorithm code inside editor will be overwritten."
     }
   },
 

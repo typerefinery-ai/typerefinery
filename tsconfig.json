@@ -9,17 +9,22 @@
     "moduleResolution": "node",
     "skipLibCheck": true,
     "esModuleInterop": true,
+    "preserveValueImports": true,
     "isolatedModules": true,
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "useDefineForClassFields": true,
     "experimentalDecorators": true,
     "suppressImplicitAnyIndexErrors": true,
+    "importsNotUsedAsValues": "preserve",
+    "importHelpers": true,
     "sourceMap": true,
     "baseUrl": ".",
-    "types": ["webpack-env", "vite/client", "vitest/globals"],
+    "types": ["webpack-env", "vite/client", "vitest/globals", "node"],
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["src/*"],
+      "@main/*": ["electron/app/main/*"],
+      "@preload/*": ["electron/app/preload/*"],
     },
     "lib": ["esnext", "dom", "dom.iterable", "scripthost"],
     "typeRoots": [
@@ -27,7 +32,7 @@
       "node_modules/@types",
     ],
   },
-  "include": ["env.d.ts", "src/**/*.ts", "src/**/*.tsx", "src/**/*.vue"],
+  "include": ["env.d.ts", "src/**/*.ts", "src/**/*.tsx", "src/**/*.vue", "electron/app/**/*.ts"],
   "exclude": ["node_modules", "src/**/__tests__/*"],
   "references": [
     {
@@ -36,5 +41,12 @@
     {
       "path": "./tsconfig.vitest.json"
     }
-  ]
+  ],
+  "ts-node": {
+    // these options are overrides used only by ts-node
+    // same as the --compilerOptions flag and the TS_NODE_COMPILER_OPTIONS environment variable
+    "compilerOptions": {
+      "module": "commonjs"
+    }
+  },
 }

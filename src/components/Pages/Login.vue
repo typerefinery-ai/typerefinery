@@ -1,5 +1,7 @@
 <template>
-  <PageMenubar />
+  <div class="menu-bar">
+    <window-controls v-if="isElectron" />
+  </div>
   <div class="login">
     <img class="logo" alt="app logo" src="/assets/logo.png" />
     <h2>Login to Proceed...</h2>
@@ -28,7 +30,7 @@
     </div>
     <br />
 
-    <Button class="p-button" label="Submit" v-on:click="login"
+    <Button class="p-button" label="Submit" @click="login"
       ><span class="submit-button">Login</span></Button
     >
     <p>
@@ -38,57 +40,57 @@
 </template>
 
 <script>
-import InputText from "primevue/inputtext"
-import Password from "primevue/password"
-import Button from "primevue/button"
-import "primevue/resources/themes/md-light-indigo/theme.css" //these two imported css file is added here because primevue was not working properly without it,
-import "primevue/resources/primevue.min.css"
-import PageMenubar from "./PageMenubar.vue"
-// import axios from "axios"
-export default {
-  name: "Login",
-  components: {
-    InputText,
-    Password,
-    Button,
-    PageMenubar,
-  },
-  data() {
-    return {
-      email: "",
-      password: "",
-    }
-  },
-  methods: {
-    async login() {
-      /* commented part use for db connection.. */
-
-      // let result = await axios.get(
-      //     `http://localhost:4000/user?email=${this.email}&password=${this.password}`
-      // )
-      //  if(result.status==200 && result.data.length>0)
-      //     {
-
-      //         localStorage.setItem("user-info",JSON.stringify(result.data[0]))
-      //         this.$router.push("/home/project")
-
-      //     }
-
-      // console.warn(result);
-      this.$router.push("/home/project")
+  import InputText from "primevue/inputtext"
+  import Password from "primevue/password"
+  import Button from "primevue/button"
+  import "primevue/resources/themes/md-light-indigo/theme.css" //these two imported css file is added here because primevue was not working properly without it,
+  import "primevue/resources/primevue.min.css"
+  import WindowControls from "../WindowControls.vue"
+  // import axios from "axios"
+  export default {
+    name: "Login",
+    components: {
+      InputText,
+      Password,
+      Button,
+      WindowControls,
     },
-  },
-  // mounted()
-  //   {
-  //       let user =localStorage.getItem('user-info')
-  //       if(user)
-  //       {
-  //           this.$router.push("/home/project")
-  //       }
-  //   }
-}
+    data() {
+      return {
+        email: "",
+        password: "",
+      }
+    },
+    methods: {
+      async login() {
+        /* commented part use for db connection.. */
+
+        // let result = await axios.get(
+        //     `http://localhost:4000/user?email=${this.email}&password=${this.password}`
+        // )
+        //  if(result.status==200 && result.data.length>0)
+        //     {
+
+        //         localStorage.setItem("user-info",JSON.stringify(result.data[0]))
+        //         this.$router.push("/home/project")
+
+        //     }
+
+        // console.warn(result);
+        this.$router.push("/home/project")
+      },
+    },
+    // mounted()
+    //   {
+    //       let user =localStorage.getItem('user-info')
+    //       if(user)
+    //       {
+    //           this.$router.push("/home/project")
+    //       }
+    //   }
+  }
 </script>
 
 <style lang="scss">
-@import "./Pages.scss";
+  @import "./Pages.scss";
 </style>
