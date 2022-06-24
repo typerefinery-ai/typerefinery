@@ -194,6 +194,6 @@ app.get("/service/:serviceId", (req, res, next) => {
   res.send(getServicePage(service))
 })
 
-app.listen(3000, () => {
+app.listen(3001, () => {
   logger.log("Server running on port 3000")
 })
