@@ -7,6 +7,8 @@ import path from "path"
 
 const logsDir = dataPath("logs")
 
+const servicePort = 3001
+
 const logger = new Logger(logsDir, "services")
 
 logger.log("service manager log", path.join(logsDir, "servicemanager.log"))
@@ -27,8 +29,8 @@ const serviceManager = new ServiceManager(
 )
 
 function getServicePage(service: Service) {
-  const execservice = service.options.execconfig?.execservice
-    ? " (" + service.options.execconfig?.execservice + ")"
+  const execservice = service.options.execconfig?.execservice?.id
+    ? " (" + service.options.execconfig?.execservice.id + ")"
     : ""
   const serviceStatusName =
     Object.keys(ServiceStatus)[
@@ -45,7 +47,7 @@ function getServicePage(service: Service) {
       <p>Status: ${serviceStatusName}</p>
       <p>Port: ${service.port}</p>
       <p>Exec Service: ${execservice}</p>
-      <p>Executable: ${service.options.execconfig?.execservice}</p>
+      <p>Executable: ${service.options.execconfig?.execservice?.id}</p>
 
       <p>
       <button onclick="triggerServiceAPI('start')">Start</button>
@@ -71,8 +73,8 @@ function getServicePage(service: Service) {
 function getServicesPage(services: Service[]) {
   let servicesList = services
     .map((service) => {
-      const execservice = service.options.execconfig?.execservice
-        ? " (" + service.options.execconfig?.execservice + ")"
+      const execservice = service.options.execconfig?.execservice?.id
+        ? " (" + service.options.execconfig?.execservice.id + ")"
         : ""
       const serviceStatusName =
         Object.keys(ServiceStatus)[
@@ -194,6 +196,6 @@ app.get("/service/:serviceId", (req, res, next) => {
   res.send(getServicePage(service))
 })
 
-app.listen(3001, () => {
-  logger.log("Server running on port 3000")
+app.listen(servicePort, () => {
+  logger.log(`Server running on port ${servicePort}`)
 })

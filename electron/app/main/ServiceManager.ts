@@ -108,7 +108,7 @@ class ServiceManager {
       root: servicesPathResolved,
       nodir: true,
       nocase: true,
-      nosort: false,
+      nosort: true,
       silent: true,
       matchBase: true,
       dot: true,

@@ -32,7 +32,7 @@ export enum SignalType {
 }
 
 export enum ServiceStatus {
-  INVALIDCOFNIG = "-10",
+  INVALIDCONFIG = "-10",
   ERROR = "-1",
   DISABLED = "0",
   AVAILABLE = "10",
@@ -68,18 +68,24 @@ export interface HealthCheck {
 }
 
 export interface ExecConfig {
-  execservice?: string
+  execservice?: ExecService
   executable?: {
     win32?: string
     default?: string
   }
   setup?: string[]
   commandline?: string
+  commandlinecli?: string
   serviceorder?: 0
   depend_on?: string[]
   serviceport?: number
   servicehost?: string
   healthcheck?: HealthCheck
+}
+
+export interface ExecService {
+  id?: string
+  cli?: boolean
 }
 
 export interface ServiceActions {
@@ -222,6 +228,7 @@ export class Service extends EventEmitter<ServiceEvent> {
     return this.#serviceport
   }
 
+  // return simple object with service config
   public getSimple(): any {
     return Object.assign(
       {},
@@ -238,6 +245,8 @@ export class Service extends EventEmitter<ServiceEvent> {
       }
     )
   }
+
+  // return full object with service config
   public toString = (): string => {
     return JSON.stringify(
       Object.assign(
@@ -259,6 +268,7 @@ export class Service extends EventEmitter<ServiceEvent> {
     )
   }
 
+  // register process and run health check
   #register(process: ChildProcess) {
     this.#process = process
     if (process.pid) {
@@ -283,11 +293,17 @@ export class Service extends EventEmitter<ServiceEvent> {
       // if service is being executed by another service
       if (this.#options.execconfig.execservice) {
         // find service executable
-        const execservice = this.#options.execconfig.execservice
-        const serviceExecutableService =
-          this.#serviceManager.getService(execservice)
-        serviceExecutable = serviceExecutableService?.getServiceExecutableRoot()
-        return serviceExecutable
+        const execservice: ExecService = this.#options.execconfig.execservice
+        if (execservice.id) {
+          const serviceExecutableService = this.#serviceManager.getService(
+            execservice.id
+          )
+          serviceExecutable =
+            serviceExecutableService?.getServiceExecutableRoot()
+          return serviceExecutable
+        } else {
+          this.#log("ExecService as been defined but no id was found")
+        }
       } else if (this.#options.execconfig.executable) {
         // if service is being executed by a file
         return this.#servicepath
@@ -298,9 +314,30 @@ export class Service extends EventEmitter<ServiceEvent> {
       }
     } else {
       this.#log("service is missing execconfig.")
-      this.#setStatus(ServiceStatus.INVALIDCOFNIG)
+      this.#setStatus(ServiceStatus.INVALIDCONFIG)
     }
     return serviceExecutable
+  }
+
+  // return cli command line
+  getServiceCommandCli(): string {
+    let serviceCommandCli = ""
+    if (this.#options && this.#options.execconfig) {
+      // if service is being executed by another service
+      if (this.#options.execconfig.commandlinecli) {
+        // if service is being executed by a file
+        serviceCommandCli = this.#options.execconfig.commandlinecli.replaceAll(
+          "${SERVICE_PATH}",
+          this.#servicepath
+        )
+      } else {
+        this.#log("service does not have cli commandline")
+      }
+    } else {
+      this.#log("service is missing execconfig.")
+      this.#setStatus(ServiceStatus.INVALIDCONFIG)
+    }
+    return serviceCommandCli
   }
 
   // get service executable from options by platform
@@ -310,15 +347,20 @@ export class Service extends EventEmitter<ServiceEvent> {
       // if service is being executed by another service
       if (this.#options.execconfig.execservice) {
         // find service executable
-        const execservice = this.#options.execconfig.execservice
-        const serviceExecutableService =
-          this.#serviceManager.getService(execservice)
-        // get full path to executable service
-        const serviceExecutable = path.resolve(
-          serviceExecutableService.#servicepath,
-          serviceExecutableService.getServiceExecutable()
-        )
-        return serviceExecutable
+        const execservice: ExecService = this.#options.execconfig.execservice
+        if (execservice.id) {
+          const serviceExecutableService = this.#serviceManager.getService(
+            execservice.id
+          )
+          // get full path to executable service
+          const serviceExecutable = path.resolve(
+            serviceExecutableService.#servicepath,
+            serviceExecutableService.getServiceExecutable()
+          )
+          return serviceExecutable
+        } else {
+          this.#log("ExecService as been defined but no id was found")
+        }
       } else if (this.#options.execconfig.executable) {
         // if service is being executed by a file
         const platform =
@@ -335,7 +377,7 @@ export class Service extends EventEmitter<ServiceEvent> {
       }
     } else {
       this.#log("service is missing execconfig.")
-      this.#setStatus(ServiceStatus.INVALIDCOFNIG)
+      this.#setStatus(ServiceStatus.INVALIDCONFIG)
     }
     return serviceExecutable
   }
@@ -434,7 +476,7 @@ export class Service extends EventEmitter<ServiceEvent> {
         this.#status = ServiceStatus.STARTED
         socket.end()
       })
-      socket.on("error", () => {
+      socket.on("error", (error) => {
         this.#log(`tcp health check failed with error ${error}`)
         this.#status = ServiceStatus.STOPPED
       })
@@ -467,7 +509,7 @@ export class Service extends EventEmitter<ServiceEvent> {
     if (
       this.#options &&
       this.#options.execconfig &&
-      this.#options.execconfig.commandline
+      !this.#options.execconfig.commandline
     ) {
       if (!(this.#setup && this.#setup.length > 0)) {
         this.#log(`can't start service ${this.#id} no command specified.`)
@@ -593,26 +635,56 @@ export class Service extends EventEmitter<ServiceEvent> {
           } has not been been configured, executing setup commands.`
         )
         this.#status = ServiceStatus.INSTALLING
+
+        let serviceExecutable = this.getServiceExecutable()
+
+        // check if executing service is requested to be cli
+        if (this.#options.execconfig.execservice) {
+          // find service executable
+          const execservice: ExecService = this.#options.execconfig.execservice
+          if (execservice.id && execservice.cli) {
+            const serviceExecutableService = this.#serviceManager.getService(
+              execservice.id
+            )
+            const serviceExecutableRoot =
+              serviceExecutableService.getServiceExecutableRoot()
+            serviceExecutable =
+              serviceExecutable +
+              " " +
+              serviceExecutableService.getServiceCommandCli()
+
+            this.#log(`executing using command cli ${serviceExecutable}`)
+          }
+        }
         //for each setup command in #setup, execute it
         for (let i = 0; i < this.#setup.length; i++) {
           const setupCommand = this.#setup[i]
           this.#log(`executing setup command ${setupCommand}`)
-
-          const serviceExecutable = this.getServiceExecutable()
-          const serviceExecutableRoot = this.getServiceExecutableRoot()
           const execCommand =
             serviceExecutable +
             " " +
             setupCommand.replaceAll("${SERVICE_PATH}", this.#servicepath)
-          this.#log(`execCommand: ${execCommand} in ${serviceExecutableRoot}`)
-          await os.runProcess(execCommand, [], {
-            signal: this.#abortController.signal,
-            cwd: serviceExecutableRoot,
-          })
+          this.#log(`execCommand: ${execCommand} in ${this.#servicepath}`)
+          await os
+            .runProcess(execCommand, [], {
+              signal: this.#abortController.signal,
+              cwd: this.#servicepath,
+              stdio: ["ignore", this.#stdout, this.#stderr],
+              env: { PYTHONPATH: this.#servicepath },
+            })
+            .then((result) => {
+              this.#log(`setup command ${setupCommand} result ${result}`)
+            })
+            .catch((err) => {
+              this.#log(`setup command ${setupCommand} error ${err}`)
+            })
+            .finally(() => {
+              this.#log(`setup command ${setupCommand} complete`)
+              this.#status = ServiceStatus.INSTALLED
+              // create setup file to mark that setup already happened
+              fs.writeFileSync(this.#setupstatefile, "")
+            })
         }
-        this.#status = ServiceStatus.INSTALLED
-        // create setup file to mark that setup already happened
-        fs.writeFileSync(this.#setupstatefile, "")
       } else {
         this.#log(`service ${this.#id} has already has been configured.`)
       }
