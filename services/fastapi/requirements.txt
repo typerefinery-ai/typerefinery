@@ -4,3 +4,4 @@ loguru
 python-multipart
 uvicorn[standard]
 argparse
+pydantic
