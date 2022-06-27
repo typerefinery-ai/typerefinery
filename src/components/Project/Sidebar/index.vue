@@ -140,9 +140,6 @@
         switch (data.type) {
           case "query":
             this.openTab(data)
-            path = `${data.parent}/${data.connection}/${data.name}`
-            // appProjects.toggleQueryDialog()
-            appProjects.setEditNode(path)
             return
           case "connection":
             path = `${data.parent}/${data.name}`
@@ -168,24 +165,6 @@
           appProjects.toggleNodeSelection()
           appProjects.setSelectedNodes(queryData)
         }
-        // let path
-        // switch (data.type) {
-        //   case "query":
-        //     path = `${data.parent}/${data.connection}/${data.name}`
-        //     // appProjects.toggleQueryDialog()
-        //     appProjects.setEditNode(path)
-        //     return
-        //   case "connection":
-        //     path = `${data.parent}/${data.name}`
-        //     appProjects.toggleConnectionDialog()
-        //     appProjects.setEditNode(path)
-        //     return
-        //   case "transformer":
-        //     path = `${data.parent}/${data.name}`
-        //     appProjects.toggleTransformerDialog()
-        //     appProjects.setEditNode(path)
-        //     return
-        // }
       },
     },
   }
