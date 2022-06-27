@@ -136,11 +136,20 @@
         this.$router.push({ name: "Login" })
       },
       selectNode(data) {
+        let path
         switch (data.type) {
           case "query":
             this.openTab(data)
             return
-          default:
+          case "connection":
+            path = `${data.parent}/${data.name}`
+            appProjects.toggleConnectionDialog()
+            appProjects.setEditNode(path)
+            return
+          case "transformer":
+            path = `${data.parent}/${data.name}`
+            appProjects.toggleTransformerDialog()
+            appProjects.setEditNode(path)
             return
         }
       },

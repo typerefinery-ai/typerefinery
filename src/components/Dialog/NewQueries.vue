@@ -274,8 +274,12 @@
         this.$emit("close")
       },
       handlequerystore(isFormValid) {
+        const projectIdx = appProjects.projectList.findIndex(
+          (el) => el.name == this.projectselected
+        )
         const data = {
           name: this.projectselected,
+          projectid: projectIdx,
           list: {
             name: this.name,
             description: this.description,

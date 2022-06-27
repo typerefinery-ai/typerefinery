@@ -363,28 +363,31 @@ function dragended(d) {
     this.value = l
   }
   @Mutation
-  addNewTransformer(l) {
-    for (const index in this.list) {
-      if (this.list[index].name === l.name) {
-        this.list[index].transformers.list.push(l.list)
-      }
-    }
+  addNewTransformer(transformerdata: { projectid: any; list: any }) {
+    const { projectid, list } = transformerdata
+    this.list[projectid].transformers.list.push(list)
   }
   @Mutation
-  addNewQuery(l) {
-    for (const index in this.list) {
-      if (this.list[index].name === l.name) {
-        this.list[index].queries.list.push(l.list)
-      }
-    }
+  editTransformer(el) {
+    const { projectId, transformerId } = el
+    this.list[projectId].transformers.list[transformerId] = el.list
+  }
+
+  @Mutation
+  addNewQuery(querydata) {
+    const { projectid, list } = querydata
+    this.list[projectid].queries.list.push(list)
   }
   @Mutation
-  addNewConnection(l) {
-    for (const index in this.list) {
-      if (this.list[index].name === l.name) {
-        this.list[index].connections.list.push(l.list)
-      }
-    }
+  addNewConnection(connectiondata: { projectid: any; list: any }) {
+    const { projectid, list } = connectiondata
+
+    this.list[projectid].connections.list.push(list)
+  }
+  @Mutation
+  editConnection(el) {
+    const { projectId, connectionId } = el
+    this.list[projectId].connections.list[connectionId] = el.list
   }
   @Mutation
   addToList(l) {
@@ -414,6 +417,33 @@ function dragended(d) {
     nodes.list.splice(idx, 1)
     delete nodes[id]
     this.selectedNodes = nodes
+  }
+  //  for editing nodes
+  editNode = ""
+  @Mutation
+  setEditNode(nodePath: string) {
+    this.editNode = nodePath
+  }
+
+  @Mutation
+  reseteditNode() {
+    this.editNode = ""
+  }
+  // Dialogs
+  connectionDialog = false
+  @Mutation
+  toggleConnectionDialog() {
+    this.connectionDialog = !this.connectionDialog
+  }
+  transformerDialog = false
+  @Mutation
+  toggleTransformerDialog() {
+    this.transformerDialog = !this.transformerDialog
+  }
+  queryDialog = false
+  @Mutation
+  toggleQueryDialog() {
+    this.queryDialog = !this.queryDialog
   }
 
   // Transformer Code

@@ -99,7 +99,8 @@
           "description": "Description",
           "icon": "Icon",
           "submit": "Submit"
-        }
+        },
+        "updated-header": "Update Connection"
       },
       "new-query": {
         "header": "New Query ",
@@ -139,8 +140,10 @@
         },
         "footer": {
           "cancel": "Cancel",
-          "save": "Save"
-        }
+          "save": "Save",
+          "update": "Update"
+        },
+        "updated-header": "Update Transformer"
       }
     },
     "transformer": {
