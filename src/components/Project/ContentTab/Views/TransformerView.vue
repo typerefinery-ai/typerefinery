@@ -108,7 +108,7 @@
       },
       setEditorHeight() {
         const wrapper = this.$refs.algoWrapper
-        const editor = document.getElementsByClassName("cm-editor")[1]
+        const editor = document.getElementsByClassName("cm-editor")[2]
         if (wrapper) {
           editor.style.setProperty("display", "none", "important")
           editor.style.height = wrapper.clientHeight - 65 + "px"

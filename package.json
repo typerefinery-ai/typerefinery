@@ -63,6 +63,7 @@
   "dependencies": {
     "@achrinza/node-ipc": "^10.1.6",
     "@codemirror/lang-javascript": "^6.0.0",
+    "@codemirror/lang-python": "^6.0.0",
     "@codemirror/theme-one-dark": "^6.0.0",
     "@mdi/font": "5.9.55",
     "@rauschma/stringio": "^1.4.0",
