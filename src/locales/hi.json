@@ -99,7 +99,8 @@
           "description": "विवरण",
           "icon": "आइकन",
           "submit": "प्रस्तुत"
-        }
+        },
+        "updated-header": "कनेक्शन अपडेट करें"
       },
       "new-query": {
         "header": "नया प्रश्न",
@@ -139,8 +140,10 @@
         },
         "footer": {
           "cancel": "रद्द करना",
-          "save": "बचाना"
-        }
+          "save": "बचाना",
+          "update": "अपडेट करें"
+        },
+        "updated-header": "ट्रांसफार्मर अपडेट करें"
       }
     },
     "transformer": {
