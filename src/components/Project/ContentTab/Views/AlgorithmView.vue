@@ -21,7 +21,6 @@
       </div>
       <codemirror
         v-if="activeTab == 'editor'"
-        class="ankit"
         :model-value="code"
         placeholder="Code goes here..."
         :style="{ height: '70vh' }"
@@ -33,7 +32,6 @@
       />
       <codemirror
         v-else
-        class="ankit"
         :model-value="consoleText"
         :disabled="true"
         :style="{ height: '350px' }"
