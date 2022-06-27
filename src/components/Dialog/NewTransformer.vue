@@ -7,7 +7,10 @@
     :breakpoints="{ '960px': '75vw', '640px': '100vw' }"
   >
     <template #header>
-      <span class="p-dialog-title">
+      <span v-if="selectedEditNode" class="p-dialog-title"
+        >{{ $t("components.dialog.new-transformer.updated-header") }}
+      </span>
+      <span v-else class="p-dialog-title">
         {{ $t("components.dialog.new-transformer.header") }}</span
       >
       <div class="p-dialog-header-icons">
@@ -50,11 +53,6 @@
         >
       </div>
     </Panel>
-    <!-- <h3><u>Query Info</u></h3> -->
-    <!-- <div class="field">
-      <label for="type"> Type</label>
-      <InputText id="type" v-model="type" />
-    </div> -->
     <Panel
       :header="$t(`components.dialog.new-transformer.panel2.header`)"
       class="panel2"
@@ -124,6 +122,14 @@
         @click="transformercloseDialog"
       />
       <Button
+        v-if="selectedEditNode"
+        :label="$t(`components.dialog.new-transformer.footer.update`)"
+        icon="pi pi-check"
+        autofocus
+        @click="handleEditedTransformerStore(!v$.$invalid)"
+      />
+      <Button
+        v-else
         :label="$t(`components.dialog.new-transformer.footer.save`)"
         icon="pi pi-check"
         autofocus
@@ -172,6 +178,9 @@
         projectselected: null,
         submitted: false,
         displayModal: true,
+        selectedEditNode: false,
+        transformerIndex: null,
+        projectIndex: null,
       }
     },
     validations() {
@@ -187,17 +196,69 @@
         return appProjects.projectList
       },
     },
+    mounted() {
+      if (appProjects.editNode) {
+        const nodeData = appProjects.editNode.split("/")
+        this.selectedEditNode = true
+        // set project
+        const projects = appProjects.list
+        const projectIdx = appProjects.projectList.findIndex(
+          (el) => el.name == nodeData[0]
+        )
+        this.projectIndex = projectIdx
+        this.v$.projectselected.$model = projects[projectIdx].name
+
+        // transformer index
+        const TransformerIdx = projects[projectIdx].transformers.list.findIndex(
+          (el) => el.name == nodeData[1]
+        )
+        this.transformerIndex = TransformerIdx
+
+        //transformer data
+        const transformer = projects[projectIdx].transformers.list.find(
+          (el) => el.name == nodeData[1]
+        )
+        this.v$.name.$model = transformer.name
+        this.v$.description.$model = transformer.description
+        this.v$.icon.$model = transformer.icon
+      }
+    },
     methods: {
       collectProject() {
-        // console.log(this.projectselected)
         appProjects.selectedProject(this.projectselected)
       },
       transformercloseDialog() {
         this.$emit("close")
+        appProjects.reseteditNode()
+      },
+      handleEditedTransformerStore(isFormValid) {
+        const data = {
+          transformerId: this.transformerIndex,
+          projectId: this.projectIndex,
+          name: this.v$.projectselected.$model,
+          list: {
+            name: this.v$.name.$model,
+            description: this.v$.description.$model,
+            icon: this.v$.icon.$model,
+            type: "transformer",
+          },
+        }
+        this.submitted = true
+        // stop here if form is invalid
+        if (!isFormValid) {
+          return
+        }
+        appProjects.editTransformer(data)
+        this.$emit("close")
       },
       handletransformerstore(isFormValid) {
+        const projectIdx = appProjects.projectList.findIndex(
+          (el) => el.name == this.projectselected
+        )
         const data = {
           name: this.projectselected,
+          projectid: projectIdx,
+
           list: {
             name: this.name,
             description: this.description,
@@ -206,9 +267,7 @@
           },
         }
         this.submitted = true
-
         // stop here if form is invalid
-
         if (!isFormValid) {
           return
         }

@@ -17,10 +17,10 @@
           {{ $t(`components.project.${item.id}`) }}
         </div>
         <Projects v-if="projectdialog" @close="closemodal" />
-        <NewConnections v-if="connectiondialog" @close="connectionclosemodal" />
-        <NewQuery v-if="querydialog" @close="queryclosemodal" />
+        <NewConnections v-if="connectionDialog" @close="connectionclosemodal" />
+        <NewQuery v-if="queryDialog" @close="queryclosemodal" />
         <NewTransformer
-          v-if="transformerdialog"
+          v-if="transformerDialog"
           @close="transformerclosemodal"
         />
       </div>
@@ -46,6 +46,8 @@
   import AppSettings from "@/store/Modules/AppSettings"
   import { getModule } from "vuex-module-decorators"
   const appSettings = getModule(AppSettings)
+  import Project from "@/store/Modules/Projects"
+  const appProjects = getModule(Project)
   export default {
     name: "MainMenu",
     components: { TabMenu, Projects, NewConnections, NewQuery, NewTransformer },
@@ -57,9 +59,6 @@
       return {
         showSubMenuOverlay: false,
         projectdialog: false,
-        connectiondialog: false,
-        querydialog: false,
-        transformerdialog: false,
       }
     },
     computed: {
@@ -117,6 +116,15 @@
       subItems() {
         return this.items.filter((el) => el.to == this.$route.path)[0].subMenu
       },
+      connectionDialog() {
+        return appProjects.connectionDialog
+      },
+      transformerDialog() {
+        return appProjects.transformerDialog
+      },
+      queryDialog() {
+        return appProjects.queryDialog
+      },
     },
 
     methods: {
@@ -124,28 +132,27 @@
         this.projectdialog = false
       },
       connectionclosemodal() {
-        this.connectiondialog = false
+        appProjects.toggleConnectionDialog()
       },
       queryclosemodal() {
-        this.querydialog = false
+        appProjects.toggleQueryDialog()
       },
       transformerclosemodal() {
-        this.transformerdialog = false
+        appProjects.toggleTransformerDialog()
       },
       handleProject(id) {
         if (id === "new-project") {
           this.projectdialog = !this.projectdialog
         }
         if (id === "new-connection") {
-          this.connectiondialog = !this.connectiondialog
+          appProjects.toggleConnectionDialog()
         }
         if (id === "new-query") {
-          //  { console.log(appProjects.getConnections)
           this.querydialog = !this.querydialog
+          appProjects.toggleQueryDialog()
         }
         if (id === "new-transformer") {
-          //  { console.log(appProjects.getConnections)
-          this.transformerdialog = !this.transformerdialog
+          appProjects.toggleTransformerDialog()
         }
       },
       handleRoutes(route) {

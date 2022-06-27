@@ -7,7 +7,11 @@
     :breakpoints="{ '960px': '75vw', '640px': '100vw' }"
   >
     <template #header>
-      <span class="p-dialog-title">
+      <!-- add here header -->
+      <span v-if="selectedEditNode" class="p-dialog-title"
+        >{{ $t("components.dialog.connections.updated-header") }}
+      </span>
+      <span v-else class="p-dialog-title">
         {{ $t("components.dialog.connections.header") }}
       </span>
       <div class="p-dialog-header-icons">
@@ -116,6 +120,14 @@
         @click="conncetioncloseDialog"
       />
       <Button
+        v-if="selectedEditNode"
+        :label="$t(`components.dialog.new-transformer.footer.update`)"
+        icon="pi pi-check"
+        autofocus
+        @click="handleEditedConnectionStore(!v$.$invalid)"
+      />
+      <Button
+        v-else
         :label="$t(`components.dialog.new-transformer.footer.save`)"
         icon="pi pi-check"
         autofocus
@@ -137,6 +149,7 @@
   import { required } from "@vuelidate/validators"
   import { useVuelidate } from "@vuelidate/core"
   const appProjects = getModule(Projects)
+
   // console.log(appProjects.projectList)
 
   export default {
@@ -165,6 +178,9 @@
         selected: null,
         submitted: false,
         displayModal: true,
+        selectedEditNode: false,
+        connectionIndex: null,
+        projectIndex: null,
       }
     },
     validations() {
@@ -180,13 +196,66 @@
         return appProjects.projectList
       },
     },
+    mounted() {
+      if (appProjects.editNode) {
+        const nodeData = appProjects.editNode.split("/")
+        // check header and save button
+        this.selectedEditNode = true
+
+        // set project
+        const projects = appProjects.list
+        const projectIdx = appProjects.projectList.findIndex(
+          (el) => el.name == nodeData[0]
+        )
+        this.projectIndex = projectIdx
+        this.v$.selected.$model = projects[projectIdx].name
+        // connection index
+        const connectionIdx = projects[projectIdx].connections.list.findIndex(
+          (el) => el.name == nodeData[1]
+        )
+        this.connectionIndex = connectionIdx
+        // for connection data
+        const connection = projects[projectIdx].connections.list.find(
+          (el) => el.name == nodeData[1]
+        )
+        this.v$.name.$model = connection.name
+        this.v$.description.$model = connection.description
+        this.v$.icon.$model = connection.icon
+      }
+    },
     methods: {
       conncetioncloseDialog() {
         this.$emit("close")
+        //clear store here for editnode
+        appProjects.reseteditNode()
+      },
+      handleEditedConnectionStore(isFormValid) {
+        const data = {
+          connectionId: this.connectionIndex,
+          projectId: this.projectIndex,
+          name: this.v$.selected.$model,
+          list: {
+            name: this.v$.name.$model,
+            icon: this.v$.icon.$model,
+            description: this.v$.description.$model,
+            type: "connection",
+          },
+        }
+        this.submitted = true
+        // stop here if form is invalid
+        if (!isFormValid) {
+          return
+        }
+        appProjects.editConnection(data)
+        this.$emit("close")
       },
       handleconnectionstore(isFormValid) {
+        const projectIdx = appProjects.projectList.findIndex(
+          (el) => el.name == this.selected
+        )
         const data = {
           name: this.selected,
+          projectid: projectIdx,
           list: {
             name: this.name,
             icon: this.icon,
@@ -195,9 +264,7 @@
           },
         }
         this.submitted = true
-
         // stop here if form is invalid
-
         if (!isFormValid) {
           return
         }
