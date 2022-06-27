@@ -1,6 +1,4 @@
-################################################################################
-## body start                                                               ##
-################################################################################
+
 from typedb.client import *
 from loguru import logger as Logger
 from posixpath import basename
@@ -45,11 +43,6 @@ if __name__ == '__main__':
   # setup logger for init
   log = Logger
   log.remove()
-  log.add(f'{basename(__file__)}_{datetime.timestamp(datetime.now())}-init.log', level="INFO")
+  log.add(f'{basename(__file__)}.log', level="INFO")
   log.info(args)
   main(args.dbhost, args.dbport, args.dbdatabase, args.dbquery, args.outputfile, log)
-
-
-################################################################################
-## body end                                                                 ##
-################################################################################
