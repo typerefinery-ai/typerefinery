@@ -13,11 +13,10 @@
     "commandlinecli": "-Xms256m -Xmx1024m -cp \"${SERVICE_PATH}\\console\\conf\\;${SERVICE_PATH}\\console\\lib\\*;\" -Dtypedb.dir=\"${SERVICE_PATH}\" com.vaticle.typedb.console.TypeDBConsole",
     "serviceorder": 1,
     "serviceport": 1729,
-    "depend_on": [
-      "java"
-    ],
+    "depend_on": ["java"],
     "healthcheck": {
-      "type": "tcp"
+      "type": "tcp",
+      "retries": 30
     }
   },
   "actions": {
