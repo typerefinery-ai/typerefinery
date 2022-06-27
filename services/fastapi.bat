@@ -50,7 +50,7 @@ if exist %SERVER_HOME% (
 :startserver
 
 if exist %SERVER_HOME% (
-  python -I -m uvicorn main:app --reload --host localhost --app-dir %SERVER_HOME%
+  python -I -m uvicorn --reload --reload-exclude "req-*.py" --host localhost --app-dir %SERVER_HOME% main:app
   goto exit
 ) else (
   echo Can't find server^.

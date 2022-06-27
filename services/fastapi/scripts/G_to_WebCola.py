@@ -1,3 +1,4 @@
+from __future__ import annotations
 # allow importing og service local packages
 import os
 import sys
@@ -8,14 +9,14 @@ sys.path.append(where_am_i)
 # end of local package imports
 
 from typedb.client import *
-from loguru import logger
+from loguru import logger as Logger
+from posixpath import basename
 import json
 import copy
 import os
 import sys
-
-logger.remove()
-logger.add(sys.stderr, level="INFO")
+import argparse
+from datetime import datetime
 
 gquery = "match $a isa log, has logName 'L1'; "
 gquery += "$b isa event, has eventName $c;"
@@ -34,16 +35,16 @@ group_raw = [{
 
 # function to collect all of the data out of the iterator
 # with read transaction object to use asRemote mode
-def collect_answers(answer_iterator, r_tx):
-    logger.debug(f'into collect answers, iterator -> {answer_iterator}')
+def collect_answers(answer_iterator, r_tx, logger: Logger):
+    logger.info(f'into collect answers, iterator -> {answer_iterator}')
     res = []
     layers = []
     layer = []
     for answer in answer_iterator:
         dict_answer = answer.map()
-        #logger.debug(f'dict answer is {dict_answer}')
+        #logger.info(f'dict answer is {dict_answer}')
         for key, thing in dict_answer.items():
-            logger.debug(f'key, things is {key}, {thing}')
+            logger.info(f'key, things is {key}, {thing}')
             # pull entity data
             if thing.is_entity():
                 ent = {}
@@ -51,8 +52,8 @@ def collect_answers(answer_iterator, r_tx):
                 ent['symbol'] = key
                 ent['G_id'] = thing.get_iid()
                 ent['G_name'] = thing.get_type().get_label().name()
-                logger.debug((f'entity name is {ent["G_name"]}'))
-                logger.debug((f'thing value is {thing}'))
+                logger.info((f'entity name is {ent["G_name"]}'))
+                logger.info((f'thing value is {thing}'))
                 att_obj = thing.as_remote(r_tx).get_has()
                 att = []
                 for a in att_obj:
@@ -61,7 +62,7 @@ def collect_answers(answer_iterator, r_tx):
                 ent['has'] = att
                 res.append(ent)
                 layer.append(ent)
-                logger.debug(f'ent -> {ent}')
+                logger.info(f'ent -> {ent}')
 
             # pull attribute data
             elif thing.is_attribute():
@@ -80,7 +81,7 @@ def collect_answers(answer_iterator, r_tx):
                 att['has'] = attrib
                 res.append(att)
                 layer.append(att)
-                logger.debug(f'att -> {att}')
+                logger.info(f'att -> {att}')
 
             # pull relation data
             elif thing.is_relation():
@@ -96,21 +97,21 @@ def collect_answers(answer_iterator, r_tx):
 
                 rel['has'] = att
                 links = thing.as_remote(r_tx).get_players_by_role_type()
-                logger.debug(f' links are -> {links}')
+                logger.info(f' links are -> {links}')
                 edges = {}
                 for edge_key, edge_thing in links.items():
-                    logger.debug(f' edge key is -> {edge_key}')
-                    logger.debug(f' edge_thing is -> {list(edge_thing)}')
+                    logger.info(f' edge key is -> {edge_key}')
+                    logger.info(f' edge_thing is -> {list(edge_thing)}')
                     edges[edge_key.get_label().name()] = [e.get_iid() for e in list(edge_thing)]
 
                 rel['edges'] = edges
                 res.append(rel)
                 layer.append(rel)
-                logger.debug(f'rel -> {rel}')
+                logger.info(f'rel -> {rel}')
 
             # else log out error condition
             else:
-                logger.debug(f'Error key is {key}, thing is {thing}')
+                logger.info(f'Error key is {key}, thing is {thing}')
 
         layers.append(layer)
 
@@ -138,7 +139,7 @@ def filter_links(reduced_at, reduced_en, re):
 
 
 # function to convert the list of results into nodes and edges
-def convert_res_to_graph(res):
+def convert_res_to_graph(res, logger: Logger):
     edges = []
     nodes = []
     en = [e for e in res if e['type'] == 'entity']
@@ -213,7 +214,7 @@ def get_node_id(nodes, G_id):
             return index;
 
 
-def convert_res_to_cola(nodes, edges, G_types):
+def convert_res_to_cola(nodes, edges, G_types, logger: Logger):
     # convert edges to id
     for edge in edges:
         edge['target'] = get_node_id(nodes, edge['G_target'])
@@ -255,20 +256,20 @@ def convert_res_to_cola(nodes, edges, G_types):
 
 
     myUniqueSet = [dict(s) for s in set(frozenset(myObject.items()) for myObject in temp_edges)]
-    logger.debug(f"myUniqueSet:, {myUniqueSet}")
+    logger.info(f"myUniqueSet:, {myUniqueSet}")
     G_types['schema'] = myUniqueSet
 
-    logger.debug('==========================================================================================')
-    logger.debug('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
-    logger.debug(f'g-types is -> {G_types}')
-    logger.debug('==========================================================================================')
-    logger.debug('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
-    logger.debug(f'nodes is ->  {nodes}')
-    logger.debug('==========================================================================================')
-    logger.debug('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
-    logger.debug(f'edges is -> {edges}')
-    logger.debug('==========================================================================================')
-    logger.debug('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
+    logger.info('==========================================================================================')
+    logger.info('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
+    logger.info(f'g-types is -> {G_types}')
+    logger.info('==========================================================================================')
+    logger.info('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
+    logger.info(f'nodes is ->  {nodes}')
+    logger.info('==========================================================================================')
+    logger.info('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
+    logger.info(f'edges is -> {edges}')
+    logger.info('==========================================================================================')
+    logger.info('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
 
 
     colaGraph = {}
@@ -283,17 +284,16 @@ def convert_res_to_cola(nodes, edges, G_types):
 
     return colaGraph
 
-@logger.catch
-def get_data(gConnect):
-    g_uri = gConnect['url'] + ':' + gConnect['port']
-    with TypeDB.core_client(g_uri) as client:
-        with client.session(gConnect['database'], SessionType.DATA) as session:
+@Logger.catch
+def get_data(dbhost, dbport, dbdatabase, dbquery, logger: Logger):
+    typeDBConnect = f'{dbhost}:{dbport}'
+    with TypeDB.core_client(typeDBConnect) as client:
+        with client.session(dbdatabase, SessionType.DATA) as session:
             with session.transaction(TransactionType.READ) as read_transaction:
-                answer_iterator = read_transaction.query().match(gConnect['gQuery'])
-                logger.debug((f'have read the query -> {answer_iterator}'))
-                res = collect_answers(answer_iterator, read_transaction)
-                nodes, edges, G_types = convert_res_to_graph(res)
-                colaGraph = convert_res_to_cola(nodes, edges, G_types)
+                answer_iterator = read_transaction.query().match(dbquery)
+                res = collect_answers(answer_iterator, read_transaction, logger)
+                nodes, edges, G_types = convert_res_to_graph(res, logger)
+                colaGraph = convert_res_to_cola(nodes, edges, G_types, logger)
 
     ## save file for reference
     # with open("g_to_webcola.json", "w") as outfile:
@@ -301,38 +301,36 @@ def get_data(gConnect):
     return colaGraph
 
 
-@logger.catch
-def main(gConnect):
+@Logger.catch
+def main(dbhost, dbport, dbdatabase, dbquery, outputfile, logger: Logger):
+  # setup logger for execution
 
-    colaGraph = get_data(gConnect)
-    basic = colaGraph['basic']
+  colaGraph = get_data(dbhost, dbport, dbdatabase, dbquery, logger)
+  basic = colaGraph['basic']
 
-    with open("colaGraph_sample.json", "w") as outfile:
-        json.dump(colaGraph, outfile)
+  with open(outputfile, "w") as outfile:
+      json.dump(colaGraph, outfile)
 
-    logger.debug('================ Schema ==================')
-    logger.debug(f"{basic['G_types']}")
+  logger.info('================ Schema ==================')
+  logger.info(f"{basic['G_types']}")
 
+@Logger.catch
+def getArgs():
 
-
-parser = argparse.ArgumentParser(description="Script params",
-                              formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-parser.add_argument("--host", nargs='?', default="localhost", help="server host")
-parser.add_argument("--port", nargs='?', default="1729", help="server port")
-parser.add_argument("--db", nargs='?', default="typerefinery", help="server database")
-parser.add_argument("--query", nargs='?', default=gquery, help="query to use")
-args = parser.parse_args()
-
-def_gConnect = {
-        "url": args.host,
-        "port": args.port,
-        "database": args.db,
-        "gQuery": args.query
-      }
-
-
-
-
+  parser = argparse.ArgumentParser(description="Script params",
+                                formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+  parser.add_argument("dbhost", nargs='?', default="localhost", help="server host (default: %(default)s)")
+  parser.add_argument("dbport", nargs='?', default="1729", help="server port (default: %(default)s)")
+  parser.add_argument("dbdatabase", nargs='?', default="typerefinery", help="server database (default: %(default)s)")
+  parser.add_argument("dbquery", nargs='?', default=gquery, help="query to use (default: %(default)s)")
+  parser.add_argument("outputfile", nargs='?', default=f"{basename(__file__)}_output.json", help="output file (default: %(default)s)")
+  return parser.parse_args()
 
 if __name__ == '__main__':
-    main(def_gConnect)
+  args = getArgs()
+  # setup logger for init
+  log = Logger
+  log.remove()
+  log.add(f'{basename(__file__)}_{datetime.timestamp(datetime.now())}-init.log', level="INFO")
+  log.info(args)
+  main(args.dbhost, args.dbport, args.dbdatabase, args.dbquery, args.outputfile, log)
