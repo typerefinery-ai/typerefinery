@@ -1,5 +1,5 @@
 <template>
-  <div ref="wrapper" class="transformer-wrapper">
+  <div ref="algowrapper" class="transformer-wrapper">
     <div class="code-wrapper shadow-3" :class="{ error: isError }">
       <div class="code-tabs">
         <div class="code-tabs-head">
@@ -21,6 +21,7 @@
       </div>
       <codemirror
         v-if="activeTab == 'editor'"
+        class="ankit"
         :model-value="code"
         placeholder="Code goes here..."
         :style="{ height: '70vh' }"
@@ -32,6 +33,7 @@
       />
       <codemirror
         v-else
+        class="ankit"
         :model-value="consoleText"
         :disabled="true"
         :style="{ height: '350px' }"
@@ -47,7 +49,7 @@
 <script>
   import Button from "primevue/button"
   import { Codemirror } from "vue-codemirror"
-  import { javascript } from "@codemirror/lang-javascript"
+  import { python } from "@codemirror/lang-python"
   import { oneDark } from "@codemirror/theme-one-dark"
   import AppSettings from "@/store/Modules/AppSettings"
   import Projects from "@/store/Modules/Projects"
@@ -69,9 +71,7 @@
     },
     computed: {
       extensions() {
-        return appSettings.theme === "dark"
-          ? [javascript(), oneDark]
-          : [javascript()]
+        return appSettings.theme === "dark" ? [python(), oneDark] : [python()]
       },
       isError() {
         return false
@@ -103,7 +103,7 @@
         appSettings.resizeView()
       },
       setEditorHeight() {
-        const wrapper = this.$refs.wrapper
+        const wrapper = this.$refs.algowrapper
         const editor = document.getElementsByClassName("cm-editor")[0]
         if (wrapper) {
           editor.style.setProperty("display", "none", "important")

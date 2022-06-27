@@ -1,33 +1,32 @@
 <template>
   <div class="query-view-wrapper">
     <div class="card">
-      <div class="card-container">
-        <div class="block p-4 pb-2">
-          <span class="p-float-label">
-            <InputText
-              id="name"
-              :model-value="name"
-              class="w-full"
-              type="text"
-              @input="handleInput($event, 'name')"
-            />
-            <label for="name">{{ $t(`components.project.name`) }}</label>
-          </span>
+      <div class="card-container text-left">
+        <div class="field p-4 pb-2">
+          <label for="name">{{ $t(`components.project.name`) }}</label>
+          <InputText
+            id="name"
+            :model-value="name"
+            class="w-full"
+            type="text"
+            @input="handleInput($event, 'name')"
+          />
         </div>
 
-        <div class="block p-4 pt-3 pb-0">
-          <span class="p-float-label">
-            <Textarea
-              id="query"
+        <div class="field m-4 my-2">
+          <label for="query">{{ $t(`components.tab.query`) }}</label>
+          <div class="shadow-3">
+            <codemirror
               :model-value="query"
-              :auto-resize="true"
-              rows="17"
-              cols="30"
-              class="w-full"
-              @input="handleInput($event, 'query')"
+              placeholder="Code goes here..."
+              :style="{ height: '320px' }"
+              :autofocus="true"
+              :indent-with-tab="true"
+              :tab-zize="2"
+              :extensions="extensions"
+              @change="handleQuery"
             />
-            <label for="query">{{ $t(`components.tab.query`) }}</label>
-          </span>
+          </div>
         </div>
       </div>
     </div>
@@ -35,18 +34,28 @@
 </template>
 
 <script>
+  import { Codemirror } from "vue-codemirror"
+  import { javascript } from "@codemirror/lang-javascript"
+  import { oneDark } from "@codemirror/theme-one-dark"
   import InputText from "primevue/inputtext"
-  import Textarea from "primevue/textarea"
+  //   import Textarea from "primevue/textarea"
   import Projects from "@/store/Modules/Projects"
+  import Settings from "@/store/Modules/AppSettings"
   import { getModule } from "vuex-module-decorators"
   const projects = getModule(Projects)
+  const appSettings = getModule(Settings)
   export default {
     name: "QueryView",
-    components: { InputText, Textarea },
+    components: { InputText, Codemirror },
     props: {
       tab: { type: Object, required: true },
     },
     computed: {
+      extensions() {
+        return appSettings.theme === "dark"
+          ? [javascript(), oneDark]
+          : [javascript()]
+      },
       name() {
         const { projectIdx, queryIdx } = this.tab
         return projects.list[projectIdx].queries.list[queryIdx].name
@@ -59,6 +68,10 @@
     methods: {
       handleInput({ target: { value } }, key) {
         const payload = { key, value, ...this.tab }
+        projects.updateQuery(payload)
+      },
+      handleQuery(code) {
+        const payload = { key: "query", value: code, ...this.tab }
         projects.updateQuery(payload)
       },
     },
