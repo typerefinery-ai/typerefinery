@@ -1,11 +1,7 @@
-
 from typedb.client import *
 from loguru import logger as Logger
 from posixpath import basename
 import json
-import os
-import sys
-import argparse
 from datetime import datetime
 
 
@@ -22,6 +18,3 @@ def main(dbhost, dbport, dbdatabase, dbquery, outputfile, logger: Logger):
 
   with open(outputfile, "w") as outfile:
       json.dump(outputjson, outfile)
-
-  logger.info('================ Schema ==================')
-  logger.info(f"{basic['G_types']}")

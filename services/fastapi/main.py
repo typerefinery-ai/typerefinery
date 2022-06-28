@@ -10,6 +10,8 @@ sys.path.append(where_am_i)
 from typing import Optional
 
 from fastapi import FastAPI, Response, Request, Body, Form
+from fastapi.responses import RedirectResponse
+from fastapi.encoders import jsonable_encoder
 import json
 from scripts.G_to_WebCola import get_data as GtoWebCola
 from datetime import datetime
@@ -80,26 +82,10 @@ def logging_call(popenargs, logger, loglevel=INFO, **kwargs):
     while process.poll() is None:
       check_io()
 
+# redirect to docs
 @app.get("/")
-def read_root():
-    return {"Hello": "World"}
-
-
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: Optional[str] = None):
-    return {"item_id": item_id, "q": q}
-
-@app.post("/query")
-async def read_query(dbhost: str = Form(...), dbport: str = Form(...), dbdatabase: str = Form(...), dbquery: str = Form(...)):
-    connection = {}
-    connection['dbhost'] = dbhost
-    connection['dbport'] = dbport
-    connection['dbdatabase'] = dbdatabase
-    connection['dbquery'] = dbquery
-    # query grakn
-    colaGraph = GtoWebCola(dbhost, dbport, dbdatabase, dbquery)
-    return json.dumps(colaGraph)
-
+def read_docs():
+    return RedirectResponse(url='/docs')
 
 class AlgoritmRequestModel(BaseModel):
     dbhost: str | None = Field(
@@ -120,20 +106,29 @@ class AlgoritmRequestModel(BaseModel):
     algorithmrequirements: str | None = Field(
         default="", title="install dependecies"
     )
+    returnoutput: str | None = Field(
+        default="output", title="what to return (output, log, status)"
+    )
 
 @Logger.catch
 @app.post("/algorithm")
-async def execute_algorithm(response: Response, body: AlgoritmRequestModel):
+async def execute_algorithm(request: Request, response: Response, body: AlgoritmRequestModel):
     # generate unique request id
     requestid = f'{datetime.timestamp(datetime.now())}.{str(random.randint(1, 100000))}'
     # get new name for a new script
-    new_script = os.path.join(where_am_i, "algorithm", f'req-{requestid}.py')
-    new_script_output = f'{new_script}_output.json'
-    response.headers["X-Script"] = os.path.basename(new_script)
+    new_script_name = f'req-{requestid}.py'
+    new_script = os.path.join(where_am_i, "algorithm", new_script_name)
+    new_script_url = f"/algorithm/{new_script_name}/script"
+    new_script_path = os.path.relpath(new_script, os.path.join(where_am_i, "..", ".."))
+    new_script_output = f'{new_script}.output'
+    new_script_output_url = f"/algorithm/{new_script_name}/output"
+    new_script_output_path = os.path.relpath(new_script_output, os.path.join(where_am_i, "..", ".."))
+    new_script_log = f'{new_script}.log'
+    new_script_log_url = f"/algorithm/{new_script_name}/log"
+    new_script_log_path = os.path.relpath(new_script_log, os.path.join(where_am_i, "..", ".."))
 
-    logfile = f'{new_script}.log'
     # add request specific log file
-    logfile_hander = Logger.add(logfile, level="INFO", filter=lambda record: record["extra"]["requestid"] == requestid)
+    logfile_hander = Logger.add(new_script_log, level="INFO", filter=lambda record: record["extra"]["requestid"] == requestid)
     # get specific request logger
     request_logger = Logger.bind(requestid=requestid)
 
@@ -142,6 +137,7 @@ async def execute_algorithm(response: Response, body: AlgoritmRequestModel):
     algorithmrequirements_json = json.dumps(body.algorithmrequirements)
     request_logger.info(f'request - {body.dbhost}, {body.dbport}, {body.dbdatabase}, {dbquery_json}, {algorithmrequirements_json}')
 
+    scripterror = "false"
     # try catch finaly
     try:
 
@@ -166,16 +162,40 @@ async def execute_algorithm(response: Response, body: AlgoritmRequestModel):
     except Exception as error:
           # code that handle exceptions
         request_logger.error(error)
+        scripterror = "true"
     finally:
         # code that clean up
         request_logger.info(f'done')
         Logger.remove(logfile_hander)
 
-    if os.path.exists(new_script_output):
+    new_script_name_exists = os.path.exists(new_script)
+    new_script_output_exists = os.path.exists(new_script_output)
+    new_script_log_exists = os.path.exists(new_script_log)
+
+    # set response headers and body
+    returncontent = {
+      "error": scripterror,
+      "script.name": new_script_name,
+      "script": new_script_path,
+      "script.exists": str(new_script_name_exists),
+      "script.url": new_script_url,
+      "output": new_script_output_path,
+      "output.exists": str(new_script_output_exists),
+      "output.url": new_script_output_url,
+      "log": new_script_log_path,
+      "log.exists": str(new_script_log_exists),
+      "log.url": new_script_log_url,
+      "return.output": body.returnoutput,
+    }
+
+    if os.path.exists(new_script_output) and body.returnoutput == "output":
       with open(new_script_output, "r") as script_output:
-        return script_output.read()
+        return Response(content=script_output.read(), media_type="text/plain", headers=returncontent)
+    elif os.path.exists(new_script_log) and body.returnoutput == "log":
+      with open(new_script_log, "r") as script_log:
+        return Response(content=script_log.read(), media_type="text/plain", headers=returncontent)
     else:
-      return '{}'
+      return Response(content=json.dumps(returncontent), media_type="application/json", headers=returncontent)
 
 @Logger.catch
 @app.get("/algorithm/{script}/log")
@@ -194,8 +214,15 @@ async def read_algorithm_script(script: str):
   with open(returnfile, "r") as new_file:
     return Response(content=new_file.read(), media_type="text/plain")
 
+@Logger.catch
+@app.get("/algorithm/{script}/output")
+async def read_algorithm_output(script: str):
+  returnfile = os.path.join(where_am_i, "algorithm", f'{script}.output')
+  # return contents of logfile withoput encoding
+  with open(returnfile, "r") as new_file:
+    return Response(content=new_file.read(), media_type="text/plain")
 
 @Logger.catch
 @app.get("/string2json")
-async def read_string2json(source: str = Form(...)):
+async def convert_string2json(source: str = Form(...)):
   return Response(content=json.dumps(source), media_type="text/plain")

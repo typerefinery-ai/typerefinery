@@ -323,7 +323,7 @@ def getArgs():
   parser.add_argument("dbport", nargs='?', default="1729", help="server port (default: %(default)s)")
   parser.add_argument("dbdatabase", nargs='?', default="typerefinery", help="server database (default: %(default)s)")
   parser.add_argument("dbquery", nargs='?', default=gquery, help="query to use (default: %(default)s)")
-  parser.add_argument("outputfile", nargs='?', default=f"{basename(__file__)}_output.json", help="output file (default: %(default)s)")
+  parser.add_argument("outputfile", nargs='?', default=f"{basename(__file__)}.output", help="output file (default: %(default)s)")
   return parser.parse_args()
 
 if __name__ == '__main__':
