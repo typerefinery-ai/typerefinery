@@ -1,5 +1,13 @@
 <template>
   <div ref="algowrapper" class="transformer-wrapper">
+    <div class="grid">
+      <div class="col-12">
+        <div class="p-inputgroup">
+          <InputText v-model="endpoint" />
+          <Button icon="pi pi-play" class="p-button-primary" />
+        </div>
+      </div>
+    </div>
     <div class="code-wrapper shadow-3" :class="{ error: isError }">
       <div class="code-tabs">
         <div class="code-tabs-head">
@@ -65,6 +73,7 @@
       return {
         activeTab: "editor",
         consoleText: "",
+        endpoint: "localhost:8000/algorithm",
       }
     },
     computed: {
