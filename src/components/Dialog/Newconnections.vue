@@ -19,7 +19,7 @@
           class="p-dialog-header-icon p-dialog-header-close p-link"
           aria-label="close"
           type="button"
-          @click="conncetioncloseDialog"
+          @click="connectioncloseDialog"
         >
           <span class="p-dialog-header-close-icon pi pi-times"></span>
         </button>
@@ -117,7 +117,7 @@
         :label="$t(`components.dialog.new-transformer.footer.cancel`)"
         icon="pi pi-times"
         class="p-button-text"
-        @click="conncetioncloseDialog"
+        @click="connectioncloseDialog"
       />
       <Button
         v-if="selectedEditNode"
@@ -224,10 +224,10 @@
       }
     },
     methods: {
-      conncetioncloseDialog() {
+      connectioncloseDialog() {
         this.$emit("close")
         //clear store here for editnode
-        appProjects.reseteditNode()
+        appProjects.resetTreeNodePath()
       },
       handleEditedConnectionStore(isFormValid) {
         const data = {

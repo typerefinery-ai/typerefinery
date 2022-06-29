@@ -58,10 +58,10 @@
   import { python } from "@codemirror/lang-python"
   import { oneDark } from "@codemirror/theme-one-dark"
   import AppSettings from "@/store/Modules/AppSettings"
-  import Projects from "@/store/Modules/Projects"
+  import AppData from "@/store/Modules/Projects"
   import { getModule } from "vuex-module-decorators"
   const appSettings = getModule(AppSettings)
-  const projects = getModule(Projects)
+  const appData = getModule(AppData)
   export default {
     name: "AlgorithmView",
     components: { Codemirror, Button },
@@ -88,7 +88,7 @@
       },
       code() {
         const { projectIdx, queryIdx } = this.tab
-        return projects.algorithmCode(projectIdx, queryIdx)
+        return appData.algorithmCode(projectIdx, queryIdx)
       },
     },
     watch: {
@@ -103,7 +103,7 @@
       handleChange(c) {
         const { projectIdx, queryIdx } = this.tab
         const data = { code: c, projectIdx, queryIdx }
-        projects.setAlgoCode(data)
+        appData.setAlgoCode(data)
       },
       handleTabs(tab) {
         this.activeTab = tab

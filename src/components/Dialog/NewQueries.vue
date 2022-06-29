@@ -58,8 +58,9 @@
         <Dropdown
           v-model="v$.connectionselected.$model"
           :options="connectionList"
-          option-label="name"
-          option-value="key"
+          option-label="label"
+          option-group-label="label"
+          option-group-children="items"
           :placeholder="$t(`components.dialog.new-query.panel1.select2`)"
           :class="{ 'p-error': v$.connectionselected.$invalid && submitted }"
         />
@@ -255,15 +256,17 @@
     },
     computed: {
       projectList() {
-        return appProjects.projectList
+        return appProjects.projectsList
       },
       connectionList() {
+        console.log(appProjects.connectionsList(0))
         // if(this.projectselected===this.projectList.name){
-        return appProjects.connectionList
+        return appProjects.connectionsList(0)
         // }
       },
       transformerList() {
-        return appProjects.transformerList
+        console.log(appProjects.transformersList(0))
+        return appProjects.transformersList(0)
       },
     },
     methods: {

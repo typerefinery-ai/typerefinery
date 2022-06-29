@@ -10,7 +10,7 @@
         <TabPanel v-for="(tab, i) in allTabs" :key="tab.id">
           <template #header>
             <div class="tab-item" :class="{ active: activeIndex === i }">
-              <span>{{ tab.name }}</span>
+              <span>{{ tab.label }}</span>
               <i class="pi pi-times" @click.stop="closeSplitView(tab)"></i>
             </div>
           </template>
@@ -50,10 +50,10 @@
   import MenuBar from "@/components/MenuBar.vue"
   import ContentTab from "../ContentTab"
   import AppSettings from "@/store/Modules/AppSettings"
-  import Projects from "@/store/Modules/Projects"
+  import AppData from "@/store/Modules/Projects"
   import { getModule } from "vuex-module-decorators"
   const appSettings = getModule(AppSettings)
-  const projects = getModule(Projects)
+  const appData = getModule(AppData)
 
   TabView.methods.onTabClick = function (event, i) {
     this.$emit("tab-click", {
@@ -89,7 +89,8 @@
       allTabs() {
         return this.tabs.map((el) => ({
           ...el,
-          name: projects.list[el.projectIdx].queries.list[el.queryIdx].name,
+          label:
+            appData.list[0].list[el.projectIdx].queries.list[el.queryIdx].label,
         }))
       },
     },
@@ -129,8 +130,8 @@
         if (this.paneId == "pane2") {
           return this.$emit("close-split-view")
         }
-        projects.removeSelectedNodes(tab.id)
-        projects.toggleNodeSelection()
+        appData.removeSelectedTreeNodes(tab.id)
+        appData.toggleTreeNode()
       },
     },
   }

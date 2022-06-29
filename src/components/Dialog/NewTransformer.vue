@@ -229,7 +229,7 @@
       },
       transformercloseDialog() {
         this.$emit("close")
-        appProjects.reseteditNode()
+        appProjects.resetTreeNodePath()
       },
       handleEditedTransformerStore(isFormValid) {
         const data = {

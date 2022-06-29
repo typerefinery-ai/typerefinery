@@ -28,10 +28,11 @@
       <Dropdown
         :model-value="tranformer"
         :options="transformers"
-        option-label="name"
-        option-value="key"
+        option-label="label"
+        option-group-label="label"
+        option-group-children="items"
         :placeholder="$t(`components.transformer.select`)"
-        @change="handleDropdown"
+        @change="handleDropdown($event)"
       />
     </div>
   </div>
@@ -41,9 +42,9 @@
   import InputText from "primevue/inputtext"
   import Dropdown from "primevue/dropdown"
   import Textarea from "primevue/textarea"
-  import Projects from "@/store/Modules/Projects"
+  import AppData from "@/store/Modules/Projects"
   import { getModule } from "vuex-module-decorators"
-  const projects = getModule(Projects)
+  const appData = getModule(AppData)
   export default {
     name: "QueryInfo",
     components: { InputText, Dropdown, Textarea },
@@ -53,29 +54,44 @@
     computed: {
       description() {
         const { projectIdx, queryIdx } = this.tab
-        return projects.list[projectIdx].queries.list[queryIdx].description
+        return appData.list[0].list[projectIdx].queries.list[queryIdx]
+          .description
       },
       icon() {
         const { projectIdx, queryIdx } = this.tab
-        return projects.list[projectIdx].queries.list[queryIdx].icon
+        return appData.list[0].list[projectIdx].queries.list[queryIdx].icon
       },
       tranformer() {
         const { projectIdx, queryIdx } = this.tab
-        return projects.list[projectIdx].queries.list[queryIdx].transformerName
+        const transformer =
+          appData.list[0].list[projectIdx].queries.list[queryIdx].transformer
+        return {
+          key: transformer.id,
+          label: transformer.label,
+          scope: transformer.scope,
+        }
       },
       transformers() {
         const { projectIdx } = this.tab
-        return projects.transformersList(projectIdx)
+        return appData.transformersList(projectIdx)
       },
     },
     methods: {
       handleInput({ target: { value } }, key) {
         const payload = { key, value, ...this.tab }
-        projects.updateQuery(payload)
+        appData.updateQuery(payload)
       },
       handleDropdown({ value }) {
-        const payload = { key: "transformerName", value, ...this.tab }
-        projects.updateQuery(payload)
+        let transformer
+        if (value.scope == "local") {
+          transformer = appData.list[0].list[
+            this.tab.projectIdx
+          ].transformers.list.find((el) => el.id == value.key)
+        } else {
+          transformer = appData.list[2].list.find((el) => el.id == value.key)
+        }
+        const payload = { key: "transformer", value: transformer, ...this.tab }
+        appData.updateQuery(payload)
       },
     },
   }

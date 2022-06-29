@@ -26,10 +26,11 @@
         :filter="true"
         filter-mode="lenient"
         :expanded-keys="expandedKeys"
+        scroll-height="75vh"
       >
         <template #default="slotProps">
           <div @dblclick="selectNode(slotProps.node)">
-            {{ slotProps.node.name }}
+            {{ slotProps.node.label }}
           </div>
         </template>
       </Tree>
@@ -47,7 +48,7 @@
   import Projects from "@/store/Modules/Projects"
   import AppSettings from "@/store/Modules/AppSettings"
   const appSettings = getModule(AppSettings)
-  const appProjects = getModule(Projects)
+  const appData = getModule(Projects)
 
   export default {
     name: "Sidebar",
@@ -58,73 +59,97 @@
       }
     },
     computed: {
-      storeList() {
-        return appProjects.storedata
-      },
       nodesData() {
-        return this.storeList.map((el, i) => {
+        const nodes = appData.list.map((data, dataIdx) => {
           return {
-            key: i,
-            id: el.id,
-            name: el.name,
-            data: "Project Folder",
+            key: dataIdx,
+            type: data.type,
+            label: data.label,
             icon: "pi pi-fw pi-book",
-            children: [
-              {
-                key: `${i}-0`,
-                name: "Query",
-                data: "Query Folder",
-                icon: "pi pi-fw pi-database",
-                children: el.queries.list.map((q, qIdx) => {
-                  return {
-                    key: `${i}-0-${qIdx}`,
-                    id: q.id,
-                    type: q.type,
-                    name: q.name,
-                    data: "Query Folder",
-                    icon: "pi pi-fw pi-file",
-                    connection: q.connection,
-                    parent: el.name,
-                  }
-                }),
-              },
-              {
-                key: `${i}-1`,
-                name: "Connection",
-                data: "Connection Folder",
-                icon: "pi pi-fw pi-server",
-                children: el.connections.list.map((c, cIdx) => {
-                  return {
-                    key: `${i}-1-${cIdx}`,
-                    id: c.id,
-                    type: c.type,
-                    name: c.name,
-                    data: "Connection Folder",
-                    icon: "pi pi-fw pi-file",
-                    parent: el.name,
-                  }
-                }),
-              },
-              {
-                key: `${i}-2`,
-                name: "Transformer",
-                data: "Transformer Folder",
-                icon: "pi pi-fw pi-cog",
-                children: el.transformers.list.map((t, tIdx) => {
-                  return {
-                    key: `${i}-2-${tIdx}`,
-                    id: t.id,
-                    type: t.type,
-                    name: t.name,
-                    data: "Transformer Folder",
-                    icon: "pi pi-fw pi-file",
-                    parent: el.name,
-                  }
-                }),
-              },
-            ],
+            children: data.list.map((item, itemIdx) => ({
+              key: `${dataIdx}-${itemIdx}`,
+              id: item.id,
+              type: item.type,
+              label: item.label,
+              icon: "pi pi-fw pi-file",
+              children:
+                item.type == "project"
+                  ? [
+                      {
+                        key: `${dataIdx}-${itemIdx}-0`,
+                        label: "Queries",
+                        icon: "pi pi-fw pi-database",
+                        children: item.queries.list.map((query, qIdx) => {
+                          return {
+                            key: `${dataIdx}-${itemIdx}-0-${qIdx}`,
+                            id: query.id,
+                            type: query.type,
+                            label: query.label,
+                            icon: "pi pi-fw pi-file",
+                            connection: query.connection,
+                            parent: item.id,
+                          }
+                        }),
+                      },
+                      {
+                        key: `${dataIdx}-${itemIdx}-1`,
+                        label: "Connections",
+                        icon: "pi pi-fw pi-server",
+                        children: item.connections.list.map(
+                          (connection, cIdx) => {
+                            return {
+                              key: `${dataIdx}-${itemIdx}-1-${cIdx}`,
+                              id: connection.id,
+                              type: connection.type,
+                              label: connection.label,
+                              icon: "pi pi-fw pi-file",
+                              parent: item.id,
+                            }
+                          }
+                        ),
+                      },
+                      {
+                        key: `${dataIdx}-${itemIdx}-2`,
+                        label: "Transformers",
+
+                        icon: "pi pi-fw pi-cog",
+                        children: item.transformers.list.map(
+                          (transformer, tIdx) => {
+                            return {
+                              key: `${dataIdx}-${itemIdx}-2-${tIdx}`,
+                              id: transformer.id,
+                              type: transformer.type,
+                              label: transformer.label,
+                              icon: "pi pi-fw pi-file",
+                              parent: item.id,
+                            }
+                          }
+                        ),
+                      },
+                      {
+                        key: `${dataIdx}-${itemIdx}-3`,
+                        label: "Algorithms",
+                        icon: "pi pi-fw pi-cog",
+                        children: item.algorithms.list.map(
+                          (algorithm, aIdx) => {
+                            return {
+                              key: `${dataIdx}-${itemIdx}-3-${aIdx}`,
+                              id: algorithm.id,
+                              type: algorithm.type,
+                              label: algorithm.label,
+                              icon: "pi pi-fw pi-file",
+                              parent: item.id,
+                            }
+                          }
+                        ),
+                      },
+                    ]
+                  : [],
+            })),
           }
         })
+
+        return nodes
       },
     },
     methods: {
@@ -143,27 +168,29 @@
             return
           case "connection":
             path = `${data.parent}/${data.name}`
-            appProjects.toggleConnectionDialog()
-            appProjects.setEditNode(path)
+            appData.toggleConnectionDialog()
+            appData.setTreeNodePath(path)
             return
           case "transformer":
             path = `${data.parent}/${data.name}`
-            appProjects.toggleTransformerDialog()
-            appProjects.setEditNode(path)
+            appData.toggleTransformerDialog()
+            appData.setTreeNodePath(path)
             return
         }
       },
       openTab(data) {
         const { id, parent } = data
-        const projectIdx = appProjects.list.findIndex((el) => el.name == parent)
-        const queryIdx = appProjects.list[projectIdx].queries.list.findIndex(
-          (el) => el.id == id
+        const projectIdx = appData.list[0].list.findIndex(
+          (el) => el.id == parent
         )
+        const queryIdx = appData.list[0].list[
+          projectIdx
+        ].queries.list.findIndex((el) => el.id == id)
         const queryData = { id, projectIdx, queryIdx }
-        const isNew = !appProjects.selectedNodes.list.includes(id)
+        const isNew = !appData.selectedTreeNodes.list.includes(id)
         if (isNew) {
-          appProjects.toggleNodeSelection()
-          appProjects.setSelectedNodes(queryData)
+          appData.toggleTreeNode()
+          appData.setSelectedTreeNodes(queryData)
         }
       },
     },

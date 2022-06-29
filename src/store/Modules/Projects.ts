@@ -1,515 +1,724 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Module, VuexModule, Mutation } from "vuex-module-decorators"
 import store from "../index"
 const storeValue = localStorage.getItem("typerefinery")
-const projectsInStore = storeValue ? JSON.parse(storeValue).Projects : false
+const appDataInStore = storeValue ? JSON.parse(storeValue).AppData : false
 @Module({
-  name: "Projects",
+  name: "AppData",
   store: store,
   dynamic: true,
-  preserveState: projectsInStore,
+  preserveState: appDataInStore,
 })
-export default class Projects extends VuexModule {
-  type = "projects"
-  list = [
+export default class AppData extends VuexModule {
+  list: any = [
     {
-      type: "project",
-      id: "project1",
-      name: "Project 1",
-      expanded: true,
-      description: "",
-      icon: "project",
-      connections: {
-        type: "connections",
-        expanded: true,
-        icon: "connection",
-        list: [
-          {
-            id: "connection1",
-            name: "connection 1",
-            icon: "connection",
-            description: "",
-            type: "connection",
+      type: "projects",
+      label: "Projects",
+      icon: "",
+      expanded: false,
+      list: [
+        {
+          type: "project",
+          id: "project1",
+          label: "Project 1",
+          description: "",
+          icon: "",
+          expanded: false,
+          connections: {
+            type: "connections",
+            icon: "",
+            expanded: true,
+            list: [
+              {
+                type: "connection",
+                id: "connection1",
+                label: "connection 1",
+                icon: "connection",
+                description: "",
+                port: "",
+                host: "",
+              },
+            ],
           },
-          {
-            id: "connection2",
-            name: "connection 2",
-            icon: "connection",
-            description: "",
-            type: "connection",
+          queries: {
+            type: "queries",
+            icon: "",
+            expanded: true,
+            list: [
+              {
+                type: "query",
+                id: "query1",
+                label: "query 1",
+                icon: "query",
+                description: "",
+                query: "",
+                connection: "connection1", // id
+                transformer: {
+                  type: "transformer",
+                  id: "transformer1",
+                  label: "local transformer 1",
+                  icon: "transformer",
+                  scope: "local",
+                  description: "",
+                  code: "",
+                  error: "",
+                  logs: [""],
+                },
+                algorithm: {
+                  type: "algorithm",
+                  id: "algorithm1",
+                  label: "algorithm 1",
+                  icon: "algorithm",
+                  scope: "local",
+                  description: "",
+                  code: "",
+                  error: "",
+                  logs: [""],
+                },
+              },
+              {
+                type: "query",
+                id: "query2",
+                label: "query 2",
+                icon: "query",
+                description: "",
+                query: "",
+                connection: "connection1", // id
+                transformer: {
+                  type: "transformer",
+                  id: "transformer2",
+                  label: "local transformer 2",
+                  icon: "transformer",
+                  scope: "local",
+                  description: "",
+                  code: "",
+                  error: "",
+                  logs: [""],
+                },
+                algorithm: {
+                  type: "algorithm",
+                  id: "algorithm1",
+                  label: "algorithm 1",
+                  icon: "algorithm",
+                  scope: "local",
+                  description: "",
+                  code: "",
+                  error: "",
+                  logs: [""],
+                },
+              },
+            ],
           },
-        ],
-      },
-      queries: {
-        type: "queries",
-        expanded: true,
-        icon: "query",
-        list: [
-          {
-            id: "query1",
-            name: "query 1",
-            icon: "query",
-            description: "",
-            type: "query",
-            connection: "connection2", // connection id
-            query: "",
-            transformerName: "",
-            transformer: {
-              code: `var svg = d3.select(wrapper).append("svg"),
-  width = +svg.attr("width") || 960,
-  height = +svg.attr("height") || 500
-
-svg.attr("width", width).attr("height", height)
-
-var color = d3.scaleOrdinal(d3.schemeCategory20)
-
-var simulation = d3
-  .forceSimulation()
-  .force(
-	"link",
-	d3.forceLink().id(function (d) {
-	  return d.label
-	})
-  )
-  .force("charge", d3.forceManyBody())
-  .force("center", d3.forceCenter(width / 2, height / 2))
-
-d3.json(
-  "/src/components/Transformer/D3/miserables.json",
-  function (error, graph) {
-	if (error) throw error
-	var link = svg
-	  .append("g")
-	  .attr("class", "links")
-	  .selectAll("line")
-	  .data(graph.links)
-	  .enter()
-	  .append("line")
-	  .attr("stroke-width", function (d) {
-		return Math.sqrt(d.value)
-	  })
-	  .attr("stroke", "#999")
-
-	var node = svg
-	  .append("g")
-	  .attr("class", "nodes")
-	  .selectAll("circle")
-	  .data(graph.nodes)
-	  .enter()
-	  .append("circle")
-	  .attr("r", 5)
-	  .attr("fill", function (d) {
-		return color(d.group)
-	  })
-	  .call(
-		d3
-		  .drag()
-		  .on("start", dragstarted)
-		  .on("drag", dragged)
-		  .on("end", dragended)
-	  )
-
-	node.append("title").text(function (d) {
-	  return d.label
-	})
-
-	node.on("click", (e) => {
-	  self.nodeData = {
-		label: e.label,
-		index: e.index,
-	  }
-	})
-
-	simulation.nodes(graph.nodes).on("tick", ticked)
-
-	simulation.force("link").links(graph.links)
-
-	function ticked() {
-	  link
-		.attr("x1", function (d) {
-		  return d.source.x
-		})
-		.attr("y1", function (d) {
-		  return d.source.y
-		})
-		.attr("x2", function (d) {
-		  return d.target.x
-		})
-		.attr("y2", function (d) {
-		  return d.target.y
-		})
-
-	  node
-		.attr("cx", function (d) {
-		  return d.x
-		})
-		.attr("cy", function (d) {
-		  return d.y
-		})
-	}
-  }
-)
-
-function dragstarted(d) {
-  if (!d3.event.active) simulation.alphaTarget(0.3).restart()
-  d.fx = d.x
-  d.fy = d.y
-}
-
-function dragged(d) {
-  d.fx = d3.event.x
-  d.fy = d3.event.y
-}
-
-function dragended(d) {
-  if (!d3.event.active) simulation.alphaTarget(0)
-  d.fx = null
-  d.fy = null
-}`,
-              error: "",
-              logs: [""],
-            },
-            algorithm: {
-              code: "",
-              error: "",
-              logs: [""],
-            },
+          transformers: {
+            type: "tranformers",
+            icon: "",
+            expanded: true,
+            list: [
+              {
+                type: "transformer",
+                id: "transformer1",
+                label: "local transformer 1",
+                icon: "transformer",
+                scope: "local",
+                description: "",
+                code: "",
+                error: "",
+                logs: [""],
+              },
+              {
+                type: "transformer",
+                id: "transformer2",
+                label: "local transformer 2",
+                icon: "transformer",
+                scope: "local",
+                description: "",
+                code: "",
+                error: "",
+                logs: [""],
+              },
+            ],
           },
-          {
-            id: "query2",
-            name: "query 2",
-            icon: "query",
-            description: "",
-            type: "query",
-            connection: "connection1", // connection id
-            query: "",
-            transformerName: "",
-            transformer: {
-              code: "",
-              error: "",
-              logs: [""],
-            },
-            algorithm: {
-              code: "",
-              error: "",
-              logs: [""],
-            },
+          algorithms: {
+            type: "algorithms",
+            icon: "",
+            expanded: true,
+            list: [
+              {
+                type: "algorithm",
+                id: "algorithm1",
+                label: "algorithm 1",
+                icon: "algorithm",
+                scope: "local",
+                description: "",
+                code: "",
+                error: "",
+                logs: [""],
+              },
+              {
+                type: "algorithm",
+                id: "algorithm2",
+                label: "algorithm 2",
+                icon: "algorithm",
+                scope: "local",
+                description: "",
+                code: "",
+                error: "",
+                logs: [""],
+              },
+            ],
           },
-        ],
-      },
-      transformers: {
-        type: "transformers",
-        list: [
-          {
-            id: "transformer1",
-            name: "Transformer 1",
-            icon: "connection",
-            description: "",
-            type: "transformer",
+        },
+        {
+          type: "project",
+          id: "project2",
+          label: "Project 2",
+          description: "",
+          icon: "",
+          expanded: false,
+          connections: {
+            icon: "",
+            expanded: true,
+            list: [
+              {
+                type: "connection",
+                id: "connection1",
+                label: "connection 1",
+                icon: "connection",
+                description: "",
+                port: "",
+                host: "",
+              },
+              {
+                type: "connection",
+                id: "connection2",
+                label: "connection 2",
+                icon: "connection",
+                description: "",
+                port: "",
+                host: "",
+              },
+            ],
           },
-          {
-            id: "transformer2",
-            name: "Transformer 2",
-            icon: "connection",
-            description: "",
-            type: "transformer",
+          queries: {
+            icon: "",
+            expanded: true,
+            list: [
+              {
+                type: "query",
+                id: "query1",
+                label: "query 1",
+                icon: "query",
+                description: "",
+                query: "",
+                connection: "connection1", // id
+                transformer: {
+                  type: "transformer",
+                  id: "transformer1",
+                  label: "local transformer 1",
+                  icon: "transformer",
+                  scope: "local",
+                  description: "",
+                  code: "",
+                  error: "",
+                  logs: [""],
+                },
+                algorithm: {
+                  type: "algorithm",
+                  id: "algorithm2",
+                  label: "algorithm 2",
+                  icon: "algorithm",
+                  scope: "local",
+                  description: "",
+                  code: "",
+                  error: "",
+                  logs: [""],
+                },
+              },
+              {
+                type: "query",
+                id: "query2",
+                label: "query 2",
+                icon: "query",
+                description: "",
+                query: "",
+                connection: "connection1", // id
+                transformer: {
+                  type: "transformer",
+                  id: "transformer2",
+                  label: "local transformer 2",
+                  icon: "transformer",
+                  scope: "local",
+                  description: "",
+                  code: "",
+                  error: "",
+                  logs: [""],
+                },
+                algorithm: {
+                  type: "algorithm",
+                  id: "algorithm2",
+                  label: "algorithm 2",
+                  icon: "algorithm",
+                  scope: "local",
+                  description: "",
+                  code: "",
+                  error: "",
+                  logs: [""],
+                },
+              },
+            ],
           },
-        ],
-      },
+          transformers: {
+            icon: "",
+            expanded: true,
+            list: [
+              {
+                type: "transformer",
+                id: "transformer1",
+                label: "transformer 1",
+                icon: "transformer",
+                scope: "local",
+                description: "",
+                code: "",
+                error: "",
+                logs: [""],
+              },
+              {
+                type: "transformer",
+                id: "transformer2",
+                label: "transformer 2",
+                icon: "transformer",
+                scope: "local",
+                description: "",
+                code: "",
+                error: "",
+                logs: [""],
+              },
+            ],
+          },
+          algorithms: {
+            icon: "",
+            expanded: true,
+            list: [
+              {
+                type: "algorithm",
+                id: "algorithm1",
+                label: "algorithm 1",
+                icon: "algorithm",
+                description: "",
+                code: "",
+                error: "",
+                logs: [""],
+              },
+              {
+                type: "algorithm",
+                id: "algorithm2",
+                label: "algorithm 2",
+                icon: "algorithm",
+                description: "",
+                code: "",
+                error: "",
+                logs: [""],
+              },
+            ],
+          },
+        },
+      ],
     },
     {
-      type: "project",
-      id: "project2",
-      name: "Project 2",
-      expanded: true,
-      description: "",
-      icon: "project",
-      connections: {
-        type: "connections",
-        expanded: true,
-        icon: "connection",
-        list: [
-          {
-            id: "connection3",
-            name: "connection 3",
-            icon: "connection",
-            description: "",
-            type: "connection",
-          },
-          {
-            id: "connection4",
-            name: "connection 4",
-            icon: "connection",
-            description: "",
-            type: "connection",
-          },
-        ],
-      },
-      queries: {
-        type: "queries",
-        expanded: true,
-        list: [
-          {
-            id: "query3",
-            name: "query 3",
-            icon: "query",
-            description: "",
-            type: "query",
-            connection: "connection3", // connection id
-            query: "",
-            transformerName: "",
-            transformer: {
-              code: "",
-              error: "",
-              logs: [""],
-            },
-            algorithm: {
-              code: "",
-              error: "",
-              logs: [""],
-            },
-          },
-          {
-            id: "query4",
-            name: "query 4",
-            icon: "query",
-            description: "",
-            type: "query",
-            connection: "connection4", // connection id
-            query: "",
-            transformerName: "",
-            transformer: {
-              code: "",
-              error: "",
-              logs: [],
-            },
-            algorithm: {
-              code: "",
-              error: "",
-              logs: [""],
-            },
-          },
-        ],
-      },
-      transformers: {
-        type: "transformers",
-        list: [
-          {
-            id: "transformer3",
-            name: "Transformer 3",
-            icon: "connection",
-            description: "",
-            type: "transformer",
-          },
-          {
-            id: "transformer4",
-            name: "Transformer 4",
-            icon: "connection",
-            description: "",
-            type: "transformer",
-          },
-        ],
-      },
+      type: "connections",
+      label: "Connections",
+      icon: "",
+      expanded: false,
+      list: [
+        {
+          type: "connection",
+          id: "connection1",
+          label: "connection 1",
+          icon: "connection",
+          description: "",
+          port: "",
+          host: "",
+        },
+        {
+          type: "connection",
+          id: "connection2",
+          label: "connection 2",
+          icon: "connection",
+          description: "",
+          port: "",
+          host: "",
+        },
+      ],
+    },
+    {
+      type: "tranformers",
+      label: "Tranformers",
+      icon: "",
+      expanded: false,
+      list: [
+        {
+          type: "transformer",
+          id: "transformer1",
+          label: "transformer 1",
+          icon: "transformer",
+          scope: "global",
+          description: "",
+          code: "",
+          error: "",
+          logs: [""],
+        },
+        {
+          type: "transformer",
+          id: "transformer2",
+          label: "transformer 2",
+          icon: "transformer",
+          scope: "global",
+          description: "",
+          code: "",
+          error: "",
+          logs: [""],
+        },
+      ],
+    },
+    {
+      type: "algorithms",
+      label: "Algorithms",
+      icon: "",
+      expanded: false,
+      list: [
+        {
+          type: "algorithm",
+          id: "algorithm1",
+          label: "algorithm 1",
+          icon: "algorithm",
+          scope: "global",
+          description: "",
+          code: "algorithm 1",
+          error: "",
+          logs: [""],
+        },
+        {
+          type: "algorithm",
+          id: "algorithm2",
+          label: "algorithm 2",
+          icon: "algorithm",
+          scope: "global",
+          description: "",
+          code: "algorithm 2",
+          error: "",
+          logs: [""],
+        },
+      ],
     },
   ]
 
-  @Mutation
-  updateQuery(data) {
-    const { projectIdx, queryIdx, key, value } = data
-    const project = JSON.parse(JSON.stringify(this.list))
-    project[projectIdx].queries.list[queryIdx][key] = value
-    this.list = project
+  /**** Getters ****/
+  get projectsList() {
+    return this.list[0].list.map((el) => {
+      return { label: el.label, key: el.id }
+    })
+  }
+
+  get connectionsList() {
+    return (projectIdx) => {
+      return [
+        {
+          label: "Local",
+          code: "local",
+          items: this.list[0].list[projectIdx].connections.list.map((el) => {
+            return { label: el.label, key: el.id }
+          }),
+        },
+        {
+          label: "Global",
+          code: "global",
+          items: this.list[1].list.map((el) => {
+            return { label: el.label, key: el.id }
+          }),
+        },
+      ]
+    }
   }
 
   get transformersList() {
     return (projectIdx) => {
-      return this.list[projectIdx].transformers.list.map((el) => ({
-        name: el.name,
-        key: el.name,
-      }))
+      return [
+        {
+          label: "Local",
+          code: "local",
+          items: this.list[0].list[projectIdx].transformers.list.map((el) => {
+            return { label: el.label, key: el.id, scope: el.scope }
+          }),
+        },
+        {
+          label: "Global",
+          code: "global",
+          items: this.list[2].list.map((el) => {
+            return { label: el.label, key: el.id, scope: el.scope }
+          }),
+        },
+      ]
     }
   }
 
-  value: "" | undefined
-  get storedata() {
-    return this.list
-  }
-  get projectList() {
-    const name = this.list.map((el) => {
-      return { name: el.name, key: el.name }
-    })
-    return name
-  }
-  get connectionList() {
-    for (const index in this.list) {
-      if (this.list[index].name === this.value) {
-        return this.list[index].connections.list.map((el) => {
-          return { name: el.name, key: el.name }
-        })
-      }
+  get algorithmsList() {
+    return (projectIdx) => {
+      return [
+        {
+          label: "Local",
+          code: "local",
+          items: this.list[0].list[projectIdx].algorithms.list.map((el) => {
+            return { label: el.label, key: el.id, scope: el.scope }
+          }),
+        },
+        {
+          label: "Global",
+          code: "global",
+          items: this.list[3].list.map((el) => {
+            return { label: el.label, key: el.id, scope: el.scope }
+          }),
+        },
+      ]
     }
   }
 
-  get transformerList() {
-    for (const index in this.list) {
-      if (this.list[index].name === this.value) {
-        return this.list[index].transformers.list.map((el) => {
-          return { name: el.name, key: el.name }
-        })
-      }
-    }
-  }
-  @Mutation
-  selectedProject(l) {
-    this.value = l
-  }
-  @Mutation
-  addNewTransformer(transformerdata: { projectid: any; list: any }) {
-    const { projectid, list } = transformerdata
-    this.list[projectid].transformers.list.push(list)
-  }
-  @Mutation
-  editTransformer(el) {
-    const { projectId, transformerId } = el
-    this.list[projectId].transformers.list[transformerId] = el.list
-  }
-
-  @Mutation
-  addNewQuery(querydata) {
-    const { projectid, list } = querydata
-    this.list[projectid].queries.list.push(list)
-  }
-  @Mutation
-  addNewConnection(connectiondata: { projectid: any; list: any }) {
-    const { projectid, list } = connectiondata
-
-    this.list[projectid].connections.list.push(list)
-  }
-  @Mutation
-  editConnection(el) {
-    const { projectId, connectionId } = el
-    this.list[projectId].connections.list[connectionId] = el.list
-  }
-  @Mutation
-  addToList(l) {
-    this.list.push(l)
-  }
-
-  nodeSelected = false
-  @Mutation
-  toggleNodeSelection() {
-    this.nodeSelected = !this.nodeSelected
-  }
-
-  selectedNodes: { list: string[] } = {
-    list: [],
-  }
-  @Mutation
-  setSelectedNodes(node: { id: string }) {
-    const nodes = JSON.parse(JSON.stringify(this.selectedNodes))
-    nodes.list.push(node.id)
-    nodes[node.id] = node
-    this.selectedNodes = nodes
-  }
-  @Mutation
-  removeSelectedNodes(id: string) {
-    const nodes = JSON.parse(JSON.stringify(this.selectedNodes))
-    const idx = nodes.list.findIndex((el) => el == id)
-    nodes.list.splice(idx, 1)
-    delete nodes[id]
-    this.selectedNodes = nodes
-  }
-  //  for editing nodes
-  editNode = ""
-  @Mutation
-  setEditNode(nodePath: string) {
-    this.editNode = nodePath
-  }
-
-  @Mutation
-  reseteditNode() {
-    this.editNode = ""
-  }
-  // Dialogs
-  connectionDialog = false
-  @Mutation
-  toggleConnectionDialog() {
-    this.connectionDialog = !this.connectionDialog
-  }
-  transformerDialog = false
-  @Mutation
-  toggleTransformerDialog() {
-    this.transformerDialog = !this.transformerDialog
-  }
-  queryDialog = false
-  @Mutation
-  toggleQueryDialog() {
-    this.queryDialog = !this.queryDialog
-  }
-
-  // Transformer Code
+  // Query Transformer
   get transformerCode() {
     return (projectIdx: number, queryIdx: number) => {
-      return this.list[projectIdx].queries.list[queryIdx].transformer.code
+      return this.list[0].list[projectIdx].queries.list[queryIdx].transformer
+        .code
     }
   }
 
   get transformerError() {
     return (projectIdx: number, queryIdx: number) => {
-      return this.list[projectIdx].queries.list[queryIdx].transformer.error
+      return this.list[0].list[projectIdx].queries.list[queryIdx].transformer
+        .error
+    }
+  }
+
+  get transformerConsoleMessage() {
+    return (projectIdx: number, queryIdx: number) => {
+      let myString = ""
+      this.list[0].list[projectIdx].queries.list[
+        queryIdx
+      ].transformer.logs.forEach((el, i) => {
+        if (i === 0) myString = JSON.stringify(el)
+        else myString = myString + "\n" + JSON.stringify(el)
+      })
+      return (
+        myString +
+        "\n" +
+        this.list[0].list[projectIdx].queries.list[queryIdx].transformer.error
+      )
+    }
+  }
+
+  // Query Algorithm
+  get algorithmCode() {
+    return (projectIdx: number, queryIdx: number) => {
+      return this.list[0].list[projectIdx].queries.list[queryIdx].algorithm.code
+    }
+  }
+
+  /**** Mutations ****/
+  @Mutation
+  addNewQuery(queryData) {
+    const { projectIdx, data } = queryData
+    this.list[0].list[projectIdx].queries.list.push(data)
+  }
+
+  @Mutation
+  updateQuery(data) {
+    const { projectIdx, queryIdx, key, value } = data
+    const appData = JSON.parse(JSON.stringify(this.list))
+    appData[0].list[projectIdx].queries.list[queryIdx][key] = value
+    this.list = appData
+  }
+
+  @Mutation
+  addNewConnection(connectionData) {
+    const { projectIdx, data } = connectionData
+    if (projectIdx == -1) {
+      // save globally
+      this.list[1].list.push(data)
+    } else {
+      // save locally
+      this.list[0].list[projectIdx].connections.list.push(data)
     }
   }
 
   @Mutation
-  setCode({ code, projectIdx, queryIdx }) {
-    this.list[projectIdx].queries.list[queryIdx].transformer.code = code
+  editConnection(connectionData) {
+    const { projectIdx, connectionIdx, data } = connectionData
+    const appData = JSON.parse(JSON.stringify(this.list))
+    if (projectIdx == -1) {
+      // update globally
+      appData[1].list[connectionIdx] = data
+    } else {
+      // update locally
+      appData[0].list[projectIdx].connections.list[connectionIdx] = data
+    }
   }
 
   @Mutation
-  setError({ error, projectIdx, queryIdx }) {
-    this.list[projectIdx].queries.list[queryIdx].transformer.error = error
+  addNewTransformer(transformerData) {
+    const { projectIdx, data } = transformerData
+    if (projectIdx == -1) {
+      // save globally
+      this.list[2].list.push(data)
+    } else {
+      // save locally
+      this.list[0].list[projectIdx].transformers.list.push(data)
+    }
   }
 
   @Mutation
-  setLogs({ log, projectIdx, queryIdx }) {
+  editTransformer(transformerData) {
+    const { projectIdx, transformerIdx, data } = transformerData
+    const appData = JSON.parse(JSON.stringify(this.list))
+    if (projectIdx == -1) {
+      // update globally
+      appData[2].list[transformerIdx] = data
+    } else {
+      // update locally
+      appData[0].list[projectIdx].transformers.list[transformerIdx] = data
+    }
+  }
+
+  @Mutation
+  addNewAlgorithm(algorithmData) {
+    const { projectIdx, data } = algorithmData
+    if (projectIdx == -1) {
+      // save globally
+      this.list[3].list.push(data)
+    } else {
+      // save locally
+      this.list[0].list[projectIdx].algorithms.list.push(data)
+    }
+  }
+
+  @Mutation
+  editAlgorithm(algorithmData) {
+    const { projectIdx, algorithmIdx, data } = algorithmData
+    const appData = JSON.parse(JSON.stringify(this.list))
+    if (projectIdx == -1) {
+      // update globally
+      appData[3].list[algorithmIdx] = data
+    } else {
+      // update locally
+      appData[0].list[projectIdx].algorithms.list[algorithmIdx] = data
+    }
+  }
+
+  // Query Transformer
+  @Mutation
+  setTransformerCode({ code, projectIdx, queryIdx }) {
+    const appData = JSON.parse(JSON.stringify(this.list))
+    appData[0].list[projectIdx].queries.list[queryIdx].transformer.code = code
+    this.list = appData
+  }
+
+  @Mutation
+  setTransformerError({ error, projectIdx, queryIdx }) {
+    const appData = JSON.parse(JSON.stringify(this.list))
+    appData[0].list[projectIdx].queries.list[queryIdx].transformer.error = error
+    this.list = appData
+  }
+
+  @Mutation
+  setTransformerLogs({ log, projectIdx, queryIdx }) {
     let logs: string
     if (typeof log == "object") {
       logs = JSON.stringify(log)
     } else if (typeof log != "string") return
     logs = log
-    this.list[projectIdx].queries.list[queryIdx].transformer.logs.push(logs)
+    const appData = JSON.parse(JSON.stringify(this.list))
+    appData[0].list[projectIdx].queries.list[queryIdx].transformer.logs.push(
+      logs
+    )
+    this.list = appData
   }
 
   @Mutation
-  clearLogs({ projectIdx, queryIdx }) {
-    this.list[projectIdx].queries.list[queryIdx].transformer.logs = []
+  clearTransformerLogs({ projectIdx, queryIdx }) {
+    const appData = JSON.parse(JSON.stringify(this.list))
+    appData[0].list[projectIdx].queries.list[queryIdx].transformer.logs = []
+    this.list = appData
   }
 
-  get consoleMessage() {
-    return (projectIdx: number, queryIdx: number) => {
-      let myString = ""
-      this.list[projectIdx].queries.list[queryIdx].transformer.logs.forEach(
-        (el, i) => {
-          if (i === 0) myString = JSON.stringify(el)
-          else myString = myString + "\n" + JSON.stringify(el)
-        }
-      )
-      return (
-        myString +
-        "\n" +
-        this.list[projectIdx].queries.list[queryIdx].transformer.error
-      )
-    }
-  }
-
-  //   Algorithm Code
-  get algorithmCode() {
-    return (projectIdx: number, queryIdx: number) => {
-      return this.list[projectIdx].queries.list[queryIdx].algorithm.code
-    }
-  }
-
+  // Query Algorithm
   @Mutation
   setAlgoCode({ code, projectIdx, queryIdx }) {
-    this.list[projectIdx].queries.list[queryIdx].algorithm.code = code
+    const appData = JSON.parse(JSON.stringify(this.list))
+    appData[0].list[projectIdx].queries.list[queryIdx].algorithm.code = code
+    this.list = appData
+  }
+
+  /* ---------------- Tree Nodes ---------------- */
+
+  treeNodeClicked = false
+  treeNodePath = ""
+  selectedTreeNodes: { list: string[] } = {
+    list: [],
+  }
+
+  @Mutation
+  toggleTreeNode() {
+    this.treeNodeClicked = !this.treeNodeClicked
+  }
+
+  @Mutation
+  setSelectedTreeNodes(node: { id: string }) {
+    const nodes = JSON.parse(JSON.stringify(this.selectedTreeNodes))
+    nodes.list.push(node.id)
+    nodes[node.id] = node
+    this.selectedTreeNodes = nodes
+  }
+
+  @Mutation
+  removeSelectedTreeNodes(id: string) {
+    const nodes = JSON.parse(JSON.stringify(this.selectedTreeNodes))
+    const idx = nodes.list.findIndex((el) => el == id)
+    nodes.list.splice(idx, 1)
+    delete nodes[id]
+    this.selectedTreeNodes = nodes
+  }
+
+  @Mutation
+  setTreeNodePath(nodePath: string) {
+    this.treeNodePath = nodePath
+  }
+
+  @Mutation
+  resetTreeNodePath() {
+    this.treeNodePath = ""
+  }
+
+  /* ---------------- Dialogs ---------------- */
+
+  queryDialog = false
+  connectionDialog = false
+  transformerDialog = false
+  algorithmDialog = false
+
+  @Mutation
+  toggleQueryDialog() {
+    this.queryDialog = !this.queryDialog
+  }
+
+  @Mutation
+  toggleConnectionDialog() {
+    this.connectionDialog = !this.connectionDialog
+  }
+
+  @Mutation
+  toggleTransformerDialog() {
+    this.transformerDialog = !this.transformerDialog
+  }
+
+  @Mutation
+  toggleAlgorithmDialog() {
+    this.algorithmDialog = !this.algorithmDialog
   }
 }
