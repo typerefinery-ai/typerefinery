@@ -39,7 +39,7 @@
     "electron:builder": "electron-builder",
     "electron:start": "node scripts/build.mjs && electron ./dist/main/index.cjs",
     "electron:run": "electron ./dist/main/index.cjs",
-    "build:for:electron": "vue-tsc --noEmit && cross-env ELECTRON=true vite build",
+    "build:for:electron": "vue-tsc --noEmit && node scripts/build.mjs && cross-env ELECTRON=true vite build",
     "app:build": "npm run build:for:electron && npm run electron:builder",
     "postinstall": "electron-builder install-app-deps",
     "postuninstall": "electron-builder install-app-deps",
