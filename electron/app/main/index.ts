@@ -65,6 +65,7 @@ if (getEnvConfigWithDefault("CRASH_REPORTER_SUBMIT_URL")) {
 //support .env file
 dotenv.config()
 
+logger.log(`app.isPackaged: ${app.isPackaged}`)
 //variables
 let isDev = !app.isPackaged
 const envMode = getEnvConfigWithDefault("NODE_ENV", "")
