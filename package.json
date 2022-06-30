@@ -55,7 +55,8 @@
     "report:moveScreenshots": "echo moveScreenshots && cp -r cypress/screenshots cypress/reports/screenshots 2>/dev/null || true",
     "report:moveVideos": "echo moveVideos && cp -r cypress/videos cypress/reports/videos 2>/dev/null || true",
     "report:moveData": "echo moveData && cp -r cypress/results/data cypress/reports/data 2>/dev/null || true",
-    "posttest": "npm run report:merge && npm run report:generate && npm run report:moveScreenshots && npm run report:moveVideos && npm run report:moveData"
+    "posttest": "npm run report:merge && npm run report:generate && npm run report:moveScreenshots && npm run report:moveVideos && npm run report:moveData",
+    "services": "npx ts-node --esm electron/app/main/Services.ts"
   },
   "main": "dist/main/index.cjs",
   "dependencies": {
