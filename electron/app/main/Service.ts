@@ -549,6 +549,7 @@ export class Service extends EventEmitter<ServiceEvent> {
         shell: true,
         // send data to logs but it will be delayed as its buffered in 64k blocks :(
         stdio: ["ignore", this.#stdout, this.#stderr],
+        windowsHide: true,
       }
 
       this.#log([
@@ -671,6 +672,7 @@ export class Service extends EventEmitter<ServiceEvent> {
               cwd: this.#servicepath,
               stdio: ["ignore", this.#stdout, this.#stderr],
               env: { PYTHONPATH: this.#servicepath },
+              windowsHide: true,
             })
             .then((result) => {
               this.#log(`setup command ${setupCommand} result ${result}`)
