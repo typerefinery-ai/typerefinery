@@ -66,10 +66,11 @@ if (getEnvConfigWithDefault("CRASH_REPORTER_SUBMIT_URL")) {
 dotenv.config()
 
 //variables
-const isDev =
-  getEnvConfigWithDefault("NODE_ENV", "production") === "dev"
-    ? true
-    : !app.isPackaged
+let isDev = !app.isPackaged
+const envMode = getEnvConfigWithDefault("NODE_ENV", "")
+if (envMode != "") {
+  isDev = envMode === "dev"
+}
 
 logger.log(`isDev: ${isDev}`)
 logger.log(
