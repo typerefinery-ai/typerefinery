@@ -284,20 +284,6 @@ app.whenReady().then(() => {
     logger.log("mainWindow.webContents.on did-finish-load")
     serviceManager.startAll()
   })
-
-  // update dependencies
-  window.addEventListener("DOMContentLoaded", () => {
-    logger.log("window DOMContentLoaded")
-    const replaceText = (selector: string, text: string) => {
-      const element = document.getElementById(selector)
-      if (element) element.innerText = text
-    }
-
-    for (const dependency of ["chrome", "node", "electron"]) {
-      const replaceWith: string = process.versions[dependency] || ""
-      replaceText(`${dependency}-version`, replaceWith)
-    }
-  })
 })
 
 // Quit when all windows are closed, except on macOS. There, it's common
