@@ -4,7 +4,11 @@
       <div class="col-12">
         <div class="p-inputgroup">
           <InputText v-model="endpoint" />
-          <Button icon="pi pi-play" class="p-button-primary" />
+          <Button
+            icon="pi pi-play"
+            class="p-button-primary"
+            @click="handleRequest"
+          />
         </div>
       </div>
     </div>
@@ -53,6 +57,7 @@
 </template>
 
 <script>
+  import axios from "axios"
   import Button from "primevue/button"
   import { Codemirror } from "vue-codemirror"
   import { python } from "@codemirror/lang-python"
@@ -73,7 +78,7 @@
       return {
         activeTab: "editor",
         consoleText: "",
-        endpoint: "localhost:8000/algorithm",
+        endpoint: "http://localhost:8000/algorithm",
       }
     },
     computed: {
@@ -114,8 +119,33 @@
         const editor = document.getElementsByClassName("cm-editor")[0]
         if (wrapper) {
           editor.style.setProperty("display", "none", "important")
-          editor.style.height = wrapper.clientHeight - 65 + "px"
+          editor.style.height = wrapper.clientHeight - 120 + "px"
           editor.style.setProperty("display", "flex", "important")
+        }
+      },
+      async handleRequest() {
+        try {
+          const payload = {
+            dbhost: "localhost",
+            dbport: "1729",
+            dbdatabase: "refinery",
+            dbquery:
+              "match $a isa log, has logName 'L1';\n$b isa event, has eventName $c;\n$d (owner: $a, item: $b) isa trace,\nhas traceId $e, has index $f;\n offset 0; limit 100;",
+            algorithm: this.code,
+            algorithmrequirements: "argparse\nloguru",
+            returnoutput: "log",
+          }
+          const response = await axios.post(this.endpoint, payload)
+          this.consoleText = response.data
+          const { projectIdx, queryIdx } = this.tab
+          const path = response.headers["output.url"].replace(
+            "/output",
+            ".output"
+          )
+          const data = { path, projectIdx, queryIdx }
+          appData.setQueryDataPath(data)
+        } catch (error) {
+          console.log(error)
         }
       },
     },

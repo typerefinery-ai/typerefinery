@@ -157,12 +157,6 @@
         })
       },
       setAlgorithmCode(value) {
-        // const idx = algorithm.list.findIndex((el) => el.name === t.value)
-        // const code = algorithm.list[idx].code
-        // const { projectIdx, queryIdx } = this.tab
-        // const data = { code, projectIdx, queryIdx }
-        // appData.setAlgoCode(data)
-        // this.selectedAlgorithm = t.value
         let algorithm
         if (value.scope == "local") {
           algorithm = appData.list[0].list[

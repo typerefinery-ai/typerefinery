@@ -7,12 +7,13 @@
     :breakpoints="{ '960px': '75vw', '640px': '100vw' }"
   >
     <template #header>
+      <!-- add here header -->
       <span v-if="selectedEditNode" class="p-dialog-title"
         >{{ $t("components.dialog.new-transformer.updated-header") }}
       </span>
       <span v-else class="p-dialog-title">
-        {{ $t("components.dialog.new-transformer.header") }}</span
-      >
+        {{ $t("components.dialog.new-transformer.header") }}
+      </span>
       <div class="p-dialog-header-icons">
         <button
           class="p-dialog-header-icon p-dialog-header-close p-link"
@@ -26,31 +27,26 @@
     </template>
     <Panel :header="$t(`components.dialog.new-transformer.panel1.header`)">
       <div class="field">
-        <label
-          for="expand"
-          :class="{ 'p-error': v$.projectselected.$invalid && submitted }"
-        >
-          {{ $t("components.dialog.new-transformer.panel1.label1") }}</label
-        >
+        <label for="expand">{{
+          $t("components.dialog.new-transformer.panel1.label1")
+        }}</label>
         <Dropdown
-          v-model="v$.projectselected.$model"
+          v-model="selected"
           :options="projectList"
-          option-label="name"
+          option-label="label"
           option-value="key"
           :placeholder="$t(`components.dialog.new-transformer.panel1.select`)"
-          :class="{ 'p-error': v$.projectselected.$invalid && submitted }"
-          @change="collectProject"
         />
-        <small
+        <!--  <small
           v-if="
-            (v$.projectselected.$invalid && submitted) ||
-            v$.projectselected.$pending.$response
+            (v$.selected.$invalid && submitted) ||
+            v$.selected.$pending.$response
           "
           class="p-error"
           >{{
-            v$.projectselected.required.$message.replace("Value", "Project")
+            v$.selected.required.$message.replace("Value", "Project")
           }}</small
-        >
+        > -->
       </div>
     </Panel>
     <Panel
@@ -113,7 +109,6 @@
         >
       </div>
     </Panel>
-    <!-- <Button label="Submit" @click="handleconnectionstore" /> -->
     <template #footer>
       <Button
         :label="$t(`components.dialog.new-transformer.footer.cancel`)"
@@ -141,25 +136,24 @@
 
 <script>
   import Dialog from "primevue/dialog"
+  //import Avatar from "primevue/avatar"
   import Dropdown from "primevue/dropdown"
   import InputText from "primevue/inputtext"
   import Button from "primevue/button"
   import Panel from "primevue/panel"
-  import { required } from "@vuelidate/validators"
-  import { useVuelidate } from "@vuelidate/core"
   import Projects from "@/store/Modules/Projects"
   import { getModule } from "vuex-module-decorators"
-  const appProjects = getModule(Projects)
-
-  //   console.log(appProjects.projectList)
+  import { required } from "@vuelidate/validators"
+  import { useVuelidate } from "@vuelidate/core"
+  const appData = getModule(Projects)
 
   export default {
-    name: "NewTransformer",
+    name: "NewTransformers",
     components: {
       Dialog,
+      Panel,
       InputText,
       Button,
-      Panel,
       Dropdown,
     },
     props: {
@@ -169,101 +163,149 @@
     setup: () => ({ v$: useVuelidate() }),
     data() {
       return {
-        type: "",
+        type: "Transformer",
         name: "",
         expanded: "",
         description: "",
         icon: "",
         display: true,
-        projectselected: null,
+        selected: null,
         submitted: false,
         displayModal: true,
         selectedEditNode: false,
-        transformerIndex: null,
-        projectIndex: null,
+        transformersIndex: null,
+        projectsIndex: null,
+        updateData: null,
+        lengthData: null,
       }
     },
     validations() {
       return {
-        projectselected: { required },
         name: { required },
         description: { required },
         icon: { required },
+        // selected: { required },
       }
     },
     computed: {
       projectList() {
-        return appProjects.projectList
+        return appData.projectsList
       },
     },
     mounted() {
-      if (appProjects.editNode) {
-        const nodeData = appProjects.editNode.split("/")
-        this.selectedEditNode = true
-        // set project
-        const projects = appProjects.list
-        const projectIdx = appProjects.projectList.findIndex(
-          (el) => el.name == nodeData[0]
-        )
-        this.projectIndex = projectIdx
-        this.v$.projectselected.$model = projects[projectIdx].name
+      if (appData.treeNodePath) {
+        const nodeData = appData.treeNodePath.split("/")
 
-        // transformer index
-        const TransformerIdx = projects[projectIdx].transformers.list.findIndex(
-          (el) => el.name == nodeData[1]
-        )
-        this.transformerIndex = TransformerIdx
+        // For local
+        this.lengthData = nodeData
+        if (nodeData.length == 2) {
+          this.selectedEditNode = true
 
-        //transformer data
-        const transformer = projects[projectIdx].transformers.list.find(
-          (el) => el.name == nodeData[1]
-        )
-        this.v$.name.$model = transformer.name
-        this.v$.description.$model = transformer.description
-        this.v$.icon.$model = transformer.icon
+          // set project
+          const projects = appData.list[0].list
+          const projectIndex = appData.list[0].list.findIndex(
+            (el) => el.id == nodeData[0]
+          )
+          this.projectsIndex = projectIndex
+          this.selected = projects[projectIndex].id
+          // transformer index
+          const transformerIndex = projects[
+            projectIndex
+          ].transformers.list.findIndex((el) => el.id == nodeData[1])
+
+          this.transformersIndex = transformerIndex
+
+          // for transformer data
+          const transformer = projects[projectIndex].transformers.list.find(
+            (el) => el.id == nodeData[1]
+          )
+          this.v$.name.$model = transformer.label
+          this.v$.description.$model = transformer.description
+          this.v$.icon.$model = transformer.icon
+        } else {
+          this.selectedEditNode = true
+          // set transformer
+          const transformerIndex = appData.list[2].list.findIndex(
+            (el) => el.id == nodeData[0]
+          )
+          this.transformersIndex = transformerIndex
+          // for transformer data
+          const transformer = appData.list[2].list.find(
+            (el) => el.id == nodeData[0]
+          )
+          this.v$.name.$model = transformer.label
+          this.v$.description.$model = transformer.description
+          this.v$.icon.$model = transformer.icon
+        }
       }
     },
     methods: {
-      collectProject() {
-        appProjects.selectedProject(this.projectselected)
-      },
       transformercloseDialog() {
+        appData.resetTreeNodePath()
         this.$emit("close")
-        appProjects.resetTreeNodePath()
+        //clear store here for editnode
       },
+      //update dialog
       handleEditedTransformerStore(isFormValid) {
-        const data = {
-          transformerId: this.transformerIndex,
-          projectId: this.projectIndex,
-          name: this.v$.projectselected.$model,
-          list: {
-            name: this.v$.name.$model,
-            description: this.v$.description.$model,
-            icon: this.v$.icon.$model,
-            type: "transformer",
-          },
+        let data
+        if (this.lengthData.length == 1) {
+          data = {
+            transformerIdx: this.transformersIndex,
+            projectIdx: -1,
+            data: {
+              ...appData.list[2].list[this.transformersIndex],
+              // name: this.v$.name.$model,
+              label: this.v$.name.$model,
+              icon: this.v$.icon.$model,
+              description: this.v$.description.$model,
+              type: "transformer",
+            },
+          }
+        } else {
+          data = {
+            transformerIdx: this.transformersIndex,
+            projectIdx: this.projectsIndex,
+            data: {
+              ...appData.list[0].list[this.projectsIndex].transformers.list[
+                this.transformersIndex
+              ],
+              label: this.v$.name.$model,
+              icon: this.v$.icon.$model,
+              description: this.v$.description.$model,
+              type: "transformer",
+            },
+          }
         }
+        this.updateData = data
+
         this.submitted = true
         // stop here if form is invalid
         if (!isFormValid) {
           return
         }
-        appProjects.editTransformer(data)
-        this.$emit("close")
+
+        appData.editTransformer(data)
+        this.transformercloseDialog()
       },
+
+      // new dialog
       handletransformerstore(isFormValid) {
-        const projectIdx = appProjects.projectList.findIndex(
-          (el) => el.name == this.projectselected
+        const projectIndex = appData.list[0].list.findIndex(
+          (el) => el.id == this.selected
         )
         const data = {
-          name: this.projectselected,
-          projectid: projectIdx,
-
-          list: {
-            name: this.name,
-            description: this.description,
+          name: this.selected,
+          projectIdx: projectIndex,
+          data: {
+            // name: this.name,
+            label: this.name,
             icon: this.icon,
+            description: this.description,
             type: "transformer",
+            id: Math.random()
+              .toString(36)
+              .replace(/[^a-z]+/g, "")
+              .substr(2, 10),
           },
         }
         this.submitted = true
@@ -271,38 +313,31 @@
         if (!isFormValid) {
           return
         }
-        appProjects.addNewTransformer(data)
+        appData.addNewTransformer(data)
         this.$emit("close")
       },
     },
   }
 </script>
 <style lang="scss">
-  html.t-light .p-panel .p-panel-header {
-    background-color: #f8f9fa;
-  }
   .transformer-dialog {
     height: 100vh;
     width: 40vw;
     .p-dropdown {
       width: 80%;
     }
-    .field {
-      display: grid;
-    }
-    .panel2 {
-      margin-top: 10px;
-    }
-    .p-float-label {
-      margin-bottom: 10px;
-    }
     input {
       width: 80%;
+    }
+    .field {
+      display: grid;
     }
     .p-dialog-content {
       height: 100%;
     }
-
+    .panel2 {
+      margin-top: 10px;
+    }
     .p-dialog-header {
       padding: 1.25rem 1.8rem;
 

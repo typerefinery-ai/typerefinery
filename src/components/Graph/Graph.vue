@@ -39,17 +39,21 @@
     methods: {
       renderGraph() {
         const { projectIdx, queryIdx } = this.tab
+        const query = appData.list[0].list[projectIdx].queries.list[queryIdx]
         try {
           window.log = function (log) {
             appData.setTransformerLogs({ log, projectIdx, queryIdx })
           }
           appData.clearTransformerLogs({ projectIdx, queryIdx }) // clear logs before each execution
-          const params = ["wrapper", "self", ...this.params]
+          const params = ["wrapper", "self", "output", ...this.params]
           const func = new Function(...params, this.code)
           const wrapper = document.getElementById(this.graphId)
           this.removeInnerItems(wrapper)
-          const args = [wrapper, this]
-          const existingDependencies = { d3: d3, cola: cola }
+          const args = [wrapper, this, query.dataPath]
+          const existingDependencies = {
+            d3: d3,
+            cola: cola,
+          }
           this.params.forEach((el) => args.push(existingDependencies[el]))
           func.apply(this, args)
           appData.setTransformerError({ error: "", projectIdx, queryIdx })

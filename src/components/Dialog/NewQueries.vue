@@ -32,11 +32,10 @@
         <Dropdown
           v-model="v$.projectselected.$model"
           :options="projectList"
-          option-label="name"
+          option-label="label"
           option-value="key"
           :placeholder="$t(`components.dialog.new-query.panel1.select1`)"
           :class="{ 'p-error': v$.projectselected.$invalid && submitted }"
-          @change="collectProject"
         />
         <small
           v-if="
@@ -63,6 +62,7 @@
           option-group-children="items"
           :placeholder="$t(`components.dialog.new-query.panel1.select2`)"
           :class="{ 'p-error': v$.connectionselected.$invalid && submitted }"
+          @change="handleConnection"
         />
         <small
           v-if="
@@ -162,10 +162,12 @@
         <Dropdown
           v-model="v$.tranformerselected.$model"
           :options="transformerList"
-          option-label="name"
-          option-value="name"
+          option-label="label"
+          option-group-label="label"
+          option-group-children="items"
           :placeholder="$t(`components.dialog.new-query.panel2.select1`)"
           :class="{ 'p-error': v$.tranformerselected.$invalid && submitted }"
+          @change="handleTransformer"
         />
         <small
           v-if="
@@ -182,7 +184,6 @@
         >
       </div>
     </Panel>
-    <!-- <Button label="Submit" @click="handleconnectionstore" /> -->
     <template #footer>
       <Button
         :label="$t(`components.dialog.new-query.footer.cancel`)"
@@ -206,12 +207,11 @@
   import InputText from "primevue/inputtext"
   import Button from "primevue/button"
   import Panel from "primevue/panel"
-  import Projects from "@/store/Modules/Projects"
+  import AppData from "@/store/Modules/Projects"
   import { getModule } from "vuex-module-decorators"
-  const appProjects = getModule(Projects)
+  const appData = getModule(AppData)
   import { required } from "@vuelidate/validators"
   import { useVuelidate } from "@vuelidate/core"
-  //   console.log(appProjects.projectList)
 
   export default {
     name: "NewQuery",
@@ -239,6 +239,8 @@
         projectselected: null,
         connectionselected: null,
         tranformerselected: null,
+        transformdata: null,
+        connectiondata: null,
         submitted: false,
         displayModal: true,
       }
@@ -256,48 +258,68 @@
     },
     computed: {
       projectList() {
-        return appProjects.projectsList
+        return appData.projectsList
       },
       connectionList() {
-        console.log(appProjects.connectionsList(0))
-        // if(this.projectselected===this.projectList.name){
-        return appProjects.connectionsList(0)
-        // }
+        return appData.connectionsList(0)
       },
       transformerList() {
-        console.log(appProjects.transformersList(0))
-        return appProjects.transformersList(0)
+        return appData.transformersList(0)
       },
     },
     methods: {
-      collectProject() {
-        appProjects.selectedProject(this.projectselected)
-      },
       querycloseDialog() {
         this.$emit("close")
       },
+      handleConnection(el) {
+        this.connectiondata = el.value.key
+      },
+      handleTransformer(el) {
+        this.setTransformerCode(el.value)
+      },
+      setTransformerCode(value) {
+        const projectIdx = appData.list[0].list.findIndex(
+          (el) => el.id == this.projectselected
+        )
+        let transformercode
+        if (value.scope == "local") {
+          transformercode = appData.list[0].list[
+            projectIdx
+          ].transformers.list.find((el) => el.id == value.key)
+        } else {
+          transformercode = appData.list[2].list.find((el) => {
+            return el.id == value.key
+          })
+        }
+        this.transformdata = transformercode
+      },
       handlequerystore(isFormValid) {
-        const projectIdx = appProjects.projectList.findIndex(
-          (el) => el.name == this.projectselected
+        const projectIdx = appData.list[0].list.findIndex(
+          (el) => el.id == this.projectselected
         )
         const data = {
-          name: this.projectselected,
-          projectid: projectIdx,
-          list: {
+          projectIdx: projectIdx,
+          data: {
             name: this.name,
+            label: this.name,
+            id: Math.random()
+              .toString(36)
+              .replace(/[^a-z]+/g, "")
+              .substr(2, 10),
             description: this.description,
-            connection: this.connectionselected,
+            connection: this.connectiondata,
             icon: this.icon,
             query: this.query,
             type: "query",
-            tranformer: this.tranformerselected,
+            tranformer: this.transformdata,
+            dataPath: "",
           },
         }
         this.submitted = true
         if (!isFormValid) {
           return
         }
-        appProjects.addNewQuery(data)
+        appData.addNewQuery(data)
         this.$emit("close")
       },
     },

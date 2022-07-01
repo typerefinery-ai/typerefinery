@@ -96,15 +96,14 @@
 
 <script>
   import Dialog from "primevue/dialog"
-  import Dropdown from "primevue/dropdown"
   import Panel from "primevue/panel"
   import InputText from "primevue/inputtext"
   import Button from "primevue/button"
-  import Projects from "@/store/Modules/Projects"
+  import AppData from "@/store/Modules/Projects"
   import { getModule } from "vuex-module-decorators"
   import { required } from "@vuelidate/validators"
   import { useVuelidate } from "@vuelidate/core"
-  const appProjects = getModule(Projects)
+  const appData = getModule(AppData)
 
   export default {
     name: "NewProject",
@@ -113,7 +112,6 @@
       Panel,
       InputText,
       Button,
-      Dropdown,
     },
     props: {
       projectdialog: { type: Boolean, default: false },
@@ -147,48 +145,102 @@
       handleProjectstore(isFormValid) {
         const data = {
           type: "project",
-          name: this.name,
+          id: Math.random()
+            .toString(36)
+            .replace(/[^a-z]+/g, "")
+            .substr(2, 10),
+          label: this.name,
           description: this.description,
           icon: this.icon,
-          queries: {
-            type: "queries",
-            expanded: true,
-            list: [
-              {
-                name: "query ",
-                description: "",
-                type: "query",
-                connection: "connection 2",
-                icon: "connection",
-                query: "",
-                transformer: "transformer 1",
-              },
-            ],
-          },
+          expanded: false,
           connections: {
             type: "connections",
+            icon: "",
             expanded: true,
-            icon: "connection",
             list: [
               {
-                name: "connection ",
-                title: "connection 1",
+                type: "connection",
+                id: "connection1",
+                label: "connection 1",
                 icon: "connection",
                 description: "",
-                type: "connection",
+                port: "",
+                host: "",
               },
             ],
           },
-
-          transformers: {
-            type: "transformers",
+          queries: {
+            type: "queries",
+            icon: "",
+            expanded: true,
             list: [
               {
-                name: "Transformer ",
-                title: "Transformer 1",
-                icon: "connection",
+                type: "query",
+                id: "query1",
+                label: "query 1",
+                icon: "query",
                 description: "",
+                query: "",
+                dataPath: "",
+                connection: "connection1", // id
+                transformer: {
+                  type: "transformer",
+                  id: "transformer1",
+                  label: "local transformer 1",
+                  icon: "transformer",
+                  scope: "local",
+                  description: "",
+                  code: "",
+                  error: "",
+                  logs: [""],
+                },
+                algorithm: {
+                  type: "algorithm",
+                  id: "algorithm1",
+                  label: "algorithm 1",
+                  icon: "algorithm",
+                  scope: "local",
+                  description: "",
+                  code: "",
+                  error: "",
+                  logs: [""],
+                },
+              },
+            ],
+          },
+          transformers: {
+            type: "tranformers",
+            icon: "",
+            expanded: true,
+            list: [
+              {
                 type: "transformer",
+                id: "transformer1",
+                label: "local transformer 1",
+                icon: "transformer",
+                scope: "local",
+                description: "",
+                code: "",
+                error: "",
+                logs: [""],
+              },
+            ],
+          },
+          algorithms: {
+            type: "algorithms",
+            icon: "",
+            expanded: true,
+            list: [
+              {
+                type: "algorithm",
+                id: "algorithm1",
+                label: "algorithm 1",
+                icon: "algorithm",
+                scope: "local",
+                description: "",
+                code: "",
+                error: "",
+                logs: [""],
               },
             ],
           },
@@ -200,7 +252,7 @@
         if (!isFormValid) {
           return
         }
-        appProjects.addToList(data)
+        appData.addNewProject(data)
         this.$emit("close")
       },
     },

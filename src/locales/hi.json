@@ -12,6 +12,7 @@
       "new-query": "नया प्रश्न",
       "new-connection": "नया कनेक्शन",
       "new-transformer": "नया ट्रांसफार्मर",
+      "new-algorithm": "नया एल्गोरिथम",
       "load-data": "लोड डेटा",
       "load-links": "लोड लिंक",
       "connections": "कनेक्शन",
@@ -144,6 +145,26 @@
           "update": "अपडेट करें"
         },
         "updated-header": "ट्रांसफार्मर अपडेट करें"
+      },
+      "new-algorithm": {
+        "header": "नया एल्गोरिथम",
+        "panel1": {
+          "header": "परियोजना की जानकारी",
+          "label1": "परियोजनाओं",
+          "select": "परियोजना का चयन करें"
+        },
+        "panel2": {
+          "header": "एल्गोरिथम की जानकारी",
+          "name": "नाम",
+          "description": "विवरण",
+          "icon": "आइकन"
+        },
+        "footer": {
+          "cancel": "रद्द करना",
+          "save": "बचाना",
+          "update": "अपडेट करें"
+        },
+        "updated-header": "एल्गोरिथम अपडेट करें"
       }
     },
     "transformer": {

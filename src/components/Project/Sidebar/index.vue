@@ -167,14 +167,38 @@
             this.openTab(data)
             return
           case "connection":
-            path = `${data.parent}/${data.name}`
-            appData.toggleConnectionDialog()
-            appData.setTreeNodePath(path)
-            return
+            if (data.parent) {
+              path = `${data.parent}/${data.id}`
+              appData.toggleConnectionDialog()
+              appData.setTreeNodePath(path)
+              return
+            } else {
+              path = `${data.id}`
+              appData.toggleConnectionDialog()
+              appData.setTreeNodePath(path)
+              return
+            }
           case "transformer":
-            path = `${data.parent}/${data.name}`
-            appData.toggleTransformerDialog()
-            appData.setTreeNodePath(path)
+            if (data.parent) {
+              path = `${data.parent}/${data.id}`
+              appData.toggleTransformerDialog()
+              appData.setTreeNodePath(path)
+            } else {
+              path = `${data.id}`
+              appData.toggleTransformerDialog()
+              appData.setTreeNodePath(path)
+            }
+            return
+          case "algorithm":
+            if (data.parent) {
+              path = `${data.parent}/${data.id}`
+              appData.toggleAlgorithmDialog()
+              appData.setTreeNodePath(path)
+            } else {
+              path = `${data.id}`
+              appData.toggleAlgorithmDialog()
+              appData.setTreeNodePath(path)
+            }
             return
         }
       },
