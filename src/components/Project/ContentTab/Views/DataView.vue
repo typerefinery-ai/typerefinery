@@ -1,5 +1,9 @@
 <template>
   <div class="data-view-wrapper">
+    <div class="refresh-data">
+      <!-- <Button icon="pi pi-refresh" /> -->
+      <Button label="Refresh" icon="pi pi-refresh" />
+    </div>
     <DataTable
       :value="data"
       striped-rows
@@ -17,9 +21,10 @@
 <script>
   import DataTable from "primevue/datatable"
   import Column from "primevue/column"
+  import Button from "primevue/button"
   export default {
     name: "DataView",
-    components: { DataTable, Column },
+    components: { DataTable, Column, Button },
     data() {
       return {
         data: [
@@ -42,3 +47,9 @@
     },
   }
 </script>
+
+<style scoped lang="scss">
+  .refresh-data {
+    text-align: right;
+  }
+</style>
