@@ -261,10 +261,16 @@
         return appData.projectsList
       },
       connectionList() {
-        return appData.connectionsList(0)
+          let projectIdx= appData.list[0].list.findIndex(
+          (el) => el.id == this.projectselected
+        )      
+        return projectIdx== -1? []:appData.connectionsList(projectIdx)
       },
       transformerList() {
-        return appData.transformersList(0)
+         let projectIdx= appData.list[0].list.findIndex(
+          (el) => el.id == this.projectselected
+        )    
+        return projectIdx== -1? []:appData.transformersList(projectIdx)
       },
     },
     methods: {
