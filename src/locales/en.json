@@ -137,7 +137,8 @@
           "header": "Transformer Info",
           "name": "Name",
           "description": "Description",
-          "icon": "Icon"
+          "icon": "Icon",
+          "query": "Query"
         },
         "footer": {
           "cancel": "Cancel",
