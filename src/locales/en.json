@@ -182,6 +182,11 @@
       "sure": "Are you sure?",
       "confirm-msg": "Transformer code inside editor will be overwritten."
     },
+    "tabquery": {
+      "connection": "Connections",
+      "select": "Select a connection",
+      "db": "Database"
+    },
     "algorithm": {
       "label": "Algorithm",
       "select": "Select an Algorithm",

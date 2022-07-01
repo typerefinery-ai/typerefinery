@@ -35,6 +35,25 @@
         @change="handleDropdown($event)"
       />
     </div>
+    <div class="field">
+      <label>{{ $t(`components.tabquery.connection`) }}</label>
+      <Dropdown
+        v-model="selectedconnection"
+        :options="connectionList"
+         option-label="label"
+        option-group-label="label"
+        option-group-children="items"
+        :placeholder="$t(`components.tabquery.select`)"
+        @change="handler"
+      />
+    </div>
+     <div class="field">
+      <label for="database">{{ $t(`components.tabquery.db`) }}</label>
+      <InputText
+        id="database"
+        :model-value="db"
+      />
+    </div>
   </div>
 </template>
 
@@ -48,6 +67,11 @@
   export default {
     name: "QueryInfo",
     components: { InputText, Dropdown, Textarea },
+     data(){
+      return{
+      selectedconnection: null,
+      }
+    },
     props: {
       tab: { type: Object, required: true },
     },
@@ -60,6 +84,10 @@
       icon() {
         const { projectIdx, queryIdx } = this.tab
         return appData.list[0].list[projectIdx].queries.list[queryIdx].icon
+      },
+      connectionList() {
+          const { projectIdx } = this.tab 
+         return projectIdx== -1? []:appData.connectionsList(projectIdx)
       },
       tranformer() {
         const { projectIdx, queryIdx } = this.tab
