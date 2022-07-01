@@ -98,7 +98,7 @@
           >{{ v$.icon.required.$message.replace("Value", "Icon") }}</small
         >
       </div>
-       <div class="field">
+      <div class="field">
         <label for="host" :class="{ 'p-error': v$.host.$invalid && submitted }">
           {{ $t("components.dialog.connections.info.host") + "*" }}</label
         >
@@ -113,7 +113,7 @@
           >{{ v$.host.required.$message.replace("Value", "Host") }}</small
         >
       </div>
-       <div class="field">
+      <div class="field">
         <label for="port" :class="{ 'p-error': v$.port.$invalid && submitted }">
           {{ $t("components.dialog.connections.info.port") + "*" }}</label
         >
@@ -186,8 +186,8 @@
         expanded: "",
         description: "",
         icon: "",
-         host:"",
-        port:"",
+        host: "",
+        port: "",
         display: true,
         selected: null,
         submitted: false,
@@ -204,8 +204,8 @@
         name: { required },
         description: { required },
         icon: { required },
-         host:{required},
-        port:{required},
+        host: { required },
+        port: { required },
       }
     },
     computed: {
@@ -224,8 +224,8 @@
           this.selectedEditNode = true
 
           // set project
-          const projects = appData.list[0].list
-          const projectIndex = appData.list[0].list.findIndex(
+          const projects = appData.allProjects
+          const projectIndex = appData.allProjects.findIndex(
             (el) => el.id == nodeData[0]
           )
           this.projectsIndex = projectIndex
@@ -242,20 +242,22 @@
           this.v$.name.$model = connection.label
           this.v$.description.$model = connection.description
           this.v$.icon.$model = connection.icon
+          this.v$.host.$model = connection.host
+          this.v$.port.$model = connection.port
         } else {
           this.selectedEditNode = true
           // set connection
-          const connectionIndex = appData.list[1].list.findIndex(
+          const connectionIndex = appData.globalConnections.findIndex(
             (el) => el.id == nodeData[0]
           )
           this.connectionsIndex = connectionIndex
           // for connection data
-          const connection = appData.list[1].list.find(
-            (el) => el.id == nodeData[0]
-          )
+          const connection = appData.globalConnections[connectionIndex]
           this.v$.name.$model = connection.label
           this.v$.description.$model = connection.description
           this.v$.icon.$model = connection.icon
+          this.v$.host.$model = connection.host
+          this.v$.port.$model = connection.port
         }
       }
     },
@@ -273,9 +275,11 @@
             connectionIdx: this.connectionsIndex,
             projectIdx: -1,
             data: {
-              ...appData.list[1].list[this.connectionsIndex],
+              ...appData.globalConnections[this.connectionsIndex],
               label: this.v$.name.$model,
               icon: this.v$.icon.$model,
+              host: this.v$.host.$model,
+              port: this.v$.port.$model,
               description: this.v$.description.$model,
               type: "connection",
               scope: "local",
@@ -286,12 +290,12 @@
             connectionIdx: this.connectionsIndex,
             projectIdx: this.projectsIndex,
             data: {
-              ...appData.list[0].list[this.projectsIndex].connections.list[
+              ...appData.allProjects[this.projectsIndex].connections.list[
                 this.connectionsIndex
               ],
               label: this.v$.name.$model,
-              // host: "",
-              // port: "",
+              host: this.v$.host.$model,
+              port: this.v$.port.$model,
               icon: this.v$.icon.$model,
               description: this.v$.description.$model,
               type: "connection",
@@ -312,7 +316,7 @@
 
       // new dialog
       handleconnectionstore(isFormValid) {
-        const projectIndex = appData.list[0].list.findIndex(
+        const projectIndex = appData.allProjects.findIndex(
           (el) => el.id == this.selected
         )
         const data = {
