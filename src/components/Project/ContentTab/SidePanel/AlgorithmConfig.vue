@@ -63,13 +63,13 @@
             <Button
               class="p-button-raised mr-2"
               :disabled="!algorithmName.length"
-              label="Save as global"
+              :label="$t(`buttons.save-as-global`)"
               @click="saveAlgorithm('global')"
             />
             <Button
               class="p-button-raised p-button-success"
               :disabled="!algorithmName.length"
-              label="Save as local"
+              :label="$t(`buttons.save-as-local`)"
               @click="saveAlgorithm('local')"
             />
           </div>

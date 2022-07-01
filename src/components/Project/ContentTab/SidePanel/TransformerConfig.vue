@@ -65,13 +65,13 @@
             <Button
               class="p-button-raised mr-2"
               :disabled="!transformerName.length"
-              label="Save as global"
+              :label="$t(`buttons.save-as-global`)"
               @click="saveTransformer('global')"
             />
             <Button
               class="p-button-raised p-button-success"
               :disabled="!transformerName.length"
-              label="Save as local"
+              :label="$t(`buttons.save-as-local`)"
               @click="saveTransformer('local')"
             />
           </div>

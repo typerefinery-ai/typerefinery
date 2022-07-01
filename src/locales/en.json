@@ -213,7 +213,9 @@
     "save": "Save",
     "save-as": "Save as",
     "no": "No",
-    "yes": "Yes"
+    "yes": "Yes",
+    "save-as-local": "Save as Local",
+    "save-as-global": "Save as Global"
   },
   "help": {
     "log": "Log to the console"

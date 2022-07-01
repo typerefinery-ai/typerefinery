@@ -774,10 +774,16 @@ def main(dbhost, dbport, dbdatabase, dbquery, outputfile, logger: Logger):
   ]
 
   /**** Getters ****/
+  // Data for Dropdown(List)
   get projectsList() {
     return this.list[0].list.map((el) => {
       return { label: el.label, key: el.id }
     })
+  }
+
+  // Actual Data
+  get allProjects() {
+    return this.list[0].list
   }
 
   get connectionsList() {
@@ -801,6 +807,16 @@ def main(dbhost, dbport, dbdatabase, dbquery, outputfile, logger: Logger):
     }
   }
 
+  get localConnections() {
+    return (projectIdx) => {
+      return this.list[0].list[projectIdx].connections.list
+    }
+  }
+
+  get globalConnections() {
+    return this.list[1].list
+  }
+
   get transformersList() {
     return (projectIdx) => {
       return [
@@ -822,6 +838,16 @@ def main(dbhost, dbport, dbdatabase, dbquery, outputfile, logger: Logger):
     }
   }
 
+  get localTransformers() {
+    return (projectIdx) => {
+      return this.list[0].list[projectIdx].transformers.list
+    }
+  }
+
+  get globalTransformers() {
+    return this.list[2].list
+  }
+
   get algorithmsList() {
     return (projectIdx) => {
       return [
@@ -841,6 +867,16 @@ def main(dbhost, dbport, dbdatabase, dbquery, outputfile, logger: Logger):
         },
       ]
     }
+  }
+
+  get localAlgorithms() {
+    return (projectIdx) => {
+      return this.list[0].list[projectIdx].algorithms.list
+    }
+  }
+
+  get globalAlgorithms() {
+    return this.list[2].list
   }
 
   // Query Transformer
