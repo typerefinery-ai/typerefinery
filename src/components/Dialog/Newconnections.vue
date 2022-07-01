@@ -98,6 +98,36 @@
           >{{ v$.icon.required.$message.replace("Value", "Icon") }}</small
         >
       </div>
+       <div class="field">
+        <label for="host" :class="{ 'p-error': v$.host.$invalid && submitted }">
+          {{ $t("components.dialog.connections.info.host") + "*" }}</label
+        >
+        <InputText
+          id="host"
+          v-model="v$.host.$model"
+          :class="{ 'p-invalid': v$.host.$invalid && submitted }"
+        />
+        <small
+          v-if="(v$.host.$invalid && submitted) || v$.host.$pending.$response"
+          class="p-error"
+          >{{ v$.host.required.$message.replace("Value", "Host") }}</small
+        >
+      </div>
+       <div class="field">
+        <label for="port" :class="{ 'p-error': v$.port.$invalid && submitted }">
+          {{ $t("components.dialog.connections.info.port") + "*" }}</label
+        >
+        <InputText
+          id="port"
+          v-model="v$.port.$model"
+          :class="{ 'p-invalid': v$.port.$invalid && submitted }"
+        />
+        <small
+          v-if="(v$.port.$invalid && submitted) || v$.port.$pending.$response"
+          class="p-error"
+          >{{ v$.port.required.$message.replace("Value", "Port") }}</small
+        >
+      </div>
     </Panel>
     <template #footer>
       <Button
@@ -156,6 +186,8 @@
         expanded: "",
         description: "",
         icon: "",
+         host:"",
+        port:"",
         display: true,
         selected: null,
         submitted: false,
@@ -172,6 +204,8 @@
         name: { required },
         description: { required },
         icon: { required },
+         host:{required},
+        port:{required},
       }
     },
     computed: {
@@ -286,8 +320,8 @@
           projectIdx: projectIndex,
           data: {
             label: this.name,
-            // host: "",
-            // port: "",
+            host: this.host,
+            port: this.port,
             icon: this.icon,
             description: this.description,
             type: "connection",

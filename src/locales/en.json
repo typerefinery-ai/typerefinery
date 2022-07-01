@@ -97,6 +97,8 @@
           "select": "Select project",
           "connection-info": "Connections Info",
           "name": "Name",
+          "host": "Host",
+          "port": "Port",
           "description": "Description",
           "icon": "Icon",
           "submit": "Submit"
