@@ -248,6 +248,7 @@
               icon: this.v$.icon.$model,
               description: this.v$.description.$model,
               type: "algorithm",
+              scope: "global",
             },
           }
         } else {
@@ -264,6 +265,7 @@
               icon: this.v$.icon.$model,
               description: this.v$.description.$model,
               type: "algorithm",
+              scope: "local",
             },
           }
         }
@@ -315,10 +317,10 @@
     height: 100vh;
     width: 40vw;
     .p-dropdown {
-      width: 80%;
+      width: 100%;
     }
     input {
-      width: 80%;
+      width: 100%;
     }
     .field {
       display: grid;

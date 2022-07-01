@@ -121,7 +121,9 @@
           "icon": "Icon",
           "query": "Query",
           "transformer": "Tranformer",
-          "select1": "Select transformer"
+          "select1": "Select transformer",
+          "algorithm": "Algorithm",
+          "selectAlgo1": "Select algorithm"
         },
         "footer": {
           "cancel": "Cancel",

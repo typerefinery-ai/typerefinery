@@ -137,21 +137,23 @@
       </div>
 
       <div class="field">
-        <label
-          for="query"
-          :class="{ 'p-error': v$.query.$invalid && submitted }"
-          >{{ $t("components.dialog.new-query.panel2.query") }}</label
-        >
-        <InputText
+        <label for="query">{{
+          $t("components.dialog.new-query.panel2.query")
+        }}</label>
+        <!--  <InputText
           id="query"
           v-model="v$.query.$model"
           :class="{ 'p-invalid': v$.query.$invalid && submitted }"
+        /> -->
+        <codemirror
+          v-model="query"
+          placeholder="Code goes here..."
+          :style="{ height: '20vh' }"
+          :autofocus="true"
+          :indent-with-tab="true"
+          :tab-zize="2"
+          :extensions="extensions"
         />
-        <small
-          v-if="(v$.query.$invalid && submitted) || v$.query.$pending.$response"
-          class="p-error"
-          >{{ v$.query.required.$message.replace("Value", "Query") }}</small
-        >
       </div>
       <div class="field">
         <label
@@ -180,6 +182,33 @@
               "Value",
               "Transformer"
             )
+          }}</small
+        >
+      </div>
+      <div class="field">
+        <label
+          for="expand"
+          :class="{ 'p-error': v$.algorithmselected.$invalid && submitted }"
+          >{{ $t("components.dialog.new-query.panel2.algorithm") }}</label
+        >
+        <Dropdown
+          v-model="v$.algorithmselected.$model"
+          :options="algorithmList"
+          option-label="label"
+          option-group-label="label"
+          option-group-children="items"
+          :placeholder="$t(`components.dialog.new-query.panel2.selectAlgo1`)"
+          :class="{ 'p-error': v$.algorithmselected.$invalid && submitted }"
+          @change="handleAlgorithm"
+        />
+        <small
+          v-if="
+            (v$.algorithmselected.$invalid && submitted) ||
+            v$.algorithmselected.$pending.$response
+          "
+          class="p-error"
+          >{{
+            v$.algorithmselected.required.$message.replace("Value", "Algorithm")
           }}</small
         >
       </div>
@@ -212,6 +241,11 @@
   const appData = getModule(AppData)
   import { required } from "@vuelidate/validators"
   import { useVuelidate } from "@vuelidate/core"
+  import { Codemirror } from "vue-codemirror"
+  import { javascript } from "@codemirror/lang-javascript"
+  import { oneDark } from "@codemirror/theme-one-dark"
+  import AppSettings from "@/store/Modules/AppSettings"
+  const appSettings = getModule(AppSettings)
 
   export default {
     name: "NewQuery",
@@ -221,6 +255,7 @@
       Button,
       Panel,
       Dropdown,
+      Codemirror,
     },
     props: {
       querydialog: { type: Boolean, default: false },
@@ -239,10 +274,12 @@
         projectselected: null,
         connectionselected: null,
         tranformerselected: null,
+        algorithmselected: null,
         transformdata: null,
         connectiondata: null,
         submitted: false,
         displayModal: true,
+        algorithmdata: null,
       }
     },
     validations() {
@@ -252,8 +289,8 @@
         name: { required },
         description: { required },
         icon: { required },
-        query: { required },
         tranformerselected: { required },
+        algorithmselected: { required },
       }
     },
     computed: {
@@ -261,16 +298,28 @@
         return appData.projectsList
       },
       connectionList() {
-          let projectIdx= appData.list[0].list.findIndex(
+        let projectIdx = appData.list[0].list.findIndex(
           (el) => el.id == this.projectselected
-        )      
-        return projectIdx== -1? []:appData.connectionsList(projectIdx)
+        )
+        return projectIdx == -1 ? [] : appData.connectionsList(projectIdx)
       },
       transformerList() {
-         let projectIdx= appData.list[0].list.findIndex(
+        let projectIdx = appData.list[0].list.findIndex(
           (el) => el.id == this.projectselected
-        )    
-        return projectIdx== -1? []:appData.transformersList(projectIdx)
+        )
+        return projectIdx == -1 ? [] : appData.transformersList(projectIdx)
+      },
+      algorithmList() {
+        let projectIdx = appData.list[0].list.findIndex(
+          (el) => el.id == this.projectselected
+        )
+
+        return projectIdx == -1 ? [] : appData.algorithmsList(projectIdx)
+      },
+      extensions() {
+        return appSettings.theme === "dark"
+          ? [javascript(), oneDark]
+          : [javascript()]
       },
     },
     methods: {
@@ -282,6 +331,9 @@
       },
       handleTransformer(el) {
         this.setTransformerCode(el.value)
+      },
+      handleAlgorithm(el) {
+        this.setAlgorithmCode(el.value)
       },
       setTransformerCode(value) {
         const projectIdx = appData.list[0].list.findIndex(
@@ -298,6 +350,22 @@
           })
         }
         this.transformdata = transformercode
+      },
+      setAlgorithmCode(value) {
+        const projectIdx = appData.list[0].list.findIndex(
+          (el) => el.id == this.projectselected
+        )
+        let algorithmcode
+        if (value.scope == "local") {
+          algorithmcode = appData.list[0].list[projectIdx].algorithms.list.find(
+            (el) => el.id == value.key
+          )
+        } else {
+          algorithmcode = appData.list[3].list.find((el) => {
+            return el.id == value.key
+          })
+        }
+        this.algorithmdata = algorithmcode
       },
       handlequerystore(isFormValid) {
         const projectIdx = appData.list[0].list.findIndex(
@@ -318,6 +386,7 @@
             query: this.query,
             type: "query",
             tranformer: this.transformdata,
+            algorithm: this.algorithmdata,
             dataPath: "",
           },
         }
@@ -338,6 +407,10 @@
   .query-dialog {
     height: 100vh;
     width: 40vw;
+
+    .code-mirror {
+      width: 80%;
+    }
     .p-dropdown {
       width: 80%;
     }

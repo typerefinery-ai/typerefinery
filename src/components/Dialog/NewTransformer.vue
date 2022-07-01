@@ -113,11 +113,13 @@
           for="query"
           :class="{ 'p-error': v$.query.$invalid && submitted }"
         >
-          {{ $t("components.dialog.new-transformer.panel2.query") + "*" }}</label
+          {{
+            $t("components.dialog.new-transformer.panel2.query") + "*"
+          }}</label
         >
         <codemirror
-          class="codemirror"
           v-model="query"
+          class="codemirror"
           placeholder="Code goes here..."
           :style="{ height: '20vh' }"
           :autofocus="true"
@@ -159,228 +161,232 @@
 </template>
 
 <script>
-import Dialog from "primevue/dialog"
-//import Avatar from "primevue/avatar"
-import Dropdown from "primevue/dropdown"
-import InputText from "primevue/inputtext"
-import Button from "primevue/button"
-import Panel from "primevue/panel"
-import Projects from "@/store/Modules/Projects"
-import { getModule } from "vuex-module-decorators"
-import { required } from "@vuelidate/validators"
-import { useVuelidate } from "@vuelidate/core"
-import { oneDark } from "@codemirror/theme-one-dark"
-import { Codemirror } from "vue-codemirror"
-import { javascript } from "@codemirror/lang-javascript"
-import AppSettings from "@/store/Modules/AppSettings"
-const appSettings = getModule(AppSettings)
-const appData = getModule(Projects)
+  import Dialog from "primevue/dialog"
+  //import Avatar from "primevue/avatar"
+  import Dropdown from "primevue/dropdown"
+  import InputText from "primevue/inputtext"
+  import Button from "primevue/button"
+  import Panel from "primevue/panel"
+  import Projects from "@/store/Modules/Projects"
+  import { getModule } from "vuex-module-decorators"
+  import { required } from "@vuelidate/validators"
+  import { useVuelidate } from "@vuelidate/core"
+  import { oneDark } from "@codemirror/theme-one-dark"
+  import { Codemirror } from "vue-codemirror"
+  import { javascript } from "@codemirror/lang-javascript"
+  import AppSettings from "@/store/Modules/AppSettings"
+  const appSettings = getModule(AppSettings)
+  const appData = getModule(Projects)
 
-export default {
-  name: "NewTransformers",
-  components: {
-    Dialog,
-    Panel,
-    InputText,
-    Button,
-    Dropdown,
-    Codemirror,
-  },
-  props: {
-    transformerdialog: { type: Boolean, default: false },
-  },
-  emits: ["close"],
-  setup: () => ({ v$: useVuelidate() }),
-  data() {
-    return {
-      type: "Transformer",
-      name: "",
-      expanded: "",
-      description: "",
-      icon: "",
-      query: "",
-      display: true,
-      selected: null,
-      submitted: false,
-      displayModal: true,
-      selectedEditNode: false,
-      transformersIndex: null,
-      projectsIndex: null,
-      updateData: null,
-      lengthData: null,
-    }
-  },
-  validations() {
-    return {
-      name: { required },
-      description: { required },
-      icon: { required },
-      query: { required },
-    }
-  },
-  computed: {
-    projectList() {
-      return appData.projectsList
+  export default {
+    name: "NewTransformers",
+    components: {
+      Dialog,
+      Panel,
+      InputText,
+      Button,
+      Dropdown,
+      Codemirror,
     },
-    extensions() {
-      return appSettings.theme === "dark"
-        ? [javascript(), oneDark]
-        : [javascript()]
+    props: {
+      transformerdialog: { type: Boolean, default: false },
     },
-  },
-  mounted() {
-    if (appData.treeNodePath) {
-      const nodeData = appData.treeNodePath.split("/")
-
-      // For local
-      this.lengthData = nodeData
-      if (nodeData.length == 2) {
-        this.selectedEditNode = true
-
-        // set project
-        const projects = appData.list[0].list
-        const projectIndex = appData.list[0].list.findIndex(
-          (el) => el.id == nodeData[0]
-        )
-        this.projectsIndex = projectIndex
-        this.selected = projects[projectIndex].id
-        // transformer index
-        const transformerIndex = projects[
-          projectIndex
-        ].transformers.list.findIndex((el) => el.id == nodeData[1])
-
-        this.transformersIndex = transformerIndex
-
-        // for transformer data
-        const transformer = projects[projectIndex].transformers.list.find(
-          (el) => el.id == nodeData[1]
-        )
-        this.v$.name.$model = transformer.label
-        this.v$.description.$model = transformer.description
-        this.v$.icon.$model = transformer.icon
-      } else {
-        this.selectedEditNode = true
-        // set transformer
-        const transformerIndex = appData.list[2].list.findIndex(
-          (el) => el.id == nodeData[0]
-        )
-        this.transformersIndex = transformerIndex
-        // for transformer data
-        const transformer = appData.list[2].list.find(
-          (el) => el.id == nodeData[0]
-        )
-        this.v$.name.$model = transformer.label
-        this.v$.description.$model = transformer.description
-        this.v$.icon.$model = transformer.icon
+    emits: ["close"],
+    setup: () => ({ v$: useVuelidate() }),
+    data() {
+      return {
+        type: "Transformer",
+        name: "",
+        expanded: "",
+        description: "",
+        icon: "",
+        query: "",
+        display: true,
+        selected: null,
+        submitted: false,
+        displayModal: true,
+        selectedEditNode: false,
+        transformersIndex: null,
+        projectsIndex: null,
+        updateData: null,
+        lengthData: null,
       }
-    }
-  },
-  methods: {
-    transformercloseDialog() {
-      appData.resetTreeNodePath()
-      this.$emit("close")
-      //clear store here for editnode
     },
-    //update dialog
-    handleEditedTransformerStore(isFormValid) {
-      let data
-      if (this.lengthData.length == 1) {
-        data = {
-          transformerIdx: this.transformersIndex,
-          projectIdx: -1,
-          data: {
-            ...appData.list[2].list[this.transformersIndex],
-            // name: this.v$.name.$model,
-            label: this.v$.name.$model,
-            icon: this.v$.icon.$model,
-            description: this.v$.description.$model,
-            type: "transformer",
-          },
-        }
-      } else {
-        data = {
-          transformerIdx: this.transformersIndex,
-          projectIdx: this.projectsIndex,
-          data: {
-            ...appData.list[0].list[this.projectsIndex].transformers.list[
-              this.transformersIndex
-            ],
-            label: this.v$.name.$model,
-            icon: this.v$.icon.$model,
-            description: this.v$.description.$model,
-            type: "transformer",
-          },
+    validations() {
+      return {
+        name: { required },
+        description: { required },
+        icon: { required },
+        // selected: { required },
+        query: { required },
+      }
+    },
+    computed: {
+      projectList() {
+        return appData.projectsList
+      },
+      extensions() {
+        return appSettings.theme === "dark"
+          ? [javascript(), oneDark]
+          : [javascript()]
+      },
+    },
+    mounted() {
+      if (appData.treeNodePath) {
+        const nodeData = appData.treeNodePath.split("/")
+
+        // For local
+        this.lengthData = nodeData
+        if (nodeData.length == 2) {
+          this.selectedEditNode = true
+
+          // set project
+          const projects = appData.allProjects
+          const projectIndex = appData.allProjects.findIndex(
+            (el) => el.id == nodeData[0]
+          )
+          this.projectsIndex = projectIndex
+          this.selected = projects[projectIndex].id
+          // transformer index
+          const transformerIndex = projects[
+            projectIndex
+          ].transformers.list.findIndex((el) => el.id == nodeData[1])
+
+          this.transformersIndex = transformerIndex
+
+          // for transformer data
+          const transformer =
+            projects[projectIndex].transformers.list[transformerIndex]
+          this.v$.name.$model = transformer.label
+          this.v$.description.$model = transformer.description
+          this.v$.icon.$model = transformer.icon
+          this.v$.query.$model = transformer.query
+        } else {
+          this.selectedEditNode = true
+          // set transformer
+          const transformerIndex = appData.globalTransformers.findIndex(
+            (el) => el.id == nodeData[0]
+          )
+          this.transformersIndex = transformerIndex
+          // for transformer data
+          const transformer = appData.globalTransformers[transformerIndex]
+          this.v$.name.$model = transformer.label
+          this.v$.description.$model = transformer.description
+          this.v$.icon.$model = transformer.icon
+          this.v$.query.$model = transformer.query
         }
       }
-      this.updateData = data
-
-      this.submitted = true
-      // stop here if form is invalid
-      if (!isFormValid) {
-        return
-      }
-
-      appData.editTransformer(data)
-      this.transformercloseDialog()
     },
+    methods: {
+      transformercloseDialog() {
+        appData.resetTreeNodePath()
+        this.$emit("close")
+        //clear store here for editnode
+      },
+      //update dialog
+      handleEditedTransformerStore(isFormValid) {
+        let data
+        if (this.lengthData.length == 1) {
+          data = {
+            transformerIdx: this.transformersIndex,
+            projectIdx: -1,
+            data: {
+              ...appData.globalTransformers[this.transformersIndex],
+              // name: this.v$.name.$model,
+              label: this.v$.name.$model,
+              icon: this.v$.icon.$model,
+              description: this.v$.description.$model,
+              query: this.v$.query.$model,
+              type: "transformer",
+              scope: "global",
+            },
+          }
+        } else {
+          data = {
+            transformerIdx: this.transformersIndex,
+            projectIdx: this.projectsIndex,
+            data: {
+              ...appData.allProjects[this.projectsIndex].transformers.list[
+                this.transformersIndex
+              ],
+              label: this.v$.name.$model,
+              icon: this.v$.icon.$model,
+              description: this.v$.description.$model,
+              query: this.v$.query.$model,
+              type: "transformer",
+              scope: "local",
+            },
+          }
+        }
+        this.updateData = data
 
-    // new dialog
-    handletransformerstore(isFormValid) {
-      const projectIndex = appData.list[0].list.findIndex(
-        (el) => el.id == this.selected
-      )
-      const data = {
-        name: this.selected,
-        projectIdx: projectIndex,
-        data: {
-          // name: this.name,
-          label: this.name,
-          icon: this.icon,
-          description: this.description,
-          type: "transformer",
-          query:this.query,
-          id: Math.random()
-            .toString(36)
-            .replace(/[^a-z]+/g, "")
-            .substr(2, 10),
-        },
-      }
-      this.submitted = true
-      // stop here if form is invalid
-      if (!isFormValid) {
-        return
-      }
-      appData.addNewTransformer(data)
-      this.$emit("close")
+        this.submitted = true
+        // stop here if form is invalid
+        if (!isFormValid) {
+          return
+        }
+
+        appData.editTransformer(data)
+        this.transformercloseDialog()
+      },
+
+      // new dialog
+      handletransformerstore(isFormValid) {
+        const projectIndex = appData.allProjects.findIndex(
+          (el) => el.id == this.selected
+        )
+        const data = {
+          name: this.selected,
+          projectIdx: projectIndex,
+          data: {
+            // name: this.name,
+            label: this.name,
+            icon: this.icon,
+            description: this.description,
+            query: this.query,
+            type: "transformer",
+            id: Math.random()
+              .toString(36)
+              .replace(/[^a-z]+/g, "")
+              .substr(2, 10),
+          },
+        }
+        this.submitted = true
+        // stop here if form is invalid
+        if (!isFormValid) {
+          return
+        }
+        appData.addNewTransformer(data)
+        this.$emit("close")
+      },
     },
-  },
-}
+  }
 </script>
 <style lang="scss">
-.transformer-dialog {
-  height: 100vh;
-  width: 40vw;
-  .p-dropdown {
-    width: 80%;
-  }
-  input {
-    width: 80%;
-  }
-  .field {
-    display: grid;
-  }
-  .p-dialog-content {
-    height: 100%;
-  }
-  .panel2 {
-    margin-top: 10px;
-  }
-  .p-dialog-header {
-    padding: 1.25rem 1.8rem;
+  .transformer-dialog {
+    height: 100vh;
+    width: 40vw;
+    .p-dropdown {
+      width: 100%;
+    }
+    input {
+      width: 100%;
+    }
+    .field {
+      display: grid;
+    }
+    .p-dialog-content {
+      height: 100%;
+    }
+    .panel2 {
+      margin-top: 10px;
+    }
+    .p-dialog-header {
+      padding: 1.25rem 1.8rem;
 
-    .p-dialog-header-icons:last-of-type {
-      display: none;
+      .p-dialog-header-icons:last-of-type {
+        display: none;
+      }
     }
   }
-}
 </style>
