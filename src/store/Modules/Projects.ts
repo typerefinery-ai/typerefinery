@@ -876,7 +876,7 @@ def main(dbhost, dbport, dbdatabase, dbquery, outputfile, logger: Logger):
   }
 
   get globalAlgorithms() {
-    return this.list[2].list
+    return this.list[3].list
   }
 
   // Query Transformer

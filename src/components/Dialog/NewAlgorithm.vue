@@ -191,8 +191,8 @@
           this.selectedEditNode = true
 
           // set project
-          const projects = appData.list[0].list
-          const projectIndex = appData.list[0].list.findIndex(
+          const projects = appData.allProjects
+          const projectIndex = appData.allProjects.findIndex(
             (el) => el.id == nodeData[0]
           )
           this.projectsIndex = projectIndex
@@ -205,23 +205,20 @@
           this.algorithmsIndex = algorithmIndex
 
           // for algorithm data
-          const algorithm = projects[projectIndex].algorithms.list.find(
-            (el) => el.id == nodeData[1]
-          )
+          const algorithm =
+            projects[projectIndex].algorithms.list[algorithmIndex]
           this.v$.name.$model = algorithm.label
           this.v$.description.$model = algorithm.description
           this.v$.icon.$model = algorithm.icon
         } else {
           this.selectedEditNode = true
           // set algorithm
-          const algorithmIndex = appData.list[3].list.findIndex(
+          const algorithmIndex = appData.globalAlgorithms.findIndex(
             (el) => el.id == nodeData[0]
           )
           this.algorithmsIndex = algorithmIndex
           // for algorithm data
-          const algorithm = appData.list[3].list.find(
-            (el) => el.id == nodeData[0]
-          )
+          const algorithm = appData.globalAlgorithms[algorithmIndex]
           this.v$.name.$model = algorithm.label
           this.v$.description.$model = algorithm.description
           this.v$.icon.$model = algorithm.icon
@@ -242,7 +239,7 @@
             projectIdx: -1,
             // name: this.v$.selected.$model,
             data: {
-              ...appData.list[3].list[this.algorithmsIndex],
+              ...appData.globalAlgorithms[this.algorithmsIndex],
               //name: this.v$.name.$model,
               label: this.v$.name.$model,
               icon: this.v$.icon.$model,
@@ -256,7 +253,7 @@
             algorithmIdx: this.algorithmsIndex,
             projectIdx: this.projectsIndex,
             data: {
-              ...appData.list[0].list[this.projectsIndex].algorithms.list[
+              ...appData.allProjects[this.projectsIndex].algorithms.list[
                 this.algorithmsIndex
               ],
               label: this.v$.name.$model,
@@ -282,7 +279,7 @@
 
       // new dialog
       handlealgorithmstore(isFormValid) {
-        const projectIndex = appData.list[0].list.findIndex(
+        const projectIndex = appData.allProjects.findIndex(
           (el) => el.id == this.selected
         )
         const data = {
