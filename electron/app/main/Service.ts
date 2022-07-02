@@ -424,9 +424,9 @@ export class Service extends EventEmitter<ServiceEvent> {
         )
       } else {
         this.#log(
-          `health check exited after ${retries} retries, service status is ${
-            this.#status
-          }`
+          `health check exited after ${
+            this.#healthCheck?.retries
+          } retries, service status is ${ServiceStatus[this.#status]}`
         )
       }
     }
@@ -665,6 +665,13 @@ export class Service extends EventEmitter<ServiceEvent> {
       .replaceAll("${SERVICE_PATH}", service.#servicepath)
       .replaceAll("${SERVICE_DATA_PATH}", service.#servicedatapath)
       .replaceAll("${SERVICE_PORT}", service.#serviceport + "")
+  }
+
+  get isSetup() {
+    if (!this.#options.execconfig.setup) {
+      return true
+    }
+    return os.isPathExist(this.#setupstatefile)
   }
 
   async #doSetup() {
