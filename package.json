@@ -25,7 +25,8 @@
       "info",
       "debug"
     ],
-    "LOCAL_SERVICES_PATH": "./services"
+    "LOCAL_SERVICES_PATH": "./services",
+    "LOCAL_SERVICES_USERDATA_PATH": "services"
   },
   "scripts": {
     "build": "vue-tsc --noEmit && vite build && node scripts/build.mjs",

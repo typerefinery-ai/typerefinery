@@ -101,6 +101,9 @@ const LOCAL_SERVICES_PATH: string = getEnvConfigWithDefault(
   "LOCAL_SERVICES_PATH",
   ""
 )
+const LOCAL_SERVICES_USERDATA_PATH: string = dataPath(
+  getEnvConfigWithDefault("LOCAL_SERVICES_USERDATA_PATH", "")
+)
 const SCRIPT_PRELOAD = path.join(__dirname, "../preload/index.cjs")
 logger.log(`SCRIPT_PRELOAD: ${SCRIPT_PRELOAD}`)
 
@@ -138,6 +141,7 @@ const serviceManager = new ServiceManager(
   dataPath("logs"),
   logger,
   LOCAL_SERVICES_PATH,
+  LOCAL_SERVICES_USERDATA_PATH,
   {
     sendServiceStatus,
     sendServiceLog,
