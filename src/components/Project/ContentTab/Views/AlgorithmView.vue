@@ -128,7 +128,7 @@
           const payload = {
             dbhost: "localhost",
             dbport: "1729",
-            dbdatabase: "refinery",
+            dbdatabase: "typerefinery",
             dbquery:
               "match $a isa log, has logName 'L1';\n$b isa event, has eventName $c;\n$d (owner: $a, item: $b) isa trace,\nhas traceId $e, has index $f;\n offset 0; limit 100;",
             algorithm: this.code,
