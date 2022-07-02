@@ -605,11 +605,13 @@ export class Service extends EventEmitter<ServiceEvent> {
         signal: this.#abortController.signal,
         windowsVerbatimArguments: true,
         env: this.environmentVariables,
-        shell: true,
+        shell: false,
         // send data to logs but it will be delayed as its buffered in 64k blocks :(
         stdio: ["ignore", this.#stdout, this.#stderr],
         windowsHide: true,
       }
+
+      const process = spawn(serviceExecutable, commandline, options)
 
       this.#log([
         "spawn",
@@ -618,9 +620,9 @@ export class Service extends EventEmitter<ServiceEvent> {
           commandline: commandline,
           options: options,
         },
+        process.pid,
       ])
 
-      const process = spawn(serviceExecutable, commandline, options)
       // monitor console
       if (process.stdout) {
         process.stdout.setEncoding("utf8")
@@ -664,11 +666,13 @@ export class Service extends EventEmitter<ServiceEvent> {
       if (pid > 0) {
         this.#log(`stopping ${this.#id} with pid ${pid}`)
         this.#setStatus(ServiceStatus.STOPPING)
-        if (this.#process && this.#process.pid) {
-          this.#log(`killing ${pid}`)
+        if (!this.#process.kill(SignalType.SIGINT)) {
+          this.#log(`killing ${this.#id} with pid ${pid}`)
           kill(pid, SignalType.SIGINT, (err) => {
-            this.#log(`kill ${pid} error ${err}`)
+            this.#log(`killed ${this.#id} with pid ${pid} error ${err}`)
           })
+        } else {
+          this.#log(`gracefully closed ${this.#id} with pid ${pid}`)
         }
       }
     }
