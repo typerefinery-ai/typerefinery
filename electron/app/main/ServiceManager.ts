@@ -181,12 +181,13 @@ class ServiceManager {
   }
 
   // stop all services
-  stopAll() {
+  async stopAll() {
     for (const service of this.#services) {
       this.#logger.log(`stopping service ${service.id}`)
-      service.stop()
-      this.#logger.log("all services stopped.")
+      await service.stop()
+      this.#logger.log(`service ${service.id} stopped.`)
     }
+    this.#logger.log("all services stopped.")
   }
 }
 
