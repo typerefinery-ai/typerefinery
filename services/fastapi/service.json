@@ -20,7 +20,7 @@
     ],
     "healthcheck": {
       "type": "http",
-      "url": "http://localhost:${SERVICE_PORT}/",
+      "url": "http://localhost:${SERVICE_PORT}/healthcheck",
       "expected_status": 200
     }
   },

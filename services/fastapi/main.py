@@ -30,8 +30,10 @@ app = FastAPI()
 origins = [
     "http://localhost:*",
     "http://localhost:3000",
-    "http://localhost",
-    "http://localhost:8080",
+    "http://localhost:3001",
+    "http://localhost:8000",
+    "http://localhost:8001",
+    "http://localhost"
 ]
 
 app.add_middleware(
@@ -39,7 +41,7 @@ app.add_middleware(
     allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
-    allow_headers=["*", "log.url"],
+    allow_headers=["*"],
 )
 
 Logger.add(os.path.join(where_am_i, "logs", "__packages__", f"{__name__}.py.log"), rotation="1 day")
@@ -99,9 +101,14 @@ def logging_call(popenargs, logger, loglevel=INFO, **kwargs):
       check_io()
 
 # redirect to docs
-@app.get("/")
+@app.get("/", response_class=RedirectResponse, status_code=302)
 def read_docs():
-    return RedirectResponse(url='/docs')
+    return "/docs"
+
+# redirect to docs
+@app.get("/healthcheck")
+def read_docs():
+    return "ok"
 
 class AlgoritmRequestModel(BaseModel):
     dbhost: str | None = Field(
