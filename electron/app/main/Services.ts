@@ -14,11 +14,13 @@ const logger = new Logger(logsDir, "services")
 logger.log("service manager log", path.join(logsDir, "servicemanager.log"))
 
 const servicesPath = path.join(__dirname, "../../../services")
+const servicesUserDataPath = path.join(__dirname, "../../../services")
 logger.log("services path", servicesPath)
 const serviceManager = new ServiceManager(
   dataPath("logs"),
   logger,
   servicesPath,
+  servicesUserDataPath,
   {
     sendServiceStatus,
     sendServiceLog,
