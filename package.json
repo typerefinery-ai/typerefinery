@@ -9,6 +9,7 @@
   "version": "2022.6.4",
   "appWidth": 1366,
   "appHeight": 768,
+  "proxy": "http://127.0.0.1:8000",
   "env": {
     "VITE_DEV_SERVER_HOST": "localhost",
     "VITE_DEV_SERVER_PORT": 3000,
@@ -72,6 +73,7 @@
     "@types/i18next-node-fs-backend": "^2.1.1",
     "@vuelidate/core": "^2.0.0-alpha.41",
     "@vuelidate/validators": "^2.0.0-alpha.29",
+    "axios": "^0.27.2",
     "codemirror": "^6.0.0",
     "core-js": "^3.8.3",
     "d3": "^4.13.0",

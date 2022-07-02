@@ -1,7 +1,7 @@
 <template>
   <Dialog
     v-model:visible="displayModal"
-    class="connection-dialog"
+    class="algorithm-dialog"
     modal
     :closable="true"
     :breakpoints="{ '960px': '75vw', '640px': '100vw' }"
@@ -9,45 +9,45 @@
     <template #header>
       <!-- add here header -->
       <span v-if="selectedEditNode" class="p-dialog-title"
-        >{{ $t("components.dialog.connections.updated-header") }}
+        >{{ $t("components.dialog.new-algorithm.updated-header") }}
       </span>
       <span v-else class="p-dialog-title">
-        {{ $t("components.dialog.connections.header") }}
+        {{ $t("components.dialog.new-algorithm.header") }}
       </span>
       <div class="p-dialog-header-icons">
         <button
           class="p-dialog-header-icon p-dialog-header-close p-link"
           aria-label="close"
           type="button"
-          @click="connectioncloseDialog"
+          @click="algorithmcloseDialog"
         >
           <span class="p-dialog-header-close-icon pi pi-times"></span>
         </button>
       </div>
     </template>
-    <Panel :header="$t(`components.dialog.connections.info.panelheader`)">
+    <Panel :header="$t(`components.dialog.new-algorithm.panel1.header`)">
       <div class="field">
         <label for="expand">{{
-          $t("components.dialog.connections.info.project")
+          $t("components.dialog.new-algorithm.panel1.label1")
         }}</label>
         <Dropdown
           v-model="selected"
           :options="projectList"
           option-label="label"
           option-value="key"
-          :placeholder="$t(`components.dialog.connections.info.select`)"
+          :placeholder="$t(`components.dialog.new-algorithm.panel1.select`)"
         />
       </div>
     </Panel>
     <Panel
-      :header="$t(`components.dialog.connections.info.panel2header`)"
+      :header="$t(`components.dialog.new-algorithm.panel2.header`)"
       class="panel2"
     >
       <div class="field">
         <label
           for="name"
           :class="{ 'p-error': v$.name.$invalid && submitted }"
-          >{{ $t("components.dialog.connections.info.name") }}</label
+          >{{ $t("components.dialog.projects.info.name") + "*" }}</label
         >
         <InputText
           id="name"
@@ -98,57 +98,27 @@
           >{{ v$.icon.required.$message.replace("Value", "Icon") }}</small
         >
       </div>
-      <div class="field">
-        <label for="host" :class="{ 'p-error': v$.host.$invalid && submitted }">
-          {{ $t("components.dialog.connections.info.host") + "*" }}</label
-        >
-        <InputText
-          id="host"
-          v-model="v$.host.$model"
-          :class="{ 'p-invalid': v$.host.$invalid && submitted }"
-        />
-        <small
-          v-if="(v$.host.$invalid && submitted) || v$.host.$pending.$response"
-          class="p-error"
-          >{{ v$.host.required.$message.replace("Value", "Host") }}</small
-        >
-      </div>
-      <div class="field">
-        <label for="port" :class="{ 'p-error': v$.port.$invalid && submitted }">
-          {{ $t("components.dialog.connections.info.port") + "*" }}</label
-        >
-        <InputText
-          id="port"
-          v-model="v$.port.$model"
-          :class="{ 'p-invalid': v$.port.$invalid && submitted }"
-        />
-        <small
-          v-if="(v$.port.$invalid && submitted) || v$.port.$pending.$response"
-          class="p-error"
-          >{{ v$.port.required.$message.replace("Value", "Port") }}</small
-        >
-      </div>
     </Panel>
     <template #footer>
       <Button
-        :label="$t(`components.dialog.new-transformer.footer.cancel`)"
+        :label="$t(`components.dialog.new-algorithm.footer.cancel`)"
         icon="pi pi-times"
         class="p-button-text"
-        @click="connectioncloseDialog"
+        @click="algorithmcloseDialog"
       />
       <Button
         v-if="selectedEditNode"
-        :label="$t(`components.dialog.new-transformer.footer.update`)"
+        :label="$t(`components.dialog.new-algorithm.footer.update`)"
         icon="pi pi-check"
         autofocus
-        @click="handleEditedConnectionStore(!v$.$invalid)"
+        @click="handleEditedAlgorithmStore(!v$.$invalid)"
       />
       <Button
         v-else
-        :label="$t(`components.dialog.new-transformer.footer.save`)"
+        :label="$t(`components.dialog.new-algorithm.footer.save`)"
         icon="pi pi-check"
         autofocus
-        @click="handleconnectionstore(!v$.$invalid)"
+        @click="handlealgorithmstore(!v$.$invalid)"
       />
     </template>
   </Dialog>
@@ -156,18 +126,19 @@
 
 <script>
   import Dialog from "primevue/dialog"
+  //import Avatar from "primevue/avatar"
   import Dropdown from "primevue/dropdown"
   import InputText from "primevue/inputtext"
   import Button from "primevue/button"
   import Panel from "primevue/panel"
-  import AppData from "@/store/Modules/Projects"
+  import Projects from "@/store/Modules/Projects"
   import { getModule } from "vuex-module-decorators"
   import { required } from "@vuelidate/validators"
   import { useVuelidate } from "@vuelidate/core"
-  const appData = getModule(AppData)
+  const appData = getModule(Projects)
 
   export default {
-    name: "NewConnections",
+    name: "NewAlgorithms",
     components: {
       Dialog,
       Panel,
@@ -176,24 +147,23 @@
       Dropdown,
     },
     props: {
-      connectiondialog: { type: Boolean, default: false },
+      algorithmdialog: { type: Boolean, default: false },
     },
     emits: ["close"],
     setup: () => ({ v$: useVuelidate() }),
     data() {
       return {
+        type: "Algorithm",
         name: "",
         expanded: "",
         description: "",
         icon: "",
-        host: "",
-        port: "",
         display: true,
         selected: null,
         submitted: false,
         displayModal: true,
         selectedEditNode: false,
-        connectionsIndex: null,
+        algorithmsIndex: null,
         projectsIndex: null,
         updateData: null,
         lengthData: null,
@@ -204,8 +174,6 @@
         name: { required },
         description: { required },
         icon: { required },
-        host: { required },
-        port: { required },
       }
     },
     computed: {
@@ -217,10 +185,9 @@
       if (appData.treeNodePath) {
         const nodeData = appData.treeNodePath.split("/")
 
-        // local
+        // Check for local and global
         this.lengthData = nodeData
         if (nodeData.length == 2) {
-          // check header and save button
           this.selectedEditNode = true
 
           // set project
@@ -230,92 +197,88 @@
           )
           this.projectsIndex = projectIndex
           this.selected = projects[projectIndex].id
-          // connection index
-          const connectionIndex = projects[
+          // algorithm index
+          const algorithmIndex = projects[
             projectIndex
-          ].connections.list.findIndex((el) => el.id == nodeData[1])
+          ].algorithms.list.findIndex((el) => el.id == nodeData[1])
 
-          this.connectionsIndex = connectionIndex
-          // for connection data
-          const connection =
-            projects[projectIndex].connections.list[connectionIndex]
-          this.v$.name.$model = connection.label
-          this.v$.description.$model = connection.description
-          this.v$.icon.$model = connection.icon
-          this.v$.host.$model = connection.host
-          this.v$.port.$model = connection.port
+          this.algorithmsIndex = algorithmIndex
+
+          // for algorithm data
+          const algorithm =
+            projects[projectIndex].algorithms.list[algorithmIndex]
+          this.v$.name.$model = algorithm.label
+          this.v$.description.$model = algorithm.description
+          this.v$.icon.$model = algorithm.icon
         } else {
           this.selectedEditNode = true
-          // set connection
-          const connectionIndex = appData.globalConnections.findIndex(
+          // set algorithm
+          const algorithmIndex = appData.globalAlgorithms.findIndex(
             (el) => el.id == nodeData[0]
           )
-          this.connectionsIndex = connectionIndex
-          // for connection data
-          const connection = appData.globalConnections[connectionIndex]
-          this.v$.name.$model = connection.label
-          this.v$.description.$model = connection.description
-          this.v$.icon.$model = connection.icon
-          this.v$.host.$model = connection.host
-          this.v$.port.$model = connection.port
+          this.algorithmsIndex = algorithmIndex
+          // for algorithm data
+          const algorithm = appData.globalAlgorithms[algorithmIndex]
+          this.v$.name.$model = algorithm.label
+          this.v$.description.$model = algorithm.description
+          this.v$.icon.$model = algorithm.icon
         }
       }
     },
     methods: {
-      connectioncloseDialog() {
+      algorithmcloseDialog() {
         appData.resetTreeNodePath()
         this.$emit("close")
-        //clear store here for editnode
       },
       //update dialog
-      handleEditedConnectionStore(isFormValid) {
+      handleEditedAlgorithmStore(isFormValid) {
         let data
         if (this.lengthData.length == 1) {
           data = {
-            connectionIdx: this.connectionsIndex,
+            algorithmIdx: this.algorithmsIndex,
             projectIdx: -1,
+            // name: this.v$.selected.$model,
             data: {
-              ...appData.globalConnections[this.connectionsIndex],
+              ...appData.globalAlgorithms[this.algorithmsIndex],
+              //name: this.v$.name.$model,
               label: this.v$.name.$model,
               icon: this.v$.icon.$model,
-              host: this.v$.host.$model,
-              port: this.v$.port.$model,
               description: this.v$.description.$model,
-              type: "connection",
-              scope: "local",
+              type: "algorithm",
+              scope: "global",
             },
           }
         } else {
           data = {
-            connectionIdx: this.connectionsIndex,
+            algorithmIdx: this.algorithmsIndex,
             projectIdx: this.projectsIndex,
             data: {
-              ...appData.allProjects[this.projectsIndex].connections.list[
-                this.connectionsIndex
+              ...appData.allProjects[this.projectsIndex].algorithms.list[
+                this.algorithmsIndex
               ],
               label: this.v$.name.$model,
-              host: this.v$.host.$model,
-              port: this.v$.port.$model,
+              // host: "",
+              // port: "",
               icon: this.v$.icon.$model,
               description: this.v$.description.$model,
-              type: "connection",
-              scope: "global",
+              type: "algorithm",
+              scope: "local",
             },
           }
         }
-        this.updateData = data
+
         this.submitted = true
         // stop here if form is invalid
         if (!isFormValid) {
           return
         }
 
-        appData.editConnection(this.updateData)
-        this.connectioncloseDialog()
+        appData.editAlgorithm(data)
+        this.algorithmcloseDialog()
       },
 
       // new dialog
-      handleconnectionstore(isFormValid) {
+      handlealgorithmstore(isFormValid) {
         const projectIndex = appData.allProjects.findIndex(
           (el) => el.id == this.selected
         )
@@ -323,12 +286,12 @@
           name: this.selected,
           projectIdx: projectIndex,
           data: {
+            // name: this.name,
+            // id: this.name,
             label: this.name,
-            host: this.host,
-            port: this.port,
             icon: this.icon,
             description: this.description,
-            type: "connection",
+            type: "algorithm",
             id: Math.random()
               .toString(36)
               .replace(/[^a-z]+/g, "")
@@ -340,21 +303,21 @@
         if (!isFormValid) {
           return
         }
-        appData.addNewConnection(data)
+        appData.addNewAlgorithm(data)
         this.$emit("close")
       },
     },
   }
 </script>
 <style lang="scss">
-  .connection-dialog {
+  .algorithm-dialog {
     height: 100vh;
     width: 40vw;
     .p-dropdown {
-      width: 80%;
+      width: 100%;
     }
     input {
-      width: 80%;
+      width: 100%;
     }
     .field {
       display: grid;

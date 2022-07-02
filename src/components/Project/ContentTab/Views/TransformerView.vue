@@ -50,10 +50,10 @@
   import { javascript } from "@codemirror/lang-javascript"
   import { oneDark } from "@codemirror/theme-one-dark"
   import AppSettings from "@/store/Modules/AppSettings"
-  import Projects from "@/store/Modules/Projects"
+  import AppData from "@/store/Modules/Projects"
   import { getModule } from "vuex-module-decorators"
   const appSettings = getModule(AppSettings)
-  const projects = getModule(Projects)
+  const appData = getModule(AppData)
   export default {
     name: "TransformerView",
     components: { Codemirror, Button },
@@ -74,15 +74,15 @@
       },
       errorText() {
         const { projectIdx, queryIdx } = this.tab
-        return projects.consoleMessage(projectIdx, queryIdx)
+        return appData.transformerConsoleMessage(projectIdx, queryIdx)
       },
       isError() {
         const { projectIdx, queryIdx } = this.tab
-        return projects.transformerError(projectIdx, queryIdx)
+        return appData.transformerError(projectIdx, queryIdx)
       },
       code() {
         const { projectIdx, queryIdx } = this.tab
-        return projects.transformerCode(projectIdx, queryIdx)
+        return appData.transformerCode(projectIdx, queryIdx)
       },
       viewResized() {
         return appSettings.viewResized
@@ -100,7 +100,7 @@
       handleChange(c) {
         const { projectIdx, queryIdx } = this.tab
         const data = { code: c, projectIdx, queryIdx }
-        projects.setCode(data)
+        appData.setTransformerCode(data)
       },
       handleTabs(tab) {
         this.activeTab = tab

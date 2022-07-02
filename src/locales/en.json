@@ -13,6 +13,7 @@
       "new-query": "New Query",
       "new-connection": "New Connection",
       "new-transformer": "New Transformer",
+      "new-algorithm": "New Algorithm ",
       "load-data": "Load Data",
       "load-links": "Load Links",
       "connections": "Connections",
@@ -96,6 +97,8 @@
           "select": "Select project",
           "connection-info": "Connections Info",
           "name": "Name",
+          "host": "Host",
+          "port": "Port",
           "description": "Description",
           "icon": "Icon",
           "submit": "Submit"
@@ -118,7 +121,9 @@
           "icon": "Icon",
           "query": "Query",
           "transformer": "Tranformer",
-          "select1": "Select transformer"
+          "select1": "Select transformer",
+          "algorithm": "Algorithm",
+          "selectAlgo1": "Select algorithm"
         },
         "footer": {
           "cancel": "Cancel",
@@ -136,7 +141,8 @@
           "header": "Transformer Info",
           "name": "Name",
           "description": "Description",
-          "icon": "Icon"
+          "icon": "Icon",
+          "query": "Query"
         },
         "footer": {
           "cancel": "Cancel",
@@ -144,6 +150,26 @@
           "update": "Update"
         },
         "updated-header": "Update Transformer"
+      },
+      "new-algorithm": {
+        "header": "New Algorithm ",
+        "panel1": {
+          "header": "Project Info",
+          "label1": "Projects",
+          "select": "Select project"
+        },
+        "panel2": {
+          "header": "Algorithm Info",
+          "name": "Name",
+          "description": "Description",
+          "icon": "Icon"
+        },
+        "footer": {
+          "cancel": "Cancel",
+          "save": "Save",
+          "update": "Update"
+        },
+        "updated-header": "Update Algorithm"
       }
     },
     "transformer": {
@@ -157,6 +183,11 @@
       "name": "Transformer Name",
       "sure": "Are you sure?",
       "confirm-msg": "Transformer code inside editor will be overwritten."
+    },
+    "tabquery": {
+      "connection": "Connections",
+      "select": "Select a connection",
+      "db": "Database"
     },
     "algorithm": {
       "label": "Algorithm",
@@ -192,7 +223,9 @@
     "save": "Save",
     "save-as": "Save as",
     "no": "No",
-    "yes": "Yes"
+    "yes": "Yes",
+    "save-as-local": "Save as Local",
+    "save-as-global": "Save as Global"
   },
   "help": {
     "log": "Log to the console"

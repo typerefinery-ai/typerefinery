@@ -23,6 +23,7 @@
           v-if="transformerDialog"
           @close="transformerclosemodal"
         />
+        <NewAlgorithm v-if="algorithmDialog" @close="algorithmclosemodal" />
       </div>
       <!-- icon -->
       <div
@@ -43,6 +44,7 @@
   import NewConnections from "@/components/Dialog/Newconnections.vue"
   import NewQuery from "@/components/Dialog/NewQueries.vue"
   import NewTransformer from "@/components/Dialog/NewTransformer.vue"
+  import NewAlgorithm from "@/components/Dialog/NewAlgorithm.vue"
   import AppSettings from "@/store/Modules/AppSettings"
   import { getModule } from "vuex-module-decorators"
   const appSettings = getModule(AppSettings)
@@ -50,7 +52,14 @@
   const appProjects = getModule(Project)
   export default {
     name: "MainMenu",
-    components: { TabMenu, Projects, NewConnections, NewQuery, NewTransformer },
+    components: {
+      TabMenu,
+      Projects,
+      NewConnections,
+      NewQuery,
+      NewTransformer,
+      NewAlgorithm,
+    },
     props: {
       mainMenuVisible: { type: Boolean, required: true },
     },
@@ -74,6 +83,7 @@
               { id: "new-query", icon: "pi pi-file", to: "#" },
               { id: "new-connection", icon: "pi pi-server", to: "#" },
               { id: "new-transformer", icon: "pi pi-cog", to: "#" },
+              { id: "new-algorithm", icon: "pi pi-cog", to: "#" },
             ],
           },
           {
@@ -122,8 +132,12 @@
       transformerDialog() {
         return appProjects.transformerDialog
       },
+
       queryDialog() {
         return appProjects.queryDialog
+      },
+      algorithmDialog() {
+        return appProjects.algorithmDialog
       },
     },
 
@@ -140,6 +154,10 @@
       transformerclosemodal() {
         appProjects.toggleTransformerDialog()
       },
+      algorithmclosemodal() {
+        appProjects.toggleAlgorithmDialog()
+      },
+
       handleProject(id) {
         if (id === "new-project") {
           this.projectdialog = !this.projectdialog
@@ -153,6 +171,9 @@
         }
         if (id === "new-transformer") {
           appProjects.toggleTransformerDialog()
+        }
+        if (id === "new-algorithm") {
+          appProjects.toggleAlgorithmDialog()
         }
       },
       handleRoutes(route) {

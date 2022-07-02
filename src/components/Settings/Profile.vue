@@ -49,9 +49,7 @@
     },
     mounted() {
       if (this.field) {
-        console.log(this.$refs)
         const el = this.$refs[this.field]
-        console.log(el)
         el.scrollIntoView()
       }
     },

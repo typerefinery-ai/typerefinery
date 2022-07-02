@@ -34,10 +34,11 @@
         <div class="field">
           <label>{{ $t(`components.transformer.transformer`) }}</label>
           <Dropdown
-            :model-value="selectedTransformer"
+            :model-value="transformer"
             :options="transformers"
-            option-label="name"
-            option-value="key"
+            option-label="label"
+            option-group-label="label"
+            option-group-children="items"
             :placeholder="$t(`components.transformer.select`)"
             @change="handleTransformer"
           />
@@ -61,6 +62,18 @@
               <InputText id="name" v-model="transformerName" type="text" />
               <label for="name">{{ $t(`components.transformer.name`) }}</label>
             </span>
+            <Button
+              class="p-button-raised mr-2"
+              :disabled="!transformerName.length"
+              :label="$t(`buttons.save-as-global`)"
+              @click="saveTransformer('global')"
+            />
+            <Button
+              class="p-button-raised p-button-success"
+              :disabled="!transformerName.length"
+              :label="$t(`buttons.save-as-local`)"
+              @click="saveTransformer('local')"
+            />
           </div>
           <template #footer>
             <Button
@@ -68,13 +81,6 @@
               icon="pi pi-times"
               class="p-button-text"
               @click="saveDialog = false"
-            />
-            <Button
-              :label="$t(`buttons.save`)"
-              icon="pi pi-check"
-              autofocus
-              :disabled="!transformerName.length"
-              @click="saveTransformer"
             />
           </template>
         </Dialog>
@@ -95,9 +101,9 @@
   import InputText from "primevue/inputtext"
   import { getModule } from "vuex-module-decorators"
   import Transformer from "@/store/Modules/Transformer"
-  import Projects from "@/store/Modules/Projects"
+  import AppData from "@/store/Modules/Projects"
   const transformer = getModule(Transformer)
-  const projects = getModule(Projects)
+  const appData = getModule(AppData)
 
   export default {
     name: "TransformerConfig",
@@ -117,7 +123,7 @@
         transformerName: "",
         activeView: "config",
         saveDialog: false,
-        selectedTransformer: null,
+        // selectedTransformer: null,
         selectedDependencies: null,
         dependencies: [
           { name: "D3", code: "d3" },
@@ -126,10 +132,19 @@
       }
     },
     computed: {
+      transformer() {
+        const { projectIdx, queryIdx } = this.tab
+        const transformer =
+          appData.list[0].list[projectIdx].queries.list[queryIdx].transformer
+        return {
+          key: transformer.id,
+          label: transformer.label,
+          scope: transformer.scope,
+        }
+      },
       transformers() {
-        return transformer.list.map((el) => {
-          return { name: el.name, key: el.name }
-        })
+        const { projectIdx } = this.tab
+        return appData.transformersList(projectIdx)
       },
     },
     methods: {
@@ -141,10 +156,10 @@
         const dependencies = d.value.map((el) => el.code)
         this.$emit("handle-dependencies", dependencies)
       },
-      handleTransformer(t) {
-        this.showConfirmDialog(t)
+      handleTransformer(el) {
+        this.showConfirmDialog(el)
       },
-      showConfirmDialog(t) {
+      showConfirmDialog(el) {
         this.$confirm.require({
           message: this.$t("components.transformer.confirm-msg"),
           header: this.$t("components.transformer.sure"),
@@ -152,33 +167,53 @@
           rejectLabel: this.$t("buttons.no"),
           icon: "pi pi-exclamation-triangle",
           accept: () => {
-            this.setTransformerCode(t)
+            this.setTransformerCode(el.value)
           },
           reject: () => {
             this.$confirm.close()
           },
         })
       },
-      setTransformerCode(t) {
-        const idx = transformer.list.findIndex((el) => el.name === t.value)
-        const code = transformer.list[idx].code
-        const { projectIdx, queryIdx } = this.tab
-        const data = { code, projectIdx, queryIdx }
-        projects.setCode(data)
-        this.selectedTransformer = t.value
-      },
-      saveTransformer() {
-        this.saveDialog = false
-        const { projectIdx, queryIdx } = this.tab
-        const code =
-          projects.list[projectIdx].queries.list[queryIdx].transformer.code
-        const data = {
-          name: this.transformerName,
-          code,
-          error: "",
-          logs: [],
+      setTransformerCode(value) {
+        let transformer
+        if (value.scope == "local") {
+          transformer = appData.list[0].list[
+            this.tab.projectIdx
+          ].transformers.list.find((el) => el.id == value.key)
+        } else {
+          transformer = appData.list[2].list.find((el) => {
+            return el.id == value.key
+          })
         }
-        transformer.saveTransformer(data)
+        const payload = { key: "transformer", value: transformer, ...this.tab }
+        appData.updateQuery(payload)
+      },
+      saveTransformer(scope) {
+        this.saveDialog = false
+        const transformer =
+          appData.list[0].list[this.tab.projectIdx].queries.list[
+            this.tab.queryIdx
+          ].transformer
+        const id = Math.random()
+          .toString(36)
+          .replace(/[^a-z]+/g, "")
+          .substr(2, 10)
+        let data = {
+          data: {
+            ...transformer,
+            id,
+            label: this.transformerName,
+          },
+        }
+        if (scope == "local") {
+          data.projectIdx = this.tab.projectIdx
+          data.data.scope = "local"
+        } else {
+          data.projectIdx = -1
+          data.data.scope = "global"
+        }
+        appData.addNewTransformer(data)
+        this.transformerName = ""
       },
     },
   }

@@ -12,6 +12,7 @@ from typing import Optional
 from fastapi import FastAPI, Response, Request, Body, Form
 from fastapi.responses import RedirectResponse
 from fastapi.encoders import jsonable_encoder
+from fastapi.middleware.cors import CORSMiddleware
 import json
 from scripts.G_to_WebCola import get_data as GtoWebCola
 from datetime import datetime
@@ -25,6 +26,21 @@ import select
 from logging import DEBUG, ERROR, INFO
 
 app = FastAPI()
+
+origins = [
+    "http://localhost:*",
+    "http://localhost:3000",
+    "http://localhost",
+    "http://localhost:8080",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*", "log.url"],
+)
 
 Logger.add(os.path.join(where_am_i, "logs", "__packages__", f"{__name__}.py.log"), rotation="1 day")
 PACKAGE_TARGET_PATH=os.path.join(where_am_i, "__packages__")
@@ -186,6 +202,7 @@ async def execute_algorithm(request: Request, response: Response, body: Algoritm
       "log.exists": str(new_script_log_exists),
       "log.url": new_script_log_url,
       "return.output": body.returnoutput,
+	  "Access-Control-Expose-Headers": "output.url"
     }
 
     if os.path.exists(new_script_output) and body.returnoutput == "output":

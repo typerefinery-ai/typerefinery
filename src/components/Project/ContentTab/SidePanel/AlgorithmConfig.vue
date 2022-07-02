@@ -32,10 +32,11 @@
         <div class="field">
           <label>{{ $t(`components.algorithm.label`) }}</label>
           <Dropdown
-            :model-value="selectedAlgorithm"
+            :model-value="algorithm"
             :options="algorithms"
-            option-label="name"
-            option-value="key"
+            option-label="label"
+            option-group-label="label"
+            option-group-children="items"
             :placeholder="$t(`components.algorithm.select`)"
             @change="showConfirmDialog"
           />
@@ -59,6 +60,18 @@
               <InputText id="name" v-model="algorithmName" type="text" />
               <label for="name">{{ $t(`components.algorithm.name`) }}</label>
             </span>
+            <Button
+              class="p-button-raised mr-2"
+              :disabled="!algorithmName.length"
+              :label="$t(`buttons.save-as-global`)"
+              @click="saveAlgorithm('global')"
+            />
+            <Button
+              class="p-button-raised p-button-success"
+              :disabled="!algorithmName.length"
+              :label="$t(`buttons.save-as-local`)"
+              @click="saveAlgorithm('local')"
+            />
           </div>
           <template #footer>
             <Button
@@ -66,13 +79,6 @@
               icon="pi pi-times"
               class="p-button-text"
               @click="saveDialog = false"
-            />
-            <Button
-              :label="$t(`buttons.save`)"
-              icon="pi pi-check"
-              autofocus
-              :disabled="!algorithmName.length"
-              @click="saveAlgorithm"
             />
           </template>
         </Dialog>
@@ -88,10 +94,10 @@
   import InputText from "primevue/inputtext"
   import Textarea from "primevue/textarea"
   import { getModule } from "vuex-module-decorators"
-  import Algorithm from "@/store/Modules/Algorithm"
-  import Projects from "@/store/Modules/Projects"
-  const algorithm = getModule(Algorithm)
-  const projects = getModule(Projects)
+  //   import Algorithm from "@/store/Modules/Algorithm"
+  import AppData from "@/store/Modules/Projects"
+  //   const algorithm = getModule(Algorithm)
+  const appData = getModule(AppData)
 
   export default {
     name: "AlgorithmConfig",
@@ -116,17 +122,26 @@
       }
     },
     computed: {
+      algorithm() {
+        const { projectIdx, queryIdx } = this.tab
+        const algorithm =
+          appData.list[0].list[projectIdx].queries.list[queryIdx].algorithm
+        return {
+          key: algorithm.id,
+          label: algorithm.label,
+          scope: algorithm.scope,
+        }
+      },
       algorithms() {
-        return algorithm.list.map((el) => {
-          return { name: el.name, key: el.name }
-        })
+        const { projectIdx } = this.tab
+        return appData.algorithmsList(projectIdx)
       },
     },
     methods: {
       handleView(view) {
         this.activeView = view
       },
-      showConfirmDialog(a) {
+      showConfirmDialog(el) {
         this.$confirm.require({
           message: this.$t("components.algorithm.confirm-msg"),
           header: this.$t("components.transformer.sure"),
@@ -134,33 +149,53 @@
           rejectLabel: this.$t("buttons.no"),
           icon: "pi pi-exclamation-triangle",
           accept: () => {
-            this.setAlgorithmCode(a)
+            this.setAlgorithmCode(el.value)
           },
           reject: () => {
             this.$confirm.close()
           },
         })
       },
-      setAlgorithmCode(t) {
-        const idx = algorithm.list.findIndex((el) => el.name === t.value)
-        const code = algorithm.list[idx].code
-        const { projectIdx, queryIdx } = this.tab
-        const data = { code, projectIdx, queryIdx }
-        projects.setAlgoCode(data)
-        this.selectedAlgorithm = t.value
-      },
-      saveAlgorithm() {
-        this.saveDialog = false
-        const { projectIdx, queryIdx } = this.tab
-        const code =
-          projects.list[projectIdx].queries.list[queryIdx].algorithm.code
-        const data = {
-          name: this.algorithmName,
-          code,
-          error: "",
-          logs: [],
+      setAlgorithmCode(value) {
+        let algorithm
+        if (value.scope == "local") {
+          algorithm = appData.list[0].list[
+            this.tab.projectIdx
+          ].algorithms.list.find((el) => el.id == value.key)
+        } else {
+          algorithm = appData.list[3].list.find((el) => {
+            return el.id == value.key
+          })
         }
-        algorithm.saveAlgorithm(data)
+        const payload = { key: "algorithm", value: algorithm, ...this.tab }
+        appData.updateQuery(payload)
+      },
+      saveAlgorithm(scope) {
+        this.saveDialog = false
+        const algorithm =
+          appData.list[0].list[this.tab.projectIdx].queries.list[
+            this.tab.queryIdx
+          ].algorithm
+        const id = Math.random()
+          .toString(36)
+          .replace(/[^a-z]+/g, "")
+          .substr(2, 10)
+        let data = {
+          data: {
+            ...algorithm,
+            id,
+            label: this.algorithmName,
+          },
+        }
+        if (scope == "local") {
+          data.projectIdx = this.tab.projectIdx
+          data.data.scope = "local"
+        } else {
+          data.projectIdx = -1
+          data.data.scope = "global"
+        }
+        appData.addNewAlgorithm(data)
+        this.algorithmName = ""
       },
     },
   }
@@ -237,3 +272,4 @@
     }
   }
 </style>
+iruezn iruezn

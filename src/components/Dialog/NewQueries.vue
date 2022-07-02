@@ -32,11 +32,10 @@
         <Dropdown
           v-model="v$.projectselected.$model"
           :options="projectList"
-          option-label="name"
+          option-label="label"
           option-value="key"
           :placeholder="$t(`components.dialog.new-query.panel1.select1`)"
           :class="{ 'p-error': v$.projectselected.$invalid && submitted }"
-          @change="collectProject"
         />
         <small
           v-if="
@@ -58,10 +57,12 @@
         <Dropdown
           v-model="v$.connectionselected.$model"
           :options="connectionList"
-          option-label="name"
-          option-value="key"
+          option-label="label"
+          option-group-label="label"
+          option-group-children="items"
           :placeholder="$t(`components.dialog.new-query.panel1.select2`)"
           :class="{ 'p-error': v$.connectionselected.$invalid && submitted }"
+          @change="handleConnection"
         />
         <small
           v-if="
@@ -136,21 +137,23 @@
       </div>
 
       <div class="field">
-        <label
-          for="query"
-          :class="{ 'p-error': v$.query.$invalid && submitted }"
-          >{{ $t("components.dialog.new-query.panel2.query") }}</label
-        >
-        <InputText
+        <label for="query">{{
+          $t("components.dialog.new-query.panel2.query")
+        }}</label>
+        <!--  <InputText
           id="query"
           v-model="v$.query.$model"
           :class="{ 'p-invalid': v$.query.$invalid && submitted }"
+        /> -->
+        <codemirror
+          v-model="query"
+          placeholder="Code goes here..."
+          :style="{ height: '20vh' }"
+          :autofocus="true"
+          :indent-with-tab="true"
+          :tab-zize="2"
+          :extensions="extensions"
         />
-        <small
-          v-if="(v$.query.$invalid && submitted) || v$.query.$pending.$response"
-          class="p-error"
-          >{{ v$.query.required.$message.replace("Value", "Query") }}</small
-        >
       </div>
       <div class="field">
         <label
@@ -161,10 +164,12 @@
         <Dropdown
           v-model="v$.tranformerselected.$model"
           :options="transformerList"
-          option-label="name"
-          option-value="name"
+          option-label="label"
+          option-group-label="label"
+          option-group-children="items"
           :placeholder="$t(`components.dialog.new-query.panel2.select1`)"
           :class="{ 'p-error': v$.tranformerselected.$invalid && submitted }"
+          @change="handleTransformer"
         />
         <small
           v-if="
@@ -180,8 +185,34 @@
           }}</small
         >
       </div>
+      <div class="field">
+        <label
+          for="expand"
+          :class="{ 'p-error': v$.algorithmselected.$invalid && submitted }"
+          >{{ $t("components.dialog.new-query.panel2.algorithm") }}</label
+        >
+        <Dropdown
+          v-model="v$.algorithmselected.$model"
+          :options="algorithmList"
+          option-label="label"
+          option-group-label="label"
+          option-group-children="items"
+          :placeholder="$t(`components.dialog.new-query.panel2.selectAlgo1`)"
+          :class="{ 'p-error': v$.algorithmselected.$invalid && submitted }"
+          @change="handleAlgorithm"
+        />
+        <small
+          v-if="
+            (v$.algorithmselected.$invalid && submitted) ||
+            v$.algorithmselected.$pending.$response
+          "
+          class="p-error"
+          >{{
+            v$.algorithmselected.required.$message.replace("Value", "Algorithm")
+          }}</small
+        >
+      </div>
     </Panel>
-    <!-- <Button label="Submit" @click="handleconnectionstore" /> -->
     <template #footer>
       <Button
         :label="$t(`components.dialog.new-query.footer.cancel`)"
@@ -205,12 +236,16 @@
   import InputText from "primevue/inputtext"
   import Button from "primevue/button"
   import Panel from "primevue/panel"
-  import Projects from "@/store/Modules/Projects"
+  import AppData from "@/store/Modules/Projects"
   import { getModule } from "vuex-module-decorators"
-  const appProjects = getModule(Projects)
+  const appData = getModule(AppData)
   import { required } from "@vuelidate/validators"
   import { useVuelidate } from "@vuelidate/core"
-  //   console.log(appProjects.projectList)
+  import { Codemirror } from "vue-codemirror"
+  import { javascript } from "@codemirror/lang-javascript"
+  import { oneDark } from "@codemirror/theme-one-dark"
+  import AppSettings from "@/store/Modules/AppSettings"
+  const appSettings = getModule(AppSettings)
 
   export default {
     name: "NewQuery",
@@ -220,6 +255,7 @@
       Button,
       Panel,
       Dropdown,
+      Codemirror,
     },
     props: {
       querydialog: { type: Boolean, default: false },
@@ -238,8 +274,12 @@
         projectselected: null,
         connectionselected: null,
         tranformerselected: null,
+        algorithmselected: null,
+        transformdata: null,
+        connectiondata: null,
         submitted: false,
         displayModal: true,
+        algorithmdata: null,
       }
     },
     validations() {
@@ -249,52 +289,112 @@
         name: { required },
         description: { required },
         icon: { required },
-        query: { required },
         tranformerselected: { required },
+        algorithmselected: { required },
       }
     },
     computed: {
       projectList() {
-        return appProjects.projectList
+        return appData.projectsList
       },
       connectionList() {
-        // if(this.projectselected===this.projectList.name){
-        return appProjects.connectionList
-        // }
+        let projectIdx = appData.list[0].list.findIndex(
+          (el) => el.id == this.projectselected
+        )
+        return projectIdx == -1 ? [] : appData.connectionsList(projectIdx)
       },
       transformerList() {
-        return appProjects.transformerList
+        let projectIdx = appData.list[0].list.findIndex(
+          (el) => el.id == this.projectselected
+        )
+        return projectIdx == -1 ? [] : appData.transformersList(projectIdx)
+      },
+      algorithmList() {
+        let projectIdx = appData.list[0].list.findIndex(
+          (el) => el.id == this.projectselected
+        )
+
+        return projectIdx == -1 ? [] : appData.algorithmsList(projectIdx)
+      },
+      extensions() {
+        return appSettings.theme === "dark"
+          ? [javascript(), oneDark]
+          : [javascript()]
       },
     },
     methods: {
-      collectProject() {
-        appProjects.selectedProject(this.projectselected)
-      },
       querycloseDialog() {
         this.$emit("close")
       },
+      handleConnection(el) {
+        this.connectiondata = el.value.key
+      },
+      handleTransformer(el) {
+        this.setTransformerCode(el.value)
+      },
+      handleAlgorithm(el) {
+        this.setAlgorithmCode(el.value)
+      },
+      setTransformerCode(value) {
+        const projectIdx = appData.list[0].list.findIndex(
+          (el) => el.id == this.projectselected
+        )
+        let transformercode
+        if (value.scope == "local") {
+          transformercode = appData.list[0].list[
+            projectIdx
+          ].transformers.list.find((el) => el.id == value.key)
+        } else {
+          transformercode = appData.list[2].list.find((el) => {
+            return el.id == value.key
+          })
+        }
+        this.transformdata = transformercode
+      },
+      setAlgorithmCode(value) {
+        const projectIdx = appData.list[0].list.findIndex(
+          (el) => el.id == this.projectselected
+        )
+        let algorithmcode
+        if (value.scope == "local") {
+          algorithmcode = appData.list[0].list[projectIdx].algorithms.list.find(
+            (el) => el.id == value.key
+          )
+        } else {
+          algorithmcode = appData.list[3].list.find((el) => {
+            return el.id == value.key
+          })
+        }
+        this.algorithmdata = algorithmcode
+      },
       handlequerystore(isFormValid) {
-        const projectIdx = appProjects.projectList.findIndex(
-          (el) => el.name == this.projectselected
+        const projectIdx = appData.list[0].list.findIndex(
+          (el) => el.id == this.projectselected
         )
         const data = {
-          name: this.projectselected,
-          projectid: projectIdx,
-          list: {
+          projectIdx: projectIdx,
+          data: {
             name: this.name,
+            label: this.name,
+            id: Math.random()
+              .toString(36)
+              .replace(/[^a-z]+/g, "")
+              .substr(2, 10),
             description: this.description,
-            connection: this.connectionselected,
+            connection: this.connectiondata,
             icon: this.icon,
             query: this.query,
             type: "query",
-            tranformer: this.tranformerselected,
+            tranformer: this.transformdata,
+            algorithm: this.algorithmdata,
+            dataPath: "",
           },
         }
         this.submitted = true
         if (!isFormValid) {
           return
         }
-        appProjects.addNewQuery(data)
+        appData.addNewQuery(data)
         this.$emit("close")
       },
     },
@@ -307,6 +407,10 @@
   .query-dialog {
     height: 100vh;
     width: 40vw;
+
+    .code-mirror {
+      width: 80%;
+    }
     .p-dropdown {
       width: 80%;
     }
