@@ -43,7 +43,7 @@
         </div>
         <div class="field">
           <Button
-            :label="$t(`buttons.save-as`)"
+            :label="$t(`components.algorithm.buttons.save-as`)"
             class="p-button-raised p-button-info"
             @click="saveDialog = true"
           />
@@ -63,19 +63,19 @@
             <Button
               class="p-button-raised mr-2"
               :disabled="!algorithmName.length"
-              :label="$t(`buttons.save-as-global`)"
+              :label="$t(`components.algorithm.buttons.save-as-global`)"
               @click="saveAlgorithm('global')"
             />
             <Button
               class="p-button-raised p-button-success"
               :disabled="!algorithmName.length"
-              :label="$t(`buttons.save-as-local`)"
+              :label="$t(`components.algorithm.buttons.save-as-local`)"
               @click="saveAlgorithm('local')"
             />
           </div>
           <template #footer>
             <Button
-              :label="$t(`buttons.cancel`)"
+              :label="$t(`components.algorithm.buttons.cancel`)"
               icon="pi pi-times"
               class="p-button-text"
               @click="saveDialog = false"
@@ -145,8 +145,8 @@
         this.$confirm.require({
           message: this.$t("components.algorithm.confirm-msg"),
           header: this.$t("components.transformer.sure"),
-          acceptLabel: this.$t("buttons.yes"),
-          rejectLabel: this.$t("buttons.no"),
+          acceptLabel: this.$t("components.algorithm.buttons.yes"),
+          rejectLabel: this.$t("components.algorithm.buttons.no"),
           icon: "pi pi-exclamation-triangle",
           accept: () => {
             this.setAlgorithmCode(el.value)

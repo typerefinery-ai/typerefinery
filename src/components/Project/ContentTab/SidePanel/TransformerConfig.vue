@@ -45,7 +45,7 @@
         </div>
         <div class="field">
           <Button
-            :label="$t(`buttons.save-as`)"
+            :label="$t(`components.transformer.buttons.save-as`)"
             class="p-button-raised p-button-info"
             @click="saveDialog = true"
           />
@@ -65,19 +65,19 @@
             <Button
               class="p-button-raised mr-2"
               :disabled="!transformerName.length"
-              :label="$t(`buttons.save-as-global`)"
+              :label="$t(`components.transformer.buttons.save-as-global`)"
               @click="saveTransformer('global')"
             />
             <Button
               class="p-button-raised p-button-success"
               :disabled="!transformerName.length"
-              :label="$t(`buttons.save-as-local`)"
+              :label="$t(`components.transformer.buttons.save-as-local`)"
               @click="saveTransformer('local')"
             />
           </div>
           <template #footer>
             <Button
-              :label="$t(`buttons.cancel`)"
+              :label="$t(`components.transformer.buttons.cancel`)"
               icon="pi pi-times"
               class="p-button-text"
               @click="saveDialog = false"
@@ -85,9 +85,36 @@
           </template>
         </Dialog>
       </div>
-      <div v-if="activeView === 'help'" class="help">
-        <code>log()</code>
-        <span>{{ $t("help.log") }}</span>
+      <div v-if="activeView === 'help'">
+        <div class="field">
+          <h3>Commands</h3>
+          <div class="help">
+            <code>log()</code>
+            <span>{{ $t("components.transformer.help.commands.log") }}</span>
+          </div>
+        </div>
+        <div class="field">
+          <h3 class="field">Frameworks</h3>
+          <div class="help">
+            <code>d3.&lt;&gt;</code>
+            <span>{{ $t("components.transformer.help.frameworks.d3") }}</span>
+          </div>
+          <div class="help">
+            <code>webCola.&lt;&gt;</code>
+            <span>{{
+              $t("components.transformer.help.frameworks.webCola")
+            }}</span>
+          </div>
+        </div>
+        <div class="field">
+          <h3 class="field">Variables</h3>
+          <div class="help">
+            <code>SERVICE_OUTPUT_JSON</code>
+            <span>{{
+              $t("components.transformer.help.variables.SERVICE_OUTPUT_JSON")
+            }}</span>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -155,6 +182,7 @@
         this.selectedDependencies = d.value
         const dependencies = d.value.map((el) => el.code)
         this.$emit("handle-dependencies", dependencies)
+        console.log(d)
       },
       handleTransformer(el) {
         this.showConfirmDialog(el)
@@ -163,8 +191,8 @@
         this.$confirm.require({
           message: this.$t("components.transformer.confirm-msg"),
           header: this.$t("components.transformer.sure"),
-          acceptLabel: this.$t("buttons.yes"),
-          rejectLabel: this.$t("buttons.no"),
+          acceptLabel: this.$t("components.transformer.buttons.yes"),
+          rejectLabel: this.$t("components.transformer.buttons.no"),
           icon: "pi pi-exclamation-triangle",
           accept: () => {
             this.setTransformerCode(el.value)
@@ -242,7 +270,6 @@
           display: block;
         }
       }
-
       .help {
         display: flex;
         align-items: center;

@@ -182,7 +182,30 @@
       "save": "Save Transformer",
       "name": "Transformer Name",
       "sure": "Are you sure?",
-      "confirm-msg": "Transformer code inside editor will be overwritten."
+      "confirm-msg": "Transformer code inside editor will be overwritten.",
+      "help": {
+        "frameworks": {
+          "d3": "d3",
+          "webCola": "web cola"
+        },
+        "commands": {
+          "log": "Log to the console"
+        },
+        "variables": {
+          "SERVICE_OUTPUT_JSON": "path to the output json file"
+        }
+      },
+      "buttons": {
+        "submit": "Submit",
+        "clear": "Clear",
+        "cancel": "Cancel",
+        "save": "Save",
+        "save-as": "Save as",
+        "no": "No",
+        "yes": "Yes",
+        "save-as-local": "Save as Local",
+        "save-as-global": "Save as Global"
+      }
     },
     "tabquery": {
       "connection": "Connections",
@@ -194,7 +217,24 @@
       "select": "Select an Algorithm",
       "save": "Save Algorithm",
       "name": "Algorithm Name",
-      "confirm-msg": "Algorithm code inside editor will be overwritten."
+      "confirm-msg": "Algorithm code inside editor will be overwritten.",
+      "help": {
+        "frameworks": {
+          "d3": "d3",
+          "webCola": "web cola"
+        }
+      },
+      "buttons": {
+        "submit": "Submit",
+        "clear": "Clear",
+        "cancel": "Cancel",
+        "save": "Save",
+        "save-as": "Save as",
+        "no": "No",
+        "yes": "Yes",
+        "save-as-local": "Save as Local",
+        "save-as-global": "Save as Global"
+      }
     }
   },
 
@@ -215,19 +255,5 @@
     "help": "Help",
     "profile": "User profile",
     "settings": "Open Settings"
-  },
-  "buttons": {
-    "submit": "Submit",
-    "clear": "Clear",
-    "cancel": "Cancel",
-    "save": "Save",
-    "save-as": "Save as",
-    "no": "No",
-    "yes": "Yes",
-    "save-as-local": "Save as Local",
-    "save-as-global": "Save as Global"
-  },
-  "help": {
-    "log": "Log to the console"
   }
 }
