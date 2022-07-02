@@ -24,18 +24,47 @@ import random
 from pydantic import BaseModel, Field
 import select
 from logging import DEBUG, ERROR, INFO
+import argparse
+
+
+def getArgs():
+
+  parser = argparse.ArgumentParser(description="Script params",
+                                formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+  parser.add_argument("--user-dir", nargs='?', dest="userdir", default="", help="user data (default: %(default)s)")
+  parser.add_argument("--log-dir", nargs='?', dest="logdir", default="", help="user data (default: %(default)s)")
+  parser.add_argument("host", nargs='?', default="localhost", help="server hots (default: %(default)s)")
+  parser.add_argument("port", nargs='?', default="8000", help="server port (default: %(default)s)")
+  parser.add_argument("--app-dir", nargs='?', dest="appdir", default="./services", help="service path (default: %(default)s)")
+  return parser.parse_known_args()
+
+args, unknown = getArgs()
+
+SERVICE_LOCATION = where_am_i
+
+USER_DATA_LOCATION = os.getenv("SERVICE_DATA_PATH", args.userdir)
+if USER_DATA_LOCATION == "":
+  USER_DATA_LOCATION = where_am_i
+
+LOG_LOCATION = os.getenv("SERVICE_LOG_PATH", args.logdir)
+if LOG_LOCATION == "":
+  LOG_LOCATION = where_am_i
+
 
 app = FastAPI()
 
-origins = [
-    "http://localhost:*",
-    "http://localhost:3000",
-    "http://localhost:3001",
-    "http://localhost:8000",
-    "http://localhost:8001",
-    "http://localhost"
-]
+# generarte origins
+origins_schemas = [ "http", "https" ]
+origins_ports = [ "3000", "3001", "8000", "8001" ]
+origins_hosts = [ "localhost"]
+origins = []
+# for each origins_schemas, origins_ports, origins_hosts update the origins list
+for origins_schema in origins_schemas:
+  for origins_port in origins_ports:
+    for origins_host in origins_hosts:
+      origins.append(f"{origins_schema}://{origins_host}:{origins_port}")
 
+# setup origins middleware to ensure CORS works
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -44,20 +73,26 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-Logger.add(os.path.join(where_am_i, "logs", "__packages__", f"{__name__}.py.log"), rotation="1 day")
-PACKAGE_TARGET_PATH=os.path.join(where_am_i, "__packages__")
+Logger.add(os.path.join(LOG_LOCATION, f"{__name__}.py.log"), rotation="1 day")
+PACKAGE_TARGET_PATH=os.path.join(SERVICE_LOCATION, "__packages__")
+
+Logger.info(f'SERVICE_LOCATION: {SERVICE_LOCATION}')
+Logger.info(f'SERVICE_USER_DATA_LOCATION: {USER_DATA_LOCATION}')
+Logger.info(f'SERVICE_USER_DATA_LOCATION env: {os.getenv("SERVICE_DATA_PATH")}')
+Logger.info(f'SERVICE_USER_DATA_LOCATION arg: {args.userdir}')
+Logger.info(f'ORIGINS: {origins}')
 
 # read template/header.py into a string
-with open(os.path.join(where_am_i, "template", "header.py"), "r") as header_file:
+with open(os.path.join(SERVICE_LOCATION, "template", "header.py"), "r") as header_file:
   HEADER_STRING = header_file.read()
 # read template/footer.py into a string
-with open(os.path.join(where_am_i, "template", "footer.py"), "r") as footer_file:
+with open(os.path.join(SERVICE_LOCATION, "template", "footer.py"), "r") as footer_file:
   FOOTER_STRING = footer_file.read()
 # read template/body-header.py into a string
-with open(os.path.join(where_am_i, "template", "body-header.py"), "r") as body_header_file:
+with open(os.path.join(SERVICE_LOCATION, "template", "body-header.py"), "r") as body_header_file:
   BODY_HEADER_STRING = body_header_file.read()
 # read template/body-footer.py into a string
-with open(os.path.join(where_am_i, "template", "body-footer.py"), "r") as body_footer_file:
+with open(os.path.join(SERVICE_LOCATION, "template", "body-footer.py"), "r") as body_footer_file:
   BODY_FOOTER_STRING = body_footer_file.read()
 
 
@@ -140,15 +175,15 @@ async def execute_algorithm(request: Request, response: Response, body: Algoritm
     requestid = f'{datetime.timestamp(datetime.now())}.{str(random.randint(1, 100000))}'
     # get new name for a new script
     new_script_name = f'req-{requestid}.py'
-    new_script = os.path.join(where_am_i, "algorithm", new_script_name)
+    new_script = os.path.join(USER_DATA_LOCATION, "algorithm", new_script_name)
     new_script_url = f"/algorithm/{new_script_name}/script"
-    new_script_path = os.path.relpath(new_script, os.path.join(where_am_i, "..", ".."))
+    new_script_path = os.path.relpath(new_script, USER_DATA_LOCATION)
     new_script_output = f'{new_script}.output'
     new_script_output_url = f"/algorithm/{new_script_name}/output"
-    new_script_output_path = os.path.relpath(new_script_output, os.path.join(where_am_i, "..", ".."))
+    new_script_output_path = os.path.relpath(new_script_output, USER_DATA_LOCATION)
     new_script_log = f'{new_script}.log'
     new_script_log_url = f"/algorithm/{new_script_name}/log"
-    new_script_log_path = os.path.relpath(new_script_log, os.path.join(where_am_i, "..", ".."))
+    new_script_log_path = os.path.relpath(new_script_log, USER_DATA_LOCATION)
 
     # add request specific log file
     logfile_hander = Logger.add(new_script_log, level="INFO", filter=lambda record: record["extra"]["requestid"] == requestid)
@@ -224,7 +259,7 @@ async def execute_algorithm(request: Request, response: Response, body: Algoritm
 @Logger.catch
 @app.get("/algorithm/{script}/log")
 async def read_algorithm_log(script: str):
-  returnfile = os.path.join(where_am_i, "algorithm", f'{script}.log')
+  returnfile = os.path.join(USER_DATA_LOCATION, "algorithm", f'{script}.log')
   # return contents of logfile withoput encoding
   with open(returnfile, "r") as new_file:
     return Response(content=new_file.read(), media_type="text/plain")
@@ -233,7 +268,7 @@ async def read_algorithm_log(script: str):
 @Logger.catch
 @app.get("/algorithm/{script}/script")
 async def read_algorithm_script(script: str):
-  returnfile = os.path.join(where_am_i, "algorithm", f'{script}')
+  returnfile = os.path.join(USER_DATA_LOCATION, "algorithm", f'{script}')
   # return contents of logfile withoput encoding
   with open(returnfile, "r") as new_file:
     return Response(content=new_file.read(), media_type="text/plain")
@@ -241,7 +276,7 @@ async def read_algorithm_script(script: str):
 @Logger.catch
 @app.get("/algorithm/{script}/output")
 async def read_algorithm_output(script: str):
-  returnfile = os.path.join(where_am_i, "algorithm", f'{script}.output')
+  returnfile = os.path.join(USER_DATA_LOCATION, "algorithm", f'{script}.output')
   # return contents of logfile withoput encoding
   with open(returnfile, "r") as new_file:
     return Response(content=new_file.read(), media_type="text/plain")

@@ -74,6 +74,7 @@ export interface ExecConfig {
     default?: string
   }
   setup?: string[]
+  env?: any
   commandline?: string
   commandlinecli?: string
   serviceorder?: 0
@@ -126,6 +127,7 @@ export class Service extends EventEmitter<ServiceEvent> {
   #setup: string[]
   #status: ServiceStatus
   #abortController: AbortController
+  #logsDir: string
   constructor(
     logsDir: string,
     logger: Logger,
@@ -139,6 +141,7 @@ export class Service extends EventEmitter<ServiceEvent> {
     this.#abortController = new AbortController()
     this.#servicepath = servicepath
     this.#servicedatapath = servicedatapath
+    this.#logsDir = logsDir
     this.#options = options
     this.#events = events
     this.#serviceManager = serviceManager
@@ -201,6 +204,29 @@ export class Service extends EventEmitter<ServiceEvent> {
       path.basename(this.#servicepath) + ".pid"
     )
     this.#checkRunning()
+  }
+
+  // replace possible variables in a service command string
+  #getServiceCommand(command: string, service: Service): string {
+    return command
+      .replaceAll("${SERVICE_PATH}", service.#servicepath)
+      .replaceAll("${SERVICE_DATA_PATH}", service.#servicedatapath)
+      .replaceAll("${SERVICE_PORT}", service.#serviceport + "")
+      .replaceAll("${SERVICE_HOST}", service.#servicehost + "")
+      .replaceAll("${SERVICE_LOG_PATH}", service.#logsDir + "")
+  }
+
+  get environmentVariables() {
+    const envVar = this.#options.execconfig?.env || {}
+    // for each attribute in envVar update is value
+    for (const key in envVar) {
+      if (envVar[key]) {
+        const value = envVar[key]
+        envVar[key] = this.#getServiceCommand(value, this)
+      }
+    }
+    envVar["PYTHONPATH"] = this.#servicepath
+    return envVar
   }
 
   // get log(): Readable {
@@ -578,7 +604,7 @@ export class Service extends EventEmitter<ServiceEvent> {
         cwd: this.#servicesroot,
         signal: this.#abortController.signal,
         windowsVerbatimArguments: true,
-        env: { PYTHONPATH: this.#servicepath },
+        env: this.environmentVariables,
         shell: true,
         // send data to logs but it will be delayed as its buffered in 64k blocks :(
         stdio: ["ignore", this.#stdout, this.#stderr],
@@ -660,13 +686,6 @@ export class Service extends EventEmitter<ServiceEvent> {
     }
   }
 
-  #getServiceCommand(command: string, service: Service): string {
-    return command
-      .replaceAll("${SERVICE_PATH}", service.#servicepath)
-      .replaceAll("${SERVICE_DATA_PATH}", service.#servicedatapath)
-      .replaceAll("${SERVICE_PORT}", service.#serviceport + "")
-  }
-
   get isSetup() {
     if (!this.#options.execconfig.setup) {
       return true
@@ -718,7 +737,7 @@ export class Service extends EventEmitter<ServiceEvent> {
               signal: this.#abortController.signal,
               cwd: this.#servicepath,
               stdio: ["ignore", this.#stdout, this.#stderr],
-              env: { PYTHONPATH: this.#servicepath },
+              env: this.environmentVariables,
               windowsHide: true,
             })
             .then((result) => {

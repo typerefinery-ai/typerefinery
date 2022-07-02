@@ -12,6 +12,12 @@
     "setup": [
       "-m pip install --target=${SERVICE_PATH}\\__packages__ -r ${SERVICE_PATH}\\requirements.txt"
     ],
+    "env": {
+      "SERVICE_DATA_PATH": "${SERVICE_DATA_PATH}",
+      "SERVICE_LOG_PATH": "${SERVICE_PATH}",
+      "SERVICE_PATH": "${SERVICE_PATH}",
+      "SERVICE_PORT": "${SERVICE_PORT}"
+    },
     "commandline": "-m uvicorn --host localhost --port ${SERVICE_PORT} --app-dir ${SERVICE_PATH} main:app",
     "serviceport": 8000,
     "depend_on": [

@@ -55,6 +55,7 @@ function getServicePage(service: Service) {
     <p>Executable: ${service.options.execconfig?.execservice?.id}</p>
     <p>Is Configured: ${service.isSetup}</p>
     <p>Is Running: ${service.isRunning}</p>
+    <p>Env: ${JSON.stringify(service.environmentVariables)}</p>
 
     <p>
       <button onclick="triggerServiceAPI('start')">Start</button>

@@ -50,6 +50,9 @@ if exist %SERVER_HOME% (
 :startserver
 
 if exist %SERVER_HOME% (
+  SET "SERVICE_DATA_PATH=%SERVER_HOME%"
+  SET "SERVICE_LOG_PATH=%SERVER_HOME%/logs"
+  SET "SERVICE_PATH=%SERVER_HOME%"
   python -I -m uvicorn --reload --reload-exclude "req-*.py" --host localhost --app-dir %SERVER_HOME% main:app
   goto exit
 ) else (
