@@ -110,6 +110,7 @@ export class Service extends EventEmitter<ServiceEvent> {
   #process?: ChildProcess
   #id: string
   #servicepath: string
+  #servicedatapath: string
   #servicepidfile: string
   #servicesroot: string
   #options: SericeConfigFile
@@ -129,6 +130,7 @@ export class Service extends EventEmitter<ServiceEvent> {
     logsDir: string,
     logger: Logger,
     servicepath: string,
+    servicedatapath: string,
     options: SericeConfigFile,
     events: ServiceEvents,
     serviceManager: ServiceManager
@@ -136,6 +138,7 @@ export class Service extends EventEmitter<ServiceEvent> {
     super()
     this.#abortController = new AbortController()
     this.#servicepath = servicepath
+    this.#servicedatapath = servicedatapath
     this.#options = options
     this.#events = events
     this.#serviceManager = serviceManager
@@ -277,7 +280,11 @@ export class Service extends EventEmitter<ServiceEvent> {
     process.once("exit", () => {
       this.#removeServicePidFile()
       this.#status = ServiceStatus.STOPPED
-      this.#log(`process ${this.#id} with pid ${this.#process?.pid} existed.`)
+      this.#log(
+        `process ${this.#id} with pid ${
+          this.#process?.pid
+        } existed, service status is ${this.#status}`
+      )
       this.#process = void 0
     })
     // run health check if defined
@@ -313,8 +320,10 @@ export class Service extends EventEmitter<ServiceEvent> {
         // this.disable()
       }
     } else {
-      this.#log("service is missing execconfig.")
       this.#setStatus(ServiceStatus.INVALIDCONFIG)
+      this.#log(
+        `service is missing execconfig, service status is ${this.#status}`
+      )
     }
     return serviceExecutable
   }
@@ -326,16 +335,18 @@ export class Service extends EventEmitter<ServiceEvent> {
       // if service is being executed by another service
       if (this.#options.execconfig.commandlinecli) {
         // if service is being executed by a file
-        serviceCommandCli = this.#options.execconfig.commandlinecli.replaceAll(
-          "${SERVICE_PATH}",
-          this.#servicepath
+        serviceCommandCli = this.#getServiceCommand(
+          this.#options.execconfig.commandlinecli,
+          this
         )
       } else {
         this.#log("service does not have cli commandline")
       }
     } else {
-      this.#log("service is missing execconfig.")
       this.#setStatus(ServiceStatus.INVALIDCONFIG)
+      this.#log(
+        `service is missing execconfig, service status is ${this.#status}`
+      )
     }
     return serviceCommandCli
   }
@@ -376,8 +387,10 @@ export class Service extends EventEmitter<ServiceEvent> {
         // this.disable()
       }
     } else {
-      this.#log("service is missing execconfig.")
       this.#setStatus(ServiceStatus.INVALIDCONFIG)
+      this.#log(
+        `service is missing execconfig, service status is ${this.#status}`
+      )
     }
     return serviceExecutable
   }
@@ -410,7 +423,11 @@ export class Service extends EventEmitter<ServiceEvent> {
           nextRetry
         )
       } else {
-        this.#log(`health check finished`)
+        this.#log(
+          `health check exited after ${retries} retries, service status is ${
+            this.#status
+          }`
+        )
       }
     }
   }
@@ -429,9 +446,7 @@ export class Service extends EventEmitter<ServiceEvent> {
   // run health check http
   #runHealthCheckHttp(): void {
     if (this.#healthCheck && this.#healthCheck.url) {
-      const urlFixed = this.#healthCheck.url
-        .replaceAll("${SERVICE_PATH}", this.#servicepath)
-        .replaceAll("${SERVICE_PORT}", this.#serviceport + "")
+      const urlFixed = this.#getServiceCommand(this.#healthCheck.url, this)
       const url: URL = new URL(urlFixed)
       const hostname = url.hostname
       const port = url.port
@@ -446,22 +461,34 @@ export class Service extends EventEmitter<ServiceEvent> {
       try {
         const req = http.get(options, (res) => {
           if (res.statusCode == 200) {
-            this.#log("http health check success")
             this.#status = ServiceStatus.STARTED
-          } else {
             this.#log(
-              `http health check failed with status code ${res.statusCode}`
+              `http health check success, service status is ${this.#status}`
             )
+          } else {
             this.#status = ServiceStatus.STOPPED
+            this.#log(
+              `http health check failed with status code ${
+                res.statusCode
+              }, service status is ${this.#status}`
+            )
           }
         })
         req.on("error", (e) => {
-          this.#log(`http health check request failed with error ${e}`)
           this.#status = ServiceStatus.STOPPED
+          this.#log(
+            `http health check request failed with error ${e}, service status is ${
+              this.#status
+            }`
+          )
         })
       } catch (error) {
-        this.#log(`http could not execute health check error is ${error}`)
         this.#status = ServiceStatus.STOPPED
+        this.#log(
+          `http could not execute health check error is ${error}, service status is ${
+            this.#status
+          }`
+        )
       }
     }
   }
@@ -472,13 +499,17 @@ export class Service extends EventEmitter<ServiceEvent> {
       const hostname = this.#servicehost
       const port = this.#serviceport
       const socket = net.createConnection(port, hostname, () => {
-        this.#log("tcp health check success")
         this.#status = ServiceStatus.STARTED
+        this.#log(`tcp health check success, service status ${this.#status}`)
         socket.end()
       })
       socket.on("error", (error) => {
-        this.#log(`tcp health check failed with error ${error}`)
         this.#status = ServiceStatus.STOPPED
+        this.#log(
+          `tcp health check failed with error ${error}, service status ${
+            this.#status
+          }`
+        )
       })
     }
   }
@@ -535,10 +566,10 @@ export class Service extends EventEmitter<ServiceEvent> {
         this.#options.execconfig.commandline
       ) {
         commandline =
-          this.#options.execconfig.commandline
-            .replaceAll("${SERVICE_PATH}", this.#servicepath)
-            .replaceAll("${SERVICE_PORT}", this.#serviceport + "")
-            .split(" ") || []
+          this.#getServiceCommand(
+            this.#options.execconfig.commandline,
+            this
+          ).split(" ") || []
       }
 
       const options: SpawnOptions = {
@@ -627,6 +658,13 @@ export class Service extends EventEmitter<ServiceEvent> {
     }
   }
 
+  #getServiceCommand(command: string, service: Service): string {
+    return command
+      .replaceAll("${SERVICE_PATH}", service.#servicepath)
+      .replaceAll("${SERVICE_DATA_PATH}", service.#servicedatapath)
+      .replaceAll("${SERVICE_PORT}", service.#serviceport + "")
+  }
+
   async #doSetup() {
     if (this.#setup && this.#setup.length > 0) {
       if (!os.isPathExist(this.#setupstatefile)) {
@@ -664,7 +702,7 @@ export class Service extends EventEmitter<ServiceEvent> {
           const execCommand =
             serviceExecutable +
             " " +
-            setupCommand.replaceAll("${SERVICE_PATH}", this.#servicepath)
+            this.#getServiceCommand(setupCommand, this)
           this.#log(`execCommand: ${execCommand} in ${this.#servicepath}`)
           await os
             .runProcess(execCommand, [], {
