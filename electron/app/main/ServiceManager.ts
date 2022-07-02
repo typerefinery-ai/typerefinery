@@ -21,6 +21,7 @@ interface ServiceManagerEvents {
 class ServiceManager {
   #serviceConfigFile = "service.json"
   #servicesroot: string
+  #servicesdataroot: string
   #serviceConfigList: ServiceConfig[]
   #services: Service[]
   #serviceEvents: ServiceEvents
@@ -33,14 +34,15 @@ class ServiceManager {
     logsDir: string,
     logger: Logger,
     servicesroot: string,
+    servicesdataroot: string,
     serviceEvents: ServiceEvents,
     serviceManagerEvents: ServiceManagerEvents
   ) {
     this.#logsDir = logsDir
     this.#servicesroot = servicesroot
+    this.#servicesdataroot = servicesdataroot
     this.#logger = logger.forService("servicemanager")
     this.#services = new Array<Service>()
-    this.#servicesroot = servicesroot
     this.#serviceEvents = serviceEvents
     this.#serviceManagerEvents = serviceManagerEvents
 
@@ -87,6 +89,10 @@ class ServiceManager {
           this.#logsDir,
           this.#logger,
           serviceConfig.servicepath,
+          path.join(
+            this.#servicesdataroot,
+            path.basename(serviceConfig.servicepath)
+          ),
           serviceConfig.options,
           this.#serviceEvents,
           this
