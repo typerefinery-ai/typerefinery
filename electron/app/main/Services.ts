@@ -169,7 +169,9 @@ app.get("/", function (req, res) {
 })
 
 app.post("/exit", function (req, res, next) {
-  process.exit()
+  serviceManager.stopAll().finally(() => {
+    process.exit()
+  })
 })
 
 app.get("/services", function (req, res) {
