@@ -2,6 +2,7 @@ import * as config from "../../../package.json"
 import portfinder from "portfinder"
 import { spawn, type SpawnOptions } from "node:child_process"
 import fs from "fs"
+import http, { type RequestOptions } from "node:http"
 
 export function tryParseInt(text: string, defaultValue: number): number {
   try {
@@ -110,4 +111,37 @@ export const os = {
     }
     return result
   },
+}
+
+export async function getData(options: RequestOptions) {
+  return new Promise((resolve, reject) => getHttp(options, resolve, reject))
+}
+
+export function getHttp(options: RequestOptions, resolve, reject) {
+  http.get(options, (res) => {
+    // on redirect do recursive call
+    if (
+      res.statusCode === 301 ||
+      res.statusCode === 302 ||
+      res.statusCode === 307
+    ) {
+      const optionsRedirect = Object.assign({}, options)
+      optionsRedirect.path = res.headers.location
+      return getHttp(optionsRedirect, resolve, reject)
+    }
+
+    let rawData = ""
+
+    res.on("data", (chunk: any) => {
+      rawData += chunk
+    })
+
+    res.on("end", () => {
+      try {
+        resolve(rawData)
+      } catch (err) {
+        reject(err)
+      }
+    })
+  })
 }
