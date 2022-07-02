@@ -53,7 +53,7 @@ export default class Services extends VuexModule {
   async getServices() {
     // @ts-expect-error ts-migrate(2339) FIXME: Property 'ipc' does not exist on type 'Window & typeof globalThis'
     const { ipc } = window
-    if (ipc.getServices) {
+    if (ipc && ipc.getServices) {
       const services = await ipc.getServices()
       this.context.commit("setServices", services)
     }
