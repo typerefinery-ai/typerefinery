@@ -1,9 +1,11 @@
 import express from "express"
 import { type ServiceManagerEvents, ServiceManager } from "./ServiceManager"
-import { Service, ServiceStatus } from "./Service"
+import { Service, ServiceStatus, type ServiceConfig } from "./Service"
 import { Logger } from "./Logger"
 import { dataPath, resourceBinary } from "./Resources"
 import path from "path"
+
+const pageAutoRefreshEverySeconds = 5
 
 const logsDir = dataPath("logs")
 
@@ -41,35 +43,48 @@ function getServicePage(service: Service) {
   return `
   <html>
   <head>
-      <title>Service: ${service.id}</title>
+    <meta http-equiv="refresh" content="${pageAutoRefreshEverySeconds}">
+    <title>Service: ${service.id}</title>
   </head>
   <body>
-      <h1><a href="/services">Service</a>: ${service.id}</h1>
+    <h1><a href="/services">Service</a>: ${service.id}</h1>
 
-      <p>Status: ${serviceStatusName}</p>
-      <p>Port: ${service.port}</p>
-      <p>Exec Service: ${execservice}</p>
-      <p>Executable: ${service.options.execconfig?.execservice?.id}</p>
+    <p>Status: ${serviceStatusName}</p>
+    <p>Port: ${service.port}</p>
+    <p>Exec Service: ${execservice}</p>
+    <p>Executable: ${service.options.execconfig?.execservice?.id}</p>
+    <p>Is Configured: ${service.isSetup}</p>
+    <p>Is Running: ${service.isRunning}</p>
 
-      <p>
+    <p>
       <button onclick="triggerServiceAPI('start')">Start</button>
       <button onclick="triggerServiceAPI('stop')">Stop</button>
-      </p>
+    </p>
 
-      <script>
-          function triggerServiceAPI(event) {
-            fetch("/service/${service.id}/" + event, {
-              method: "POST",
-              headers: {"Content-Type": "application/json"},
-              body: JSON.stringify(event)
-            }).then(res => {
-              console.log("Request complete! response:", res);
-              location.reload();
-            });
-          }
-      </script>
+    <p>Status @: ${getTimestamp()}</p>
+    <p>Refresh(sec): ${pageAutoRefreshEverySeconds}</p>
+
+    <script>
+      function triggerServiceAPI(event) {
+        fetch("/service/${service.id}/" + event, {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify(event)
+        }).then(res => {
+          console.log("Request complete! response:", res);
+          location.reload();
+        });
+      }
+    </script>
   </body>
 </html>`
+}
+
+function getTimestamp(date: Date = new Date()) {
+  const timestamp = new Date(date.getTime() - date.getTimezoneOffset() * 60000)
+    .toISOString()
+    .replace(/(.*)T(.*)\..*/, "$1 $2")
+  return timestamp
 }
 
 function getServicesPage(services: Service[]) {
@@ -82,7 +97,10 @@ function getServicesPage(services: Service[]) {
         Object.keys(ServiceStatus)[
           Object.values(ServiceStatus).findIndex((x) => x === service.status)
         ]
-      return `<li><a href="/service/${service.id}">${service.id}${execservice} ${serviceStatusName}</a></li>`
+      const configured = service.isSetup ? "configured" : "not configured"
+      return `<li><a href="/service/${service.id}">${
+        service.id
+      }${execservice} ${serviceStatusName}, ${configured.toUpperCase()} </a></li>`
     })
     .join("\n")
 
@@ -93,43 +111,49 @@ function getServicesPage(services: Service[]) {
   return `
   <html>
   <head>
-      <title>Services</title>
+    <meta http-equiv="refresh" content="${pageAutoRefreshEverySeconds}">
+    <title>Services</title>
   </head>
 
-      <h1>Services</h1>
+    <h1>Services</h1>
 
-      <p>Service Path: ${servicesPath}</p>
-      <p>Service List:</p>
-      <ul>
-      ${servicesList}
-      </ul>
+    <p>Logs Path: ${logsDir}</p>
+    <p>Service Path: ${servicesPath}</p>
+    <p>Service Data Path: ${servicesUserDataPath}</p>
+    <p>Service List:</p>
+    <ul>
+    ${servicesList}
+    </ul>
 
-      <p>
+    <p>
       <button onclick="triggerServiceAPI('/exit')">Exit</button>
       <button onclick="triggerServiceAPI('/services/reload')">Reload</button>
-      </p>
+    </p>
 
-      <script>
-          function triggerServiceAPI(path) {
-            fetch(path, {
-              method: "POST",
-              headers: {"Content-Type": "application/json"},
-            }).then(res => {
-              console.log("Request complete! response:", res);
-            });
-          }
-      </script>
+    <p>Status @: ${getTimestamp()}</p>
+    <p>Refresh(sec): ${pageAutoRefreshEverySeconds}</p>
+
+    <script>
+      function triggerServiceAPI(path) {
+        fetch(path, {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+        }).then(res => {
+          console.log("Request complete! response:", res);
+        });
+      }
+    </script>
   </body>
 </html>`
 }
 
-function sendServiceList(serviceConfigList: object) {
-  logger.log("sendServiceList")
-  logger.log(serviceConfigList)
-  console.log(serviceConfigList)
+function sendServiceList(serviceConfigList: Service[]) {
+  logger.log(
+    `sendServiceList: ${serviceConfigList.map((x) => x.id).toString()}`
+  )
 }
 
-function sendServiceStatus(id: string, output: string) {
+function sendServiceStatus(id: string, output: string): void {
   logger.log("sendServiceStatus", id, output)
 }
 
