@@ -15,7 +15,7 @@ import { getPortFree } from "./Utils"
 const serviceManagerLog = "servicemanager.log"
 
 interface ServiceManagerEvents {
-  sendServiceList: (serviceConfigList: object) => void
+  sendServiceList: (serviceConfigList: Service[]) => void
 }
 
 class ServiceManager {
