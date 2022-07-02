@@ -29,6 +29,7 @@ import { getConfig, getEnvConfigWithDefault, tryParseInt } from "./Utils"
 import ElectronWindowState from "electron-window-state"
 import { t } from "i18next"
 import { type AppIPC, sharedAppIpc } from "../preload/ipc"
+import { Service } from "./Service"
 
 // setup crash reporter first
 if (getEnvConfigWithDefault("CRASH_REPORTER_SUBMIT_URL")) {
@@ -151,10 +152,10 @@ const serviceManager = new ServiceManager(
   }
 )
 
-function sendServiceList(serviceConfigList: object) {
-  logger.log("sendServiceList")
-  logger.log(serviceConfigList)
-  console.log(serviceConfigList)
+function sendServiceList(serviceConfigList: Service[]) {
+  logger.log(
+    `sendServiceList: ${serviceConfigList.map((x) => x.id).toString()}`
+  )
 }
 
 function sendServiceStatus(id: string, output: string) {
