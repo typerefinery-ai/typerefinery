@@ -554,6 +554,8 @@ export class Service extends EventEmitter<ServiceEvent> {
 
     const serviceExecutable = this.getServiceExecutable()
     this.#log(`service executable ${serviceExecutable}`)
+    this.#log(`service path ${this.#servicepath}`)
+    this.#log(`service user data path ${this.#servicedatapath}`)
 
     this.#serviceport = await this.#getOpenPort()
     this.#log(`service port ${this.#serviceport}`)
