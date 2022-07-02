@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Module, VuexModule, Mutation } from "vuex-module-decorators"
 import store from "../index"
-import sampleData from "@/data/appData.json"
+import sampleData from "@/data/default.json"
 const storeValue = localStorage.getItem("typerefinery")
 const appDataInStore = storeValue ? JSON.parse(storeValue).AppData : false
 @Module({
@@ -11,7 +11,7 @@ const appDataInStore = storeValue ? JSON.parse(storeValue).AppData : false
   preserveState: appDataInStore,
 })
 export default class AppData extends VuexModule {
-  list: any = sampleData.list
+  list: any = sampleData.AppData.list
 
   /**** Getters ****/
   // Data for Dropdown(List)
