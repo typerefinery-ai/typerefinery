@@ -202,7 +202,7 @@ async def execute_algorithm(request: Request, response: Response, body: Algoritm
       "log.exists": str(new_script_log_exists),
       "log.url": new_script_log_url,
       "return.output": body.returnoutput,
-	  "Access-Control-Expose-Headers": "output.url"
+	    "Access-Control-Expose-Headers": "output.url,output.exists,output",
     }
 
     if os.path.exists(new_script_output) and body.returnoutput == "output":
