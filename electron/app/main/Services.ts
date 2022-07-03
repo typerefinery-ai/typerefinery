@@ -295,7 +295,6 @@ function sendServiceLog(id: string, output: string) {
 }
 
 const app = express()
-app.use(express.json())
 
 app.get("/", function (req, res) {
   res.redirect("/services")
@@ -358,7 +357,7 @@ app.get("/service/:serviceId", (req, res, next) => {
   res.send(getServicePage(service))
 })
 
-app.post("/service/file", (req, res, next) => {
+app.post("/service/file", express.json({ type: "*/*" }), (req, res, next) => {
   const filePath = req.body.filePath
   const file = fs.readFileSync(filePath, "utf8")
   res.end(file)
