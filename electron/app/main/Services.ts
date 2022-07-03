@@ -254,9 +254,18 @@ function getServicesPage(services: Service[]) {
     </p>
 
     <p>Status @: ${getTimestamp()}</p>
-    <p>Refresh(sec): ${pageAutoRefreshEverySeconds}</p>
+    <p>Page Refresh in (sec): <span id="refreshInPage">${pageAutoRefreshEverySeconds}</span></p>
 
     <script>
+      const $refreshInPage = document.querySelector('#refreshInPage');
+      let refreshInPage = ${pageAutoRefreshEverySeconds};
+      let pageRefreshTimer = setInterval(() => {
+        refreshInPage--;
+        $refreshInPage.innerText = refreshInPage;
+        if (refreshInPage <= 0) {
+          window.location.reload();
+        }
+      }, 1000);
       function triggerServicesAPI(path) {
         fetch(path, {
           method: "POST",
