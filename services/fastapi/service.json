@@ -14,7 +14,7 @@
     ],
     "env": {
       "SERVICE_DATA_PATH": "${SERVICE_DATA_PATH}",
-      "SERVICE_LOG_PATH": "${SERVICE_PATH}",
+      "SERVICE_LOG_PATH": "${SERVICE_LOG_PATH}",
       "SERVICE_PATH": "${SERVICE_PATH}",
       "SERVICE_PORT": "${SERVICE_PORT}"
     },
