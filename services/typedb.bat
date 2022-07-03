@@ -1,16 +1,19 @@
 @echo off
 
+SET "APP_NAME=TypeRefinery"
+SET "SERVICES_HOME=services"
 SET "SERVICE_NAME=typedb"
 SET "PYTHON_HOME=%cd%\_python"
 SET "SERVER_HOME=%cd%\%SERVICE_NAME%"
 SET "JAVA_HOME=%cd%\_java\jre17"
 SET "PATH=%JAVA_HOME%\bin"
-SET "SERVICE_DATA_PATH=%SERVER_HOME%"
+SET "SERVICES_HOME_PROD=%APPDATA%\%APP_NAME%\%SERVICES_HOME%\%SERVICE_NAME%"
+SET "SERVICES_DATA_PROD=%APPDATA%\%APP_NAME%\%SERVICES_HOME%\%SERVICE_NAME%\server\data"
 
 echo %SERVICE_NAME% - SERVER_HOME=%SERVER_HOME%
 echo %SERVICE_NAME% - JAVA_HOME=%JAVA_HOME%
 echo %SERVICE_NAME% - PATH=%PATH%
-echo %SERVICE_NAME% - PASERVICE_DATA_PATHTH=%SERVICE_DATA_PATH%
+echo %SERVICE_NAME% - SERVICES_HOME_PROD=%SERVICES_HOME_PROD%
 
 @REM required memory = JVM memory + 2gb + 2*(configured db-caches in gb) + 0.5gb*CPUs
 
@@ -20,20 +23,29 @@ if "%1" == "" goto missingargument
 
 if "%1" == "console" goto startconsole
 if "%1" == "cluster" goto startcluster
-if "%1" == "server"  goto startserver
+if "%1" == "serverprod" (
+  SET "SERVICE_DATA_PATH=%APPDATA%\%APP_NAME%\%SERVICES_HOME%\%SERVICE_NAME%/server/data"
+  goto startserverprod
+)
+if "%1" == "server" (
+  SET "SERVICE_DATA_PATH=%SERVER_HOME%\server\data"
+  goto startserver
+)
 
 echo   Invalid argument: %1. Possible commands are:
-echo   Server:          typedb server [--help]
-echo   Cluster:         typedb cluster [--help]
-echo   Console:         typedb console [--help]
+echo   Server:          server [--help]
+echo   Server PROD:     serverprod [--help]
+echo   Cluster:         cluster [--help]
+echo   Console:         console [--help]
 goto exiterror
 
 :missingargument
 
- echo   Missing argument. Possible commands are:
- echo   Server:          typedb server [--help]
- echo   Cluster:         typedb cluster [--help]
- echo   Console:         typedb console [--help]
+echo   Missing argument. Possible commands are:
+echo   Server:          server [--help]
+echo   Server PROD:     serverprod [--help]
+echo   Cluster:         cluster [--help]
+echo   Console:         console [--help]
 
 goto exiterror
 
@@ -50,9 +62,9 @@ if exist %SERVER_HOME%\console\ (
 
 :startserver
 
+IF exist "%SERVICE_DATA_PATH%" ( echo "%SERVICE_DATA_PATH%" exists ) ELSE ( mkdir "%SERVICE_DATA_PATH%" && echo "%SERVICE_DATA_PATH%" created)
+
 set "G_CP=%SERVER_HOME%\server\conf\;%SERVER_HOME%\server\lib\common\*;%SERVER_HOME%\server\lib\prod\*"
-
-
 if exist %SERVER_HOME%\server\ (
   java %SERVER_JAVAOPTS% -cp "%G_CP%" -Dtypedb.dir="%SERVER_HOME%" com.vaticle.typedb.core.server.TypeDBServer --storage.data="%SERVICE_DATA_PATH%/server/data"
   goto exit
@@ -67,6 +79,19 @@ set "G_CP=%SERVER_HOME%\server\conf\;%SERVER_HOME%\server\lib\common\*;%SERVER_H
 
 if exist %SERVER_HOME%\server\ (
   java %SERVER_JAVAOPTS% -cp "%G_CP%" -Dtypedb.dir="%SERVER_HOME%" com.vaticle.typedb.cluster.server.TypeDBClusterServer
+  goto exit
+) else (
+  echo Direcotory [%SERVER_HOME%\server\] is missing.
+  goto exiterror
+)
+
+:startserverprod
+
+IF exist "%SERVICE_DATA_PATH%" ( echo "%SERVICE_DATA_PATH%" exists ) ELSE ( mkdir "%SERVICE_DATA_PATH%" && echo "%SERVICE_DATA_PATH%" created)
+
+set "G_CP=%SERVER_HOME%\server\conf\;%SERVER_HOME%\server\lib\common\*;%SERVER_HOME%\server\lib\prod\*"
+if exist %SERVER_HOME%\server\ (
+  java %SERVER_JAVAOPTS% -cp "%G_CP%" -Dtypedb.dir="%SERVER_HOME%" com.vaticle.typedb.core.server.TypeDBServer --storage.data="%SERVICE_DATA_PATH%"
   goto exit
 ) else (
   echo Direcotory [%SERVER_HOME%\server\] is missing.
