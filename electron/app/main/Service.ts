@@ -157,6 +157,7 @@ export class Service extends EventEmitter<ServiceEvent> {
     this.#logger = logger.forService(this.#id)
     // create stderr log file for service executable
     this.#stderrLogFile = path.join(logsDir, `${this.#id}-error.log`)
+    this.#ensurePathToFile(this.#stderrLogFile)
     this.#stderr = createWriteStream(this.#stderrLogFile, {
       flags: "a",
       mode: 0o666,
@@ -171,6 +172,7 @@ export class Service extends EventEmitter<ServiceEvent> {
 
     // create stdout log file for service executable
     this.#stdoutLogFile = path.join(logsDir, `${this.#id}-console.log`)
+    this.#ensurePathToFile(this.#stdoutLogFile)
     this.#stdout = createWriteStream(this.#stdoutLogFile, {
       flags: "a",
       mode: 0o666,
@@ -195,13 +197,23 @@ export class Service extends EventEmitter<ServiceEvent> {
       this.#servicedatapath,
       path.basename(this.#servicepath) + ".setup"
     )
+    this.#ensurePathToFile(this.#setupstatefile)
 
     // set service pid and check if its not running
     this.#servicepidfile = path.join(
       this.#servicedatapath,
       path.basename(this.#servicepath) + ".pid"
     )
+    this.#ensurePathToFile(this.#servicepidfile)
+
     this.#checkRunning()
+  }
+
+  #ensurePathToFile(file: string) {
+    const dir = path.dirname(file)
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true })
+    }
   }
 
   // replace possible variables in a service command string
@@ -775,8 +787,10 @@ export class Service extends EventEmitter<ServiceEvent> {
           }
         }
         //for each setup command in #setup, execute it
+
         for (let i = 0; i < this.#setup.length; i++) {
-          const setupCommand = this.#getServiceCommand(this.#setup[i], this)
+          const step = this.#setup[i]
+          const setupCommand = this.#getServiceCommand(step, this)
           this.#log(`executing setup command ${setupCommand}`)
           const execCommand = `${serviceExecutable} ${setupCommand}`
           this.#log(`execCommand: ${execCommand} in ${this.#servicepath}`)
