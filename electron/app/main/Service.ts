@@ -729,12 +729,9 @@ export class Service extends EventEmitter<ServiceEvent> {
         }
         //for each setup command in #setup, execute it
         for (let i = 0; i < this.#setup.length; i++) {
-          const setupCommand = this.#setup[i]
+          const setupCommand = this.#getServiceCommand(this.#setup[i], this)
           this.#log(`executing setup command ${setupCommand}`)
-          const execCommand =
-            serviceExecutable +
-            " " +
-            this.#getServiceCommand(setupCommand, this)
+          const execCommand = `${serviceExecutable} ${setupCommand}`
           this.#log(`execCommand: ${execCommand} in ${this.#servicepath}`)
           await os
             .runProcess(execCommand, [], {
@@ -746,15 +743,16 @@ export class Service extends EventEmitter<ServiceEvent> {
             })
             .then((result) => {
               this.#log(`setup command ${setupCommand} result ${result}`)
-            })
-            .catch((err) => {
-              this.#log(`setup command ${setupCommand} error ${err}`)
-            })
-            .finally(() => {
-              this.#log(`setup command ${setupCommand} complete`)
               this.#status = ServiceStatus.INSTALLED
               // create setup file to mark that setup already happened
               fs.writeFileSync(this.#setupstatefile, "")
+            })
+            .catch((err) => {
+              this.#log(`setup command ${setupCommand} error ${err}`)
+              this.#status = ServiceStatus.ERROR
+            })
+            .finally(() => {
+              // this.#log(`setup command ${setupCommand} complete`)
             })
         }
       } else {
