@@ -2,9 +2,11 @@
 # allow importing og service local packages
 import os
 import sys
-where_am_i = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, os.path.join(where_am_i, "__packages__"))
-sys.path.append(where_am_i)
+SCRIPT_PATH = os.path.dirname(os.path.abspath(__file__))
+SERVICE_PACKAGES_PATH = os.path.join(SCRIPT_PATH, "__packages__")
+os.environ["SERVICE_PACKAGES_PATH"] = SERVICE_PACKAGES_PATH
+sys.path.insert(0, SERVICE_PACKAGES_PATH)
+sys.path.append(SCRIPT_PATH)
 # end of local package imports
 
 from typing import Optional
@@ -40,15 +42,15 @@ def getArgs():
 
 args, unknown = getArgs()
 
-SERVICE_LOCATION = where_am_i
+SERVICE_LOCATION = SCRIPT_PATH
 
 USER_DATA_LOCATION = os.getenv("SERVICE_DATA_PATH", args.userdir)
 if USER_DATA_LOCATION == "":
-  USER_DATA_LOCATION = where_am_i
+  USER_DATA_LOCATION = SCRIPT_PATH
 
 LOG_LOCATION = os.getenv("SERVICE_LOG_PATH", args.logdir)
 if LOG_LOCATION == "":
-  LOG_LOCATION = where_am_i
+  LOG_LOCATION = SCRIPT_PATH
 
 
 app = FastAPI()
