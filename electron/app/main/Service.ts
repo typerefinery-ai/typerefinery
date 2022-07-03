@@ -120,7 +120,9 @@ export class Service extends EventEmitter<ServiceEvent> {
   #servicehost?: string
   #serviceManager: ServiceManager
   #stdout: WriteStream
+  #stdoutLogFile: string
   #stderr: WriteStream
+  #stderrLogFile: string
   #logger: Logger
   #healthCheck?: HealthCheck
   #setupstatefile: string
@@ -154,32 +156,28 @@ export class Service extends EventEmitter<ServiceEvent> {
     // create logger for service
     this.#logger = logger.forService(this.#id)
     // create stderr log file for service executable
-    this.#stderr = createWriteStream(
-      path.join(logsDir, `${this.#id}-error.log`),
-      {
-        flags: "a",
-        mode: 0o666,
-        autoClose: true,
-        encoding: "utf8",
-        highWaterMark: 100,
-      }
-    )
+    this.#stderrLogFile = path.join(logsDir, `${this.#id}-error.log`)
+    this.#stderr = createWriteStream(this.#stderrLogFile, {
+      flags: "a",
+      mode: 0o666,
+      autoClose: true,
+      encoding: "utf8",
+      highWaterMark: 100,
+    })
     this.#stderr.on("error", (err) => {
       this.#logger.error(err)
     })
     this.#log(`service error log ${this.#stderr.path}`)
 
     // create stdout log file for service executable
-    this.#stdout = createWriteStream(
-      path.join(logsDir, `${this.#id}-console.log`),
-      {
-        flags: "a",
-        mode: 0o666,
-        autoClose: true,
-        encoding: "utf8",
-        highWaterMark: 100,
-      }
-    )
+    this.#stdoutLogFile = path.join(logsDir, `${this.#id}-console.log`)
+    this.#stdout = createWriteStream(this.#stdoutLogFile, {
+      flags: "a",
+      mode: 0o666,
+      autoClose: true,
+      encoding: "utf8",
+      highWaterMark: 100,
+    })
     this.#stdout.on("error", (err) => {
       this.#logger.error(err)
     })
@@ -194,13 +192,13 @@ export class Service extends EventEmitter<ServiceEvent> {
 
     // set service setup check
     this.#setupstatefile = path.join(
-      this.#servicepath,
+      this.#servicedatapath,
       path.basename(this.#servicepath) + ".setup"
     )
 
     // set service pid and check if its not running
     this.#servicepidfile = path.join(
-      this.#servicepath,
+      this.#servicedatapath,
       path.basename(this.#servicepath) + ".pid"
     )
     this.#checkRunning()
@@ -229,9 +227,26 @@ export class Service extends EventEmitter<ServiceEvent> {
     return envVar
   }
 
+  get setup() {
+    const setupVar: string[] = []
+    // for each attribute in setup get is value
+    this.#setup.forEach((step) => {
+      const value = this.#getServiceCommand(step, this)
+      setupVar.push(value)
+    })
+    return setupVar
+  }
   // get log(): Readable {
   //   return this.#consolelog
   // }
+
+  get errorLogFile(): string {
+    return this.#stderrLogFile
+  }
+
+  get consoleLogFile(): string {
+    return this.#stdoutLogFile
+  }
 
   get id(): string {
     return this.#id
@@ -355,7 +370,7 @@ export class Service extends EventEmitter<ServiceEvent> {
   }
 
   // return cli command line
-  getServiceCommandCli(): string {
+  getServiceCommandCli(silent = false): string {
     let serviceCommandCli = ""
     if (this.#options && this.#options.execconfig) {
       // if service is being executed by another service
@@ -366,15 +381,46 @@ export class Service extends EventEmitter<ServiceEvent> {
           this
         )
       } else {
-        this.#log("service does not have cli commandline")
+        if (!silent) {
+          this.#warn("service does not have cli commandline")
+        }
       }
     } else {
       this.#setStatus(ServiceStatus.INVALIDCONFIG)
-      this.#log(
-        `service is missing execconfig, service status is ${this.#status}`
-      )
+      if (!silent) {
+        this.#log(
+          `service is missing execconfig, service status is ${this.#status}`
+        )
+      }
     }
     return serviceCommandCli
+  }
+
+  // return cli command line
+  getServiceCommand(silent = false): string {
+    let serviceCommand = ""
+    if (this.#options && this.#options.execconfig) {
+      // if service is being executed by another service
+      if (this.#options.execconfig.commandline) {
+        // if service is being executed by a file
+        serviceCommand = this.#getServiceCommand(
+          this.#options.execconfig.commandline,
+          this
+        )
+      } else {
+        if (!silent) {
+          this.#warn("service does not have a commandline")
+        }
+      }
+    } else {
+      this.#setStatus(ServiceStatus.INVALIDCONFIG)
+      if (!silent) {
+        this.#log(
+          `service is missing execconfig, service status is ${this.#status}`
+        )
+      }
+    }
+    return serviceCommand
   }
 
   // get service executable from options by platform
@@ -593,11 +639,7 @@ export class Service extends EventEmitter<ServiceEvent> {
         this.#options.execconfig &&
         this.#options.execconfig.commandline
       ) {
-        commandline =
-          this.#getServiceCommand(
-            this.#options.execconfig.commandline,
-            this
-          ).split(" ") || []
+        commandline = this.getServiceCommand().split(" ") || []
       }
 
       const options: SpawnOptions = {
@@ -680,6 +722,11 @@ export class Service extends EventEmitter<ServiceEvent> {
 
   #log(message: any) {
     this.#logger.log(message)
+    this.emit("log", this.#id, message)
+  }
+
+  #warn(message: any) {
+    this.#logger.warn(message)
     this.emit("log", this.#id, message)
   }
 
