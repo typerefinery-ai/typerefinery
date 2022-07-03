@@ -44,4 +44,11 @@ export class Logger {
     //   console.log(...args)
     // }
   }
+
+  warn(...args: any[]) {
+    this.#logger.log("warn", JSON.stringify(args))
+    // if (this.#isDev) {
+    //   console.log(...args)
+    // }
+  }
 }
