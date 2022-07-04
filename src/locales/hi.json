@@ -50,7 +50,9 @@
       "general": {
         "experimental": "प्रायोगिक विशेषताएं",
         "chat": "चैट",
-        "editor": "एडीटर"
+        "editor": "एडीटर",
+        "charts": "चार्ट",
+        "maps": "नक़्शे"
       }
     },
 
