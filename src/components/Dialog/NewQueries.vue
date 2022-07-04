@@ -408,11 +408,8 @@
     height: 100vh;
     width: 40vw;
 
-    .code-mirror {
-      width: 80%;
-    }
     .p-dropdown {
-      width: 80%;
+      width: 100%;
     }
     .field {
       display: grid;
@@ -424,7 +421,7 @@
       margin-bottom: 10px;
     }
     input {
-      width: 80%;
+      width: 100%;
     }
     .p-dialog-content {
       height: 100%;
