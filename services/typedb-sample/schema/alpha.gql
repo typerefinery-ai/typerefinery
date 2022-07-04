@@ -1,0 +1,224 @@
+define
+###########################
+#  basic log, trace and event definitions
+#############################
+
+    index sub attribute, 
+        value long;
+    traceId sub attribute, 
+        value long;
+    logName sub attribute,
+        value string;
+
+    eventName sub attribute, 
+        plays transition,
+        plays baseTransition,
+        plays inlet,
+        plays outlet,
+        value string;      
+    
+    event sub entity, 
+        has eventName,
+        plays item,
+        plays input,
+        plays output;
+
+    log sub entity,
+        has logName, 
+        plays owner;
+
+    trace sub relation,
+        has traceId,
+        has index,
+        relates owner,
+        relates item;
+
+    follows sub relation,
+        relates owner,
+        relates input,
+        relates output;
+
+#########################
+# Algorithm and Petri Net relations
+#########################
+
+    place sub attribute,
+        plays aPlace,
+        plays inlet,
+        plays outlet,
+        value string;  
+
+    footType sub attribute, value string;
+
+    footprint sub relation,
+        has footType,
+        relates owner,
+        relates baseTransition,
+        relates transition;
+
+    transitions sub relation,
+        relates owner,
+        relates transition;
+    
+    firstTransition sub relation,
+        relates owner,
+        relates transition;
+    
+    lastTransition sub relation,
+        relates owner,
+        relates transition;
+
+    places sub relation,
+        relates owner,
+        relates aPlace;
+    
+    flows sub relation,
+        relates owner,
+        relates inlet,
+        relates outlet;
+
+############################
+# GRAKN Alpha Algorithm Rules
+############################
+# Step 1 - Setup Transitions
+# A - All: 
+# Select the distinct set of event names from every log
+    find_transitions sub rule,
+        when {
+            $o isa log;
+	        $e1 isa event, has eventName $eN1;
+            (owner: $o, item: $e1) isa trace;
+            
+        }, then {
+            (owner:$o, transition: $eN1) isa transitions;
+        };
+
+# B - First
+# Select the set of first event names from every log
+    find_first_transitions sub rule,
+        when {
+            $o isa log;
+	        $e1 isa event, has eventName $eN1;
+            (owner: $o, item: $e1) isa trace, has index 0;
+            
+        }, then {
+            (owner: $o, transition: $eN1) isa firstTransition;
+        };
+
+# C - Last
+# Select the set of last event names from every log
+    find_last_transitions sub rule,
+        when {
+            $o isa log;
+	        $e1 isa event, has eventName $eN1;
+            $d (owner: $o, item: $e1) isa trace;
+            $e2 isa event, has eventName "TraceStop";
+            (owner: $o, input:$e1, output:$e2) isa follows;
+            
+        }, then {
+            (owner:$o, transition: $eN1) isa lastTransition;
+        };    
+
+# Step 2 - Setup Footprint Names
+# A - Row and Column Names
+# Fill the footprint column event names in (base transition) and the
+# row event names in (base transition X transition), include the
+# identity diagonal elements even though they are always unrelated
+
+    find_base_footprint sub rule,
+        when {
+            $o isa log;
+	        $eN1 isa eventName;
+            $eN2 isa eventName;
+            (owner: $o, transition: $eN1) isa transitions;   
+            (owner: $o, transition: $eN2) isa transitions; 
+                  
+            
+        }, then {
+            (owner:$o, baseTransition: $eN1, transition: $eN2) isa footprint;
+        };    
+
+
+# Step 3 - Setup Footprint Types
+# (Note: The rules use the directly 'follows' relation, inserted during log import)
+# NB2: The assumption is that the traces do not need to be referenced because
+# it is azssumed that directly follows relations only hold within traces, but
+# we need to use the index to check arrow direction
+# A - Forward Causal ("->")
+# Y follows X, not X follows Y
+    find_forward_causal_footprint sub rule,
+        when {
+            $o isa log;
+	        $e1 isa event, has eventName $eN1;
+            (owner: $o, item: $e1) isa trace, has traceId $tId, has index $i;
+            $e2 isa event, has eventName $eN2;
+            (owner: $o, item: $e2) isa trace, has traceId $tId, has index $j;
+            $i<$j;
+            $ft (owner:$o, baseTransition: $eN1, transition: $eN2) isa footprint;
+            (owner: $o, input: $e1, output: $e2) isa follows;                                               
+            not {
+                (owner: $o, input: $e2, output: $e1) isa follows;                  
+            };
+            $z isa footType; $z "->";
+        }, then {
+            $ft has footType $z;
+        };    
+
+# B - Backward Causal ("<-")
+# X follows Y, not Y follows X
+    find_backward_causal_footprint sub rule,
+        when {
+            $o isa log;
+	        $e1 isa event, has eventName $eN1;
+            (owner: $o, item: $e1) isa trace, has traceId $tId, has index $i;
+            $e2 isa event, has eventName $eN2;
+            (owner: $o, item: $e2) isa trace, has traceId $tId, has index $j;
+            $i>$j;
+            $ft (owner:$o, baseTransition: $eN1, transition: $eN2) isa footprint;     
+            (owner: $o, input: $e2, output: $e1) isa follows;                  
+            not {
+                (owner: $o, input: $e1, output: $e2) isa follows;                  
+            };
+            $z isa footType; $z "<-";
+        }, then {
+            $ft has footType $z;
+        };    
+
+# C - Parallel ("ll")
+# Y follows X, and X follows Y
+
+    find_parallel_footprint sub rule,
+        when {
+            $o isa log;
+	        $e1 isa event, has eventName $eN1;
+            (owner: $o, item: $e1) isa trace;
+            $e2 isa event, has eventName $eN2;
+            (owner: $o, item: $e2) isa trace;
+            $e1 != $e2;
+            $ft (owner:$o, baseTransition: $eN1, transition: $eN2) isa footprint;     
+            (owner: $o, input: $e1, output: $e2) isa follows;                  
+            (owner: $o, input: $e2, output: $e1) isa follows;      
+            $z isa footType; $z "||";            
+        }, then {
+            $ft has footType $z;
+        };    
+
+# D - Unrelated ("#")
+# not Y follows X, and not X follows Y
+
+    find_unrelated_footprint sub rule,
+        when {
+            $o isa log;
+	        $e1 isa event, has eventName $c;
+            (owner: $o, item: $e1) isa trace;
+            $d isa event, has eventName $e;
+            (owner: $o, item: $d) isa trace;
+            $f (owner:$o, baseTransition: $c, transition: $e) isa footprint;     
+            not {
+                (owner: $o, input: $e1, output: $d) isa follows;
+                (owner: $o, input: $d, output: $e1) isa follows;                  
+            };
+            $z isa footType; $z "#";
+        }, then {
+            $f has footType $z;
+        };    

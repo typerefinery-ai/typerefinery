@@ -1,0 +1,42 @@
+define
+    directed sub attribute, value boolean;
+    cardinal sub attribute, value boolean;
+    source sub attribute, value string;
+    target sub attribute, value string;
+    one sub attribute, value string;
+    many sub attribute, value string
+
+    my_directed_cardinal sub relation,
+        owns directed,
+        owns cardinal,
+        owns source,
+        owns target,
+        owns one,
+        owns many,
+        relates left,
+        relates right;
+
+    employment sub my_directed_cardinal,
+        relates employed as left,
+        relates employer as right;
+
+define
+    my_base sub relation,
+        relates left,
+        relates right;
+
+    one_to_many sub my_base,
+        relates one as left,
+        relates many as right;
+
+    one_to_one sub my_base,
+        relates one as left,
+        relates another as right;
+
+    directed sub my_base,
+        relates source as left,
+        relates target as right;
+
+    employment sub one_to_many,
+        relates employer as one,
+        relates employee as many;

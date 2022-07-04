@@ -16,17 +16,19 @@
     name: "App",
 
     created() {
+      // TODO: Remove this in next commit
+      localStorage.clear()
       window.addEventListener("keydown", this.keyListener)
 
-      // monitor service events
-      // @ts-expect-error ts-migrate(2339) FIXME: Property 'api' does not exist on type 'Window & typeof globalThis'
-      window.api?.response("service:status", (data) => {
-        this.updateServiceStatusByStatusName(data)
-      })
-      // @ts-expect-error ts-migrate(2339) FIXME: Property 'api' does not exist on type 'Window & typeof globalThis'
-      window.api?.response("service:log", (data) => {
-        this.updateServiceLogByName(data)
-      })
+      // // monitor service events
+      // // @ts-expect-error ts-migrate(2339) FIXME: Property 'api' does not exist on type 'Window & typeof globalThis'
+      // window.api?.response("service:status", (data) => {
+      //   this.updateServiceStatusByStatusName(data)
+      // })
+      // // @ts-expect-error ts-migrate(2339) FIXME: Property 'api' does not exist on type 'Window & typeof globalThis'
+      // window.api?.response("service:log", (data) => {
+      //   this.updateServiceLogByName(data)
+      // })
     },
 
     unmounted() {

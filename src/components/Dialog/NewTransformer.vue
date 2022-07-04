@@ -1,15 +1,19 @@
 <template>
   <Dialog
+    v-model:visible="displayModal"
     class="transformer-dialog"
-    :visible="true"
     modal
     :closable="true"
     :breakpoints="{ '960px': '75vw', '640px': '100vw' }"
   >
     <template #header>
-      <span class="p-dialog-title">
-       {{ $t("components.dialog.new-transformer.header") }}</span
-      >
+      <!-- add here header -->
+      <span v-if="selectedEditNode" class="p-dialog-title"
+        >{{ $t("components.dialog.new-transformer.updated-header") }}
+      </span>
+      <span v-else class="p-dialog-title">
+        {{ $t("components.dialog.new-transformer.header") }}
+      </span>
       <div class="p-dialog-header-icons">
         <button
           class="p-dialog-header-icon p-dialog-header-close p-link"
@@ -23,49 +27,114 @@
     </template>
     <Panel :header="$t(`components.dialog.new-transformer.panel1.header`)">
       <div class="field">
-        <label for="expand">
-         {{ $t("components.dialog.new-transformer.panel1.label1") }}</label
-        >
+        <label for="expand">{{
+          $t("components.dialog.new-transformer.panel1.label1")
+        }}</label>
         <Dropdown
-          v-model="projectselected"
+          v-model="selected"
           :options="projectList"
-          option-label="name"
+          option-label="label"
           option-value="key"
-           :placeholder="$t(`components.dialog.new-transformer.panel1.select`)"
-          @change="collectProject"
-          class="p-invalid"
+          :placeholder="$t(`components.dialog.new-transformer.panel1.select`)"
         />
+        <!--  <small
+          v-if="
+            (v$.selected.$invalid && submitted) ||
+            v$.selected.$pending.$response
+          "
+          class="p-error"
+          >{{
+            v$.selected.required.$message.replace("Value", "Project")
+          }}</small
+        > -->
       </div>
     </Panel>
-    <!-- <h3><u>Query Info</u></h3> -->
-    <!-- <div class="field">
-      <label for="type"> Type</label>
-      <InputText id="type" v-model="type" />
-    </div> -->
     <Panel
-     :header="$t(`components.dialog.new-transformer.panel2.header`)"
+      :header="$t(`components.dialog.new-transformer.panel2.header`)"
       class="panel2"
     >
       <div class="field">
-        <label for="name">{{
-          $t("components.dialog.new-transformer.panel2.name")
-        }}</label>
-        <InputText id="name" v-model="name" class="p-invalid"/>
+        <label
+          for="name"
+          :class="{ 'p-error': v$.name.$invalid && submitted }"
+          >{{ $t("components.dialog.projects.info.name") + "*" }}</label
+        >
+        <InputText
+          id="name"
+          v-model="v$.name.$model"
+          :class="{ 'p-invalid': v$.name.$invalid && submitted }"
+        />
+        <small
+          v-if="(v$.name.$invalid && submitted) || v$.name.$pending.$response"
+          class="p-error"
+          >{{ v$.name.required.$message.replace("Value", "Name") }}</small
+        >
       </div>
       <div class="field">
-        <label>{{
-          $t("components.dialog.new-transformer.panel2.description")
-        }}</label>
-        <InputText v-model="des" class="p-invalid"/>
+        <label
+          for="description"
+          :class="{ 'p-error': v$.description.$invalid && submitted }"
+        >
+          {{ $t("components.dialog.projects.info.description") + "*" }}</label
+        >
+        <InputText
+          id="description"
+          v-model="v$.description.$model"
+          :class="{ 'p-invalid': v$.description.$invalid && submitted }"
+        />
+        <small
+          v-if="
+            (v$.description.$invalid && submitted) ||
+            v$.description.$pending.$response
+          "
+          class="p-error"
+          >{{
+            v$.description.required.$message.replace("Value", "Description")
+          }}</small
+        >
       </div>
-       <div class="field">
-        <label for="icon">{{
-          $t("components.dialog.new-transformer.panel2.icon")
-        }}</label>
-        <InputText id="icon" v-model="icon" class="p-invalid" />
+      <div class="field">
+        <label for="icon" :class="{ 'p-error': v$.icon.$invalid && submitted }">
+          {{ $t("components.dialog.projects.info.icon") + "*" }}</label
+        >
+        <InputText
+          id="icon"
+          v-model="v$.icon.$model"
+          :class="{ 'p-invalid': v$.icon.$invalid && submitted }"
+        />
+        <small
+          v-if="(v$.icon.$invalid && submitted) || v$.icon.$pending.$response"
+          class="p-error"
+          >{{ v$.icon.required.$message.replace("Value", "Icon") }}</small
+        >
+      </div>
+      <div class="field">
+        <label
+          for="query"
+          :class="{ 'p-error': v$.query.$invalid && submitted }"
+        >
+          {{
+            $t("components.dialog.new-transformer.panel2.query") + "*"
+          }}</label
+        >
+        <codemirror
+          v-model="query"
+          class="codemirror"
+          placeholder="Code goes here..."
+          :style="{ height: '20vh' }"
+          :autofocus="true"
+          :indent-with-tab="true"
+          :tab-zize="2"
+          :extensions="extensions"
+        />
+
+        <small
+          v-if="(v$.query.$invalid && submitted) || v$.query.$pending.$response"
+          class="p-error"
+          >{{ v$.query.required.$message.replace("Value", "Query") }}</small
+        >
       </div>
     </Panel>
-    <!-- <Button label="Submit" @click="handleconnectionstore" /> -->
     <template #footer>
       <Button
         :label="$t(`components.dialog.new-transformer.footer.cancel`)"
@@ -74,10 +143,18 @@
         @click="transformercloseDialog"
       />
       <Button
+        v-if="selectedEditNode"
+        :label="$t(`components.dialog.new-transformer.footer.update`)"
+        icon="pi pi-check"
+        autofocus
+        @click="handleEditedTransformerStore(!v$.$invalid)"
+      />
+      <Button
+        v-else
         :label="$t(`components.dialog.new-transformer.footer.save`)"
         icon="pi pi-check"
         autofocus
-        @click="handletransformerstore"
+        @click="handletransformerstore(!v$.$invalid)"
       />
     </template>
   </Dialog>
@@ -85,94 +162,225 @@
 
 <script>
   import Dialog from "primevue/dialog"
+  //import Avatar from "primevue/avatar"
   import Dropdown from "primevue/dropdown"
   import InputText from "primevue/inputtext"
   import Button from "primevue/button"
   import Panel from "primevue/panel"
   import Projects from "@/store/Modules/Projects"
   import { getModule } from "vuex-module-decorators"
-  const appProjects = getModule(Projects)
-  //   console.log(appProjects.projectList)
+  import { required } from "@vuelidate/validators"
+  import { useVuelidate } from "@vuelidate/core"
+  import { oneDark } from "@codemirror/theme-one-dark"
+  import { Codemirror } from "vue-codemirror"
+  import { javascript } from "@codemirror/lang-javascript"
+  import AppSettings from "@/store/Modules/AppSettings"
+  const appSettings = getModule(AppSettings)
+  const appData = getModule(Projects)
 
   export default {
-    name: "NewTransformer",
+    name: "NewTransformers",
     components: {
       Dialog,
+      Panel,
       InputText,
       Button,
-      Panel,
       Dropdown,
+      Codemirror,
     },
     props: {
       transformerdialog: { type: Boolean, default: false },
     },
     emits: ["close"],
+    setup: () => ({ v$: useVuelidate() }),
     data() {
       return {
-        type: "",
+        type: "Transformer",
         name: "",
         expanded: "",
         description: "",
         icon: "",
+        query: "",
         display: true,
-        projectselected: null,
+        selected: null,
+        submitted: false,
+        displayModal: true,
+        selectedEditNode: false,
+        transformersIndex: null,
+        projectsIndex: null,
+        updateData: null,
+        lengthData: null,
+      }
+    },
+    validations() {
+      return {
+        name: { required },
+        description: { required },
+        icon: { required },
+        // selected: { required },
+        query: { required },
       }
     },
     computed: {
       projectList() {
-        return appProjects.projectList
+        return appData.projectsList
+      },
+      extensions() {
+        return appSettings.theme === "dark"
+          ? [javascript(), oneDark]
+          : [javascript()]
       },
     },
+    mounted() {
+      if (appData.treeNodePath) {
+        const nodeData = appData.treeNodePath.split("/")
+
+        // For local
+        this.lengthData = nodeData
+        if (nodeData.length == 2) {
+          this.selectedEditNode = true
+
+          // set project
+          const projects = appData.allProjects
+          const projectIndex = appData.allProjects.findIndex(
+            (el) => el.id == nodeData[0]
+          )
+          this.projectsIndex = projectIndex
+          this.selected = projects[projectIndex].id
+          // transformer index
+          const transformerIndex = projects[
+            projectIndex
+          ].transformers.list.findIndex((el) => el.id == nodeData[1])
+
+          this.transformersIndex = transformerIndex
+
+          // for transformer data
+          const transformer =
+            projects[projectIndex].transformers.list[transformerIndex]
+          this.v$.name.$model = transformer.label
+          this.v$.description.$model = transformer.description
+          this.v$.icon.$model = transformer.icon
+          this.v$.query.$model = transformer.query
+        } else {
+          this.selectedEditNode = true
+          // set transformer
+          const transformerIndex = appData.globalTransformers.findIndex(
+            (el) => el.id == nodeData[0]
+          )
+          this.transformersIndex = transformerIndex
+          // for transformer data
+          const transformer = appData.globalTransformers[transformerIndex]
+          this.v$.name.$model = transformer.label
+          this.v$.description.$model = transformer.description
+          this.v$.icon.$model = transformer.icon
+          this.v$.query.$model = transformer.query
+        }
+      }
+    },
     methods: {
-      collectProject() {
-        console.log(this.projectselected)
-        appProjects.selectedProject(this.projectselected)
-      },
       transformercloseDialog() {
+        appData.resetTreeNodePath()
         this.$emit("close")
+        //clear store here for editnode
       },
-      handletransformerstore() {
+      //update dialog
+      handleEditedTransformerStore(isFormValid) {
+        let data
+        if (this.lengthData.length == 1) {
+          data = {
+            transformerIdx: this.transformersIndex,
+            projectIdx: -1,
+            data: {
+              ...appData.globalTransformers[this.transformersIndex],
+              // name: this.v$.name.$model,
+              label: this.v$.name.$model,
+              icon: this.v$.icon.$model,
+              description: this.v$.description.$model,
+              query: this.v$.query.$model,
+              type: "transformer",
+              scope: "global",
+            },
+          }
+        } else {
+          data = {
+            transformerIdx: this.transformersIndex,
+            projectIdx: this.projectsIndex,
+            data: {
+              ...appData.allProjects[this.projectsIndex].transformers.list[
+                this.transformersIndex
+              ],
+              label: this.v$.name.$model,
+              icon: this.v$.icon.$model,
+              description: this.v$.description.$model,
+              query: this.v$.query.$model,
+              type: "transformer",
+              scope: "local",
+            },
+          }
+        }
+        this.updateData = data
+
+        this.submitted = true
+        // stop here if form is invalid
+        if (!isFormValid) {
+          return
+        }
+
+        appData.editTransformer(data)
+        this.transformercloseDialog()
+      },
+
+      // new dialog
+      handletransformerstore(isFormValid) {
+        const projectIndex = appData.allProjects.findIndex(
+          (el) => el.id == this.selected
+        )
         const data = {
-          name: this.projectselected,
-          list: {
-            name: this.name,
-            description: this.des,
+          name: this.selected,
+          projectIdx: projectIndex,
+          data: {
+            // name: this.name,
+            label: this.name,
             icon: this.icon,
-            type: "transformer",   
+            description: this.description,
+            query: this.query,
+            type: "transformer",
+            id: Math.random()
+              .toString(36)
+              .replace(/[^a-z]+/g, "")
+              .substr(2, 10),
           },
         }
-        appProjects.addNewTransformer(data)
+        this.submitted = true
+        // stop here if form is invalid
+        if (!isFormValid) {
+          return
+        }
+        appData.addNewTransformer(data)
         this.$emit("close")
       },
     },
   }
 </script>
 <style lang="scss">
-  html.t-light .p-panel .p-panel-header {
-    background-color: #f8f9fa;
-  }
   .transformer-dialog {
     height: 100vh;
     width: 40vw;
     .p-dropdown {
-      width: 80%;
+      width: 100%;
+    }
+    input {
+      width: 100%;
     }
     .field {
       display: grid;
     }
-    .panel2 {
-      margin-top: 10px;
-    }
-    .p-float-label {
-      margin-bottom: 10px;
-    }
-    input {
-      width: 80%;
-    }
     .p-dialog-content {
       height: 100%;
     }
-
+    .panel2 {
+      margin-top: 10px;
+    }
     .p-dialog-header {
       padding: 1.25rem 1.8rem;
 

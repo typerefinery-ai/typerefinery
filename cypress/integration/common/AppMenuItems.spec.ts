@@ -28,10 +28,33 @@ describe("App Menu Items", () => {
       })
     cy.get("#change-language-button").click()
   })
+
+  it("Has Hindi in Change Language menu.", () => {
+    cy.get("#change-language-button").click()
+    cy.get(".p-menu")
+      .should("be.visible")
+      .and(($menu) => {
+        expect($menu.find(".p-menuitem-link")).to.contain("हिन्दी")
+      })
+    cy.get("#change-language-button").click()
+  })
+
   it("Has Toggle Theme button.", () => {
     expect(cy.get("#toggle-theme-button"))
   })
   it("Has Toggle Focus button.", () => {
     expect(cy.get("#toggle-focus-button"))
+  })
+  it("Has Profile button.", () => {
+    cy.get("#profile-button").click()
+    cy.get(".p-dialog-header-close-icon").click()
+  })
+  it("Has as API button", () => {
+    cy.get("#fastapi").click()
+    cy.get(".p-dialog-header-close-icon").click()
+  })
+  it("Has as DB button", () => {
+    cy.get("#typedb").click()
+    cy.get(".p-dialog-header-close-icon").click()
   })
 })

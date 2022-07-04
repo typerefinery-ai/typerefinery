@@ -1,23 +1,31 @@
 import * as d3 from "d3"
 
-function renderD3(item, self) {
+function renderD3(wrapper, self) {
   //   console.log(self)
-  const svgEl = item.$refs.graphRef
 
-  // remove child element of svg
-  if (svgEl.childNodes.length) {
-    while (svgEl.hasChildNodes()) {
-      svgEl.removeChild(svgEl.firstChild)
-    }
-  }
+  console.log(wrapper)
 
-  svgEl.classList.remove("webcola-graph")
-  svgEl.classList.remove("d3-label-graph")
-  svgEl.classList.add("d3-graph")
+  //   const svgEl = item.$refs.graphRef
+  //   console.log(svgEl)
 
-  var svg = d3.select(svgEl),
+  //   // remove child element of svg
+  //   if (svgEl.childNodes.length) {
+  //     while (svgEl.hasChildNodes()) {
+  //       svgEl.removeChild(svgEl.firstChild)
+  //     }
+  //   }
+
+  //   svgEl.classList.remove("webcola-graph")
+  //   svgEl.classList.remove("d3-label-graph")
+  //   svgEl.classList.add("d3-graph")
+
+  var svg = d3.select(wrapper).append("svg"),
     width = +svg.attr("width") || 960,
     height = +svg.attr("height") || 500
+
+  console.log(svg)
+
+  svg.attr("width", width).attr("height", height)
 
   var color = d3.scaleOrdinal(d3.schemeCategory20)
 
@@ -36,7 +44,6 @@ function renderD3(item, self) {
     "/src/components/Transformer/D3/miserables.json",
     function (error, graph) {
       if (error) throw error
-
       var link = svg
         .append("g")
         .attr("class", "links")
@@ -47,6 +54,7 @@ function renderD3(item, self) {
         .attr("stroke-width", function (d) {
           return Math.sqrt(d.value)
         })
+        .attr("stroke", "#999")
 
       var node = svg
         .append("g")

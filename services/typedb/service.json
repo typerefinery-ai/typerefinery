@@ -6,5 +6,29 @@
   "status": "30",
   "logoutput": "...",
   "icon": "pi pi-database",
-  "servicetype": 10
+  "servicetype": 10,
+  "execconfig": {
+    "execservice": { "id": "java" },
+    "commandline": "-Xms256m -Xmx1024m -cp \"${SERVICE_PATH}\\server\\conf\\;${SERVICE_PATH}\\server\\lib\\common\\*;${SERVICE_PATH}\\server\\lib\\prod\\*;\" -Dtypedb.dir=\"${SERVICE_PATH}\" com.vaticle.typedb.core.server.TypeDBServer --storage.data=\"${SERVICE_DATA_PATH}\"",
+    "commandlinecli": "-Xms256m -Xmx1024m -cp \"${SERVICE_PATH}\\console\\conf\\;${SERVICE_PATH}\\console\\lib\\*;\" -Dtypedb.dir=\"${SERVICE_PATH}\" com.vaticle.typedb.console.TypeDBConsole",
+    "serviceorder": 1,
+    "serviceport": 1729,
+    "depend_on": ["java"],
+    "healthcheck": {
+      "type": "tcp",
+      "retries": 30
+    }
+  },
+  "actions": {
+    "stop": {
+      "name": "stop",
+      "path": "...",
+      "commanline": "..."
+    },
+    "start": {
+      "name": "start",
+      "path": "...",
+      "commanline": "..."
+    }
+  }
 }

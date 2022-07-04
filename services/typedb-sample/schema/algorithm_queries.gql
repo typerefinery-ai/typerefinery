@@ -1,0 +1,41 @@
+######################################
+# Alpha Algorithm Queries
+######################################
+
+
+######################################
+# Step 1: Distinct List of Event Names - Note, they come unordered!
+######################################
+match $a isa log, has logName 'L1';
+	$b isa event, has eventName $c;
+    $d (owner: $a, item: $b) isa trace;
+    get $c; offset 0; limit 30;
+
+######################################
+# Step 2: Distinct List of TraceStart Names - Note, they come unordered!
+######################################
+match $a isa log, has logName 'L1';
+	$b isa event, has eventName $c;
+    $d (owner: $a, item: $b) isa trace, has index 0;
+    get $c; offset 0; limit 30;
+
+#########################################
+# Step 3: Distinct List of TraceEnd Names - Note they come unordered
+########################################
+match $a isa log, has logName 'L1';
+	$b isa event, has eventName $c;
+    $d (owner: $a, item: $b) isa trace, has traceid $x, has index $y;
+    $e isa event, has eventName "TraceStop";
+    $f (input:$b, output:$e) isa follows;
+    get $c; offset 0; limit 30;
+
+###########################################
+# Intervening Step: Use Rules to Setup Footprint Table
+##########################################
+# Causal: $b follows $a, not $a follows $b
+
+
+# Parallel: not $b follows $a, and not $a follows $b
+
+
+# Unrelated: $b follows $a, and  $a follows $b

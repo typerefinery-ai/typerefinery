@@ -38,6 +38,10 @@
   import { Splitpanes, Pane } from "splitpanes"
   import Sidebar from "../Sidebar"
   import ContentView from "./ContentView.vue"
+  import AppData from "@/store/Modules/Projects"
+  import { getModule } from "vuex-module-decorators"
+  const appData = getModule(AppData)
+
   export default {
     name: "ProjectContent",
     components: {
@@ -59,18 +63,28 @@
         panes: [
           {
             id: "pane1",
-            tabs: [
-              { id: "tab1", name: "Tab" },
-              { id: "tab2", name: "Tab" },
-              { id: "tab3", name: "Tab" },
-            ],
+            tabs: [],
           },
         ],
       }
     },
+    computed: {
+      nodeSelected() {
+        return appData.treeNodeClicked
+      },
+    },
+    watch: {
+      nodeSelected() {
+        this.updateTabs()
+      },
+    },
+    mounted() {
+      this.updateTabs()
+    },
+
     methods: {
-      splitView(id) {
-        const tab = this.panes[0].tabs.find((el) => el.id === id)
+      splitView(idx) {
+        const tab = this.panes[0].tabs[idx]
         const pane = { id: "pane2", tabs: [tab] }
         if (this.panes.length === 1) {
           this.panes.push(pane)
@@ -91,6 +105,18 @@
         pane.style.width == "0"
           ? (pane.style.width = "25%")
           : (pane.style.width = 0)
+      },
+      updateTabs() {
+        const projectsArray = appData.selectedTreeNodes || { list: [] }
+        const existingTabs = [...this.panes[0].tabs]
+        const newTabs = []
+        projectsArray.list.forEach((el) => {
+          const tab = { ...projectsArray[el] }
+          if (!existingTabs.includes(tab)) {
+            newTabs.push(tab)
+          }
+        })
+        this.panes[0].tabs = newTabs
       },
     },
   }

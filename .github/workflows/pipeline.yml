@@ -132,6 +132,7 @@ jobs:
             npm run preview
           command: |
             npm run test:ci
+          record: true
         env:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           CYPRESS_PROJECT_ID: ${{ secrets.CYPRESS_PROJECT_ID }}
@@ -175,6 +176,7 @@ jobs:
       matrix:
         node: [18.3.0]
         os: [macos-latest, ubuntu-latest, windows-latest]
+        # os: [windows-latest]
         include:
           # - os: ubuntu-latest
           #   friendlyName: Release - Ubuntu
@@ -205,6 +207,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
 
+      - name: Run Install
+        run: |
+          npm install
+
       # - name: Install Snapcraft
       #   uses: samuelmeuli/action-snapcraft@v1
       #   # Only install Snapcraft on Ubuntu
@@ -219,6 +225,9 @@ jobs:
           # GitHub token, automatically provided to the action
           # (No need to define this secret in the repo settings)
           github_token: ${{ secrets.github_token }}
+
+          # always publish
+          args: "-p always"
 
           # If the commit is tagged with a version (e.g. "v1.0.0"),
           # release the app after building

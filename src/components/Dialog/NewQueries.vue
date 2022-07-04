@@ -1,7 +1,7 @@
 <template>
   <Dialog
+    v-model:visible="displayModal"
     class="query-dialog"
-    :visible="true"
     modal
     :closable="true"
     :breakpoints="{ '960px': '75vw', '640px': '100vw' }"
@@ -23,82 +23,196 @@
     </template>
     <Panel :header="$t(`components.dialog.new-query.panel1.header`)">
       <div class="field">
-        <label for="expand">
+        <label
+          for="expand"
+          :class="{ 'p-error': v$.projectselected.$invalid && submitted }"
+        >
           {{ $t("components.dialog.new-query.panel1.label1") }}</label
         >
         <Dropdown
-          v-model="projectselected"
+          v-model="v$.projectselected.$model"
           :options="projectList"
-          option-label="name"
+          option-label="label"
           option-value="key"
-         :placeholder="$t(`components.dialog.new-query.panel1.select1`)"
-          @change="collectProject"
-          class="p-invalid"
+          :placeholder="$t(`components.dialog.new-query.panel1.select1`)"
+          :class="{ 'p-error': v$.projectselected.$invalid && submitted }"
         />
+        <small
+          v-if="
+            (v$.projectselected.$invalid && submitted) ||
+            v$.projectselected.$pending.$response
+          "
+          class="p-error"
+          >{{
+            v$.projectselected.required.$message.replace("Value", "Project")
+          }}</small
+        >
       </div>
       <div class="field">
-        <label for="expand">{{
-          $t("components.dialog.new-query.panel1.label2")
-        }}</label>
+        <label
+          for="expand"
+          :class="{ 'p-error': v$.connectionselected.$invalid && submitted }"
+          >{{ $t("components.dialog.new-query.panel1.label2") }}</label
+        >
         <Dropdown
-          v-model="connectionselected"
+          v-model="v$.connectionselected.$model"
           :options="connectionList"
-          option-label="name"
-          option-value="key"
-           :placeholder="$t(`components.dialog.new-query.panel1.select2`)"
-           class="p-invalid"
+          option-label="label"
+          option-group-label="label"
+          option-group-children="items"
+          :placeholder="$t(`components.dialog.new-query.panel1.select2`)"
+          :class="{ 'p-error': v$.connectionselected.$invalid && submitted }"
+          @change="handleConnection"
         />
+        <small
+          v-if="
+            (v$.connectionselected.$invalid && submitted) ||
+            v$.connectionselected.$pending.$response
+          "
+          class="p-error"
+          >{{
+            v$.connectionselected.required.$message.replace(
+              "Value",
+              "Connection"
+            )
+          }}</small
+        >
       </div>
     </Panel>
-    <!-- <h3><u>Query Info</u></h3> -->
-    <!-- <div class="field">
-      <label for="type"> Type</label>
-      <InputText id="type" v-model="type" />
-    </div> -->
     <Panel
       :header="$t(`components.dialog.new-query.panel2.header`)"
       class="panel2"
     >
       <div class="field">
-        <label for="name">{{
-          $t("components.dialog.new-query.panel2.name")
-        }}</label>
-        <InputText id="name" v-model="name" class="p-invalid" />
+        <label
+          for="name"
+          :class="{ 'p-error': v$.name.$invalid && submitted }"
+          >{{ $t("components.dialog.new-query.panel2.name") }}</label
+        >
+        <InputText
+          id="name"
+          v-model="v$.name.$model"
+          :class="{ 'p-error': v$.name.$invalid && submitted }"
+        />
+        <small
+          v-if="(v$.name.$invalid && submitted) || v$.name.$pending.$response"
+          class="p-error"
+          >{{ v$.name.required.$message.replace("Value", "Name") }}</small
+        >
       </div>
+
       <div class="field">
-        <label>{{
+        <label :class="{ 'p-error': v$.description.$invalid && submitted }">{{
           $t("components.dialog.new-query.panel2.description")
         }}</label>
-        <InputText v-model="des" class="p-invalid" />
+        <InputText
+          v-model="v$.description.$model"
+          :class="{ 'p-error': v$.description.$invalid && submitted }"
+        />
+        <small
+          v-if="
+            (v$.description.$invalid && submitted) ||
+            v$.description.$pending.$response
+          "
+          class="p-error"
+          >{{
+            v$.description.required.$message.replace("Value", "Description")
+          }}</small
+        >
       </div>
       <div class="field">
-        <label for="icon">{{
-          $t("components.dialog.new-query.panel2.icon")
-        }}</label>
-        <InputText id="icon" v-model="icon" class="p-invalid"/>
+        <label for="icon" :class="{ 'p-error': v$.icon.$invalid && submitted }">
+          {{ $t("components.dialog.projects.info.icon") }}</label
+        >
+        <InputText
+          id="icon"
+          v-model="v$.icon.$model"
+          :class="{ 'p-invalid': v$.icon.$invalid && submitted }"
+        />
+        <small
+          v-if="(v$.icon.$invalid && submitted) || v$.icon.$pending.$response"
+          class="p-error"
+          >{{ v$.icon.required.$message.replace("Value", "Icon") }}</small
+        >
       </div>
 
       <div class="field">
         <label for="query">{{
           $t("components.dialog.new-query.panel2.query")
         }}</label>
-        <InputText id="query" v-model="query" class="p-invalid" />
-      </div>
-      <div class="field">
-        <label for="expand">{{
-          $t("components.dialog.new-query.panel2.transformer")
-        }}</label>
-        <Dropdown
-          v-model="tranformerselected"
-          :options="transformerList"
-          option-label="name"
-          option-value="name"
-           :placeholder="$t(`components.dialog.new-query.panel2.select1`)"
-           class="p-invalid"
+        <!--  <InputText
+          id="query"
+          v-model="v$.query.$model"
+          :class="{ 'p-invalid': v$.query.$invalid && submitted }"
+        /> -->
+        <codemirror
+          v-model="query"
+          placeholder="Code goes here..."
+          :style="{ height: '20vh' }"
+          :autofocus="true"
+          :indent-with-tab="true"
+          :tab-zize="2"
+          :extensions="extensions"
         />
       </div>
+      <div class="field">
+        <label
+          for="expand"
+          :class="{ 'p-error': v$.tranformerselected.$invalid && submitted }"
+          >{{ $t("components.dialog.new-query.panel2.transformer") }}</label
+        >
+        <Dropdown
+          v-model="v$.tranformerselected.$model"
+          :options="transformerList"
+          option-label="label"
+          option-group-label="label"
+          option-group-children="items"
+          :placeholder="$t(`components.dialog.new-query.panel2.select1`)"
+          :class="{ 'p-error': v$.tranformerselected.$invalid && submitted }"
+          @change="handleTransformer"
+        />
+        <small
+          v-if="
+            (v$.tranformerselected.$invalid && submitted) ||
+            v$.tranformerselected.$pending.$response
+          "
+          class="p-error"
+          >{{
+            v$.tranformerselected.required.$message.replace(
+              "Value",
+              "Transformer"
+            )
+          }}</small
+        >
+      </div>
+      <div class="field">
+        <label
+          for="expand"
+          :class="{ 'p-error': v$.algorithmselected.$invalid && submitted }"
+          >{{ $t("components.dialog.new-query.panel2.algorithm") }}</label
+        >
+        <Dropdown
+          v-model="v$.algorithmselected.$model"
+          :options="algorithmList"
+          option-label="label"
+          option-group-label="label"
+          option-group-children="items"
+          :placeholder="$t(`components.dialog.new-query.panel2.selectAlgo1`)"
+          :class="{ 'p-error': v$.algorithmselected.$invalid && submitted }"
+          @change="handleAlgorithm"
+        />
+        <small
+          v-if="
+            (v$.algorithmselected.$invalid && submitted) ||
+            v$.algorithmselected.$pending.$response
+          "
+          class="p-error"
+          >{{
+            v$.algorithmselected.required.$message.replace("Value", "Algorithm")
+          }}</small
+        >
+      </div>
     </Panel>
-    <!-- <Button label="Submit" @click="handleconnectionstore" /> -->
     <template #footer>
       <Button
         :label="$t(`components.dialog.new-query.footer.cancel`)"
@@ -110,124 +224,218 @@
         :label="$t(`components.dialog.new-query.footer.save`)"
         icon="pi pi-check"
         autofocus
-        @click="handlequerystore"
+        @click="handlequerystore(!v$.$invalid)"
       />
     </template>
   </Dialog>
 </template>
 
 <script>
-import Dialog from "primevue/dialog"
-import Dropdown from "primevue/dropdown"
-import InputText from "primevue/inputtext"
-import Button from "primevue/button"
-import Panel from "primevue/panel"
-import Projects from "@/store/Modules/Projects"
-import { getModule } from "vuex-module-decorators"
-const appProjects = getModule(Projects)
-//   console.log(appProjects.projectList)
+  import Dialog from "primevue/dialog"
+  import Dropdown from "primevue/dropdown"
+  import InputText from "primevue/inputtext"
+  import Button from "primevue/button"
+  import Panel from "primevue/panel"
+  import AppData from "@/store/Modules/Projects"
+  import { getModule } from "vuex-module-decorators"
+  const appData = getModule(AppData)
+  import { required } from "@vuelidate/validators"
+  import { useVuelidate } from "@vuelidate/core"
+  import { Codemirror } from "vue-codemirror"
+  import { javascript } from "@codemirror/lang-javascript"
+  import { oneDark } from "@codemirror/theme-one-dark"
+  import AppSettings from "@/store/Modules/AppSettings"
+  const appSettings = getModule(AppSettings)
 
-export default {
-  name: "NewQuery",
-  components: {
-    Dialog,
-    InputText,
-    Button,
-    Panel,
-    Dropdown,
-  },
-  props: {
-    querydialog: { type: Boolean, default: false },
-  },
-  emits: ["close"],
-  data() {
-    return {
-      type: "Query",
-      name: "",
-      expanded: "",
-      description: "",
-      icon: "",
-      display: true,
-      selectedBoolean: null,
-      projectselected: null,
-      connectionselected: null,
-      tranformerselected: null,
-    }
-  },
-  computed: {
-    projectList() {
-      return appProjects.projectList
+  export default {
+    name: "NewQuery",
+    components: {
+      Dialog,
+      InputText,
+      Button,
+      Panel,
+      Dropdown,
+      Codemirror,
     },
-    connectionList() {
-      // if(this.projectselected===this.projectList.name){
-      console.log(appProjects.connectionList)
-      return appProjects.connectionList
-      // }
+    props: {
+      querydialog: { type: Boolean, default: false },
     },
-    transformerList()
-    {
-      return appProjects.transformerList
-    }
-  },
-  methods: {
-    collectProject() {
-      console.log(this.projectselected)
-      appProjects.selectedProject(this.projectselected)
-    },
-    querycloseDialog() {
-      this.$emit("close")
-    },
-    handlequerystore() {
-      const data = {
-        name: this.projectselected,
-        list: {
-          name: this.name,
-          description: this.des,
-          connection: this.connectionselected,
-          icon: this.icon,
-          query: this.query,
-          type: "query",
-          tranformer: this.tranformerselected,
-        },
+    emits: ["close"],
+    setup: () => ({ v$: useVuelidate() }),
+    data() {
+      return {
+        type: "Query",
+        name: "",
+        expanded: "",
+        description: "",
+        icon: "",
+        query: "",
+        display: true,
+        projectselected: null,
+        connectionselected: null,
+        tranformerselected: null,
+        algorithmselected: null,
+        transformdata: null,
+        connectiondata: null,
+        submitted: false,
+        displayModal: true,
+        algorithmdata: null,
       }
-      appProjects.addNewQuery(data)
-      this.$emit("close")
     },
-  },
-}
+    validations() {
+      return {
+        projectselected: { required },
+        connectionselected: { required },
+        name: { required },
+        description: { required },
+        icon: { required },
+        tranformerselected: { required },
+        algorithmselected: { required },
+      }
+    },
+    computed: {
+      projectList() {
+        return appData.projectsList
+      },
+      connectionList() {
+        let projectIdx = appData.list[0].list.findIndex(
+          (el) => el.id == this.projectselected
+        )
+        return projectIdx == -1 ? [] : appData.connectionsList(projectIdx)
+      },
+      transformerList() {
+        let projectIdx = appData.list[0].list.findIndex(
+          (el) => el.id == this.projectselected
+        )
+        return projectIdx == -1 ? [] : appData.transformersList(projectIdx)
+      },
+      algorithmList() {
+        let projectIdx = appData.list[0].list.findIndex(
+          (el) => el.id == this.projectselected
+        )
+
+        return projectIdx == -1 ? [] : appData.algorithmsList(projectIdx)
+      },
+      extensions() {
+        return appSettings.theme === "dark"
+          ? [javascript(), oneDark]
+          : [javascript()]
+      },
+    },
+    methods: {
+      querycloseDialog() {
+        this.$emit("close")
+      },
+      handleConnection(el) {
+        this.connectiondata = el.value.key
+      },
+      handleTransformer(el) {
+        this.setTransformerCode(el.value)
+      },
+      handleAlgorithm(el) {
+        this.setAlgorithmCode(el.value)
+      },
+      setTransformerCode(value) {
+        const projectIdx = appData.list[0].list.findIndex(
+          (el) => el.id == this.projectselected
+        )
+        let transformercode
+        if (value.scope == "local") {
+          transformercode = appData.list[0].list[
+            projectIdx
+          ].transformers.list.find((el) => el.id == value.key)
+        } else {
+          transformercode = appData.list[2].list.find((el) => {
+            return el.id == value.key
+          })
+        }
+        this.transformdata = transformercode
+      },
+      setAlgorithmCode(value) {
+        const projectIdx = appData.list[0].list.findIndex(
+          (el) => el.id == this.projectselected
+        )
+        let algorithmcode
+        if (value.scope == "local") {
+          algorithmcode = appData.list[0].list[projectIdx].algorithms.list.find(
+            (el) => el.id == value.key
+          )
+        } else {
+          algorithmcode = appData.list[3].list.find((el) => {
+            return el.id == value.key
+          })
+        }
+        this.algorithmdata = algorithmcode
+      },
+      handlequerystore(isFormValid) {
+        const projectIdx = appData.list[0].list.findIndex(
+          (el) => el.id == this.projectselected
+        )
+        const data = {
+          projectIdx: projectIdx,
+          data: {
+            name: this.name,
+            label: this.name,
+            id: Math.random()
+              .toString(36)
+              .replace(/[^a-z]+/g, "")
+              .substr(2, 10),
+            description: this.description,
+            connection: this.connectiondata,
+            icon: this.icon,
+            query: this.query,
+            type: "query",
+            tranformer: this.transformdata,
+            algorithm: this.algorithmdata,
+            dataPath: "",
+          },
+        }
+        this.submitted = true
+        if (!isFormValid) {
+          return
+        }
+        appData.addNewQuery(data)
+        this.$emit("close")
+      },
+    },
+  }
 </script>
 <style lang="scss">
-html.t-light .p-panel .p-panel-header {
-  background-color: #f8f9fa;
-}
-.query-dialog {
-  height: 100vh;
-  width: 40vw;
-  .p-dropdown {
-    width: 80%;
+  html.t-light .p-panel .p-panel-header {
+    background-color: #f8f9fa;
   }
-  .field {
-    display: grid;
-  }
-  .panel2 {
-    margin-top: 10px;
-  }
-  .p-float-label {
-    margin-bottom: 10px;
-  }
-  input {
-    width: 80%;
-  }
-  .p-dialog-content {
-    height: 100%;
-  }
+  .query-dialog {
+    height: 100vh;
+    width: 40vw;
 
-  .p-dialog-header {
-    padding: 1.25rem 1.8rem;
+    .code-mirror {
+      width: 80%;
+    }
+    .p-dropdown {
+      width: 80%;
+    }
+    .field {
+      display: grid;
+    }
+    .panel2 {
+      margin-top: 10px;
+    }
+    .p-float-label {
+      margin-bottom: 10px;
+    }
+    input {
+      width: 80%;
+    }
+    .p-dialog-content {
+      height: 100%;
+    }
 
-    .p-dialog-header-icons:last-of-type {
-      display: none;
+    .p-dialog-header {
+      padding: 1.25rem 1.8rem;
+
+      .p-dialog-header-icons:last-of-type {
+        display: none;
+      }
     }
   }
-}
 </style>

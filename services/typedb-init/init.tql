@@ -1,0 +1,4 @@
+database create typerefinery
+transaction typerefinery schema write
+source ./schema.tql
+commit

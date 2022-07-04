@@ -1,0 +1,122 @@
+# Draft of TypeDB-Units
+# Author: Braden Eliason
+# 08/01/21
+
+## Example Usage
+match
+$h isa house, has footprint $fp;
+$fp > 1200;
+(magnitude: $fp, units: $u) isa quantity;
+$u has name "square feet";
+# alternatively $u has symbol "ft²"
+
+
+# TODO:
+#   - dimensionless quantity
+#   - finish tolerance
+#   - handling of affine unit conversion?
+#   - haneling of logarithmic unit conversion?
+#   - add more semantics like LaTeX, descriptions, references, etc.?
+
+define
+
+# Attributes ------------------------------------------------------------------
+
+name sub attribute, value string;
+symbol sub attribute, value string;
+is-logarithmic sub attribute, value boolean;
+log-base sub attribute, value long;
+is-affine sub attribute, value boolean;
+is-base-unit sub attribute, value boolean;
+# TODO: affine "offset" attribute, how to handle?
+
+latex-string sub attribute, value string;
+exponent sub attribute, 
+    value long,
+    plays dimension:dimension-exponent;
+
+conversion-factor sub attribute,
+    value double,
+    plays unit-conversion:factor;
+
+# TODO: do more thinking about tolerance
+tolerance-range sub attribute,
+    value long;
+
+tolerance-units sub attribute,
+    value "^(base|%|ppm)$"; # this is just an example
+
+tolerance-type sub attribute,
+    value "^(limits of size|equal bilateral|unequal bilateral|unilateral|table)$";
+
+
+
+# Entities ---------------------------------------------------------------------
+
+unit-of-measure sub entity,
+    owns name,
+    owns symbol,
+    owns is-logarithmic,
+    owns log-base,
+    owns is-affine;
+    owns is-base-unit;
+    plays quntity:unit,
+    plays quantity-kind:compatible-unit,
+    plays unit-composition:result,
+    plays unit-composition:numerator,
+    plays unit-composition:denominator,
+# possibly define scalar, logarithmic, and affine units as subtypes
+
+base-dimension sub entity,
+    owns name,
+    owns symbol;
+
+# TODO: 
+tolerance sub entity,
+    owns is-relative; # alternatively is-absolute?
+    owns tolerance-range,
+    owns tolerance-units,
+    owns tolerance-type,
+    plays quantity:tolerance;
+# possibly define absolute, relative, and (other) as subtypes?
+
+
+
+# Relations --------------------------------------------------------------------
+
+quantity sub relation,
+    relates magnitude, # played by an attributed used in application.
+    relates units,
+    relates tolerance;
+
+dimension sub relation,
+    has latex-string,
+    relates dimension-base,
+    relates dimension-exponent,
+    plays dimension-set:dimension-part;
+
+dimension-set sub relation,
+    has symbol,
+    relates dimension-part,
+    relates dimensioned;
+
+quantity-kind sub relation;
+    has name,
+    relates compatible-unit,
+    plays dimension-set:dimensioned;
+
+# Allow for compositions of N-ary numerators and N-ary denominators
+unit-composition sub relation, 
+    relates denominator,
+    relates numerator,
+    relates result;
+
+# Do we need a unit-conversion between arbitrary units or just to base units?
+unit-conversion sub relation, 
+    relates unit-from
+    relates unit-to,
+    relates factor;
+    # relates offset ?      <-- used for affine conversion?
+    # relates logarithm ?   <-- used for logaritm unit conversion?
+
+base-converstion sub unit-conversion;

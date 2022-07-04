@@ -32,4 +32,19 @@ describe("Main Menu Tabs", () => {
         expect($menu.find(".p-tabmenuitem")).to.contain("Maps")
       })
   })
+  //  TODO: Removed Experimental menu test for now
+  //   it("Has Chat tab in main menu.", () => {
+  //     cy.get(".main-menu-wrapper")
+  //       .should("be.visible")
+  //       .and(($menu) => {
+  //         expect($menu.find(".p-tabmenuitem")).to.contain("Chat")
+  //       })
+  //   })
+  //   it("Has Editor tab in main menu.", () => {
+  //     cy.get(".main-menu-wrapper")
+  //       .should("be.visible")
+  //       .and(($menu) => {
+  //         expect($menu.find(".p-tabmenuitem")).to.contain("Editor")
+  //       })
+  //   })
 })

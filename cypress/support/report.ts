@@ -1,4 +1,5 @@
 import addContext from "mochawesome/addContext"
+import path from "path"
 
 Cypress.on("test:after:run", (test, runnable) => {
   if (test.state === "failed") {
@@ -16,9 +17,12 @@ Cypress.on("test:after:run", (test, runnable) => {
     const imageUrl = `screenshots/${Cypress.spec.name}/${fullTestName} (failed).png`
 
     addContext({ test }, imageUrl)
-
-    //attach video to the test report
-    const videoUrl = `videos/${Cypress.spec.name}.mp4`
-    addContext({ test }, videoUrl)
   }
+
+  //attach video to the test report
+  const specpath = path
+    .dirname(Cypress.spec.relative)
+    .replace("cypress/integration", "")
+  const videoUrl = `videos/${specpath}/${Cypress.spec.name}.mp4`
+  addContext({ test }, videoUrl)
 })

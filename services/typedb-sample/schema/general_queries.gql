@@ -1,0 +1,73 @@
+# 1. retrieve all Log L1 and events
+match $a isa log, has logName 'L1';
+$b isa event, has eventName $c;
+$d (owner: $a, item: $b) isa trace,
+has traceId $e, has index $f;
+get $a, $b, $c, $d, $e, $f; offset 0; limit 100;
+
+# 2. match all follows relations in the first trace of L1
+match $a isa log, has logName 'L1';
+	$c isa event, has eventName $g;
+    $f isa event, has eventName $k;
+	$b (owner: $a, item: $c) isa trace, has traceId 0;
+    $e (input: $c, output: $f) isa follows;
+    get; offset 0; limit 100;
+
+# 3. match the set of transitions for any log
+match $a isa log, has logName 'L1';
+	$b (owner: $a, transition: $c) isa transitions;
+    get; offset 0; limit 100;
+
+# 4. match the footprint for any log
+match $a isa log, has logName 'L1';
+    $d (owner:$a, baseTransition: $b, transition: $c) isa footprint;
+	$d has footType $e;
+    get; offset 0; limit 100;
+
+###################
+# Time Tests: Tests of increasing projection effort vs time
+#####################
+# T1: time to retrieve a match of schema concepts against data = 2-3 secs
+
+match $o isa log, has logName 'L1';
+    $e1 isa event, has eventName $eN1;
+    (owner: $o, item: $e1) isa trace;
+    get $eN1; offset 0; limit 30;
+
+#####################
+# T2: time to retrieve a rule based on schema against data = 2-3 secs, 18 secs on server, 12 secs if firstTransition
+match $o isa log, has logName 'L1';
+(owner:$o, transition: $eN1) isa transitions;
+get $eN1; offset 0; limit 30;
+
+#####################
+# Basis of Footprint query, comes fast
+# T3: time to retrieve a rule based on schema against data = 2-3 secs, 12 secs on server
+match $o isa log, has logName 'L1';
+    $eN1 isa eventName;
+    $eN2 isa eventName;
+    (owner: $o, transition: $eN1) isa transitions;   
+    (owner: $o, transition: $eN2) isa transitions; 
+    get ; offset 0; limit 100;
+
+#####################
+# Actual Basic Footprint Query, no footType requested
+# T3: time to retrieve a rule based on a rule, which is based on schema against data = > 1hour
+match $o isa log, has logName 'L1';
+$d (owner:$o, baseTransition: $b, transition: $c) isa footprint;
+get ; offset 0; limit 30;
+
+#####################
+# Specific Footprint Query, no footType
+# T3: time to retrieve a rule based on a rule, which is based on schema against data = impossible
+match $o isa log, has logName 'L1';
+$d (owner:$o, baseTransition: $b, transition: $c) isa footprint;
+get ; offset 0; limit 30;
+
+#####################
+# Specific Footprint Query, no footType
+# T3: time to retrieve a rule based on a rule, which is based on schema against data = impossible
+match $o isa log, has logName 'L1';
+$d (owner:$o, baseTransition: $b, transition: $c) isa footprint;
+$d has footType $z;
+get ; offset 0; limit 30;

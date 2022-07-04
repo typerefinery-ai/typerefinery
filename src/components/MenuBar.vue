@@ -7,7 +7,7 @@
     <menu-item
       v-if="!menuBarVisible"
       tooltip="show-menu-bar"
-      :on-click="() => $emit('toggle')"
+      :on-click="toggleView"
     >
       <i class="pi pi-angle-double-down"></i>
     </menu-item>
@@ -29,28 +29,7 @@
       <user-icon :size="18" />
     </menu-item>
 
-    <!-- electron only icons -->
-    <menu-item
-      v-if="isElectron"
-      tooltip="minimize"
-      :on-click="() => handleMenu('min')"
-    >
-      <i class="pi pi-minus"></i>
-    </menu-item>
-    <menu-item
-      v-if="isElectron"
-      tooltip="maximize"
-      :on-click="() => handleMenu('max')"
-    >
-      <max-icon :size="18" />
-    </menu-item>
-    <menu-item
-      v-if="isElectron"
-      tooltip="close"
-      :on-click="() => handleMenu('close')"
-    >
-      <close-icon :size="18" />
-    </menu-item>
+    <window-controls v-if="isElectron" />
   </div>
 
   <!-- language options -->
@@ -81,10 +60,9 @@
   import { getModule } from "vuex-module-decorators"
   import UserIcon from "vue-material-design-icons/AccountCircle.vue"
   import FocusIcon from "vue-material-design-icons/BullseyeArrow.vue"
-  import CloseIcon from "vue-material-design-icons/Close.vue"
-  import MaxIcon from "vue-material-design-icons/CheckboxMultipleBlankOutline.vue"
   import AppSettings from "@/store/Modules/AppSettings"
   import ServicesInfo from "./Services"
+  import WindowControls from "./WindowControls.vue"
   import { setThemeURL } from "@/utils/theme"
   import * as electronHelpers from "@/utils/electron"
   import { locales } from "@/i18n"
@@ -97,12 +75,11 @@
     name: "MenuBar",
     components: {
       FocusIcon,
-      CloseIcon,
-      MaxIcon,
       ServicesInfo,
       UserIcon,
       Menu,
       MenuItem,
+      WindowControls,
     },
 
     props: {
@@ -193,6 +170,7 @@
 
       toggleFocus() {
         appSettings.toggleFocus()
+        appSettings.resizeView()
       },
 
       toggleMenu(event) {
@@ -203,16 +181,17 @@
         this.$refs.help.toggle(event)
       },
 
-      handleMenu(e) {
-        window.api?.request("menu-click", e)
-      },
-
       openLink(url) {
         window.open(url, "_blank")
       },
 
       openSettings() {
         appSettings.openSettingsDialog("profile/alias")
+      },
+
+      toggleView() {
+        this.$emit("toggle")
+        appSettings.resizeView()
       },
     },
   }

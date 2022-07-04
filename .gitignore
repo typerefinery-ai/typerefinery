@@ -46,6 +46,10 @@ services/_python/Scripts
 # service specific folders
 __pycache__
 __packages__
+services/**/*.pid
+services/**/*.setup
+services/fastapi/algorithm/*.*
+!services/fastapi/algorithm/.gitkeep
 
 # type db data
 services/typedb/server/data/**/*

@@ -39,9 +39,7 @@
       <div class="menu-content">
         <!-- section content -->
         <!-- general -->
-        <h4 v-if="selected == 'general'">
-          {{ $t("components.setting.general-settings") }}
-        </h4>
+        <general-info v-if="selected == 'general'" />
         <!-- profile -->
         <profile-info v-if="selected == 'profile'" :field="path.tabField" />
 
@@ -64,13 +62,14 @@
   import Dialog from "primevue/dialog"
   import { getModule } from "vuex-module-decorators"
   import ProfileInfo from "./Profile.vue"
+  import GeneralInfo from "./General.vue"
   import ServicesList from "../Services"
   import AppSettings from "@/store/Modules/AppSettings"
   const appSettings = getModule(AppSettings)
 
   export default {
     name: "Settings",
-    components: { Dialog, ProfileInfo, ServicesList },
+    components: { Dialog, ProfileInfo, GeneralInfo, ServicesList },
     emits: ["hide"],
     data() {
       return {

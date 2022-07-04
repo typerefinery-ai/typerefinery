@@ -1,5 +1,7 @@
 @echo off
 
+SET "APP_NAME=TypeRefinery"
+SET "SERVICES_HOME=services"
 SET "SERVICE_NAME=fastapi"
 SET "PYTHON_HOME=%cd%\_python"
 SET "SERVER_HOME=%cd%\%SERVICE_NAME%"
@@ -7,22 +9,34 @@ SET "PATH=%cd%;%PYTHON_HOME%"
 SET "PYTHONPACKAGES=%SERVER_HOME%\__packages__"
 SET "PYTHONPATH=%cd%;%PYTHONPACKAGES%"
 
-echo SERVER - PYTHON_HOME=%PYTHON_HOME%
-echo SERVER - SERVER_HOME=%SERVER_HOME%
-echo SERVER - PATH=%PATH%
-echo SERVER - PYTHONPACKAGES=%PYTHONPACKAGES%
-echo SERVER - PYTHONPATH=%PYTHONPATH%
+echo %SERVICE_NAME% - PYTHON_HOME=%PYTHON_HOME%
+echo %SERVICE_NAME% - SERVER_HOME=%SERVER_HOME%
+echo %SERVICE_NAME% - PATH=%PATH%
+echo %SERVICE_NAME% - PYTHONPACKAGES=%PYTHONPACKAGES%
+echo %SERVICE_NAME% - PYTHONPATH=%PYTHONPATH%
 
 python --version
 
 if "%1" == "" goto missingargument
 
-if "%1" == "server"  goto startserver
+if "%1" == "server" (
+  SET "SERVICE_DATA_PATH=%SERVER_HOME%"
+  SET "SERVICE_LOG_PATH=%SERVER_HOME%/logs"
+  SET "SERVICE_PATH=%SERVER_HOME%"
+  goto startserver
+)
+if "%1" == "serverprod" (
+  SET "SERVICE_DATA_PATH=%APPDATA%\%APP_NAME%\%SERVICES_HOME%\%SERVICE_NAME%"
+  SET "SERVICE_LOG_PATH=%APPDATA%\%APP_NAME%\%SERVICES_HOME%\%SERVICE_NAME%\logs"
+  SET "SERVICE_PATH=%SERVER_HOME%"
+  goto startserverprod
+)
 if "%1" == "setup"  goto startsetup
 if "%1" == "package"  goto startpackage
 
 echo   Invalid argument: %1. Possible commands are:
 echo   Server:          server [--help]
+echo   Server PROD:     serverprod [--help]
 echo   Setup:           setup [--help]
 goto exiterror
 
@@ -30,6 +44,7 @@ goto exiterror
 
 echo   Missing argument. Possible commands are:
 echo   Server:         server [--help]
+echo   Server PROD:    serverprod [--help]
 echo   Setup:          setup [--help]
 goto exiterror
 
@@ -50,7 +65,23 @@ if exist %SERVER_HOME% (
 :startserver
 
 if exist %SERVER_HOME% (
-  python -I -m uvicorn main:app --reload --host localhost --app-dir %SERVER_HOME%
+  echo %SERVICE_NAME% - SERVICE_DATA_PATH=%SERVICE_DATA_PATH%
+  echo %SERVICE_NAME% - SERVICE_LOG_PATH=%SERVICE_LOG_PATH%
+  echo %SERVICE_NAME% - SERVICE_PATH=%SERVICE_PATH%
+  python -I -m uvicorn --reload --reload-exclude "req-*.py" --host localhost --app-dir %SERVER_HOME% main:app
+  goto exit
+) else (
+  echo Can't find server^.
+  goto exiterror
+)
+
+:startserverprod
+
+if exist %SERVER_HOME% (
+  echo %SERVICE_NAME% - SERVICE_DATA_PATH=%SERVICE_DATA_PATH%
+  echo %SERVICE_NAME% - SERVICE_LOG_PATH=%SERVICE_LOG_PATH%
+  echo %SERVICE_NAME% - SERVICE_PATH=%SERVICE_PATH%
+  python -I -m uvicorn --reload --reload-exclude "req-*.py" --host localhost --app-dir %SERVER_HOME% main:app
   goto exit
 ) else (
   echo Can't find server^.

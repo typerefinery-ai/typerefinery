@@ -1,0 +1,26 @@
+define
+
+    index sub attribute, 
+        value long;
+    traceId sub attribute, 
+        value long;
+    logName sub attribute,
+        value string;
+
+    eventName sub attribute, 
+        value string;      
+    
+    event sub entity, 
+        has eventName,
+        plays item;
+
+    log sub entity,
+        has logName, 
+        plays owner;
+
+    trace sub relation,
+        has traceId,
+        has index,
+        relates owner,
+        relates item;
+

@@ -13,17 +13,19 @@
       "new-query": "New Query",
       "new-connection": "New Connection",
       "new-transformer": "New Transformer",
+      "new-algorithm": "New Algorithm ",
       "load-data": "Load Data",
       "load-links": "Load Links",
       "connections": "Connections",
       "queries": "Queries",
       "tab": "Tab",
       "name": "Name",
-      "calories": "Calories"
+      "calories": "Calories",
+      "description": "Description",
+      "icon": "Icon"
     },
     "setting": {
       "settings": "Settings",
-      "general-settings": "General Settings",
       "privacy-settings": "Privacy Settings",
       "section": {
         "general": "General",
@@ -39,13 +41,19 @@
           "type": "Type",
           "description": "Description"
         }
+      },
+      "profile": {
+        "username": "Username",
+        "email": "Email",
+        "alias": "Alias Name"
+      },
+      "general": {
+        "experimental": "Experimental Features",
+        "chat": "Chat",
+        "editor": "Editor"
       }
     },
-    "profile": {
-      "username": "Username",
-      "email": "Email",
-      "alias": "Alias Name"
-    },
+
     "chat": {
       "send": "Send",
       "messageplaceholder": "Type your message here...",
@@ -55,14 +63,18 @@
     },
     "tab": {
       "query": "Query",
+      "algorithm": "Algorithm",
       "data": "Data",
-      "graph": "Graph"
+      "graph": "Graph",
+      "transform": "Transform"
     },
     "graph": {
       "properties": "Properties",
       "no-node": "No Node Selected",
       "index": "Index",
-      "label": "Label"
+      "label": "Label",
+      "config": "Config",
+      "help": "Help"
     },
     "dialog": {
       "projects": {
@@ -85,10 +97,13 @@
           "select": "Select project",
           "connection-info": "Connections Info",
           "name": "Name",
+          "host": "Host",
+          "port": "Port",
           "description": "Description",
           "icon": "Icon",
           "submit": "Submit"
-        }
+        },
+        "updated-header": "Update Connection"
       },
       "new-query": {
         "header": "New Query ",
@@ -106,7 +121,9 @@
           "icon": "Icon",
           "query": "Query",
           "transformer": "Tranformer",
-          "select1": "Select transformer"
+          "select1": "Select transformer",
+          "algorithm": "Algorithm",
+          "selectAlgo1": "Select algorithm"
         },
         "footer": {
           "cancel": "Cancel",
@@ -124,12 +141,99 @@
           "header": "Transformer Info",
           "name": "Name",
           "description": "Description",
+          "icon": "Icon",
+          "query": "Query"
+        },
+        "footer": {
+          "cancel": "Cancel",
+          "save": "Save",
+          "update": "Update"
+        },
+        "updated-header": "Update Transformer"
+      },
+      "new-algorithm": {
+        "header": "New Algorithm ",
+        "panel1": {
+          "header": "Project Info",
+          "label1": "Projects",
+          "select": "Select project"
+        },
+        "panel2": {
+          "header": "Algorithm Info",
+          "name": "Name",
+          "description": "Description",
           "icon": "Icon"
         },
         "footer": {
           "cancel": "Cancel",
-          "save": "Save"
+          "save": "Save",
+          "update": "Update"
+        },
+        "updated-header": "Update Algorithm"
+      }
+    },
+    "transformer": {
+      "editor": "Editor",
+      "console": "Console",
+      "dependencies": "Dependencies",
+      "transformer": "Transformer",
+      "select-dependencies": "Select Dependencies",
+      "select": "Select a Transformer",
+      "save": "Save Transformer",
+      "name": "Transformer Name",
+      "sure": "Are you sure?",
+      "confirm-msg": "Transformer code inside editor will be overwritten.",
+      "help": {
+        "frameworks": {
+          "d3": "d3",
+          "webCola": "web cola"
+        },
+        "commands": {
+          "log": "Log to the console"
+        },
+        "variables": {
+          "SERVICE_OUTPUT_JSON": "path to the output json file"
         }
+      },
+      "buttons": {
+        "submit": "Submit",
+        "clear": "Clear",
+        "cancel": "Cancel",
+        "save": "Save",
+        "save-as": "Save as",
+        "no": "No",
+        "yes": "Yes",
+        "save-as-local": "Save as Local",
+        "save-as-global": "Save as Global"
+      }
+    },
+    "tabquery": {
+      "connection": "Connections",
+      "select": "Select a connection",
+      "db": "Database"
+    },
+    "algorithm": {
+      "label": "Algorithm",
+      "select": "Select an Algorithm",
+      "save": "Save Algorithm",
+      "name": "Algorithm Name",
+      "confirm-msg": "Algorithm code inside editor will be overwritten.",
+      "help": {
+        "frameworks": {
+          "d3": "d3",
+          "webCola": "web cola"
+        }
+      },
+      "buttons": {
+        "submit": "Submit",
+        "clear": "Clear",
+        "cancel": "Cancel",
+        "save": "Save",
+        "save-as": "Save as",
+        "no": "No",
+        "yes": "Yes",
+        "save-as-local": "Save as Local",
+        "save-as-global": "Save as Global"
       }
     }
   },

@@ -5,13 +5,14 @@
       "charts": "चार्ट",
       "maps": "नक़्शे",
       "chats": "चैट",
-      "editor": "संपादक"
+      "editor": "एडीटर"
     },
     "project": {
       "new-project": "नया काम",
       "new-query": "नया प्रश्न",
       "new-connection": "नया कनेक्शन",
       "new-transformer": "नया ट्रांसफार्मर",
+      "new-algorithm": "नया एल्गोरिथम",
       "load-data": "लोड डेटा",
       "load-links": "लोड लिंक",
       "connections": "कनेक्शन",
@@ -19,11 +20,12 @@
       "tab": "टैब",
       "name": "नाम",
       "query": "प्रश्न",
-      "calories": "कैलोरी"
+      "calories": "कैलोरी",
+      "description": "विवरण",
+      "icon": "आइकन"
     },
     "setting": {
       "settings": "सेटिंग्स",
-      "general-settings": "साधारण सेटिंग्स",
       "privacy-settings": "गोपनीयता सेटिंग्स",
       "section": {
         "general": "साधारण",
@@ -39,12 +41,17 @@
           "type": "प्रकार",
           "description": "विवरण"
         }
+      },
+      "profile": {
+        "username": "उपयोगकर्ता नाम",
+        "email": "ईमेल",
+        "alias": "उर्फ"
+      },
+      "general": {
+        "experimental": "प्रायोगिक विशेषताएं",
+        "chat": "चैट",
+        "editor": "एडीटर"
       }
-    },
-    "profile": {
-      "username": "उपयोगकर्ता नाम",
-      "email": "ईमेल",
-      "alias": "उर्फ"
     },
 
     "chat": {
@@ -56,14 +63,18 @@
     },
     "tab": {
       "query": "प्रश्न",
+      "algorithm": "एल्गोरिथम",
       "data": "आंकड़े",
-      "graph": "ग्राफ"
+      "graph": "ग्राफ",
+      "transform": "ट्रांसफॉर्म"
     },
     "graph": {
       "properties": "प्रोपर्टीज",
       "no-node": "कोई नोड चयनित नहीं",
       "index": "इंडेक्स",
-      "label": "लेबल"
+      "label": "लेबल",
+      "config": "कॉन्फ़िग",
+      "help": "मदद"
     },
     "dialog": {
       "projects": {
@@ -86,10 +97,13 @@
           "select": "परियोजना का चयन करें",
           "connection-info": "कनेक्शन जानकारी",
           "name": "नाम",
+          "host": "मेज़बान",
+          "port": "पत्तन",
           "description": "विवरण",
           "icon": "आइकन",
           "submit": "प्रस्तुत"
-        }
+        },
+        "updated-header": "कनेक्शन अपडेट करें"
       },
       "new-query": {
         "header": "नया प्रश्न",
@@ -107,7 +121,9 @@
           "icon": "आइकन",
           "query": "प्रश्न",
           "transformer": "ट्रांसफार्मर",
-          "select1": "ट्रांसफार्मर का चयन करें"
+          "select1": "ट्रांसफार्मर का चयन करें",
+          "algorithm": "एल्गोरिथम",
+          "selectAlgo1": "एल्गोरिथम का चयन करें"
         },
         "footer": {
           "cancel": "रद्द करना",
@@ -125,12 +141,93 @@
           "header": "ट्रांसफार्मर की जानकारी",
           "name": "नाम",
           "description": "विवरण",
+          "icon": "आइकन",
+          "query": "प्रश्न"
+        },
+        "footer": {
+          "cancel": "रद्द करना",
+          "save": "बचाना",
+          "update": "अपडेट करें"
+        },
+        "updated-header": "ट्रांसफार्मर अपडेट करें"
+      },
+      "new-algorithm": {
+        "header": "नया एल्गोरिथम",
+        "panel1": {
+          "header": "परियोजना की जानकारी",
+          "label1": "परियोजनाओं",
+          "select": "परियोजना का चयन करें"
+        },
+        "panel2": {
+          "header": "एल्गोरिथम की जानकारी",
+          "name": "नाम",
+          "description": "विवरण",
           "icon": "आइकन"
         },
         "footer": {
           "cancel": "रद्द करना",
-          "save": "बचाना"
+          "save": "बचाना",
+          "update": "अपडेट करें"
+        },
+        "updated-header": "एल्गोरिथम अपडेट करें"
+      }
+    },
+    "transformer": {
+      "editor": "एडीटर",
+      "console": "कंसोल",
+      "dependencies": "निर्भरता",
+      "transformer": "ट्रांसफार्मर",
+      "select-dependencies": "निर्भरता का चयन करें",
+      "select": "ट्रांसफार्मर का चयन करें",
+      "save": "ट्रांसफॉर्मर सहेजें",
+      "name": "ट्रांसफार्मर का नाम",
+      "sure": "क्या आपको यकीन है?",
+      "confirm-msg": "एडीटर के अंदर ट्रांसफॉर्मर कोड को ओवरराइट कर दिया जाएगा।",
+      "help": {
+        "frameworks": {
+          "d3": "d3 ढांचा",
+          "webCola": "webCola ढांचा"
+        },
+        "commands": {
+          "log": "कंसोल में लॉग इन करें"
+        },
+        "variables": {
+          "SERVICE_OUTPUT_JSON": "आउटपुट json फ़ाइल का पथ"
         }
+      },
+      "buttons": {
+        "submit": "प्रस्तुत",
+        "clear": "साफ़",
+        "cancel": "रद्द करें",
+        "save": "सहेजें",
+        "save-as": "के रूप रक्षित करें",
+        "no": "नहीं",
+        "yes": "हाँ",
+        "save-as-local": "स्थानीय के रूप में सहेजें",
+        "save-as-global": "वैश्विक के रूप में सहेजें"
+      }
+    },
+    "tabquery": {
+      "connection": "कनेक्शन",
+      "select": "कनेक्शन चुनें",
+      "db": "डेटाबेस "
+    },
+    "algorithm": {
+      "label": "एल्गोरिथम",
+      "select": "एल्गोरिथ्म का चयन करें",
+      "save": "एल्गोरिथम सहेजें",
+      "name": "एल्गोरिथम का नाम",
+      "confirm-msg": "एडीटर के अंदर एल्गोरिथम कोड को ओवरराइट कर दिया जाएगा।",
+      "buttons": {
+        "submit": "प्रस्तुत",
+        "clear": "साफ़",
+        "cancel": "रद्द करें",
+        "save": "सहेजें",
+        "save-as": "के रूप रक्षित करें",
+        "no": "नहीं",
+        "yes": "हाँ",
+        "save-as-local": "स्थानीय के रूप में सहेजें",
+        "save-as-global": "वैश्विक के रूप में सहेजें"
       }
     }
   },
@@ -151,5 +248,16 @@
     "help": "मदद",
     "profile": "उपयोगकर्ता रूपरेखा",
     "settings": "सेटिंग्स खोलें"
+  },
+  "buttons": {
+    "submit": "प्रस्तुत",
+    "clear": "साफ़",
+    "cancel": "रद्द करें",
+    "save": "सहेजें",
+    "save-as": "के रूप रक्षित करें",
+    "no": "नहीं",
+    "yes": "हाँ",
+    "save-as-local": "स्थानीय के रूप में सहेजें",
+    "save-as-global": "वैश्विक के रूप में सहेजें"
   }
 }
