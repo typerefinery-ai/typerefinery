@@ -175,8 +175,8 @@ jobs:
     strategy:
       matrix:
         node: [18.3.0]
-        # os: [macos-latest, ubuntu-latest, windows-latest]
-        os: [windows-latest]
+        os: [macos-latest, ubuntu-latest, windows-latest]
+        # os: [windows-latest]
         include:
           # - os: ubuntu-latest
           #   friendlyName: Release - Ubuntu
