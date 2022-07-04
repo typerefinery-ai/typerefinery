@@ -211,6 +211,9 @@ jobs:
         run: |
           npm install
 
+      - name: install dmg-license
+        if: ${{ contains(matrix.os, 'macos') }}
+        run: npm i dmg-license
       # - name: Install Snapcraft
       #   uses: samuelmeuli/action-snapcraft@v1
       #   # Only install Snapcraft on Ubuntu
