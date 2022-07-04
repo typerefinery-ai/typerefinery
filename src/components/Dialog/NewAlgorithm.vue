@@ -98,6 +98,30 @@
           >{{ v$.icon.required.$message.replace("Value", "Icon") }}</small
         >
       </div>
+      <div class="field">
+        <label
+          for="query"
+          :class="{ 'p-error': v$.query.$invalid && submitted }"
+        >
+          {{ $t("components.dialog.new-algorithm.panel2.query") + "*" }}</label
+        >
+        <codemirror
+          v-model="query"
+          class="codemirror"
+          placeholder="Code goes here..."
+          :style="{ height: '20vh' }"
+          :autofocus="true"
+          :indent-with-tab="true"
+          :tab-zize="2"
+          :extensions="extensions"
+        />
+
+        <small
+          v-if="(v$.query.$invalid && submitted) || v$.query.$pending.$response"
+          class="p-error"
+          >{{ v$.query.required.$message.replace("Value", "Query") }}</small
+        >
+      </div>
     </Panel>
     <template #footer>
       <Button
@@ -135,6 +159,11 @@
   import { getModule } from "vuex-module-decorators"
   import { required } from "@vuelidate/validators"
   import { useVuelidate } from "@vuelidate/core"
+  import { oneDark } from "@codemirror/theme-one-dark"
+  import { Codemirror } from "vue-codemirror"
+  import { javascript } from "@codemirror/lang-javascript"
+  import AppSettings from "@/store/Modules/AppSettings"
+  const appSettings = getModule(AppSettings)
   const appData = getModule(Projects)
 
   export default {
@@ -145,6 +174,7 @@
       InputText,
       Button,
       Dropdown,
+      Codemirror,
     },
     props: {
       algorithmdialog: { type: Boolean, default: false },
@@ -158,6 +188,7 @@
         expanded: "",
         description: "",
         icon: "",
+        query: "",
         display: true,
         selected: null,
         submitted: false,
@@ -174,11 +205,17 @@
         name: { required },
         description: { required },
         icon: { required },
+        query: { required },
       }
     },
     computed: {
       projectList() {
         return appData.projectsList
+      },
+      extensions() {
+        return appSettings.theme === "dark"
+          ? [javascript(), oneDark]
+          : [javascript()]
       },
     },
     mounted() {
@@ -210,6 +247,7 @@
           this.v$.name.$model = algorithm.label
           this.v$.description.$model = algorithm.description
           this.v$.icon.$model = algorithm.icon
+          this.v$.query.$model = algorithm.query
         } else {
           this.selectedEditNode = true
           // set algorithm
@@ -222,6 +260,7 @@
           this.v$.name.$model = algorithm.label
           this.v$.description.$model = algorithm.description
           this.v$.icon.$model = algorithm.icon
+          this.v$.query.$model = algorithm.query
         }
       }
     },
@@ -243,6 +282,7 @@
               //name: this.v$.name.$model,
               label: this.v$.name.$model,
               icon: this.v$.icon.$model,
+              query: this.v$.query.$model,
               description: this.v$.description.$model,
               type: "algorithm",
               scope: "global",
@@ -261,6 +301,7 @@
               // port: "",
               icon: this.v$.icon.$model,
               description: this.v$.description.$model,
+              query: this.v$.query.$model,
               type: "algorithm",
               scope: "local",
             },
@@ -291,6 +332,7 @@
             label: this.name,
             icon: this.icon,
             description: this.description,
+            query: this.query,
             type: "algorithm",
             id: Math.random()
               .toString(36)

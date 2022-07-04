@@ -161,6 +161,7 @@
         "panel2": {
           "header": "Algorithm Info",
           "name": "Name",
+          "query": "Query",
           "description": "Description",
           "icon": "Icon"
         },
