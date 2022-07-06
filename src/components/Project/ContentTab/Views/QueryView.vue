@@ -1,5 +1,5 @@
 <template>
-  <div class="query-view-wrapper">
+  <div ref="querywrapper" class="query-view-wrapper h-full">
     <div class="card">
       <div class="card-container text-left">
         <div class="field p-4 pb-2">
@@ -15,7 +15,7 @@
 
         <div class="field m-4 my-2">
           <label for="query">{{ $t(`components.tab.query`) }}</label>
-          <div class="shadow-3">
+          <div id="query_view_cm" class="shadow-3">
             <codemirror
               :model-value="query"
               placeholder="Add your query here.."
@@ -49,6 +49,7 @@
     components: { InputText, Codemirror },
     props: {
       tab: { type: Object, required: true },
+      view: { type: String, required: true },
     },
     computed: {
       extensions() {
@@ -64,6 +65,17 @@
         const { projectIdx, queryIdx } = this.tab
         return appData.list[0].list[projectIdx].queries.list[queryIdx].query
       },
+      viewResized() {
+        return appSettings.viewResized
+      },
+    },
+    watch: {
+      viewResized() {
+        setTimeout(() => this.setEditorHeight(), 0)
+      },
+    },
+    mounted() {
+      setTimeout(() => this.setEditorHeight(), 0)
     },
     methods: {
       handleInput({ target: { value } }, key) {
@@ -73,6 +85,16 @@
       handleQuery(code) {
         const payload = { key: "query", value: code, ...this.tab }
         appData.updateQuery(payload)
+      },
+      setEditorHeight() {
+        if (this.view !== "Q") return
+        const wrapper = this.$refs.querywrapper
+        const editor = document.querySelector("#query_view_cm .cm-editor")
+        if (wrapper) {
+          editor.style.setProperty("display", "none", "important")
+          editor.style.height = wrapper.clientHeight - 143 + "px"
+          editor.style.setProperty("display", "flex", "important")
+        }
       },
     },
   }

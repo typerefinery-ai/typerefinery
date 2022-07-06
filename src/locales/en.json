@@ -50,7 +50,9 @@
       "general": {
         "experimental": "Experimental Features",
         "chat": "Chat",
-        "editor": "Editor"
+        "editor": "Editor",
+        "charts": "Charts",
+        "maps": "Maps"
       }
     },
 

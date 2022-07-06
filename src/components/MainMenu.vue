@@ -90,7 +90,8 @@
             label: this.$t("components.mainmenu.charts"),
             icon: "pi pi-chart-pie",
             to: "/home/charts",
-            type: "regular",
+            type: "experimental",
+            enabled: appSettings.featureStatus("charts"),
             subMenu: [
               { id: "load-data", to: "#" },
               { id: "load-links", to: "#" },
@@ -100,8 +101,8 @@
             label: this.$t("components.mainmenu.maps"),
             icon: "pi pi-sitemap",
             to: "/home/maps",
-            type: "regular",
-
+            type: "experimental",
+            enabled: appSettings.featureStatus("maps"),
             subMenu: [{ id: "load-data", to: "#" }],
           },
           {

@@ -15,6 +15,7 @@
       dependencies: { type: Array, required: true },
       tab: { type: Object, required: true },
     },
+    emits: ["set-node-data"],
     computed: {
       code() {
         const { projectIdx, queryIdx } = this.tab
@@ -72,6 +73,9 @@
             wrapper.removeChild(wrapper.firstChild)
           }
         }
+      },
+      setNodeData(nodeData) {
+        this.$emit("set-node-data", nodeData)
       },
     },
   }

@@ -1,6 +1,10 @@
 <template>
-  <div ref="algoWrapper" class="transformer-wrapper">
-    <div class="code-wrapper shadow-3" :class="{ error: isError }">
+  <div ref="transwrapper" class="transformer-wrapper">
+    <div
+      id="trans_view_cm"
+      class="code-wrapper shadow-3"
+      :class="{ error: isError }"
+    >
       <div class="code-tabs">
         <div class="code-tabs-head">
           <Button
@@ -59,6 +63,7 @@
     components: { Codemirror, Button },
     props: {
       tab: { type: Object, required: true },
+      view: { type: String, required: true },
     },
     emits: ["render"],
     data() {
@@ -107,8 +112,9 @@
         appSettings.resizeView()
       },
       setEditorHeight() {
-        const wrapper = this.$refs.algoWrapper
-        const editor = document.getElementsByClassName("cm-editor")[2]
+        if (this.view !== "T") return
+        const wrapper = this.$refs.transwrapper
+        const editor = document.querySelector("#trans_view_cm .cm-editor")
         if (wrapper) {
           editor.style.setProperty("display", "none", "important")
           editor.style.height = wrapper.clientHeight - 65 + "px"
