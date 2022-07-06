@@ -53,7 +53,6 @@
         } else if (shiftKey && key === "T") {
           const theme = appSettings.theme === "dark" ? "light" : "dark"
           appSettings.setTheme(theme)
-          localStorage.setItem("theme", theme)
           themeHelpers.setThemeURL(theme)
         }
       },
