@@ -1,55 +1,89 @@
 <template>
-  <div class="data-view-wrapper">
+  <div ref="datawrapper" class="data-view-wrapper h-full">
     <div class="refresh-data">
-      <!-- <Button icon="pi pi-refresh" /> -->
       <Button label="Refresh" icon="pi pi-refresh" />
     </div>
-    <DataTable
-      :value="data"
-      striped-rows
-      responsive-layout="scroll"
-      :scrollable="true"
-      scroll-height="415px"
-    >
-      <Column field="year" header="Year"></Column>
-      <Column field="brand" header="Brand"></Column>
-      <Column field="color" header="Color"></Column>
-    </DataTable>
+    <div id="data_view_cm" class="shadow-3">
+      <codemirror
+        :model-value="data"
+        placeholder="Code goes here..."
+        :style="{ height: '60vh' }"
+        :autofocus="true"
+        :indent-with-tab="true"
+        :tab-zize="2"
+        :extensions="extensions"
+        @change="handleChange"
+      />
+    </div>
   </div>
 </template>
 
 <script>
-  import DataTable from "primevue/datatable"
-  import Column from "primevue/column"
+  import { Codemirror } from "vue-codemirror"
+  import GRAPH_DATA from "@/components/Transformer/D3/miserables.json"
   import Button from "primevue/button"
+  import { javascript } from "@codemirror/lang-javascript"
+  import { oneDark } from "@codemirror/theme-one-dark"
+  import AppSettings from "@/store/Modules/AppSettings"
+  import { getModule } from "vuex-module-decorators"
+  const appSettings = getModule(AppSettings)
+  // FIXME: add new line character to it
+  const data = JSON.stringify(GRAPH_DATA)
+
   export default {
     name: "DataView",
-    components: { DataTable, Column, Button },
+    components: { Codemirror, Button },
+    props: {
+      view: { type: String, required: true },
+    },
     data() {
       return {
-        data: [
-          {
-            brand: "Volkswagen",
-            year: 2012,
-            color: "Orange",
-            vin: "dsad231ff",
-          },
-          { brand: "Audi", year: 2011, color: "Black", vin: "gwregre345" },
-          { brand: "Renault", year: 2005, color: "Gray", vin: "h354htr" },
-          { brand: "BMW", year: 2003, color: "Blue", vin: "j6w54qgh" },
-          { brand: "Mercedes", year: 1995, color: "Orange", vin: "hrtwy34" },
-          { brand: "Volvo", year: 2005, color: "Black", vin: "jejtyj" },
-          { brand: "Honda", year: 2012, color: "Yellow", vin: "g43gr" },
-          { brand: "Jaguar", year: 2013, color: "Orange", vin: "greg34" },
-          { brand: "Ford", year: 2000, color: "Black", vin: "h54hw5" },
-        ],
+        data: data,
       }
+    },
+    computed: {
+      extensions() {
+        return appSettings.theme === "dark"
+          ? [javascript(), oneDark]
+          : [javascript()]
+      },
+      viewResized() {
+        return appSettings.viewResized
+      },
+    },
+    watch: {
+      viewResized() {
+        setTimeout(() => this.setEditorHeight(), 0)
+      },
+    },
+    mounted() {
+      setTimeout(() => this.setEditorHeight(), 0)
+    },
+    methods: {
+      handleChange(data) {
+        this.data = data
+      },
+      setEditorHeight() {
+        if (this.view !== "D") return
+        const wrapper = this.$refs.datawrapper
+        const editor = document.querySelector("#data_view_cm .cm-editor")
+        if (wrapper) {
+          editor.style.setProperty("display", "none", "important")
+          editor.style.height = wrapper.clientHeight - 75 + "px"
+          editor.style.setProperty("display", "flex", "important")
+        }
+      },
     },
   }
 </script>
 
 <style scoped lang="scss">
-  .refresh-data {
-    text-align: right;
+  .data-view-wrapper {
+    padding: 1rem;
+
+    .refresh-data {
+      text-align: right;
+      margin-bottom: 1rem;
+    }
   }
 </style>

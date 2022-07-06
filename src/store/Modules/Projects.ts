@@ -26,6 +26,12 @@ export default class AppData extends VuexModule {
     return this.list[0].list
   }
 
+  get query() {
+    return (projectIdx, queryIdx) => {
+      return this.list[0].list[projectIdx].queries.list[queryIdx]
+    }
+  }
+
   get connectionsList() {
     return (projectIdx) => {
       return [
@@ -33,14 +39,14 @@ export default class AppData extends VuexModule {
           label: "Local",
           code: "local",
           items: this.list[0].list[projectIdx].connections.list.map((el) => {
-            return { label: el.label, key: el.id }
+            return { label: el.label, key: el.id, scope: el.scope }
           }),
         },
         {
           label: "Global",
           code: "global",
           items: this.list[1].list.map((el) => {
-            return { label: el.label, key: el.id }
+            return { label: el.label, key: el.id, scope: el.scope }
           }),
         },
       ]
@@ -283,6 +289,7 @@ export default class AppData extends VuexModule {
 
   @Mutation
   setTransformerLogs({ log, projectIdx, queryIdx }) {
+    console.log(log)
     let logs: string
     if (typeof log == "object") {
       logs = JSON.stringify(log)

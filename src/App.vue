@@ -1,5 +1,7 @@
 <template>
-  <router-view />
+  <div class="app-wrapper">
+    <router-view />
+  </div>
 </template>
 
 <script lang="ts">
@@ -16,8 +18,6 @@
     name: "App",
 
     created() {
-      // TODO: Remove this in next commit
-      localStorage.clear()
       window.addEventListener("keydown", this.keyListener)
 
       // // monitor service events
@@ -53,6 +53,7 @@
         } else if (shiftKey && key === "T") {
           const theme = appSettings.theme === "dark" ? "light" : "dark"
           appSettings.setTheme(theme)
+          localStorage.setItem("theme", theme)
           themeHelpers.setThemeURL(theme)
         }
       },

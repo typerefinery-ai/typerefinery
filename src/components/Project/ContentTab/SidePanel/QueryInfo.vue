@@ -8,8 +8,8 @@
         id="description"
         :model-value="description"
         :auto-resize="true"
-        rows="5"
-        cols="30"
+        rows="3"
+        cols="20"
         @input="handleInput($event, 'description')"
       />
     </div>
@@ -32,26 +32,27 @@
         option-group-label="label"
         option-group-children="items"
         :placeholder="$t(`components.transformer.select`)"
-        @change="handleDropdown($event)"
+        @change="handleTransformer($event)"
       />
     </div>
     <div class="field">
       <label>{{ $t(`components.tabquery.connection`) }}</label>
       <Dropdown
-        v-model="selectedconnection"
-        :options="connectionList"
-         option-label="label"
+        v-model="connection"
+        :options="connections"
+        option-label="label"
         option-group-label="label"
         option-group-children="items"
         :placeholder="$t(`components.tabquery.select`)"
-        @change="handler"
+        @change="handleConnection"
       />
     </div>
-     <div class="field">
+    <div class="field">
       <label for="database">{{ $t(`components.tabquery.db`) }}</label>
       <InputText
         id="database"
-        :model-value="db"
+        :model-value="database"
+        @input="handleInput($event, 'database')"
       />
     </div>
   </div>
@@ -67,32 +68,34 @@
   export default {
     name: "QueryInfo",
     components: { InputText, Dropdown, Textarea },
-     data(){
-      return{
-      selectedconnection: null,
-      }
-    },
     props: {
       tab: { type: Object, required: true },
     },
     computed: {
       description() {
         const { projectIdx, queryIdx } = this.tab
-        return appData.list[0].list[projectIdx].queries.list[queryIdx]
-          .description
+        return appData.query(projectIdx, queryIdx).description
       },
       icon() {
         const { projectIdx, queryIdx } = this.tab
-        return appData.list[0].list[projectIdx].queries.list[queryIdx].icon
+        return appData.query(projectIdx, queryIdx).icon
       },
-      connectionList() {
-          const { projectIdx } = this.tab 
-         return projectIdx== -1? []:appData.connectionsList(projectIdx)
+      connections() {
+        const { projectIdx } = this.tab
+        return appData.connectionsList(projectIdx)
+      },
+      connection() {
+        const { projectIdx, queryIdx } = this.tab
+        const connection = appData.query(projectIdx, queryIdx).connection
+        return {
+          key: connection.id,
+          label: connection.label,
+          scope: connection.scope,
+        }
       },
       tranformer() {
         const { projectIdx, queryIdx } = this.tab
-        const transformer =
-          appData.list[0].list[projectIdx].queries.list[queryIdx].transformer
+        const transformer = appData.query(projectIdx, queryIdx).transformer
         return {
           key: transformer.id,
           label: transformer.label,
@@ -103,22 +106,42 @@
         const { projectIdx } = this.tab
         return appData.transformersList(projectIdx)
       },
+      database() {
+        const { projectIdx, queryIdx } = this.tab
+        return appData.query(projectIdx, queryIdx).database
+      },
     },
     methods: {
       handleInput({ target: { value } }, key) {
         const payload = { key, value, ...this.tab }
         appData.updateQuery(payload)
       },
-      handleDropdown({ value }) {
+      handleTransformer({ value }) {
         let transformer
         if (value.scope == "local") {
-          transformer = appData.list[0].list[
-            this.tab.projectIdx
-          ].transformers.list.find((el) => el.id == value.key)
+          transformer = appData
+            .localTransformers(this.tab.projectIdx)
+            .find((el) => el.id == value.key)
         } else {
-          transformer = appData.list[2].list.find((el) => el.id == value.key)
+          transformer = appData.globalTransformers.find(
+            (el) => el.id == value.key
+          )
         }
         const payload = { key: "transformer", value: transformer, ...this.tab }
+        appData.updateQuery(payload)
+      },
+      handleConnection({ value }) {
+        let connection
+        if (value.scope == "local") {
+          connection = appData
+            .localConnections(this.tab.projectIdx)
+            .find((el) => el.id == value.key)
+        } else {
+          connection = appData.globalConnections.find(
+            (el) => el.id == value.key
+          )
+        }
+        const payload = { key: "connection", value: connection, ...this.tab }
         appData.updateQuery(payload)
       },
     },

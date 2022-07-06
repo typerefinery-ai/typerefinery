@@ -182,7 +182,6 @@
         this.selectedDependencies = d.value
         const dependencies = d.value.map((el) => el.code)
         this.$emit("handle-dependencies", dependencies)
-        console.log(d)
       },
       handleTransformer(el) {
         this.showConfirmDialog(el)
