@@ -11,8 +11,4 @@ describe("Projecty Tab", () => {
   it("Has Show Menubar button", () => {
     cy.get("#show-menu-bar-button").click()
   })
-  it("Has Side Bar", () => {
-    cy.get(".sidebar-fixed-items").eq(2).click()
-    cy.get(".p-dialog-header-icon").click()
-  })
 })

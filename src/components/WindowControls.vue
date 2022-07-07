@@ -35,19 +35,21 @@
     setup() {
       const { ipc } = window
       const isMinimized = ref(false)
-      ipc.isMinimized().then((is) => {
-        isMinimized.value = is
-      })
-
       const isMaximized = ref(false)
-      ipc.isMaximized().then((is) => {
-        isMaximized.value = is
-      })
-
       const isNormal = ref(false)
-      ipc.isNormal().then((is) => {
-        isNormal.value = is
-      })
+      if (ipc) {
+        ipc.isMinimized().then((is) => {
+          isMinimized.value = is
+        })
+        ipc.isMaximized().then((is) => {
+          isMaximized.value = is
+        })
+
+        ipc.isNormal().then((is) => {
+          isNormal.value = is
+        })
+      }
+
       return {
         ipc,
         isMaximized,
