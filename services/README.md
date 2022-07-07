@@ -7,6 +7,7 @@
 
 ### Python
 <https://www.python.org/downloads/release/python-3100/>
+<https://github.com/indygreg/python-build-standalone/releases/tag/20220630>
 
 ### Python Pip
 
