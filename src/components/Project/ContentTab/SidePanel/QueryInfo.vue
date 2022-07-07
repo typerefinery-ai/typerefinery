@@ -7,7 +7,6 @@
       <Textarea
         id="description"
         :model-value="description"
-        :auto-resize="true"
         rows="3"
         cols="20"
         @input="handleInput($event, 'description')"

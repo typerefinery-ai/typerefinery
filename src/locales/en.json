@@ -238,6 +238,9 @@
         "save-as-local": "Save as Local",
         "save-as-global": "Save as Global"
       }
+    },
+    "data": {
+      "refresh": "Refresh"
     }
   },
 

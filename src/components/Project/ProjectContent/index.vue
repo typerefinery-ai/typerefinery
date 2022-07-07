@@ -10,7 +10,7 @@
         ref="sidebarPane"
         class="sidebar-pane"
         :size="pane1Size"
-        max-size="25"
+        max-size="35"
       >
         <sidebar />
       </pane>

@@ -3,7 +3,10 @@
     <div class="grid">
       <div class="col-12">
         <div class="p-inputgroup">
-          <InputText v-model="endpoint" />
+          <InputText
+            :model-value="endpoint"
+            @input="handleEndpoint($event, 'endpoint')"
+          />
           <Button
             :icon="`pi ${loading ? 'pi-spin pi-spinner' : 'pi-play'}`"
             class="p-button-primary"
@@ -84,7 +87,7 @@
       return {
         activeTab: "editor",
         consoleText: "",
-        endpoint: "http://localhost:8000/algorithm",
+        // endpoint: "http://localhost:8000/algorithm",
         loading: false, // query
         error: false,
       }
@@ -106,6 +109,10 @@
       code() {
         const { projectIdx, queryIdx } = this.tab
         return appData.algorithmCode(projectIdx, queryIdx)
+      },
+      endpoint() {
+        const { projectIdx, queryIdx } = this.tab
+        return appData.query(projectIdx, queryIdx).endpoint
       },
     },
     watch: {
@@ -136,6 +143,10 @@
           editor.style.setProperty("display", "flex", "important")
         }
       },
+      handleEndpoint({ target: { value } }, key) {
+        const payload = { key, value, ...this.tab }
+        appData.updateQuery(payload)
+      },
       setQueryState(loading, error, text) {
         this.loading = loading
         this.error = error
@@ -143,29 +154,11 @@
       },
       async handleRequest() {
         this.setQueryState(true, false, "")
-        try {
-          const { projectIdx, queryIdx } = this.tab
-          const query = appData.query(projectIdx, queryIdx)
-          const payload = {
-            dbhost: query.connection.host,
-            dbport: query.connection.port,
-            dbdatabase: query.database,
-            dbquery: query.query,
-            algorithm: this.code,
-            algorithmrequirements: "argparse\nloguru",
-            returnoutput: "log",
-          }
-          const response = await axios.post(this.endpoint, payload)
-          const path = response.headers["output.url"].replace(
-            "/output",
-            ".output"
-          )
-          const data = { path, projectIdx, queryIdx }
-          appData.setQueryDataPath(data)
+        const response = await appData.runAlgorithm(this.tab)
+        if (response.type == "data") {
           this.setQueryState(false, false, response.data)
-        } catch (error) {
-          this.setQueryState(false, true, error.message)
-          console.log(error)
+        } else {
+          this.setQueryState(false, true, response.data.message)
         }
       },
     },

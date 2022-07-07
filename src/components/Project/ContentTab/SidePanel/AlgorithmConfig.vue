@@ -23,10 +23,10 @@
         <div class="field">
           <label>{{ $t(`components.transformer.dependencies`) }}</label>
           <Textarea
-            v-model="dependencies"
-            :auto-resize="true"
-            rows="5"
+            :model-value="dependencies"
+            rows="3"
             cols="30"
+            @input="handleDependencies"
           />
         </div>
         <div class="field">
@@ -111,14 +111,12 @@
     props: {
       tab: { type: Object, required: true },
     },
-    emits: ["handle-dependencies"],
     data() {
       return {
         algorithmName: "",
         activeView: "config",
         saveDialog: false,
         selectedAlgorithm: null,
-        dependencies: "",
       }
     },
     computed: {
@@ -135,6 +133,11 @@
       algorithms() {
         const { projectIdx } = this.tab
         return appData.algorithmsList(projectIdx)
+      },
+      dependencies() {
+        const { projectIdx, queryIdx } = this.tab
+        const algorithm = appData.query(projectIdx, queryIdx).algorithm
+        return algorithm.dependencies
       },
     },
     methods: {
@@ -196,6 +199,14 @@
         }
         appData.addNewAlgorithm(data)
         this.algorithmName = ""
+      },
+      handleDependencies(e) {
+        const { projectIdx, queryIdx } = this.tab
+        const query = appData.query(projectIdx, queryIdx)
+        const algorithm = { ...query.algorithm }
+        algorithm.dependencies = e.target.value
+        const payload = { key: "algorithm", value: algorithm, ...this.tab }
+        appData.updateQuery(payload)
       },
     },
   }

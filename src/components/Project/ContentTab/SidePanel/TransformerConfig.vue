@@ -127,9 +127,7 @@
   import Dialog from "primevue/dialog"
   import InputText from "primevue/inputtext"
   import { getModule } from "vuex-module-decorators"
-  import Transformer from "@/store/Modules/Transformer"
   import AppData from "@/store/Modules/Projects"
-  const transformer = getModule(Transformer)
   const appData = getModule(AppData)
 
   export default {
@@ -151,10 +149,10 @@
         activeView: "config",
         saveDialog: false,
         // selectedTransformer: null,
-        selectedDependencies: null,
+        // (): null,
         dependencies: [
-          { name: "D3", code: "d3" },
-          { name: "WebCola", code: "webcola" },
+          { name: "d3", code: "d3" },
+          { name: "webcola", code: "webcola" },
         ],
       }
     },
@@ -173,15 +171,33 @@
         const { projectIdx } = this.tab
         return appData.transformersList(projectIdx)
       },
+      selectedDependencies() {
+        const { projectIdx, queryIdx } = this.tab
+        const transformer = appData.query(projectIdx, queryIdx).transformer
+        return transformer.dependencies.map((el) => ({ name: el, code: el }))
+      },
+    },
+    mounted() {
+      const { projectIdx, queryIdx } = this.tab
+      const transformer = appData.query(projectIdx, queryIdx).transformer
+      this.$emit("handle-dependencies", transformer.dependencies)
     },
     methods: {
       handleView(view) {
         this.activeView = view
       },
       handleDependency(d) {
-        this.selectedDependencies = d.value
+        // save locallly
         const dependencies = d.value.map((el) => el.code)
+        // this.() = d.value
         this.$emit("handle-dependencies", dependencies)
+        // save to store
+        const { projectIdx, queryIdx } = this.tab
+        const query = appData.query(projectIdx, queryIdx)
+        const transformer = { ...query.transformer }
+        transformer.dependencies = dependencies
+        const payload = { key: "transformer", value: transformer, ...this.tab }
+        appData.updateQuery(payload)
       },
       handleTransformer(el) {
         this.showConfirmDialog(el)
@@ -276,11 +292,15 @@
         border-radius: 4px;
 
         code {
+          flex: 1;
           font-weight: bold;
           border-right: 1px solid var(--surface-border);
           padding: 8px 16px;
           color: var(--text-color);
           font-size: 12px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
         }
 
         span {

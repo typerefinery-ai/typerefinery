@@ -1,14 +1,6 @@
 <template>
   <div class="window-wrapper">
     <div v-show="toolsVisible" class="content-tools-wrapper">
-      <!-- <div class="grid">
-        <div class="col-12">
-          <div class="p-inputgroup">
-            <InputText :placeholder="$t(`components.tab.query`)" />
-            <Button icon="pi pi-search" class="p-button-primary" />
-          </div>
-        </div>
-      </div> -->
       <div class="content-tools">
         <Button
           :label="$t(`components.tab.query`)"
@@ -120,7 +112,7 @@
         </div>
       </pane>
 
-      <pane :ref="`p-${tab.id}-${paneId}`" max-size="30">
+      <pane :ref="`p-${tab.id}-${paneId}`" size="25" max-size="50">
         <side-panel
           :tab="tab"
           :node-data="nodeData"

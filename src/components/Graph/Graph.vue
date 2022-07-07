@@ -40,7 +40,7 @@
     methods: {
       renderGraph() {
         const { projectIdx, queryIdx } = this.tab
-        const query = appData.list[0].list[projectIdx].queries.list[queryIdx]
+        const query = appData.query(projectIdx, queryIdx)
         try {
           window.log = function (log) {
             appData.setTransformerLogs({ log, projectIdx, queryIdx })

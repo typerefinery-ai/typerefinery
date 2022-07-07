@@ -1,7 +1,12 @@
 <template>
   <div ref="datawrapper" class="data-view-wrapper h-full">
     <div class="refresh-data">
-      <Button label="Refresh" icon="pi pi-refresh" />
+      <Button
+        :label="$t('components.data.refresh')"
+        :icon="`pi ${loading ? 'pi-spin pi-refresh' : 'pi-refresh'}`"
+        :style="{ 'pointer-events': loading ? 'none' : 'auto' }"
+        @click="handleRequest"
+      />
     </div>
     <div id="data_view_cm" class="shadow-3">
       <codemirror
@@ -19,26 +24,30 @@
 </template>
 
 <script>
+  import axios from "axios"
   import { Codemirror } from "vue-codemirror"
   import GRAPH_DATA from "@/components/Transformer/D3/miserables.json"
   import Button from "primevue/button"
   import { javascript } from "@codemirror/lang-javascript"
   import { oneDark } from "@codemirror/theme-one-dark"
   import AppSettings from "@/store/Modules/AppSettings"
+  import AppData from "@/store/Modules/Projects"
   import { getModule } from "vuex-module-decorators"
   const appSettings = getModule(AppSettings)
-  // FIXME: add new line character to it
-  const data = JSON.stringify(GRAPH_DATA)
+  const appData = getModule(AppData)
+  const data = JSON.stringify(GRAPH_DATA, null, "\t")
 
   export default {
     name: "DataView",
     components: { Codemirror, Button },
     props: {
+      tab: { type: Object, required: true },
       view: { type: String, required: true },
     },
     data() {
       return {
         data: data,
+        loading: false,
       }
     },
     computed: {
@@ -71,6 +80,15 @@
           editor.style.setProperty("display", "none", "important")
           editor.style.height = wrapper.clientHeight - 75 + "px"
           editor.style.setProperty("display", "flex", "important")
+        }
+      },
+      async handleRequest() {
+        this.loading = true
+        const response = await appData.runAlgorithm(this.tab)
+        if (response.type == "data") {
+          this.loading = false
+        } else {
+          this.loading = false
         }
       },
     },
