@@ -67,21 +67,19 @@
     >
       <pane :ref="`w-${tab.id}-${paneId}`">
         <div class="content-area-window" :class="{ show: activeView === 'D' }">
-          <data-view :tab="tab" />
+          <data-view :tab="tab" :view="activeView" />
         </div>
 
         <div class="content-area-window" :class="{ show: activeView === 'A' }">
-          <algorithm-view :tab="tab" />
+          <algorithm-view :tab="tab" :view="activeView" />
         </div>
 
         <div class="content-area-window" :class="{ show: activeView === 'Q' }">
-          <div class="query-window-container">
-            <query-view :tab="tab" />
-          </div>
+          <query-view :tab="tab" :view="activeView" />
         </div>
 
         <div class="content-area-window" :class="{ show: activeView === 'T' }">
-          <transformer-view :tab="tab" />
+          <transformer-view :tab="tab" :view="activeView" />
         </div>
 
         <div class="content-area-window" :class="{ show: activeView === 'G' }">
@@ -103,6 +101,7 @@
               :graph-id="`graph-${tab.id}-${paneId}`"
               :dependencies="dependencies"
               :tab="tab"
+              @set-node-data="setNodeData"
             />
           </div>
 
@@ -192,9 +191,7 @@
     methods: {
       handleView(view) {
         this.activeView = view
-        if (view === "T" || view === "A") {
-          appSettings.resizeView()
-        }
+        setTimeout(() => appSettings.resizeView(), 0)
       },
       handleSplitterClick() {
         const rightPanel = this.$refs[`p-${this.tab.id}-${this.paneId}`]
@@ -225,6 +222,9 @@
       },
       toggleTabs() {
         this.$emit("toggle")
+      },
+      setNodeData(nodeData) {
+        this.nodeData = nodeData
       },
     },
   }

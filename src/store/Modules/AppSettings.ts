@@ -87,6 +87,16 @@ export default class AppSettings extends VuexModule {
       label: "Editor",
       enabled: false,
     },
+    {
+      id: "charts",
+      label: "Charts",
+      enabled: false,
+    },
+    {
+      id: "maps",
+      label: "Maps",
+      enabled: false,
+    },
   ]
 
   @Mutation

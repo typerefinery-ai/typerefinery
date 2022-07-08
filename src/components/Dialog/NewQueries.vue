@@ -374,7 +374,6 @@
         const data = {
           projectIdx: projectIdx,
           data: {
-            name: this.name,
             label: this.name,
             id: Math.random()
               .toString(36)
@@ -385,7 +384,7 @@
             icon: this.icon,
             query: this.query,
             type: "query",
-            tranformer: this.transformdata,
+            transformer: this.transformdata,
             algorithm: this.algorithmdata,
             dataPath: "",
           },

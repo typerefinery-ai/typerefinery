@@ -38,6 +38,16 @@
         "id": "editor",
         "label": "Editor",
         "enabled": false
+      },
+      {
+        "id": "charts",
+        "label": "Charts",
+        "enabled": false
+      },
+      {
+        "id": "maps",
+        "label": "Maps",
+        "enabled": false
       }
     ]
   },
@@ -119,11 +129,12 @@
                 {
                   "type": "connection",
                   "id": "connection1",
-                  "label": "connection 1",
+                  "label": "Connection 1",
                   "icon": "connection",
+                  "scope": "local",
                   "description": "",
-                  "port": "",
-                  "host": ""
+                  "port": "1729",
+                  "host": "localhost"
                 }
               ]
             },
@@ -141,7 +152,13 @@
                   "database": "typerefinery",
                   "query": "match $a isa log, has logName 'L1';\n$b isa event, has eventName $c;\n$d (owner: $a, item: $b) isa trace,\nhas traceId $e, has index $f;\n offset 0; limit 100;",
                   "dataPath": "services/fastapi/algorithm/req-1656770367.081393.82713.py.output",
-                  "connection": "connection1",
+                  "connection": {
+                    "id": "connection1",
+                    "label": "Connection 1",
+                    "scope": "local",
+                    "port": "1729",
+                    "host": "localhost"
+                  },
                   "transformer": {
                     "type": "transformer",
                     "id": "transformer1",
@@ -173,7 +190,13 @@
                   "description": "sample query",
                   "query": "match $a isa log, has logName 'L1';\n$b isa event, has eventName $c;\n$d (owner: $a, item: $b) isa trace,\nhas traceId $e, has index $f;\n offset 0; limit 100;",
                   "dataPath": "",
-                  "connection": "connection1",
+                  "connection": {
+                    "id": "connection1",
+                    "label": "Connection 1",
+                    "scope": "global",
+                    "port": "",
+                    "host": ""
+                  },
                   "transformer": {
                     "type": "transformer",
                     "id": "transformer2",
@@ -272,7 +295,7 @@
                 {
                   "type": "connection",
                   "id": "connection1",
-                  "label": "connection 1",
+                  "label": "Connection 1",
                   "icon": "connection",
                   "scope": "local",
                   "description": "",
@@ -297,12 +320,18 @@
               "list": [
                 {
                   "type": "query",
-                  "id": "query1",
-                  "label": "query 1",
+                  "id": "query3",
+                  "label": "query 3",
                   "icon": "query",
                   "description": "",
                   "query": "",
-                  "connection": "connection1",
+                  "connection": {
+                    "id": "connection1",
+                    "label": "Connection 1",
+                    "scope": "local",
+                    "port": "",
+                    "host": ""
+                  },
                   "transformer": {
                     "type": "transformer",
                     "id": "transformer1",
@@ -328,12 +357,18 @@
                 },
                 {
                   "type": "query",
-                  "id": "query2",
-                  "label": "query 2",
+                  "id": "query4",
+                  "label": "query 4",
                   "icon": "query",
                   "description": "",
                   "query": "",
-                  "connection": "connection1",
+                  "connection": {
+                    "id": "connection1",
+                    "label": "Connection 1",
+                    "scope": "local",
+                    "port": "",
+                    "host": ""
+                  },
                   "transformer": {
                     "type": "transformer",
                     "id": "transformer2",
@@ -425,7 +460,7 @@
           {
             "type": "connection",
             "id": "connection1g",
-            "label": "connection 1",
+            "label": "Connection 1",
             "icon": "connection",
             "scope": "global",
             "description": "",

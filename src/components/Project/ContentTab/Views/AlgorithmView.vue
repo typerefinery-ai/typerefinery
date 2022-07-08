@@ -5,14 +5,19 @@
         <div class="p-inputgroup">
           <InputText v-model="endpoint" />
           <Button
-            icon="pi pi-play"
+            :icon="`pi ${loading ? 'pi-spin pi-spinner' : 'pi-play'}`"
             class="p-button-primary"
+            :style="{ 'pointer-events': loading ? 'none' : 'auto' }"
             @click="handleRequest"
           />
         </div>
       </div>
     </div>
-    <div class="code-wrapper shadow-3" :class="{ error: isError }">
+    <div
+      id="algo_view_cm"
+      class="code-wrapper shadow-3"
+      :class="{ error: error }"
+    >
       <div class="code-tabs">
         <div class="code-tabs-head">
           <Button
@@ -22,8 +27,8 @@
             @click="handleTabs('editor')"
           />
           <Button
-            :label="$t(`components.transformer.console`)"
-            :badge="isError ? '1' : ''"
+            :label="consoleLabel"
+            :badge="error ? '1' : ''"
             badge-class="p-badge-danger"
             class="p-button-raised shadow-1"
             :class="{ 'p-button-text': activeTab !== 'console' }"
@@ -72,6 +77,7 @@
     components: { Codemirror, Button },
     props: {
       tab: { type: Object, required: true },
+      view: { type: String, required: true },
     },
     emits: ["render"],
     data() {
@@ -79,14 +85,20 @@
         activeTab: "editor",
         consoleText: "",
         endpoint: "http://localhost:8000/algorithm",
+        loading: false, // query
+        error: false,
       }
     },
     computed: {
       extensions() {
         return appSettings.theme === "dark" ? [python(), oneDark] : [python()]
       },
-      isError() {
-        return false
+      consoleLabel() {
+        let label = this.$t("components.transformer.console")
+        if (!this.error && this.consoleText.length) {
+          return label + " - " + this.consoleText.split(/\r\n|\r|\n/).length
+        }
+        return label
       },
       viewResized() {
         return appSettings.viewResized
@@ -115,36 +127,44 @@
         appSettings.resizeView()
       },
       setEditorHeight() {
+        if (this.view !== "A") return
         const wrapper = this.$refs.algowrapper
-        const editor = document.getElementsByClassName("cm-editor")[0]
+        const editor = document.querySelector("#algo_view_cm .cm-editor")
         if (wrapper) {
           editor.style.setProperty("display", "none", "important")
-          editor.style.height = wrapper.clientHeight - 120 + "px"
+          editor.style.height = wrapper.clientHeight - 108 + "px"
           editor.style.setProperty("display", "flex", "important")
         }
       },
+      setQueryState(loading, error, text) {
+        this.loading = loading
+        this.error = error
+        this.consoleText = text
+      },
       async handleRequest() {
+        this.setQueryState(true, false, "")
         try {
+          const { projectIdx, queryIdx } = this.tab
+          const query = appData.query(projectIdx, queryIdx)
           const payload = {
-            dbhost: "localhost",
-            dbport: "1729",
-            dbdatabase: "typerefinery",
-            dbquery:
-              "match $a isa log, has logName 'L1';\n$b isa event, has eventName $c;\n$d (owner: $a, item: $b) isa trace,\nhas traceId $e, has index $f;\n offset 0; limit 100;",
+            dbhost: query.connection.host,
+            dbport: query.connection.port,
+            dbdatabase: query.database,
+            dbquery: query.query,
             algorithm: this.code,
             algorithmrequirements: "argparse\nloguru",
             returnoutput: "log",
           }
           const response = await axios.post(this.endpoint, payload)
-          this.consoleText = response.data
-          const { projectIdx, queryIdx } = this.tab
           const path = response.headers["output.url"].replace(
             "/output",
             ".output"
           )
           const data = { path, projectIdx, queryIdx }
           appData.setQueryDataPath(data)
+          this.setQueryState(false, false, response.data)
         } catch (error) {
+          this.setQueryState(false, true, error.message)
           console.log(error)
         }
       },
