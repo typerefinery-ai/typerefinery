@@ -49,12 +49,4 @@ describe("App Menu Items", () => {
     cy.get("#profile-button").click()
     cy.get(".p-dialog-header-close-icon").click()
   })
-  it("Has as API button", () => {
-    cy.get("#fastapi").click()
-    cy.get(".p-dialog-header-close-icon").click()
-  })
-  it("Has as DB button", () => {
-    cy.get("#typedb").click()
-    cy.get(".p-dialog-header-close-icon").click()
-  })
 })

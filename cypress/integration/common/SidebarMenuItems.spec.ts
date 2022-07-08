@@ -6,7 +6,7 @@ describe("Projecty Tab", () => {
     cy.get(".login").should("be.visible").find(".submit-button").click()
   })
   it("Has Setting Button", () => {
-    cy.get(".sidebar-fixed-items").eq(2).click()
+    cy.get(".sidebar-fixed-items").eq(1).click()
     cy.contains("General").click()
     cy.contains("Profile").click()
     cy.get(".user_info-name").contains("TypeRefinery User")
@@ -15,6 +15,6 @@ describe("Projecty Tab", () => {
     cy.get(".p-dialog-header-icon").click()
   })
   it("Has Logout Button", () => {
-    cy.get(".sidebar-fixed-items").eq(3).click()
+    cy.get(".sidebar-fixed-items").eq(2).click()
   })
 })
