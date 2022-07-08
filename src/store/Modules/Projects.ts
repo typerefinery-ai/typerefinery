@@ -270,7 +270,7 @@ export default class AppData extends VuexModule {
     const appData = JSON.parse(JSON.stringify(this.list))
     appData[0].list[projectIdx].queries.list[
       queryIdx
-    ].dataPath = `services/fastapi${path}`
+    ].dataPath = `services/fastapi/${path}`
     this.list = appData
   }
 
@@ -392,7 +392,6 @@ export default class AppData extends VuexModule {
     try {
       const { projectIdx, queryIdx } = indexes
       const query = this.query(projectIdx, queryIdx)
-      console.log(query)
       const payload = {
         dbhost: query.connection.host,
         dbport: query.connection.port,
@@ -403,7 +402,9 @@ export default class AppData extends VuexModule {
         returnoutput: "log",
       }
       const response = await axios.post(query.endpoint, payload)
-      const path = response.headers["output.url"].replace("/output", ".output")
+      console.log(response, "store")
+      const path = response.headers["output"].replace(/\\/g, "/")
+      console.log(path)
       const data = { path, projectIdx, queryIdx }
       this.setQueryDataPath(data)
       return { data: response.data, type: "data" }

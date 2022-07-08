@@ -11,13 +11,13 @@
     <div id="data_view_cm" class="shadow-3">
       <codemirror
         :model-value="data"
-        placeholder="Code goes here..."
+        placeholder="NO DATA"
         :style="{ height: '60vh' }"
         :autofocus="true"
         :indent-with-tab="true"
-        :tab-zize="2"
+        :tab-size="2"
         :extensions="extensions"
-        @change="handleChange"
+        @change="handleData"
       />
     </div>
   </div>
@@ -26,7 +26,6 @@
 <script>
   import axios from "axios"
   import { Codemirror } from "vue-codemirror"
-  import GRAPH_DATA from "@/components/Transformer/D3/miserables.json"
   import Button from "primevue/button"
   import { javascript } from "@codemirror/lang-javascript"
   import { oneDark } from "@codemirror/theme-one-dark"
@@ -35,7 +34,6 @@
   import { getModule } from "vuex-module-decorators"
   const appSettings = getModule(AppSettings)
   const appData = getModule(AppData)
-  const data = JSON.stringify(GRAPH_DATA, null, "\t")
 
   export default {
     name: "DataView",
@@ -46,7 +44,7 @@
     },
     data() {
       return {
-        data: data,
+        data: "",
         loading: false,
       }
     },
@@ -59,19 +57,24 @@
       viewResized() {
         return appSettings.viewResized
       },
+      path() {
+        const { projectIdx, queryIdx } = this.tab
+        return appData.query(projectIdx, queryIdx).dataPath
+      },
     },
     watch: {
       viewResized() {
         setTimeout(() => this.setEditorHeight(), 0)
       },
+      path() {
+        this.getData()
+      },
     },
     mounted() {
       setTimeout(() => this.setEditorHeight(), 0)
+      this.getData()
     },
     methods: {
-      handleChange(data) {
-        this.data = data
-      },
       setEditorHeight() {
         if (this.view !== "D") return
         const wrapper = this.$refs.datawrapper
@@ -87,9 +90,19 @@
         const response = await appData.runAlgorithm(this.tab)
         if (response.type == "data") {
           this.loading = false
+          this.getData()
         } else {
           this.loading = false
         }
+      },
+      async getData() {
+        if (this.path) {
+          const response = await axios.get(this.path)
+          this.data = JSON.stringify(response.data, null, "\t")
+        }
+      },
+      handleData(data) {
+        this.data = data
       },
     },
   }

@@ -124,7 +124,7 @@
           :style="{ height: '20vh' }"
           :autofocus="true"
           :indent-with-tab="true"
-          :tab-zize="2"
+          :tab-size="2"
           :extensions="extensions"
         />
 
