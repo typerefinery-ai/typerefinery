@@ -1,44 +1,51 @@
 <template>
   <div ref="datawrapper" class="data-view-wrapper h-full">
     <div class="refresh-data">
-      <Button label="Refresh" icon="pi pi-refresh" />
+      <Button
+        :label="$t('components.data.refresh')"
+        :icon="`pi ${loading ? 'pi-spin pi-refresh' : 'pi-refresh'}`"
+        :style="{ 'pointer-events': loading ? 'none' : 'auto' }"
+        @click="handleRequest"
+      />
     </div>
     <div id="data_view_cm" class="shadow-3">
       <codemirror
         :model-value="data"
-        placeholder="Code goes here..."
+        placeholder="NO DATA"
         :style="{ height: '60vh' }"
         :autofocus="true"
         :indent-with-tab="true"
-        :tab-zize="2"
+        :tab-size="2"
         :extensions="extensions"
-        @change="handleChange"
+        @change="handleData"
       />
     </div>
   </div>
 </template>
 
 <script>
+  import axios from "axios"
   import { Codemirror } from "vue-codemirror"
-  import GRAPH_DATA from "@/components/Transformer/D3/miserables.json"
   import Button from "primevue/button"
   import { javascript } from "@codemirror/lang-javascript"
   import { oneDark } from "@codemirror/theme-one-dark"
   import AppSettings from "@/store/Modules/AppSettings"
+  import AppData from "@/store/Modules/Projects"
   import { getModule } from "vuex-module-decorators"
   const appSettings = getModule(AppSettings)
-  // FIXME: add new line character to it
-  const data = JSON.stringify(GRAPH_DATA)
+  const appData = getModule(AppData)
 
   export default {
     name: "DataView",
     components: { Codemirror, Button },
     props: {
+      tab: { type: Object, required: true },
       view: { type: String, required: true },
     },
     data() {
       return {
-        data: data,
+        data: "",
+        loading: false,
       }
     },
     computed: {
@@ -50,19 +57,24 @@
       viewResized() {
         return appSettings.viewResized
       },
+      path() {
+        const { projectIdx, queryIdx } = this.tab
+        return appData.query(projectIdx, queryIdx).dataPath
+      },
     },
     watch: {
       viewResized() {
         setTimeout(() => this.setEditorHeight(), 0)
       },
+      path() {
+        this.getData()
+      },
     },
     mounted() {
       setTimeout(() => this.setEditorHeight(), 0)
+      this.getData()
     },
     methods: {
-      handleChange(data) {
-        this.data = data
-      },
       setEditorHeight() {
         if (this.view !== "D") return
         const wrapper = this.$refs.datawrapper
@@ -72,6 +84,25 @@
           editor.style.height = wrapper.clientHeight - 75 + "px"
           editor.style.setProperty("display", "flex", "important")
         }
+      },
+      async handleRequest() {
+        this.loading = true
+        const response = await appData.runAlgorithm(this.tab)
+        if (response.type == "data") {
+          this.loading = false
+          this.getData()
+        } else {
+          this.loading = false
+        }
+      },
+      async getData() {
+        if (this.path) {
+          const response = await axios.get(this.path)
+          this.data = JSON.stringify(response.data, null, "\t")
+        }
+      },
+      handleData(data) {
+        this.data = data
       },
     },
   }

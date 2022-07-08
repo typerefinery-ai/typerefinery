@@ -149,9 +149,10 @@
                   "label": "query 1",
                   "icon": "query",
                   "description": "sample query",
+                  "endpoint": "http://localhost:8000/algorithm",
                   "database": "typerefinery",
                   "query": "match $a isa log, has logName 'L1';\n$b isa event, has eventName $c;\n$d (owner: $a, item: $b) isa trace,\nhas traceId $e, has index $f;\n offset 0; limit 100;",
-                  "dataPath": "services/fastapi/algorithm/req-1656770367.081393.82713.py.output",
+                  "dataPath": "",
                   "connection": {
                     "id": "connection1",
                     "label": "Connection 1",
@@ -166,7 +167,8 @@
                     "icon": "transformer",
                     "scope": "local",
                     "description": "",
-                    "code": "var svg = d3.select(wrapper).append(\"svg\"),\n\t\t\t\twidth = +svg.attr(\"width\") || 960,\n\t\t\t\theight = +svg.attr(\"height\") || 500\n\t\t\t  svg.attr(\"width\", width).attr(\"height\", height)\n\t\t\t  var color = d3.scaleOrdinal(d3.schemeCategory20)\n\t\t\t  var simulation = d3\n\t\t\t\t.forceSimulation()\n\t\t\t\t.force(\n\t\t\t\t  \"link\",\n\t\t\t\t  d3.forceLink().id(function (d) {\n\t\t\t\t\treturn d.label\n\t\t\t\t  })\n\t\t\t\t)\n\t\t\t\t.force(\"charge\", d3.forceManyBody())\n\t\t\t\t.force(\"center\", d3.forceCenter(width / 2, height / 2))\n\t\t\t  d3.json(\n\t\t\t\t\"/src/components/Transformer/D3/miserables.json\",\n\t\t\t\tfunction (error, graph) {\n\t\t\t\t  if (error) throw error\n\t\t\t\t  var link = svg\n\t\t\t\t\t.append(\"g\")\n\t\t\t\t\t.attr(\"class\", \"links\")\n\t\t\t\t\t.selectAll(\"line\")\n\t\t\t\t\t.data(graph.links)\n\t\t\t\t\t.enter()\n\t\t\t\t\t.append(\"line\")\n\t\t\t\t\t.attr(\"stroke-width\", function (d) {\n\t\t\t\t\t  return Math.sqrt(d.value)\n\t\t\t\t\t})\n\t\t\t\t\t.attr(\"stroke\", \"#999\")\n\t\t\t\t  var node = svg\n\t\t\t\t\t.append(\"g\")\n\t\t\t\t\t.attr(\"class\", \"nodes\")\n\t\t\t\t\t.selectAll(\"circle\")\n\t\t\t\t\t.data(graph.nodes)\n\t\t\t\t\t.enter()\n\t\t\t\t\t.append(\"circle\")\n\t\t\t\t\t.attr(\"r\", 5)\n\t\t\t\t\t.attr(\"fill\", function (d) {\n\t\t\t\t\t  return color(d.group)\n\t\t\t\t\t})\n\t\t\t\t\t.call(\n\t\t\t\t\t  d3\n\t\t\t\t\t\t.drag()\n\t\t\t\t\t\t.on(\"start\", dragstarted)\n\t\t\t\t\t\t.on(\"drag\", dragged)\n\t\t\t\t\t\t.on(\"end\", dragended)\n\t\t\t\t\t)\n\t\t\t\t  node.append(\"title\").text(function (d) {\n\t\t\t\t\treturn d.label\n\t\t\t\t  })\n\t\t\t\t  node.on(\"click\", (e) => {\n\t\t\t\t\tself.nodeData = {\n\t\t\t\t\t  label: e.label,\n\t\t\t\t\t  index: e.index,\n\t\t\t\t\t}\n\t\t\t\t  })\n\t\t\t\t  simulation.nodes(graph.nodes).on(\"tick\", ticked)\n\t\t\t\t  simulation.force(\"link\").links(graph.links)\n\t\t\t\t  function ticked() {\n\t\t\t\t\tlink\n\t\t\t\t\t  .attr(\"x1\", function (d) {\n\t\t\t\t\t\treturn d.source.x\n\t\t\t\t\t  })\n\t\t\t\t\t  .attr(\"y1\", function (d) {\n\t\t\t\t\t\treturn d.source.y\n\t\t\t\t\t  })\n\t\t\t\t\t  .attr(\"x2\", function (d) {\n\t\t\t\t\t\treturn d.target.x\n\t\t\t\t\t  })\n\t\t\t\t\t  .attr(\"y2\", function (d) {\n\t\t\t\t\t\treturn d.target.y\n\t\t\t\t\t  })\n\t\t\t\t\tnode\n\t\t\t\t\t  .attr(\"cx\", function (d) {\n\t\t\t\t\t\treturn d.x\n\t\t\t\t\t  })\n\t\t\t\t\t  .attr(\"cy\", function (d) {\n\t\t\t\t\t\treturn d.y\n\t\t\t\t\t  })\n\t\t\t\t  }\n\t\t\t\t}\n\t\t\t  )\n\t\t\t  function dragstarted(d) {\n\t\t\t\tif (!d3.event.active) simulation.alphaTarget(0.3).restart()\n\t\t\t\td.fx = d.x\n\t\t\t\td.fy = d.y\n\t\t\t  }\n\t\t\t  function dragged(d) {\n\t\t\t\td.fx = d3.event.x\n\t\t\t\td.fy = d3.event.y\n\t\t\t  }\n\t\t\t  function dragended(d) {\n\t\t\t\tif (!d3.event.active) simulation.alphaTarget(0)\n\t\t\t\td.fx = null\n\t\t\t\td.fy = null\n\t\t\t  }",
+                    "dependencies": ["d3"],
+                    "code": "var svg = d3.select(wrapper).append(\"svg\"),\n    width = +svg.attr(\"width\") || 960,\n    height = +svg.attr(\"height\") || 500\nsvg.attr(\"width\", width).attr(\"height\", height)\nvar color = d3.scaleOrdinal(d3.schemeCategory20)\nvar simulation = d3\n    .forceSimulation()\n    .force(\n        \"link\",\n        d3.forceLink().id(function(d) {\n            return d.label\n        })\n    )\n    .force(\"charge\", d3.forceManyBody())\n    .force(\"center\", d3.forceCenter(width / 2, height / 2))\nd3.json(\n    \"/src/components/Transformer/D3/miserables.json\",\n    function(error, graph) {\n        if (error) throw error\n        var link = svg\n            .append(\"g\")\n            .attr(\"class\", \"links\")\n            .selectAll(\"line\")\n            .data(graph.links)\n            .enter()\n            .append(\"line\")\n            .attr(\"stroke-width\", function(d) {\n                return Math.sqrt(d.value)\n            })\n            .attr(\"stroke\", \"#999\")\n        var node = svg\n            .append(\"g\")\n            .attr(\"class\", \"nodes\")\n            .selectAll(\"circle\")\n            .data(graph.nodes)\n            .enter()\n            .append(\"circle\")\n            .attr(\"r\", 5)\n            .attr(\"fill\", function(d) {\n                return color(d.group)\n            })\n            .call(\n                d3\n                .drag()\n                .on(\"start\", dragstarted)\n                .on(\"drag\", dragged)\n                .on(\"end\", dragended)\n            )\n        node.append(\"title\").text(function(d) {\n            return d.label\n        })\n        node.on(\"click\", (e) => {\n            const data = {\n                label: e.label,\n                index: e.index,\n            }\n            self.setNodeData(data)\n        })\n        simulation.nodes(graph.nodes).on(\"tick\", ticked)\n        simulation.force(\"link\").links(graph.links)\n\n        function ticked() {\n            link\n                .attr(\"x1\", function(d) {\n                    return d.source.x\n                })\n                .attr(\"y1\", function(d) {\n                    return d.source.y\n                })\n                .attr(\"x2\", function(d) {\n                    return d.target.x\n                })\n                .attr(\"y2\", function(d) {\n                    return d.target.y\n                })\n            node\n                .attr(\"cx\", function(d) {\n                    return d.x\n                })\n                .attr(\"cy\", function(d) {\n                    return d.y\n                })\n        }\n    }\n)\n\nfunction dragstarted(d) {\n    if (!d3.event.active) simulation.alphaTarget(0.3).restart()\n    d.fx = d.x\n    d.fy = d.y\n}\n\nfunction dragged(d) {\n    d.fx = d3.event.x\n    d.fy = d3.event.y\n}\n\nfunction dragended(d) {\n    if (!d3.event.active) simulation.alphaTarget(0)\n    d.fx = null\n    d.fy = null\n}",
                     "error": "",
                     "logs": []
                   },
@@ -177,6 +179,7 @@
                     "icon": "algorithm",
                     "scope": "local",
                     "description": "",
+                    "dependencies": "",
                     "code": "from typedb.client import *\nfrom loguru import logger as Logger\nfrom posixpath import basename\nimport json\nimport copy\nimport os\nimport sys\nimport argparse\nfrom datetime import datetime\ngquery = \"match $a isa log, has logName 'L1'; \"\ngquery += \"$b isa event, has eventName $c;\"\ngquery += \" $d (owner: $a, item: $b) isa trace, \"\ngquery += \" has traceId $t, has index $f; offset 0; limit 100;\"#  get; \"\ngroup_raw = [{\n    \"leaves\": [\n                    0\n                ],\n                \"colour_list\": \"Greys\",\n                \"level\": 7,\n                \"label\": \"hidden\"\n}]\n# function to collect all of the data out of the iterator\n# with read transaction object to use asRemote mode\ndef collect_answers(answer_iterator, r_tx, logger: Logger):\n    logger.info(f'into collect answers, iterator -> {answer_iterator}')\n    res = []\n    layers = []\n    layer = []\n    for answer in answer_iterator:\n        dict_answer = answer.map()\n        #logger.info(f'dict answer is {dict_answer}')\n        for key, thing in dict_answer.items():\n            logger.info(f'key, things is {key}, {thing}')\n            # pull entity data\n            if thing.is_entity():\n                ent = {}\n                ent['type'] = 'entity'\n                ent['symbol'] = key\n                ent['G_id'] = thing.get_iid()\n                ent['G_name'] = thing.get_type().get_label().name()\n                logger.info((f'entity name is {ent[\"G_name\"]}'))\n                logger.info((f'thing value is {thing}'))\n                att_obj = thing.as_remote(r_tx).get_has()\n                att = []\n                for a in att_obj:\n                    att.append(a.get_iid())\n                ent['has'] = att\n                res.append(ent)\n                layer.append(ent)\n                logger.info(f'ent -> {ent}')\n            # pull attribute data\n            elif thing.is_attribute():\n                att = {}\n                att['type'] = 'attribute'\n                att['symbol'] = key\n                att['G_id'] = thing.get_iid()\n                att['G_name'] = thing.get_type().get_label().name()\n                att['value'] = thing.get_value()\n                att['datatype'] = thing.get_type().get_value_type().name\n                att_obj = thing.as_remote(r_tx).get_has()\n                attrib = []\n                for a in att_obj:\n                    attrib.append(a.get_iid())\n                att['has'] = attrib\n                res.append(att)\n                layer.append(att)\n                logger.info(f'att -> {att}')\n            # pull relation data\n            elif thing.is_relation():\n                rel = {}\n                rel['type'] = 'relation'\n                rel['symbol'] = key\n                rel['G_id'] = thing.get_iid()\n                rel['G_name'] = thing.get_type().get_label().name()\n                att_obj = thing.as_remote(r_tx).get_has()\n                att = []\n                for a in att_obj:\n                    att.append(a.get_iid())\n                rel['has'] = att\n                links = thing.as_remote(r_tx).get_players_by_role_type()\n                logger.info(f' links are -> {links}')\n                edges = {}\n                for edge_key, edge_thing in links.items():\n                    logger.info(f' edge key is -> {edge_key}')\n                    logger.info(f' edge_thing is -> {list(edge_thing)}')\n                    edges[edge_key.get_label().name()] = [e.get_iid() for e in list(edge_thing)]\n                rel['edges'] = edges\n                res.append(rel)\n                layer.append(rel)\n                logger.info(f'rel -> {rel}')\n            # else log out error condition\n            else:\n                logger.info(f'Error key is {key}, thing is {thing}')\n        layers.append(layer)\n    return res\n# function to filter the links, so that there are none pointing to data not included\ndef filter_links(reduced_at, reduced_en, re):\n    #first build list of all node id's\n    att_list = [e['G_id'] for e in reduced_at]\n    ent_list = [e['G_id'] for e in reduced_en]\n    rel_list = [e['G_id'] for e in re]\n    node_list = att_list + ent_list + rel_list\n    #check each input list to delete those not in node_list\n    for item in reduced_en:\n        for link in item['has']:\n            if link not in node_list:\n                item['has'].remove(link)\n    for item in re:\n        for link in item['has']:\n            if link not in node_list:\n                item['has'].remove(link)\n    return reduced_at, reduced_en, re\n# function to convert the list of results into nodes and edges\ndef convert_res_to_graph(res, logger: Logger):\n    edges = []\n    nodes = []\n    en = [e for e in res if e['type'] == 'entity']\n    at = [e for e in res if e['type'] == 'attribute']\n    re = [e for e in res if e['type'] == 'relation']\n    # remove duplicates from attributes\n    reduced_at = [v for i,v in enumerate(at) if v not in at[i+1:] ]\n    reduced_en = [v for i,v in enumerate(en) if v not in en[i+1:] ]\n    # find number of types\n    G_types = {}\n    G_types['entity'] = list(set([v['G_name'] for v in reduced_en]))\n    G_types['attribute'] = list(set([v['G_name'] for v in reduced_at]))\n    G_types['relation'] = list(set([v['G_name'] for v in re]))\n    #filter out has links due to variables given thing, or attributes not expressed in the original query\n    reduced_at, reduced_en, re = filter_links(reduced_at, reduced_en, re)\n    # build edges list for attributes\n    for e in reduced_en:\n        own = e['has']\n        source = e['G_id']\n        name = 'has'\n        for o in own:\n            edge = {}\n            edge['G_target'] = o\n            edge['role'] = name\n            edge['G_source'] = source\n            edges.append(edge)\n    for a in reduced_at:\n        own = a['has']\n        source = a['G_id']\n        name = 'has'\n        for o in own:\n            edge = {}\n            edge['G_target'] = o\n            edge['role'] = name\n            edge['G_source'] = source\n            edges.append(edge)\n    for r in re:\n        own = r['has']\n        source = r['G_id']\n        name = 'has'\n        for o in own:\n            edge = {}\n            edge['G_target'] = o\n            edge['role'] = name\n            edge['G_source'] = source\n            edges.append(edge)\n    # add edges from relations\n    for r in re:\n        source = r['G_id']\n        edge_dict = r['edges']\n        for k, e in edge_dict.items():\n            edge = {}\n            edge['G_target'] = e[0]\n            edge['role'] = k\n            edge['G_source'] = source\n            edges.append(edge)\n    # add all nodes together\n    nodes = reduced_en + reduced_at + re\n    for node in nodes:\n        node['dtype'] = 'actual'\n    return nodes, edges, G_types\ndef get_node_id(nodes, G_id):\n    for index, element in enumerate(nodes):\n        if element['G_id'] == G_id:\n            return index;\ndef convert_res_to_cola(nodes, edges, G_types, logger: Logger):\n    # convert edges to id\n    for edge in edges:\n        edge['target'] = get_node_id(nodes, edge['G_target'])\n        edge['source'] = get_node_id(nodes, edge['G_source'])\n    for index, element in enumerate(nodes):\n        element['id'] = index\n    # find actual attributes in edges\n    att_list = []\n    for index, node in enumerate(nodes):\n        if node['type'] == 'attribute':\n            att_list.append(index)\n    for edge in edges:\n        edge['is_act_Attr'] = False\n        for att in att_list:\n            if edge['target'] == att or edge['source'] == att:\n                edge['is_act_Attr'] = True\n                break\n    temp_edges = copy.deepcopy(edges)\n    for t_edge in temp_edges:\n        target_node = nodes[t_edge['target']]\n        t_edge['target_name'] = target_node['G_name']\n        source_node = nodes[t_edge['source']]\n        t_edge['source_name'] = source_node['G_name']\n        if t_edge['role'] == 'has' or source_node['type'] == 'relation':\n            t_edge['direction'] = 'down'\n        else:\n            t_edge['direction'] = 'up'\n        t_edge.pop('target')\n        t_edge.pop('source')\n        t_edge.pop('G_target')\n        t_edge.pop('G_source')\n        t_edge.pop('is_act_Attr')\n    myUniqueSet = [dict(s) for s in set(frozenset(myObject.items()) for myObject in temp_edges)]\n    logger.info(f\"myUniqueSet:, {myUniqueSet}\")\n    G_types['schema'] = myUniqueSet\n    logger.info('==========================================================================================')\n    logger.info('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')\n    logger.info(f'g-types is -> {G_types}')\n    logger.info('==========================================================================================')\n    logger.info('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')\n    logger.info(f'nodes is ->  {nodes}')\n    logger.info('==========================================================================================')\n    logger.info('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')\n    logger.info(f'edges is -> {edges}')\n    logger.info('==========================================================================================')\n    logger.info('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')\n    colaGraph = {}\n    basic = {}\n    basic['nodes'] = nodes\n    basic['links'] = edges\n    basic['G_types'] = G_types\n    basic['groups'] = []\n    basic['constraints'] = []\n    colaGraph['basic'] = basic\n    colaGraph['grouped'] = {}\n    return colaGraph\n@Logger.catch\ndef get_data(dbhost, dbport, dbdatabase, dbquery, logger: Logger):\n    typeDBConnect = f'{dbhost}:{dbport}'\n    with TypeDB.core_client(typeDBConnect) as client:\n        with client.session(dbdatabase, SessionType.DATA) as session:\n            with session.transaction(TransactionType.READ) as read_transaction:\n                answer_iterator = read_transaction.query().match(dbquery)\n                res = collect_answers(answer_iterator, read_transaction, logger)\n                nodes, edges, G_types = convert_res_to_graph(res, logger)\n                colaGraph = convert_res_to_cola(nodes, edges, G_types, logger)\n    ## save file for reference\n    # with open(\"g_to_webcola.json\", \"w\") as outfile:\n    #     json.dump(colaGraph, outfile)\n    return colaGraph\n@Logger.catch\ndef main(dbhost, dbport, dbdatabase, dbquery, outputfile, logger: Logger):\n  # setup logger for execution\n  colaGraph = get_data(dbhost, dbport, dbdatabase, dbquery, logger)\n  basic = colaGraph['basic']\n  with open(outputfile, \"w\") as outfile:\n      json.dump(colaGraph, outfile)\n  logger.info('================ Schema ==================')\n  logger.info(f\"{basic['G_types']}\")\n",
                     "error": "",
                     "logs": [""]
@@ -188,6 +191,7 @@
                   "label": "query 2",
                   "icon": "query",
                   "description": "sample query",
+                  "endpoint": "http://localhost:8000/algorithm",
                   "query": "match $a isa log, has logName 'L1';\n$b isa event, has eventName $c;\n$d (owner: $a, item: $b) isa trace,\nhas traceId $e, has index $f;\n offset 0; limit 100;",
                   "dataPath": "",
                   "connection": {
@@ -204,6 +208,7 @@
                     "icon": "transformer",
                     "scope": "local",
                     "description": "",
+                    "dependencies": [],
                     "code": "",
                     "error": "",
                     "logs": []
@@ -215,6 +220,7 @@
                     "icon": "algorithm",
                     "scope": "local",
                     "description": "",
+                    "dependencies": "",
                     "code": "",
                     "error": "",
                     "logs": [""]
@@ -234,6 +240,7 @@
                   "icon": "transformer",
                   "scope": "local",
                   "description": "",
+                  "dependencies": [],
                   "code": "var svg = d3.select(wrapper).append(\"svg\"),\n\t\t\t\twidth = +svg.attr(\"width\") || 960,\n\t\t\t\theight = +svg.attr(\"height\") || 500\n\t\t\t  svg.attr(\"width\", width).attr(\"height\", height)\n\t\t\t  var color = d3.scaleOrdinal(d3.schemeCategory20)\n\t\t\t  var simulation = d3\n\t\t\t\t.forceSimulation()\n\t\t\t\t.force(\n\t\t\t\t  \"link\",\n\t\t\t\t  d3.forceLink().id(function (d) {\n\t\t\t\t\treturn d.label\n\t\t\t\t  })\n\t\t\t\t)\n\t\t\t\t.force(\"charge\", d3.forceManyBody())\n\t\t\t\t.force(\"center\", d3.forceCenter(width / 2, height / 2))\n\t\t\t  d3.json(\n\t\t\t\t\"/src/components/Transformer/D3/miserables.json\",\n\t\t\t\tfunction (error, graph) {\n\t\t\t\t  if (error) throw error\n\t\t\t\t  var link = svg\n\t\t\t\t\t.append(\"g\")\n\t\t\t\t\t.attr(\"class\", \"links\")\n\t\t\t\t\t.selectAll(\"line\")\n\t\t\t\t\t.data(graph.links)\n\t\t\t\t\t.enter()\n\t\t\t\t\t.append(\"line\")\n\t\t\t\t\t.attr(\"stroke-width\", function (d) {\n\t\t\t\t\t  return Math.sqrt(d.value)\n\t\t\t\t\t})\n\t\t\t\t\t.attr(\"stroke\", \"#999\")\n\t\t\t\t  var node = svg\n\t\t\t\t\t.append(\"g\")\n\t\t\t\t\t.attr(\"class\", \"nodes\")\n\t\t\t\t\t.selectAll(\"circle\")\n\t\t\t\t\t.data(graph.nodes)\n\t\t\t\t\t.enter()\n\t\t\t\t\t.append(\"circle\")\n\t\t\t\t\t.attr(\"r\", 5)\n\t\t\t\t\t.attr(\"fill\", function (d) {\n\t\t\t\t\t  return color(d.group)\n\t\t\t\t\t})\n\t\t\t\t\t.call(\n\t\t\t\t\t  d3\n\t\t\t\t\t\t.drag()\n\t\t\t\t\t\t.on(\"start\", dragstarted)\n\t\t\t\t\t\t.on(\"drag\", dragged)\n\t\t\t\t\t\t.on(\"end\", dragended)\n\t\t\t\t\t)\n\t\t\t\t  node.append(\"title\").text(function (d) {\n\t\t\t\t\treturn d.label\n\t\t\t\t  })\n\t\t\t\t  node.on(\"click\", (e) => {\n\t\t\t\t\tself.nodeData = {\n\t\t\t\t\t  label: e.label,\n\t\t\t\t\t  index: e.index,\n\t\t\t\t\t}\n\t\t\t\t  })\n\t\t\t\t  simulation.nodes(graph.nodes).on(\"tick\", ticked)\n\t\t\t\t  simulation.force(\"link\").links(graph.links)\n\t\t\t\t  function ticked() {\n\t\t\t\t\tlink\n\t\t\t\t\t  .attr(\"x1\", function (d) {\n\t\t\t\t\t\treturn d.source.x\n\t\t\t\t\t  })\n\t\t\t\t\t  .attr(\"y1\", function (d) {\n\t\t\t\t\t\treturn d.source.y\n\t\t\t\t\t  })\n\t\t\t\t\t  .attr(\"x2\", function (d) {\n\t\t\t\t\t\treturn d.target.x\n\t\t\t\t\t  })\n\t\t\t\t\t  .attr(\"y2\", function (d) {\n\t\t\t\t\t\treturn d.target.y\n\t\t\t\t\t  })\n\t\t\t\t\tnode\n\t\t\t\t\t  .attr(\"cx\", function (d) {\n\t\t\t\t\t\treturn d.x\n\t\t\t\t\t  })\n\t\t\t\t\t  .attr(\"cy\", function (d) {\n\t\t\t\t\t\treturn d.y\n\t\t\t\t\t  })\n\t\t\t\t  }\n\t\t\t\t}\n\t\t\t  )\n\t\t\t  function dragstarted(d) {\n\t\t\t\tif (!d3.event.active) simulation.alphaTarget(0.3).restart()\n\t\t\t\td.fx = d.x\n\t\t\t\td.fy = d.y\n\t\t\t  }\n\t\t\t  function dragged(d) {\n\t\t\t\td.fx = d3.event.x\n\t\t\t\td.fy = d3.event.y\n\t\t\t  }\n\t\t\t  function dragended(d) {\n\t\t\t\tif (!d3.event.active) simulation.alphaTarget(0)\n\t\t\t\td.fx = null\n\t\t\t\td.fy = null\n\t\t\t  }",
                   "error": "",
                   "logs": [""]
@@ -245,6 +252,7 @@
                   "icon": "transformer",
                   "scope": "local",
                   "description": "",
+                  "dependencies": [],
                   "code": "",
                   "error": "",
                   "logs": [""]
@@ -263,6 +271,7 @@
                   "icon": "algorithm",
                   "scope": "local",
                   "description": "",
+                  "dependencies": "",
                   "code": "",
                   "error": "",
                   "logs": [""]
@@ -274,6 +283,7 @@
                   "icon": "algorithm",
                   "scope": "local",
                   "description": "",
+                  "dependencies": "",
                   "code": "",
                   "error": "",
                   "logs": [""]
@@ -324,6 +334,7 @@
                   "label": "query 3",
                   "icon": "query",
                   "description": "",
+                  "endpoint": "http://localhost:8000/algorithm",
                   "query": "",
                   "connection": {
                     "id": "connection1",
@@ -339,6 +350,7 @@
                     "icon": "transformer",
                     "scope": "local",
                     "description": "",
+                    "dependencies": [],
                     "code": "",
                     "error": "",
                     "logs": [""]
@@ -350,6 +362,7 @@
                     "icon": "algorithm",
                     "scope": "local",
                     "description": "",
+                    "dependencies": "",
                     "code": "",
                     "error": "",
                     "logs": [""]
@@ -361,6 +374,7 @@
                   "label": "query 4",
                   "icon": "query",
                   "description": "",
+                  "endpoint": "http://localhost:8000/algorithm",
                   "query": "",
                   "connection": {
                     "id": "connection1",
@@ -376,6 +390,7 @@
                     "icon": "transformer",
                     "scope": "local",
                     "description": "",
+                    "dependencies": [],
                     "code": "",
                     "error": "",
                     "logs": [""]
@@ -387,6 +402,7 @@
                     "icon": "algorithm",
                     "scope": "local",
                     "description": "",
+                    "dependencies": "",
                     "code": "",
                     "error": "",
                     "logs": [""]
@@ -405,6 +421,7 @@
                   "icon": "transformer",
                   "scope": "local",
                   "description": "",
+                  "dependencies": [],
                   "code": "",
                   "error": "",
                   "logs": [""]
@@ -416,6 +433,7 @@
                   "icon": "transformer",
                   "scope": "local",
                   "description": "",
+                  "dependencies": [],
                   "code": "",
                   "error": "",
                   "logs": [""]
@@ -432,6 +450,7 @@
                   "label": "algorithm 1",
                   "icon": "algorithm",
                   "description": "",
+                  "dependencies": "",
                   "code": "",
                   "error": "",
                   "logs": [""]
@@ -442,6 +461,7 @@
                   "label": "algorithm 2",
                   "icon": "algorithm",
                   "description": "",
+                  "dependencies": "",
                   "code": "",
                   "error": "",
                   "logs": [""]
@@ -492,6 +512,7 @@
             "icon": "transformer",
             "scope": "global",
             "description": "",
+            "dependencies": [],
             "code": "",
             "error": "",
             "logs": [""]
@@ -503,6 +524,7 @@
             "icon": "transformer",
             "scope": "global",
             "description": "",
+            "dependencies": [],
             "code": "",
             "error": "",
             "logs": [""]
@@ -522,6 +544,7 @@
             "icon": "algorithm",
             "scope": "global",
             "description": "",
+            "dependencies": "",
             "code": "algorithm 1",
             "error": "",
             "logs": [""]
@@ -533,6 +556,7 @@
             "icon": "algorithm",
             "scope": "global",
             "description": "",
+            "dependencies": "",
             "code": "algorithm 2",
             "error": "",
             "logs": [""]

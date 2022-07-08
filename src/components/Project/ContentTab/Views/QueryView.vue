@@ -22,7 +22,7 @@
               :style="{ height: '320px' }"
               :autofocus="true"
               :indent-with-tab="true"
-              :tab-zize="2"
+              :tab-size="2"
               :extensions="extensions"
               @change="handleQuery"
             />

@@ -22,18 +22,17 @@
     <div id="sidebar-draggable" class="sidebar-draggable">
       <Tree
         class="h-full tree-wrapper"
+        :meta-key-selection="false"
         :value="nodesData"
         :filter="true"
         filter-mode="lenient"
         :expanded-keys="expandedKeys"
         scroll-height="75vh"
-      >
-        <template #default="slotProps">
-          <div @dblclick="selectNode(slotProps.node)">
-            {{ slotProps.node.label }}
-          </div>
-        </template>
-      </Tree>
+        selection-mode="multiple"
+        @node-select="onNodeSelect"
+        @node-unselect="onNodeUnselect"
+        @dblclick="handleNodeSelection"
+      />
     </div>
   </div>
 </template>
@@ -55,6 +54,7 @@
     components: { LogoutIcon, FileIcon, Tree, TuneIcon },
     data() {
       return {
+        selectedNode: null,
         expandedKeys: {},
       }
     },
@@ -144,7 +144,7 @@
                         ),
                       },
                     ]
-                  : [],
+                  : null,
             })),
           }
         })
@@ -160,7 +160,7 @@
         localStorage.clear()
         this.$router.push({ name: "Login" })
       },
-      selectNode(data) {
+      handleNodes(data) {
         let path
         switch (data.type) {
           case "query":
@@ -215,6 +215,20 @@
         if (isNew) {
           appData.toggleTreeNode()
           appData.setSelectedTreeNodes(queryData)
+        }
+      },
+      onNodeSelect(node) {
+        this.selectedNode = node
+      },
+      onNodeUnselect() {
+        this.selectedNode = null
+      },
+      handleNodeSelection(e) {
+        const node = e.target.getAttribute("role")
+        const parent = e.target.parentElement.getAttribute("role")
+        const isTreeNode = node == "treeitem" || parent == "treeitem"
+        if (isTreeNode && !this.selectedNode.children) {
+          this.handleNodes(this.selectedNode)
         }
       },
     },

@@ -151,7 +151,7 @@
           :style="{ height: '20vh' }"
           :autofocus="true"
           :indent-with-tab="true"
-          :tab-zize="2"
+          :tab-size="2"
           :extensions="extensions"
         />
       </div>
@@ -326,8 +326,21 @@
       querycloseDialog() {
         this.$emit("close")
       },
-      handleConnection(el) {
-        this.connectiondata = el.value.key
+      handleConnection({ value }) {
+        const projectIdx = appData.allProjects.findIndex(
+          (el) => el.id == this.projectselected
+        )
+        let connection
+        if (value.scope == "local") {
+          connection = appData
+            .localConnections(projectIdx)
+            .find((el) => el.id == value.key)
+        } else {
+          connection = appData.globalConnections.find((el) => {
+            return el.id == value.key
+          })
+        }
+        this.connectiondata = connection
       },
       handleTransformer(el) {
         this.setTransformerCode(el.value)
@@ -387,6 +400,8 @@
             transformer: this.transformdata,
             algorithm: this.algorithmdata,
             dataPath: "",
+            endpoint: "",
+            database: "",
           },
         }
         this.submitted = true

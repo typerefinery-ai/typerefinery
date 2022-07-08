@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Module, VuexModule, Mutation } from "vuex-module-decorators"
+import { Module, VuexModule, Mutation, Action } from "vuex-module-decorators"
+import axios from "axios"
 import store from "../index"
 import sampleData from "@/data/default.json"
 const storeValue = localStorage.getItem("typerefinery")
@@ -179,6 +180,7 @@ export default class AppData extends VuexModule {
 
   @Mutation
   updateQuery(data) {
+    console.log("updating query")
     const { projectIdx, queryIdx, key, value } = data
     const appData = JSON.parse(JSON.stringify(this.list))
     appData[0].list[projectIdx].queries.list[queryIdx][key] = value
@@ -268,7 +270,7 @@ export default class AppData extends VuexModule {
     const appData = JSON.parse(JSON.stringify(this.list))
     appData[0].list[projectIdx].queries.list[
       queryIdx
-    ].dataPath = `services/fastapi${path}`
+    ].dataPath = `services/fastapi/${path}`
     this.list = appData
   }
 
@@ -382,5 +384,33 @@ export default class AppData extends VuexModule {
   @Mutation
   toggleAlgorithmDialog() {
     this.algorithmDialog = !this.algorithmDialog
+  }
+
+  /**** Actions ****/
+  @Action
+  async runAlgorithm(indexes) {
+    try {
+      const { projectIdx, queryIdx } = indexes
+      const query = this.query(projectIdx, queryIdx)
+      const payload = {
+        dbhost: query.connection.host,
+        dbport: query.connection.port,
+        dbdatabase: query.database,
+        dbquery: query.query,
+        algorithm: query.algorithm.code,
+        algorithmrequirements: "argparse\nloguru",
+        returnoutput: "log",
+      }
+      const response = await axios.post(query.endpoint, payload)
+      console.log(response, "store")
+      const path = response.headers["output"].replace(/\\/g, "/")
+      console.log(path)
+      const data = { path, projectIdx, queryIdx }
+      this.setQueryDataPath(data)
+      return { data: response.data, type: "data" }
+    } catch (error) {
+      console.log(error)
+      return { data: error, type: "error" }
+    }
   }
 }

@@ -30,7 +30,7 @@
         :style="{ height: '70vh' }"
         :autofocus="true"
         :indent-with-tab="true"
-        :tab-zize="2"
+        :tab-size="2"
         :extensions="extensions"
         @change="handleChange"
       />
@@ -41,7 +41,7 @@
         :style="{ height: '350px' }"
         :autofocus="true"
         :indent-with-tab="true"
-        :tab-zize="2"
+        :tab-size="2"
         :extensions="extensions"
       />
     </div>
