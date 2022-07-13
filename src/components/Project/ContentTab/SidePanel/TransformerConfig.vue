@@ -105,8 +105,10 @@
   import "../Markdown/markdown.css"
   import Projects from "@/store/Modules/Projects"
   import Transformers from "@/store/Modules/Transformers"
+  import AppSettings from "@/store/Modules/Settings"
   const projectsModule = getModule(Projects)
   const transformersModule = getModule(Transformers)
+  const appSettings = getModule(AppSettings)
 
   export default {
     name: "TransformerConfig",
