@@ -1,19 +1,17 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Module, VuexModule, Mutation, Action } from "vuex-module-decorators"
 import store from "../index"
-
-const storeValue = localStorage.getItem("typerefinery")
-const servicesInStore = storeValue ? JSON.parse(storeValue).Services : false
+import sampleData from "@/data/default.json"
 
 @Module({
   name: "Services",
   store: store,
   dynamic: true,
-  namespaced: true,
-  stateFactory: true,
-  preserveState: servicesInStore, // replace true with servicesInStore to resolve local storage bug
+  preserveState: localStorage.getItem("services") !== null,
 })
 export default class Services extends VuexModule {
-  services: any[] = []
+  data = sampleData.services
+
   // services = [
   //   {
   //     id: "fastapi",
@@ -62,29 +60,16 @@ export default class Services extends VuexModule {
     // services.forEach((service: any) => {
     //   this.services.push(service)
     // })
-    return this.services
+    return this.data.services
   }
 
   get serviceList() {
-    return this.services
-  }
-
-  serviceStatusEnum = {
-    "-10": { name: "invalidconfig", color: "red" },
-    "-1": { name: "error", color: "red" },
-    "0": { name: "disabled", color: "gray" },
-    "10": { name: "available", color: "gray" },
-    "15": { name: "installing", color: "gray" },
-    "20": { name: "installed", color: "gray" },
-    "30": { name: "stopping", color: "blue" },
-    "60": { name: "stopped", color: "purple" },
-    "90": { name: "starting", color: "yellow" },
-    "120": { name: "started", color: "green" },
+    return this.data.services
   }
 
   get serviceStatusNames() {
     const list = {}
-    for (const [key, value] of Object.entries(this.serviceStatusEnum)) {
+    for (const [key, value] of Object.entries(this.data.serviceStatusEnum)) {
       list[value.name] = key
     }
     return list
@@ -92,7 +77,7 @@ export default class Services extends VuexModule {
 
   get serviceStatusColorList() {
     const list = {}
-    for (const [key, value] of Object.entries(this.serviceStatusEnum)) {
+    for (const [key, value] of Object.entries(this.data.serviceStatusEnum)) {
       list[value.name] = value.color
     }
     return list
@@ -100,7 +85,7 @@ export default class Services extends VuexModule {
 
   get serviceStatusList() {
     const list: object[] = []
-    for (const [key, value] of Object.entries(this.serviceStatusEnum)) {
+    for (const [key, value] of Object.entries(this.data.serviceStatusEnum)) {
       list.push({
         name: value.name,
         value: key,
@@ -109,14 +94,9 @@ export default class Services extends VuexModule {
     return list
   }
 
-  serviceTypeEnum = {
-    "10": { name: "local", icon: "pi pi-cog" },
-    "20": { name: "online", icon: "pi pi-globe" },
-  }
-
   get serviceTypeNames() {
     const servicetypenamesList = {}
-    for (const [key, value] of Object.entries(this.serviceTypeEnum)) {
+    for (const [key, value] of Object.entries(this.data.serviceTypeEnum)) {
       servicetypenamesList[value.name] = key
     }
     return servicetypenamesList
@@ -124,7 +104,7 @@ export default class Services extends VuexModule {
 
   get serviceTypeList() {
     const list: object[] = []
-    for (const [key, value] of Object.entries(this.serviceTypeEnum)) {
+    for (const [key, value] of Object.entries(this.data.serviceTypeEnum)) {
       list.push({
         name: value.name,
         value: parseFloat(key),
@@ -136,8 +116,8 @@ export default class Services extends VuexModule {
   // get service count by status
   get serviceCountByStatus() {
     const list: object[] = []
-    for (const [key, value] of Object.entries(this.serviceStatusEnum)) {
-      const count = this.services.filter(
+    for (const [key, value] of Object.entries(this.data.serviceStatusEnum)) {
+      const count = this.data.services.filter(
         (service: any) => service.status === key
       ).length
       if (count > 0) {
@@ -162,8 +142,8 @@ export default class Services extends VuexModule {
   // }
 
   @Mutation
-  setServices(payload: any[]) {
-    this.services = payload
+  setServices(payload) {
+    this.data.services = payload
   }
 
   // @Mutation

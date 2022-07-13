@@ -56,20 +56,20 @@
 </template>
 
 <script>
-  import Menu from "primevue/menu"
   import { getModule } from "vuex-module-decorators"
+  import { setThemeURL } from "@/utils/theme"
+  import { locales } from "@/i18n"
+  import Menu from "primevue/menu"
   import UserIcon from "vue-material-design-icons/AccountCircle.vue"
   import FocusIcon from "vue-material-design-icons/BullseyeArrow.vue"
-  import AppSettings from "@/store/Modules/AppSettings"
-  import ServicesInfo from "./Services"
+  import ServicesInfo from "@/components/Services"
   import WindowControls from "./WindowControls.vue"
-  import { setThemeURL } from "@/utils/theme"
-  import * as electronHelpers from "@/utils/electron"
-  import { locales } from "@/i18n"
   import MenuItem from "./MenuItem.vue"
-  const appSettings = getModule(AppSettings)
+  import Settings from "@/store/Modules/Settings"
   import Auth from "@/store/Modules/Auth"
-  const appAuth = getModule(Auth)
+  import * as electronHelpers from "@/utils/electron"
+  const settingsModule = getModule(Settings)
+  const authModule = getModule(Auth)
 
   export default {
     name: "MenuBar",
@@ -121,13 +121,14 @@
 
     computed: {
       nickname() {
-        return appAuth.alias ? appAuth.alias : appAuth.username
+        const { alias, username } = authModule.data
+        return alias ? alias : username
       },
       focus() {
-        return appSettings.focus
+        return settingsModule.data.focus
       },
       theme() {
-        return appSettings.theme
+        return settingsModule.data.theme
       },
       isElectron() {
         return electronHelpers.isElectron()
@@ -136,8 +137,8 @@
 
     created() {
       const systemLang = navigator.language.substring(0, 2)
-      const theme = appSettings?.theme || "light"
-      const langInStore = appSettings?.language
+      const theme = settingsModule?.data.theme || "light"
+      const langInStore = settingsModule?.data.language
       setThemeURL(theme)
 
       if (systemLang && !langInStore) {
@@ -158,19 +159,19 @@
       },
 
       setLanguage(lang) {
-        appSettings.setLanguage(lang)
+        settingsModule.setLanguage(lang)
         this.$i18n.locale = lang
       },
 
       toggleTheme() {
         const theme = this.theme === "dark" ? "light" : "dark"
-        appSettings.setTheme(theme)
+        settingsModule.setTheme(theme)
         setThemeURL(theme)
       },
 
       toggleFocus() {
-        appSettings.toggleFocus()
-        appSettings.resizeView()
+        settingsModule.toggleFocus()
+        settingsModule.resizeView()
       },
 
       toggleMenu(event) {
@@ -186,12 +187,12 @@
       },
 
       openSettings() {
-        appSettings.openSettingsDialog("profile/alias")
+        settingsModule.openSettingsDialog("profile/alias")
       },
 
       toggleView() {
         this.$emit("toggle")
-        appSettings.resizeView()
+        settingsModule.resizeView()
       },
     },
   }

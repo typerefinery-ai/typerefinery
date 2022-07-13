@@ -17,11 +17,11 @@
 
 <script>
   import ProjectContent from "./ProjectContent"
-  import MainMenu from "@/components/MainMenu.vue"
-  import MenuBar from "@/components/MenuBar.vue"
-  import AppSettings from "@/store/Modules/AppSettings"
+  import MainMenu from "@/components/Menu/MainMenu.vue"
+  import MenuBar from "@/components/Menu/MenuBar.vue"
+  import AppSettings from "@/store/Modules/Settings"
   import { getModule } from "vuex-module-decorators"
-  const appSettings = getModule(AppSettings)
+  const settingsModule = getModule(AppSettings)
 
   export default {
     name: "Project",
@@ -35,7 +35,7 @@
     },
     computed: {
       focusMode() {
-        return appSettings.focus
+        return settingsModule.data.focus
       },
     },
     methods: {

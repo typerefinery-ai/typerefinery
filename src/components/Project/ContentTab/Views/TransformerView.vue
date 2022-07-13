@@ -49,15 +49,15 @@
 </template>
 
 <script>
-  import Button from "primevue/button"
   import { Codemirror } from "vue-codemirror"
   import { javascript } from "@codemirror/lang-javascript"
   import { oneDark } from "@codemirror/theme-one-dark"
-  import AppSettings from "@/store/Modules/AppSettings"
-  import AppData from "@/store/Modules/Projects"
   import { getModule } from "vuex-module-decorators"
-  const appSettings = getModule(AppSettings)
-  const appData = getModule(AppData)
+  import Button from "primevue/button"
+  import Settings from "@/store/Modules/Settings"
+  import Projects from "@/store/Modules/Projects"
+  const settingsModule = getModule(Settings)
+  const projectsModule = getModule(Projects)
   export default {
     name: "TransformerView",
     components: { Codemirror, Button },
@@ -73,24 +73,24 @@
     },
     computed: {
       extensions() {
-        return appSettings.theme === "dark"
+        return settingsModule.data.theme === "dark"
           ? [javascript(), oneDark]
           : [javascript()]
       },
       errorText() {
         const { projectIdx, queryIdx } = this.tab
-        return appData.transformerConsoleMessage(projectIdx, queryIdx)
+        return projectsModule.getTransformerConsoleMessage(projectIdx, queryIdx)
       },
       isError() {
         const { projectIdx, queryIdx } = this.tab
-        return appData.transformerError(projectIdx, queryIdx)
+        return projectsModule.getTransformerError(projectIdx, queryIdx)
       },
       code() {
         const { projectIdx, queryIdx } = this.tab
-        return appData.transformerCode(projectIdx, queryIdx)
+        return projectsModule.getTransformerCode(projectIdx, queryIdx)
       },
       viewResized() {
-        return appSettings.viewResized
+        return settingsModule.data.viewResized
       },
     },
     watch: {
@@ -105,11 +105,11 @@
       handleChange(c) {
         const { projectIdx, queryIdx } = this.tab
         const data = { code: c, projectIdx, queryIdx }
-        appData.setTransformerCode(data)
+        projectsModule.setTransformerCode(data)
       },
       handleTabs(tab) {
         this.activeTab = tab
-        appSettings.resizeView()
+        settingsModule.resizeView()
       },
       setEditorHeight() {
         if (this.view !== "T") return

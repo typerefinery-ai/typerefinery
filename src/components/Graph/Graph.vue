@@ -5,9 +5,9 @@
 <script>
   import * as d3 from "d3"
   import * as cola from "webcola"
-  import AppData from "@/store/Modules/Projects"
   import { getModule } from "vuex-module-decorators"
-  const appData = getModule(AppData)
+  import Projects from "@/store/Modules/Projects"
+  const projectsModule = getModule(Projects)
   export default {
     name: "Graph",
     props: {
@@ -19,7 +19,7 @@
     computed: {
       code() {
         const { projectIdx, queryIdx } = this.tab
-        return appData.transformerCode(projectIdx, queryIdx)
+        return projectsModule.getTransformerCode(projectIdx, queryIdx)
       },
       params() {
         return this.dependencies
@@ -40,12 +40,12 @@
     methods: {
       renderGraph() {
         const { projectIdx, queryIdx } = this.tab
-        const query = appData.query(projectIdx, queryIdx)
+        const query = projectsModule.getQuery(projectIdx, queryIdx)
         try {
           window.log = function (log) {
-            appData.setTransformerLogs({ log, projectIdx, queryIdx })
+            projectsModule.setTransformerLogs({ log, projectIdx, queryIdx })
           }
-          appData.clearTransformerLogs({ projectIdx, queryIdx }) // clear logs before each execution
+          projectsModule.clearTransformerLogs({ projectIdx, queryIdx }) // clear logs before each execution
           const params = ["wrapper", "self", "output", ...this.params]
           const func = new Function(...params, this.code)
           const wrapper = document.getElementById(this.graphId)
@@ -57,9 +57,13 @@
           }
           this.params.forEach((el) => args.push(existingDependencies[el]))
           func.apply(this, args)
-          appData.setTransformerError({ error: "", projectIdx, queryIdx })
+          projectsModule.setTransformerError({
+            error: "",
+            projectIdx,
+            queryIdx,
+          })
         } catch (err) {
-          appData.setTransformerError({
+          projectsModule.setTransformerError({
             error: err.stack,
             projectIdx,
             queryIdx,

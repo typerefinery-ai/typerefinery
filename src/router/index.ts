@@ -1,11 +1,11 @@
 /// <reference types="vite/client" />
 
 import { createRouter, createWebHashHistory } from "vue-router"
-import Home from "../views/Home.vue"
-import Chat from "../components/Chat/index.vue"
-import Maps from "../components/Maps/index.vue"
-import Login from "../components/Pages/Login.vue"
-import SignUp from "../components/Pages/SignUp.vue"
+import Home from "@/views/Home.vue"
+import Chat from "@/components/Chat/index.vue"
+import Maps from "@/components/Maps/index.vue"
+import Login from "@/components/Auth/Login.vue"
+import SignUp from "@/components/Auth/SignUp.vue"
 
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
@@ -33,10 +33,6 @@ const router = createRouter({
       name: "chat",
       component: Chat,
     },
-    // {
-    //   path: "/",
-    //   redirect: "/home/project",
-    // },
   ],
 })
 

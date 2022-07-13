@@ -45,15 +45,17 @@
 </template>
 
 <script>
+  import { getModule } from "vuex-module-decorators"
   import TabView from "primevue/tabview"
   import TabPanel from "primevue/tabpanel"
-  import MenuBar from "@/components/MenuBar.vue"
+  import MenuBar from "@/components/Menu/MenuBar.vue"
   import ContentTab from "../ContentTab"
-  import AppSettings from "@/store/Modules/AppSettings"
-  import AppData from "@/store/Modules/Projects"
-  import { getModule } from "vuex-module-decorators"
-  const appSettings = getModule(AppSettings)
-  const appData = getModule(AppData)
+  import Settings from "@/store/Modules/Settings"
+  import Projects from "@/store/Modules/Projects"
+  import AppData from "@/store/Modules/AppData"
+  const settingsModule = getModule(Settings)
+  const projectsModule = getModule(Projects)
+  const appDataModule = getModule(AppData)
 
   TabView.methods.onTabClick = function (event, i) {
     this.$emit("tab-click", {
@@ -89,8 +91,7 @@
       allTabs() {
         return this.tabs.map((el) => ({
           ...el,
-          label:
-            appData.list[0].list[el.projectIdx].queries.list[el.queryIdx].label,
+          label: projectsModule.getQueries(el.projectIdx)[el.queryIdx].label,
         }))
       },
     },
@@ -119,7 +120,7 @@
 
       toggleContentTools() {
         this.contentToolsVisible = !this.contentToolsVisible
-        appSettings.resizeView()
+        settingsModule.resizeView()
       },
 
       splitView(idx) {
@@ -130,8 +131,8 @@
         if (this.paneId == "pane2") {
           return this.$emit("close-split-view")
         }
-        appData.removeSelectedTreeNodes(tab.id)
-        appData.toggleTreeNode()
+        appDataModule.removeSelectedTreeNodes(tab.id)
+        appDataModule.toggleTreeNode()
       },
     },
   }

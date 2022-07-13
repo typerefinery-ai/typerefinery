@@ -56,7 +56,7 @@
   import InputText from "primevue/inputtext"
   import Password from "primevue/password"
   import Button from "primevue/button"
-  import WindowControls from "../WindowControls.vue"
+  import WindowControls from "@/components/Menu/WindowControls.vue"
   // import axios from "axios"
   export default {
     name: "SignUp",

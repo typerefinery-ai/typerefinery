@@ -95,15 +95,16 @@
 </template>
 
 <script>
+  import { getModule } from "vuex-module-decorators"
+  import { required } from "@vuelidate/validators"
+  import { useVuelidate } from "@vuelidate/core"
+  import { getRandomId } from "@/utils"
   import Dialog from "primevue/dialog"
   import Panel from "primevue/panel"
   import InputText from "primevue/inputtext"
   import Button from "primevue/button"
-  import AppData from "@/store/Modules/Projects"
-  import { getModule } from "vuex-module-decorators"
-  import { required } from "@vuelidate/validators"
-  import { useVuelidate } from "@vuelidate/core"
-  const appData = getModule(AppData)
+  import Projects from "@/store/Modules/Projects"
+  const projectsModule = getModule(Projects)
 
   export default {
     name: "NewProject",
@@ -145,10 +146,7 @@
       handleProjectstore(isFormValid) {
         const data = {
           type: "project",
-          id: Math.random()
-            .toString(36)
-            .replace(/[^a-z]+/g, "")
-            .substr(2, 10),
+          id: getRandomId(),
           label: this.name,
           description: this.description,
           icon: this.icon,
@@ -156,93 +154,26 @@
           connections: {
             type: "connections",
             icon: "",
-            expanded: true,
-            list: [
-              {
-                type: "connection",
-                id: "connection1",
-                label: "connection 1",
-                icon: "connection",
-                description: "",
-                port: "",
-                host: "",
-              },
-            ],
+            expanded: false,
+            list: [],
           },
           queries: {
             type: "queries",
             icon: "",
-            expanded: true,
-            list: [
-              {
-                type: "query",
-                id: "query1",
-                label: "query 1",
-                icon: "query",
-                description: "",
-                query: "",
-                dataPath: "",
-                connection: "connection1", // id
-                transformer: {
-                  type: "transformer",
-                  id: "transformer1",
-                  label: "local transformer 1",
-                  icon: "transformer",
-                  scope: "local",
-                  description: "",
-                  code: "",
-                  error: "",
-                  logs: [""],
-                },
-                algorithm: {
-                  type: "algorithm",
-                  id: "algorithm1",
-                  label: "algorithm 1",
-                  icon: "algorithm",
-                  scope: "local",
-                  description: "",
-                  code: "",
-                  error: "",
-                  logs: [""],
-                },
-              },
-            ],
+            expanded: false,
+            list: [],
           },
           transformers: {
             type: "tranformers",
             icon: "",
-            expanded: true,
-            list: [
-              {
-                type: "transformer",
-                id: "transformer1",
-                label: "local transformer 1",
-                icon: "transformer",
-                scope: "local",
-                description: "",
-                code: "",
-                error: "",
-                logs: [""],
-              },
-            ],
+            expanded: false,
+            list: [],
           },
           algorithms: {
             type: "algorithms",
             icon: "",
-            expanded: true,
-            list: [
-              {
-                type: "algorithm",
-                id: "algorithm1",
-                label: "algorithm 1",
-                icon: "algorithm",
-                scope: "local",
-                description: "",
-                code: "",
-                error: "",
-                logs: [""],
-              },
-            ],
+            expanded: false,
+            list: [],
           },
         }
         this.submitted = true
@@ -252,7 +183,7 @@
         if (!isFormValid) {
           return
         }
-        appData.addNewProject(data)
+        projectsModule.addNewProject(data)
         this.$emit("close")
       },
     },
@@ -262,6 +193,11 @@
   .projects-dialog {
     height: 100vh;
     width: 40vw;
+    .p-panel.p-component {
+      .p-panel-content {
+        padding-top: 5px;
+      }
+    }
     .p-dropdown {
       width: 80%;
     }
@@ -274,10 +210,8 @@
     .p-dialog-content {
       height: 100%;
     }
-
     .p-dialog-header {
       padding: 1.25rem 1.8rem;
-
       .p-dialog-header-icons:last-of-type {
         display: none;
       }

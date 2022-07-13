@@ -45,7 +45,7 @@
   import Button from "primevue/button"
   import "primevue/resources/themes/md-light-indigo/theme.css" //these two imported css file is added here because primevue was not working properly without it,
   import "primevue/resources/primevue.min.css"
-  import WindowControls from "../WindowControls.vue"
+  import WindowControls from "@/components/Menu/WindowControls.vue"
   // import axios from "axios"
   export default {
     name: "Login",

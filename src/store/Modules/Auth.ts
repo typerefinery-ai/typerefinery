@@ -1,29 +1,26 @@
-import { Module, VuexModule, Mutation, Action } from "vuex-module-decorators"
+import { Module, VuexModule, Mutation } from "vuex-module-decorators"
 import store from "../index"
+import sampleData from "@/data/default.json"
 
-const storeValue = localStorage.getItem("typerefinery")
-const authInStore = storeValue ? JSON.parse(storeValue).Auth : false
 @Module({
   name: "Auth",
   store: store,
   dynamic: true,
-  preserveState: authInStore,
+  preserveState: localStorage.getItem("auth") !== null,
 })
 export default class Auth extends VuexModule {
-  username = "TypeRefinery User"
-  email = "info@typerefinery.io"
-  alias = "Me"
-  @Mutation
-  setUsername(username: string) {
-    this.username = username
-  }
+  data = sampleData.auth
 
   @Mutation
+  setUsername(username: string) {
+    this.data.username = username
+  }
+  @Mutation
   setAliasname(alias: string) {
-    this.alias = alias
+    this.data.alias = alias
   }
   @Mutation
   setEmail(email: string) {
-    this.email = email
+    this.data.email = email
   }
 }

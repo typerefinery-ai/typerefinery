@@ -21,44 +21,44 @@
 </template>
 
 <script>
-import ToggleButton from "primevue/togglebutton"
-import MenuBar from "@/components/MenuBar.vue"
-import MainMenu from "@/components/MainMenu.vue"
-import MonacoEditor from "./MonacoEditor.vue"
+  import ToggleButton from "primevue/togglebutton"
+  import MenuBar from "@/components/Menu/MenuBar.vue"
+  import MainMenu from "@/components/Menu/MainMenu.vue"
+  import MonacoEditor from "./MonacoEditor.vue"
 
-export default {
-  name: "App",
-  components: {
-    MonacoEditor,
-    MenuBar,
-    MainMenu,
-    ToggleButton,
-  },
-  data() {
-    return {
-      showMainOverlayMenu: false,
-      mainMenuVisible: true,
-      checked: true,
-      options: {
-        colorDecorators: true,
-        lineHeight: 24,
-        tabSize: 2,
-      },
-      original: "",
-      value: "",
-      width: 800,
-      theme: "vs",
-      border: "dark",
-    }
-  },
-  methods: {
-    toggleMainMenu() {
-      this.mainMenuVisible = !this.mainMenuVisible
+  export default {
+    name: "App",
+    components: {
+      MonacoEditor,
+      MenuBar,
+      MainMenu,
+      ToggleButton,
     },
-  },
-}
+    data() {
+      return {
+        showMainOverlayMenu: false,
+        mainMenuVisible: true,
+        checked: true,
+        options: {
+          colorDecorators: true,
+          lineHeight: 24,
+          tabSize: 2,
+        },
+        original: "",
+        value: "",
+        width: 800,
+        theme: "vs",
+        border: "dark",
+      }
+    },
+    methods: {
+      toggleMainMenu() {
+        this.mainMenuVisible = !this.mainMenuVisible
+      },
+    },
+  }
 </script>
 
 <style lang="scss" scoped>
-@import "./style.scss";
+  @import "./style.scss";
 </style>

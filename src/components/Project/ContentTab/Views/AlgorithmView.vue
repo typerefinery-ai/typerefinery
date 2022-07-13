@@ -65,15 +65,15 @@
 </template>
 
 <script>
-  import Button from "primevue/button"
+  import { getModule } from "vuex-module-decorators"
   import { Codemirror } from "vue-codemirror"
   import { python } from "@codemirror/lang-python"
   import { oneDark } from "@codemirror/theme-one-dark"
-  import AppSettings from "@/store/Modules/AppSettings"
-  import AppData from "@/store/Modules/Projects"
-  import { getModule } from "vuex-module-decorators"
-  const appSettings = getModule(AppSettings)
-  const appData = getModule(AppData)
+  import Button from "primevue/button"
+  import Settings from "@/store/Modules/Settings"
+  import Projects from "@/store/Modules/Projects"
+  const settingsModule = getModule(Settings)
+  const projectsModule = getModule(Projects)
   export default {
     name: "AlgorithmView",
     components: { Codemirror, Button },
@@ -92,7 +92,9 @@
     },
     computed: {
       extensions() {
-        return appSettings.theme === "dark" ? [python(), oneDark] : [python()]
+        return settingsModule.data.theme === "dark"
+          ? [python(), oneDark]
+          : [python()]
       },
       consoleLabel() {
         let label = this.$t("components.transformer.console")
@@ -102,15 +104,15 @@
         return label
       },
       viewResized() {
-        return appSettings.viewResized
+        return settingsModule.data.viewResized
       },
       code() {
         const { projectIdx, queryIdx } = this.tab
-        return appData.algorithmCode(projectIdx, queryIdx)
+        return projectsModule.getAlgorithmCode(projectIdx, queryIdx)
       },
       endpoint() {
         const { projectIdx, queryIdx } = this.tab
-        return appData.query(projectIdx, queryIdx).endpoint
+        return projectsModule.getQuery(projectIdx, queryIdx).endpoint
       },
     },
     watch: {
@@ -125,11 +127,11 @@
       handleChange(c) {
         const { projectIdx, queryIdx } = this.tab
         const data = { code: c, projectIdx, queryIdx }
-        appData.setAlgoCode(data)
+        projectsModule.setAlgoCode(data)
       },
       handleTabs(tab) {
         this.activeTab = tab
-        appSettings.resizeView()
+        settingsModule.resizeView()
       },
       setEditorHeight() {
         if (this.view !== "A") return
@@ -143,7 +145,7 @@
       },
       handleEndpoint({ target: { value } }, key) {
         const payload = { key, value, ...this.tab }
-        appData.updateQuery(payload)
+        projectsModule.updateQuery(payload)
       },
       setQueryState(loading, error, text) {
         this.loading = loading
@@ -152,7 +154,7 @@
       },
       async handleRequest() {
         this.setQueryState(true, false, "")
-        const response = await appData.runAlgorithm(this.tab)
+        const response = await projectsModule.runAlgorithm(this.tab)
         if (response.type == "data") {
           this.setQueryState(false, false, response.data)
         } else {

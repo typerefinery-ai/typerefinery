@@ -130,8 +130,9 @@
   import PlusIcon from "vue-material-design-icons/MagnifyPlus.vue"
   import ControlIcon from "vue-material-design-icons/CameraControl.vue"
   //   import InputText from "primevue/inputtext"
-  import Button from "primevue/button"
+  import { getModule } from "vuex-module-decorators"
   import { Splitpanes, Pane } from "splitpanes"
+  import Button from "primevue/button"
   import DataView from "./Views/DataView.vue"
   import QueryView from "./Views/QueryView.vue"
   import TransformerView from "./Views/TransformerView.vue"
@@ -141,9 +142,8 @@
   import renderD3 from "../../Transformer/D3/d3"
   import renderWebcola from "../../Transformer/WebCola/webcola"
   import renderD3LabelsChart from "../../Transformer/D3Labels/d3labels"
-  import AppSettings from "@/store/Modules/AppSettings"
-  import { getModule } from "vuex-module-decorators"
-  const appSettings = getModule(AppSettings)
+  import Settings from "@/store/Modules/Settings"
+  const settingsModule = getModule(Settings)
   export default {
     name: "ContentTab",
     components: {
@@ -183,7 +183,7 @@
     methods: {
       handleView(view) {
         this.activeView = view
-        setTimeout(() => appSettings.resizeView(), 0)
+        setTimeout(() => settingsModule.resizeView(), 0)
       },
       handleSplitterClick() {
         const rightPanel = this.$refs[`p-${this.tab.id}-${this.paneId}`]
