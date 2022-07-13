@@ -179,13 +179,13 @@ async def execute_algorithm(request: Request, response: Response, body: Algoritm
     new_script_name = f'req-{requestid}.py'
     new_script = os.path.join(USER_DATA_LOCATION, "algorithm", new_script_name)
     new_script_url = f"/algorithm/{new_script_name}/script"
-    new_script_path = os.path.relpath(new_script, USER_DATA_LOCATION)
+    new_script_path = new_script
     new_script_output = f'{new_script}.output'
     new_script_output_url = f"/algorithm/{new_script_name}/output"
-    new_script_output_path = os.path.relpath(new_script_output, USER_DATA_LOCATION)
+    new_script_output_path = new_script_output
     new_script_log = f'{new_script}.log'
     new_script_log_url = f"/algorithm/{new_script_name}/log"
-    new_script_log_path = os.path.relpath(new_script_log, USER_DATA_LOCATION)
+    new_script_log_path = new_script_log
 
     # add request specific log file
     logfile_hander = Logger.add(new_script_log, level="INFO", filter=lambda record: record["extra"]["requestid"] == requestid)
