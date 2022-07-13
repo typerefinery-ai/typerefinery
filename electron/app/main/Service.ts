@@ -77,6 +77,7 @@ export interface ExecConfig {
   env?: any
   commandline?: string
   commandlinecli?: string
+  datapath?: string
   serviceorder?: 0
   depend_on?: string[]
   serviceport?: number
@@ -140,11 +141,19 @@ export class Service extends EventEmitter<ServiceEvent> {
     serviceManager: ServiceManager
   ) {
     super()
+    this.#options = options
     this.#abortController = new AbortController()
     this.#servicepath = servicepath
     this.#servicedatapath = servicedatapath
+    // if server has datapath set ensure the sub path exist in the server data path
+    if (this.#options.execconfig.datapath) {
+      this.#servicedatapath = path.join(
+        this.#servicedatapath,
+        this.#options.execconfig.datapath
+      )
+      this.#ensurePath(this.#servicedatapath)
+    }
     this.#logsDir = logsDir
-    this.#options = options
     this.#events = events
     this.#serviceManager = serviceManager
     this.#id = this.#options.id
@@ -209,11 +218,14 @@ export class Service extends EventEmitter<ServiceEvent> {
     this.#checkRunning()
   }
 
-  #ensurePathToFile(file: string) {
-    const dir = path.dirname(file)
+  #ensurePath(dir: string) {
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir, { recursive: true })
     }
+  }
+
+  #ensurePathToFile(file: string) {
+    this.#ensurePath(path.dirname(file))
   }
 
   // replace possible variables in a service command string
