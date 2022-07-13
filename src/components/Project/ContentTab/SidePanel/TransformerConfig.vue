@@ -103,15 +103,10 @@
   import MarkDownDataEng from "../Markdown/TransformHelpEng.md"
   import MarkDownDataHindi from "../Markdown/TransformHelpHindi.md"
   import "../Markdown/markdown.css"
-  import { getModule } from "vuex-module-decorators"
-  import AppData from "@/store/Modules/Projects"
-  import AppSettings from "@/store/Modules/AppSettings"
   import Projects from "@/store/Modules/Projects"
   import Transformers from "@/store/Modules/Transformers"
   const projectsModule = getModule(Projects)
   const transformersModule = getModule(Transformers)
-  const appData = getModule(AppData)
-  const appSettings = getModule(AppSettings)
 
   export default {
     name: "TransformerConfig",
