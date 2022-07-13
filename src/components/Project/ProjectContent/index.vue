@@ -36,11 +36,11 @@
 
 <script>
   import { Splitpanes, Pane } from "splitpanes"
+  import { getModule } from "vuex-module-decorators"
   import Sidebar from "../Sidebar"
   import ContentView from "./ContentView.vue"
-  import AppData from "@/store/Modules/Projects"
-  import { getModule } from "vuex-module-decorators"
-  const appData = getModule(AppData)
+  import AppData from "@/store/Modules/AppData"
+  const appDataModule = getModule(AppData)
 
   export default {
     name: "ProjectContent",
@@ -70,7 +70,7 @@
     },
     computed: {
       nodeSelected() {
-        return appData.treeNodeClicked
+        return appDataModule.data.treeNodeClicked
       },
     },
     watch: {
@@ -107,7 +107,9 @@
           : (pane.style.width = 0)
       },
       updateTabs() {
-        const projectsArray = appData.selectedTreeNodes || { list: [] }
+        const projectsArray = appDataModule.data.selectedTreeNodes || {
+          list: [],
+        }
         const existingTabs = [...this.panes[0].tabs]
         const newTabs = []
         projectsArray.list.forEach((el) => {

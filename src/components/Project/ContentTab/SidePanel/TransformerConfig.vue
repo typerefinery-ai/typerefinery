@@ -121,14 +121,17 @@
 </template>
 
 <script>
+  import { getModule } from "vuex-module-decorators"
+  import { getRandomId } from "@/utils"
   import Button from "primevue/button"
   import Dropdown from "primevue/dropdown"
   import MultiSelect from "primevue/multiselect"
   import Dialog from "primevue/dialog"
   import InputText from "primevue/inputtext"
-  import { getModule } from "vuex-module-decorators"
-  import AppData from "@/store/Modules/Projects"
-  const appData = getModule(AppData)
+  import Projects from "@/store/Modules/Projects"
+  import Transformers from "@/store/Modules/Transformers"
+  const projectsModule = getModule(Projects)
+  const transformersModule = getModule(Transformers)
 
   export default {
     name: "TransformerConfig",
@@ -148,8 +151,6 @@
         transformerName: "",
         activeView: "config",
         saveDialog: false,
-        // selectedTransformer: null,
-        // (): null,
         dependencies: [
           { name: "d3", code: "d3" },
           { name: "webcola", code: "webcola" },
@@ -158,9 +159,8 @@
     },
     computed: {
       transformer() {
-        const { projectIdx, queryIdx } = this.tab
-        const transformer =
-          appData.list[0].list[projectIdx].queries.list[queryIdx].transformer
+        const { projectIdx: pI, queryIdx: qI } = this.tab
+        const transformer = projectsModule.getQuery(pI, qI).transformer
         return {
           key: transformer.id,
           label: transformer.label,
@@ -169,17 +169,32 @@
       },
       transformers() {
         const { projectIdx } = this.tab
-        return appData.transformersList(projectIdx)
+        return [
+          {
+            label: "Local",
+            code: "local",
+            items: projectsModule.getLocalTransformers(projectIdx).map((el) => {
+              return { label: el.label, key: el.id, scope: el.scope }
+            }),
+          },
+          {
+            label: "Global",
+            code: "global",
+            items: transformersModule.getGlobalTransformers.map((el) => {
+              return { label: el.label, key: el.id, scope: el.scope }
+            }),
+          },
+        ]
       },
       selectedDependencies() {
-        const { projectIdx, queryIdx } = this.tab
-        const transformer = appData.query(projectIdx, queryIdx).transformer
+        const { projectIdx: pI, queryIdx: qI } = this.tab
+        const transformer = projectsModule.getQuery(pI, qI).transformer
         return transformer.dependencies.map((el) => ({ name: el, code: el }))
       },
     },
     mounted() {
-      const { projectIdx, queryIdx } = this.tab
-      const transformer = appData.query(projectIdx, queryIdx).transformer
+      const { projectIdx: pI, queryIdx: qI } = this.tab
+      const transformer = projectsModule.getQuery(pI, qI).transformer
       this.$emit("handle-dependencies", transformer.dependencies)
     },
     methods: {
@@ -189,15 +204,14 @@
       handleDependency(d) {
         // save locallly
         const dependencies = d.value.map((el) => el.code)
-        // this.() = d.value
         this.$emit("handle-dependencies", dependencies)
         // save to store
         const { projectIdx, queryIdx } = this.tab
-        const query = appData.query(projectIdx, queryIdx)
+        const query = projectsModule.getQuery(projectIdx, queryIdx)
         const transformer = { ...query.transformer }
         transformer.dependencies = dependencies
         const payload = { key: "transformer", value: transformer, ...this.tab }
-        appData.updateQuery(payload)
+        projectsModule.updateQuery(payload)
       },
       handleTransformer(el) {
         this.showConfirmDialog(el)
@@ -219,43 +233,38 @@
       },
       setTransformerCode(value) {
         let transformer
+        const { projectIdx } = this.tab
         if (value.scope == "local") {
-          transformer = appData.list[0].list[
-            this.tab.projectIdx
-          ].transformers.list.find((el) => el.id == value.key)
+          transformer = projectsModule
+            .getLocalTransformers(projectIdx)
+            .find((el) => el.id == value.key)
         } else {
-          transformer = appData.list[2].list.find((el) => {
+          transformer = transformersModule.getGlobalTransformers.find((el) => {
             return el.id == value.key
           })
         }
         const payload = { key: "transformer", value: transformer, ...this.tab }
-        appData.updateQuery(payload)
+        projectsModule.updateQuery(payload)
       },
       saveTransformer(scope) {
         this.saveDialog = false
-        const transformer =
-          appData.list[0].list[this.tab.projectIdx].queries.list[
-            this.tab.queryIdx
-          ].transformer
-        const id = Math.random()
-          .toString(36)
-          .replace(/[^a-z]+/g, "")
-          .substr(2, 10)
+        const { projectIdx: pI, queryIdx: qI } = this.tab
+        const transformer = projectsModule.getQuery(pI, qI).transformer
         let data = {
           data: {
             ...transformer,
-            id,
+            id: getRandomId(),
             label: this.transformerName,
           },
         }
         if (scope == "local") {
           data.projectIdx = this.tab.projectIdx
           data.data.scope = "local"
+          projectsModule.addLocalTransformer(data)
         } else {
-          data.projectIdx = -1
           data.data.scope = "global"
+          transformersModule.addGlobalTransformer(data)
         }
-        appData.addNewTransformer(data)
         this.transformerName = ""
       },
     },

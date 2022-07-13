@@ -58,12 +58,16 @@
 </template>
 
 <script>
+  import { getModule } from "vuex-module-decorators"
   import InputText from "primevue/inputtext"
   import Dropdown from "primevue/dropdown"
   import Textarea from "primevue/textarea"
-  import AppData from "@/store/Modules/Projects"
-  import { getModule } from "vuex-module-decorators"
-  const appData = getModule(AppData)
+  import Projects from "@/store/Modules/Projects"
+  import Connections from "@/store/Modules/Connections"
+  import Transformers from "@/store/Modules/Transformers"
+  const projectsModule = getModule(Projects)
+  const connectionsModule = getModule(Connections)
+  const transformersModule = getModule(Transformers)
   export default {
     name: "QueryInfo",
     components: { InputText, Dropdown, Textarea },
@@ -73,75 +77,116 @@
     computed: {
       description() {
         const { projectIdx, queryIdx } = this.tab
-        return appData.query(projectIdx, queryIdx).description
+        return projectsModule.getQuery(projectIdx, queryIdx).description
       },
+
       icon() {
         const { projectIdx, queryIdx } = this.tab
-        return appData.query(projectIdx, queryIdx).icon
+        return projectsModule.getQuery(projectIdx, queryIdx).icon
       },
+
       connections() {
         const { projectIdx } = this.tab
-        return appData.connectionsList(projectIdx)
+        return [
+          {
+            label: "Local",
+            code: "local",
+            items: projectsModule.getLocalConnections(projectIdx).map((el) => {
+              return { label: el.label, key: el.id, scope: el.scope }
+            }),
+          },
+          {
+            label: "Global",
+            code: "global",
+            items: connectionsModule.getGlobalConnections.map((el) => {
+              return { label: el.label, key: el.id, scope: el.scope }
+            }),
+          },
+        ]
       },
+
       connection() {
         const { projectIdx, queryIdx } = this.tab
-        const connection = appData.query(projectIdx, queryIdx).connection
+        const connection = projectsModule.getQuery(
+          projectIdx,
+          queryIdx
+        ).connection
         return {
           key: connection.id,
           label: connection.label,
           scope: connection.scope,
         }
       },
+
       tranformer() {
-        const { projectIdx, queryIdx } = this.tab
-        const transformer = appData.query(projectIdx, queryIdx).transformer
+        const { projectIdx: pI, queryIdx: qI } = this.tab
+        const transformer = projectsModule.getQuery(pI, qI).transformer
         return {
           key: transformer.id,
           label: transformer.label,
           scope: transformer.scope,
         }
       },
+
       transformers() {
         const { projectIdx } = this.tab
-        return appData.transformersList(projectIdx)
+        return [
+          {
+            label: "Local",
+            code: "local",
+            items: projectsModule.getLocalTransformers(projectIdx).map((el) => {
+              return { label: el.label, key: el.id, scope: el.scope }
+            }),
+          },
+          {
+            label: "Global",
+            code: "global",
+            items: transformersModule.getGlobalTransformers.map((el) => {
+              return { label: el.label, key: el.id, scope: el.scope }
+            }),
+          },
+        ]
       },
+
       database() {
         const { projectIdx, queryIdx } = this.tab
-        return appData.query(projectIdx, queryIdx).database
+        return projectsModule.getQuery(projectIdx, queryIdx).database
       },
     },
     methods: {
       handleInput({ target: { value } }, key) {
         const payload = { key, value, ...this.tab }
-        appData.updateQuery(payload)
+        projectsModule.updateQuery(payload)
       },
+
       handleTransformer({ value }) {
         let transformer
         if (value.scope == "local") {
-          transformer = appData
-            .localTransformers(this.tab.projectIdx)
+          transformer = projectsModule
+            .getLocalTransformers(this.tab.projectIdx)
             .find((el) => el.id == value.key)
         } else {
-          transformer = appData.globalTransformers.find(
+          transformer = transformersModule.getGlobalTransformers.find(
             (el) => el.id == value.key
           )
         }
         const payload = { key: "transformer", value: transformer, ...this.tab }
-        appData.updateQuery(payload)
+        projectsModule.updateQuery(payload)
       },
+
       handleConnection({ value }) {
         let connection
         if (value.scope == "local") {
-          connection = appData
-            .localConnections(this.tab.projectIdx)
+          connection = projectsModule
+            .getLocalConnections(this.tab.projectIdx)
             .find((el) => el.id == value.key)
         } else {
-          connection = appData.globalConnections.find(
+          connection = connectionsModule.getGlobalConnections.find(
             (el) => el.id == value.key
           )
         }
         const payload = { key: "connection", value: connection, ...this.tab }
-        appData.updateQuery(payload)
+        projectsModule.updateQuery(payload)
       },
     },
   }

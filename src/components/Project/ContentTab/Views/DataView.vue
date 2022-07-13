@@ -24,16 +24,16 @@
 </template>
 
 <script>
-  import axios from "axios"
+  import { getModule } from "vuex-module-decorators"
   import { Codemirror } from "vue-codemirror"
-  import Button from "primevue/button"
   import { javascript } from "@codemirror/lang-javascript"
   import { oneDark } from "@codemirror/theme-one-dark"
-  import AppSettings from "@/store/Modules/AppSettings"
-  import AppData from "@/store/Modules/Projects"
-  import { getModule } from "vuex-module-decorators"
-  const appSettings = getModule(AppSettings)
-  const appData = getModule(AppData)
+  import axios from "axios"
+  import Button from "primevue/button"
+  import Settings from "@/store/Modules/Settings"
+  import Projects from "@/store/Modules/Projects"
+  const settingsModule = getModule(Settings)
+  const projectsModule = getModule(Projects)
 
   export default {
     name: "DataView",
@@ -50,16 +50,16 @@
     },
     computed: {
       extensions() {
-        return appSettings.theme === "dark"
+        return settingsModule.data.theme === "dark"
           ? [javascript(), oneDark]
           : [javascript()]
       },
       viewResized() {
-        return appSettings.viewResized
+        return settingsModule.data.viewResized
       },
       path() {
         const { projectIdx, queryIdx } = this.tab
-        return appData.query(projectIdx, queryIdx).dataPath
+        return projectsModule.getQuery(projectIdx, queryIdx).dataPath
       },
     },
     watch: {
@@ -87,7 +87,7 @@
       },
       async handleRequest() {
         this.loading = true
-        const response = await appData.runAlgorithm(this.tab)
+        const response = await projectsModule.runAlgorithm(this.tab)
         if (response.type == "data") {
           this.loading = false
           this.getData()

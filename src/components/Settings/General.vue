@@ -21,20 +21,20 @@
 <script>
   import InputSwitch from "primevue/inputswitch"
   import { getModule } from "vuex-module-decorators"
-  import AppSettings from "@/store/Modules/AppSettings"
-  const appSettings = getModule(AppSettings)
+  import Settings from "@/store/Modules/Settings"
+  const settingsModule = getModule(Settings)
 
   export default {
     name: "General",
     components: { InputSwitch },
     computed: {
       experimentalFeatures() {
-        return appSettings.experimentalFeatures
+        return settingsModule.data.experimentalFeatures
       },
     },
     methods: {
       handleFeatureToggle(enabled, id) {
-        appSettings.toggleExperimentalFeatures({ id, enabled })
+        settingsModule.toggleExperimentalFeatures({ id, enabled })
       },
     },
   }

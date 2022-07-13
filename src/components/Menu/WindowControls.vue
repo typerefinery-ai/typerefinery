@@ -66,11 +66,9 @@
 
     methods: {
       onClose() {
-        console.log("onClose")
         this.ipc.close()
       },
       onMinimize() {
-        console.log("onMinimize")
         this.ipc.minimize().then(() => {
           this.isMinimized = true
           this.isMaximized = false
@@ -78,7 +76,6 @@
         })
       },
       onMaximize() {
-        console.log("onMaximize")
         this.ipc.maximize().then(() => {
           this.isMinimized = false
           this.isMaximized = true
@@ -86,7 +83,6 @@
         })
       },
       onRestore() {
-        console.log("onRestore")
         this.ipc.unmaximize().then(() => {
           this.isMinimized = false
           this.isMaximized = false

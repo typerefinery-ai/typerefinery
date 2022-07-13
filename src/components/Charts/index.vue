@@ -18,8 +18,8 @@
 </template>
 
 <script>
-  import MenuBar from "@/components/MenuBar.vue"
-  import MainMenu from "@/components/MainMenu.vue"
+  import MenuBar from "@/components/Menu/MenuBar.vue"
+  import MainMenu from "@/components/Menu/MainMenu.vue"
   export default {
     name: "Charts",
     components: { MenuBar, MainMenu },

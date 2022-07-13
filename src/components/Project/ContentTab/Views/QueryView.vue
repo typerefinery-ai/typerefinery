@@ -37,13 +37,12 @@
   import { Codemirror } from "vue-codemirror"
   import { javascript } from "@codemirror/lang-javascript"
   import { oneDark } from "@codemirror/theme-one-dark"
-  import InputText from "primevue/inputtext"
-  //   import Textarea from "primevue/textarea"
-  import AppData from "@/store/Modules/Projects"
-  import Settings from "@/store/Modules/AppSettings"
   import { getModule } from "vuex-module-decorators"
-  const appData = getModule(AppData)
-  const appSettings = getModule(Settings)
+  import InputText from "primevue/inputtext"
+  import Projects from "@/store/Modules/Projects"
+  import Settings from "@/store/Modules/Settings"
+  const projectsModule = getModule(Projects)
+  const settingsModule = getModule(Settings)
   export default {
     name: "QueryView",
     components: { InputText, Codemirror },
@@ -53,20 +52,20 @@
     },
     computed: {
       extensions() {
-        return appSettings.theme === "dark"
+        return settingsModule.data.theme === "dark"
           ? [javascript(), oneDark]
           : [javascript()]
       },
       label() {
         const { projectIdx, queryIdx } = this.tab
-        return appData.list[0].list[projectIdx].queries.list[queryIdx].label
+        return projectsModule.getQuery(projectIdx, queryIdx).label
       },
       query() {
         const { projectIdx, queryIdx } = this.tab
-        return appData.list[0].list[projectIdx].queries.list[queryIdx].query
+        return projectsModule.getQuery(projectIdx, queryIdx).query
       },
       viewResized() {
-        return appSettings.viewResized
+        return settingsModule.data.viewResized
       },
     },
     watch: {
@@ -80,11 +79,11 @@
     methods: {
       handleInput({ target: { value } }, key) {
         const payload = { key, value, ...this.tab }
-        appData.updateQuery(payload)
+        projectsModule.updateQuery(payload)
       },
       handleQuery(code) {
         const payload = { key: "query", value: code, ...this.tab }
-        appData.updateQuery(payload)
+        projectsModule.updateQuery(payload)
       },
       setEditorHeight() {
         if (this.view !== "Q") return

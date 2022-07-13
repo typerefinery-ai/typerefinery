@@ -4,7 +4,7 @@ import i18n from "@/i18n"
 import Tooltip from "primevue/tooltip"
 import PrimeVue from "primevue/config"
 import { mount } from "@vue/test-utils"
-import MenuBar from "@/components/MenuBar.vue"
+import MenuBar from "@/components/Menu/MenuBar.vue"
 describe("Content tabs tests", () => {
   const wrapper = mount(MenuBar, {
     global: {

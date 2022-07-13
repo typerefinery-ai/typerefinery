@@ -39,17 +39,17 @@
 </template>
 
 <script>
+  import { getModule } from "vuex-module-decorators"
   import TabMenu from "primevue/tabmenu"
-  import Projects from "@/components/Dialog/Projects.vue"
-  import NewConnections from "@/components/Dialog/Newconnections.vue"
-  import NewQuery from "@/components/Dialog/NewQueries.vue"
+  import Projects from "@/components/Dialog/NewProject.vue"
+  import NewConnections from "@/components/Dialog/NewConnection.vue"
+  import NewQuery from "@/components/Dialog/NewQuery.vue"
   import NewTransformer from "@/components/Dialog/NewTransformer.vue"
   import NewAlgorithm from "@/components/Dialog/NewAlgorithm.vue"
-  import AppSettings from "@/store/Modules/AppSettings"
-  import { getModule } from "vuex-module-decorators"
-  const appSettings = getModule(AppSettings)
-  import Project from "@/store/Modules/Projects"
-  const appProjects = getModule(Project)
+  import Settings from "@/store/Modules/Settings"
+  import AppData from "@/store/Modules/AppData"
+  const settingsModule = getModule(Settings)
+  const appDataModule = getModule(AppData)
   export default {
     name: "MainMenu",
     components: {
@@ -91,7 +91,7 @@
             icon: "pi pi-chart-pie",
             to: "/home/charts",
             type: "experimental",
-            enabled: appSettings.featureStatus("charts"),
+            enabled: settingsModule.getFeatureStatus("charts"),
             subMenu: [
               { id: "load-data", to: "#" },
               { id: "load-links", to: "#" },
@@ -102,7 +102,7 @@
             icon: "pi pi-sitemap",
             to: "/home/maps",
             type: "experimental",
-            enabled: appSettings.featureStatus("maps"),
+            enabled: settingsModule.getFeatureStatus("maps"),
             subMenu: [{ id: "load-data", to: "#" }],
           },
           {
@@ -110,14 +110,14 @@
             icon: "pi pi-comment",
             to: "/home/chats",
             type: "experimental",
-            enabled: appSettings.featureStatus("chat"),
+            enabled: settingsModule.getFeatureStatus("chat"),
           },
           {
             label: this.$t("components.mainmenu.editor"),
             icon: "pi pi-code",
             to: "/home/editor",
             type: "experimental",
-            enabled: appSettings.featureStatus("editor"),
+            enabled: settingsModule.getFeatureStatus("editor"),
           },
         ].filter((el) => {
           if (el.type === "regular") return el
@@ -128,17 +128,16 @@
         return this.items.filter((el) => el.to == this.$route.path)[0].subMenu
       },
       connectionDialog() {
-        return appProjects.connectionDialog
+        return appDataModule.data.connectionDialog
       },
       transformerDialog() {
-        return appProjects.transformerDialog
+        return appDataModule.data.transformerDialog
       },
-
       queryDialog() {
-        return appProjects.queryDialog
+        return appDataModule.data.queryDialog
       },
       algorithmDialog() {
-        return appProjects.algorithmDialog
+        return appDataModule.data.algorithmDialog
       },
     },
 
@@ -147,34 +146,33 @@
         this.projectdialog = false
       },
       connectionclosemodal() {
-        appProjects.toggleConnectionDialog()
+        appDataModule.toggleConnectionDialog()
       },
       queryclosemodal() {
-        appProjects.toggleQueryDialog()
+        appDataModule.toggleQueryDialog()
       },
       transformerclosemodal() {
-        appProjects.toggleTransformerDialog()
+        appDataModule.toggleTransformerDialog()
       },
       algorithmclosemodal() {
-        appProjects.toggleAlgorithmDialog()
+        appDataModule.toggleAlgorithmDialog()
       },
-
       handleProject(id) {
         if (id === "new-project") {
           this.projectdialog = !this.projectdialog
         }
         if (id === "new-connection") {
-          appProjects.toggleConnectionDialog()
+          appDataModule.toggleConnectionDialog()
         }
         if (id === "new-query") {
           this.querydialog = !this.querydialog
-          appProjects.toggleQueryDialog()
+          appDataModule.toggleQueryDialog()
         }
         if (id === "new-transformer") {
-          appProjects.toggleTransformerDialog()
+          appDataModule.toggleTransformerDialog()
         }
         if (id === "new-algorithm") {
-          appProjects.toggleAlgorithmDialog()
+          appDataModule.toggleAlgorithmDialog()
         }
       },
       handleRoutes(route) {
@@ -186,16 +184,14 @@
           this.showSubMenuOverlay = true
         }
       },
-
       closeMainMenu() {
         if (this.showSubMenuOverlay) {
           this.showSubMenuOverlay = false
         }
       },
-
       toggleView() {
         this.$emit("toggle")
-        appSettings.resizeView()
+        settingsModule.resizeView()
       },
     },
   }

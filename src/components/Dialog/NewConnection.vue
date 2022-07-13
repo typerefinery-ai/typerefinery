@@ -155,16 +155,21 @@
 </template>
 
 <script>
+  import { getModule } from "vuex-module-decorators"
+  import { required } from "@vuelidate/validators"
+  import { useVuelidate } from "@vuelidate/core"
+  import { getRandomId } from "@/utils"
   import Dialog from "primevue/dialog"
   import Dropdown from "primevue/dropdown"
   import InputText from "primevue/inputtext"
   import Button from "primevue/button"
   import Panel from "primevue/panel"
-  import AppData from "@/store/Modules/Projects"
-  import { getModule } from "vuex-module-decorators"
-  import { required } from "@vuelidate/validators"
-  import { useVuelidate } from "@vuelidate/core"
-  const appData = getModule(AppData)
+  import Projects from "@/store/Modules/Projects"
+  import Connections from "@/store/Modules/Connections"
+  import AppData from "@/store/Modules/AppData"
+  const projectsModule = getModule(Projects)
+  const connectionsModule = getModule(Connections)
+  const appDataModule = getModule(AppData)
 
   export default {
     name: "NewConnections",
@@ -210,12 +215,15 @@
     },
     computed: {
       projectList() {
-        return appData.projectsList
+        return projectsModule.getProjects.map((el) => ({
+          label: el.label,
+          key: el.id,
+        }))
       },
     },
     mounted() {
-      if (appData.treeNodePath) {
-        const nodeData = appData.treeNodePath.split("/")
+      if (appDataModule.data.treeNodePath) {
+        const nodeData = appDataModule.data.treeNodePath.split("/")
 
         // local
         this.lengthData = nodeData
@@ -224,10 +232,9 @@
           this.selectedEditNode = true
 
           // set project
-          const projects = appData.allProjects
-          const projectIndex = appData.allProjects.findIndex(
-            (el) => el.id == nodeData[0]
-          )
+          const projects = projectsModule.getProjects
+          const projectIndex = projects.findIndex((el) => el.id == nodeData[0])
+
           this.projectsIndex = projectIndex
           this.selected = projects[projectIndex].id
           // connection index
@@ -247,12 +254,14 @@
         } else {
           this.selectedEditNode = true
           // set connection
-          const connectionIndex = appData.globalConnections.findIndex(
-            (el) => el.id == nodeData[0]
-          )
+          const connectionIndex =
+            connectionsModule.getGlobalConnections.findIndex(
+              (el) => el.id == nodeData[0]
+            )
           this.connectionsIndex = connectionIndex
           // for connection data
-          const connection = appData.globalConnections[connectionIndex]
+          const connection =
+            connectionsModule.getGlobalConnections[connectionIndex]
           this.v$.name.$model = connection.label
           this.v$.description.$model = connection.description
           this.v$.icon.$model = connection.icon
@@ -263,9 +272,8 @@
     },
     methods: {
       connectioncloseDialog() {
-        appData.resetTreeNodePath()
+        appDataModule.resetTreeNodePath()
         this.$emit("close")
-        //clear store here for editnode
       },
       //update dialog
       handleEditedConnectionStore(isFormValid) {
@@ -273,9 +281,8 @@
         if (this.lengthData.length == 1) {
           data = {
             connectionIdx: this.connectionsIndex,
-            projectIdx: -1,
             data: {
-              ...appData.globalConnections[this.connectionsIndex],
+              ...connectionsModule.getGlobalConnections[this.connectionsIndex],
               label: this.v$.name.$model,
               icon: this.v$.icon.$model,
               host: this.v$.host.$model,
@@ -285,14 +292,13 @@
               scope: "local",
             },
           }
+          connectionsModule.editGlobalConnection(data)
         } else {
           data = {
             connectionIdx: this.connectionsIndex,
             projectIdx: this.projectsIndex,
             data: {
-              ...appData.allProjects[this.projectsIndex].connections.list[
-                this.connectionsIndex
-              ],
+              ...projectsModule.getLocalConnections[this.connectionsIndex],
               label: this.v$.name.$model,
               host: this.v$.host.$model,
               port: this.v$.port.$model,
@@ -302,6 +308,7 @@
               scope: "global",
             },
           }
+          projectsModule.editLocalConnection(data)
         }
         this.updateData = data
         this.submitted = true
@@ -310,17 +317,15 @@
           return
         }
 
-        appData.editConnection(this.updateData)
         this.connectioncloseDialog()
       },
 
       // new dialog
       handleconnectionstore(isFormValid) {
-        const projectIndex = appData.allProjects.findIndex(
+        const projectIndex = projectsModule.getProjects.findIndex(
           (el) => el.id == this.selected
         )
         const data = {
-          name: this.selected,
           projectIdx: projectIndex,
           data: {
             label: this.name,
@@ -329,10 +334,8 @@
             icon: this.icon,
             description: this.description,
             type: "connection",
-            id: Math.random()
-              .toString(36)
-              .replace(/[^a-z]+/g, "")
-              .substr(2, 10),
+            id: getRandomId(),
+            scope: projectIndex == -1 ? "global" : "local",
           },
         }
         this.submitted = true
@@ -340,7 +343,11 @@
         if (!isFormValid) {
           return
         }
-        appData.addNewConnection(data)
+        if (projectIndex == -1) {
+          connectionsModule.addGlobalConnection(data.data)
+        } else {
+          projectsModule.addLocalConnection(data)
+        }
         this.$emit("close")
       },
     },
@@ -350,6 +357,11 @@
   .connection-dialog {
     height: 100vh;
     width: 40vw;
+    .p-panel.p-component {
+      .p-panel-content {
+        padding-top: 5px;
+      }
+    }
     .p-dropdown {
       width: 100%;
     }
