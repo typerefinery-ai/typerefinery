@@ -150,9 +150,7 @@ export default class Projects extends VuexModule {
   @Mutation
   setQueryDataPath({ path, projectIdx, queryIdx }) {
     const projects = JSON.parse(JSON.stringify(this.data.list))
-    projects[projectIdx].queries.list[
-      queryIdx
-    ].dataPath = `services/fastapi/${path}`
+    projects[projectIdx].queries.list[queryIdx].dataPath = path
     this.data.list = projects
   }
 
