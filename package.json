@@ -103,6 +103,7 @@
     "roboto-fontface": "*",
     "splitpanes": "^3.1.1",
     "tree-kill": "^1.2.2",
+    "vite-plugin-markdown-vue": "^0.1.2",
     "vue": "^3.2.31",
     "vue-codemirror": "^6.0.0",
     "vue-i18n": "^9.1.9",
