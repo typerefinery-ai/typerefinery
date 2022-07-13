@@ -2,6 +2,7 @@
 
 import { defineConfig } from "vite"
 import vue from "@vitejs/plugin-vue"
+import markdown from "vite-plugin-markdown-vue"
 
 import { fileURLToPath, URL } from "url"
 
@@ -9,13 +10,16 @@ import { fileURLToPath, URL } from "url"
 export default defineConfig({
   base: process.env.ELECTRON == "true" ? "./" : "",
   plugins: [
+    markdown(),
     {
       name: "vitest-plugin-beforeall",
       config: () => ({
         test: { setupFiles: ["./vitest/beforeall.ts"] },
       }),
     },
-    vue(),
+    vue({
+      include: [/\.vue$/, /\.md$/],
+    }),
     // https://github.com/vuetifyjs/vuetify-loader/tree/next/packages/vite-plugin
   ],
   define: { "process.env": {} },

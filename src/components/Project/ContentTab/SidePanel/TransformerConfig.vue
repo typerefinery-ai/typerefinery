@@ -86,35 +86,7 @@
         </Dialog>
       </div>
       <div v-if="activeView === 'help'">
-        <div class="field">
-          <h3>Commands</h3>
-          <div class="help">
-            <code>log()</code>
-            <span>{{ $t("components.transformer.help.commands.log") }}</span>
-          </div>
-        </div>
-        <div class="field">
-          <h3 class="field">Frameworks</h3>
-          <div class="help">
-            <code>d3.&lt;&gt;</code>
-            <span>{{ $t("components.transformer.help.frameworks.d3") }}</span>
-          </div>
-          <div class="help">
-            <code>webCola.&lt;&gt;</code>
-            <span>{{
-              $t("components.transformer.help.frameworks.webCola")
-            }}</span>
-          </div>
-        </div>
-        <div class="field">
-          <h3 class="field">Variables</h3>
-          <div class="help">
-            <code>SERVICE_OUTPUT_JSON</code>
-            <span>{{
-              $t("components.transformer.help.variables.SERVICE_OUTPUT_JSON")
-            }}</span>
-          </div>
-        </div>
+        <component :is="markdownFile"></component>
       </div>
     </div>
   </div>
@@ -126,10 +98,14 @@
   import MultiSelect from "primevue/multiselect"
   import Dialog from "primevue/dialog"
   import InputText from "primevue/inputtext"
+  import MarkDownDataEng from "../Markdown/TransformHelpEng.md"
+  import MarkDownDataHindi from "../Markdown/TransformHelpHindi.md"
+  import "../Markdown/markdown.css"
   import { getModule } from "vuex-module-decorators"
   import AppData from "@/store/Modules/Projects"
+  import AppSettings from "@/store/Modules/AppSettings"
   const appData = getModule(AppData)
-
+  const appSettings = getModule(AppSettings)
   export default {
     name: "TransformerConfig",
     components: {
@@ -138,6 +114,8 @@
       Dropdown,
       Dialog,
       InputText,
+      MarkDownDataEng,
+      MarkDownDataHindi,
     },
     props: {
       tab: { type: Object, required: true },
@@ -145,6 +123,7 @@
     emits: ["handle-dependencies"],
     data() {
       return {
+        markdownFile: "",
         transformerName: "",
         activeView: "config",
         saveDialog: false,
@@ -157,6 +136,9 @@
       }
     },
     computed: {
+      language() {
+        return appSettings.language
+      },
       transformer() {
         const { projectIdx, queryIdx } = this.tab
         const transformer =
@@ -177,10 +159,19 @@
         return transformer.dependencies.map((el) => ({ name: el, code: el }))
       },
     },
+    watch: {
+      language(value) {
+        if (value == "en") this.markdownFile = "MarkDownDataEng"
+        else if (value == "hi") this.markdownFile = "MarkDownDataHindi"
+      },
+    },
     mounted() {
       const { projectIdx, queryIdx } = this.tab
       const transformer = appData.query(projectIdx, queryIdx).transformer
       this.$emit("handle-dependencies", transformer.dependencies)
+      if (appSettings.language == "en") this.markdownFile = "MarkDownDataEng"
+      else if (appSettings.language == "hi")
+        this.markdownFile = "MarkDownDataHindi"
     },
     methods: {
       handleView(view) {
