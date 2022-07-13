@@ -39,7 +39,9 @@
           "enabled": "Enabled",
           "status": "Status",
           "type": "Type",
-          "description": "Description"
+          "description": "Description",
+          "serviceport": "Port",
+          "servicepid": "Process ID"
         }
       },
       "profile": {

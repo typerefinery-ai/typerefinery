@@ -296,44 +296,30 @@ export class Service extends EventEmitter<ServiceEvent> {
     return this.#serviceport
   }
 
+  #getSimpleInfo() {
+    return {
+      id: this.#id,
+      name: this.#options.name,
+      serviceport: this.#serviceport,
+      servicepid: this.#process?.pid,
+      description: this.#options.description,
+      enabled: this.#options.enabled,
+      status: this.#status,
+      icon: this.#options.icon,
+      servicetype: this.#options.servicetype,
+      servicepath: this.#servicepath,
+      servicepidfile: this.#servicepidfile,
+    }
+  }
+
   // return simple object with service config
   public getSimple(): any {
-    return Object.assign(
-      {},
-      {
-        id: this.#id,
-        name: this.#options.name,
-        description: this.#options.description,
-        enabled: this.#options.enabled,
-        status: this.#status,
-        icon: this.#options.icon,
-        servicetype: this.#options.servicetype,
-        servicepath: this.#servicepath,
-        servicepidfile: this.#servicepidfile,
-      }
-    )
+    return Object.assign({}, this.#getSimpleInfo())
   }
 
   // return full object with service config
   public toString = (): string => {
-    return JSON.stringify(
-      Object.assign(
-        {},
-        {
-          id: this.#id,
-          name: this.#options.name,
-          description: this.#options.description,
-          enabled: this.#options.enabled,
-          status: this.#status,
-          icon: this.#options.icon,
-          servicetype: this.#options.servicetype,
-          servicepath: this.#servicepath,
-          servicepidfile: this.#servicepidfile,
-        }
-      ),
-      null,
-      "  "
-    )
+    return JSON.stringify(Object.assign({}, this.#getSimpleInfo()), null, "  ")
   }
 
   // register process and run health check

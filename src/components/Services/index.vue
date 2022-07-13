@@ -62,6 +62,22 @@
           </Dropdown>
         </div>
         <div class="field">
+          <label for="serviceport">{{
+            $t("components.setting.services.info.serviceport")
+          }}</label>
+          <InputText
+            id="serviceport"
+            v-model="service.serviceport"
+            type="text"
+          />
+        </div>
+        <div class="field">
+          <label for="servicepid">{{
+            $t("components.setting.services.info.servicepid")
+          }}</label>
+          <InputText id="servicepid" v-model="service.servicepid" type="text" />
+        </div>
+        <div class="field">
           <label for="type">{{
             $t("components.setting.services.info.type")
           }}</label>
@@ -210,6 +226,15 @@
     &[status="0"] {
       background-color: v-bind("serviceStatusColorList['disabled']");
     }
+    &[status="10"] {
+      background-color: v-bind("serviceStatusColorList['stopped']");
+    }
+    &[status="15"] {
+      background-color: v-bind("serviceStatusColorList['stopped']");
+    }
+    &[status="20"] {
+      background-color: v-bind("serviceStatusColorList['stopped']");
+    }
     &[status="30"] {
       background-color: v-bind("serviceStatusColorList['stopping']");
     }
@@ -226,11 +251,23 @@
 
   .service-button {
     color: gray;
+    &[status="-10"] {
+      color: v-bind("serviceStatusColorList['error']");
+    }
     &[status="-1"] {
       color: v-bind("serviceStatusColorList['error']");
     }
     &[status="0"] {
       color: v-bind("serviceStatusColorList['disabled']");
+    }
+    &[status="10"] {
+      color: v-bind("serviceStatusColorList['stopped']");
+    }
+    &[status="15"] {
+      color: v-bind("serviceStatusColorList['stopped']");
+    }
+    &[status="20"] {
+      color: v-bind("serviceStatusColorList['stopped']");
     }
     &[status="30"] {
       color: v-bind("serviceStatusColorList['stopping']");

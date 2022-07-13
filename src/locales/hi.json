@@ -39,7 +39,9 @@
           "enabled": "सक्षम",
           "status": "स्थिति",
           "type": "प्रकार",
-          "description": "विवरण"
+          "description": "विवरण",
+          "serviceport": "सेवा पोर्ट",
+          "servicepid": "सेवा पिडिएड"
         }
       },
       "profile": {
