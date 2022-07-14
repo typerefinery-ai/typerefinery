@@ -100,15 +100,15 @@
   import MultiSelect from "primevue/multiselect"
   import Dialog from "primevue/dialog"
   import InputText from "primevue/inputtext"
-  import MarkDownDataEng from "../Markdown/TransformHelpEng.md"
-  import MarkDownDataHindi from "../Markdown/TransformHelpHindi.md"
+  import MarkdownEn from "../Markdown/TransformHelpEng.md"
+  import MarkdownHi from "../Markdown/TransformHelpHindi.md"
   import "../Markdown/markdown.css"
   import Projects from "@/store/Modules/Projects"
   import Transformers from "@/store/Modules/Transformers"
-  import AppSettings from "@/store/Modules/Settings"
+  import Settings from "@/store/Modules/Settings"
   const projectsModule = getModule(Projects)
   const transformersModule = getModule(Transformers)
-  const appSettings = getModule(AppSettings)
+  const settingsModule = getModule(Settings)
 
   export default {
     name: "TransformerConfig",
@@ -118,8 +118,8 @@
       Dropdown,
       Dialog,
       InputText,
-      MarkDownDataEng,
-      MarkDownDataHindi,
+      MarkdownEn,
+      MarkdownHi,
     },
     props: {
       tab: { type: Object, required: true },
@@ -139,7 +139,7 @@
     },
     computed: {
       language() {
-        return appSettings.language
+        return settingsModule.data.language
       },
       transformer() {
         const { projectIdx: pI, queryIdx: qI } = this.tab
@@ -177,17 +177,14 @@
     },
     watch: {
       language(value) {
-        if (value == "en") this.markdownFile = "MarkDownDataEng"
-        else if (value == "hi") this.markdownFile = "MarkDownDataHindi"
+        this.handleMarkdown(value)
       },
     },
     mounted() {
+      this.handleMarkdown(this.language)
       const { projectIdx: pI, queryIdx: qI } = this.tab
       const transformer = projectsModule.getQuery(pI, qI).transformer
       this.$emit("handle-dependencies", transformer.dependencies)
-      if (appSettings.language == "en") this.markdownFile = "MarkDownDataEng"
-      else if (appSettings.language == "hi")
-        this.markdownFile = "MarkDownDataHindi"
     },
     methods: {
       handleView(view) {
@@ -258,6 +255,10 @@
           transformersModule.addGlobalTransformer(data)
         }
         this.transformerName = ""
+      },
+      handleMarkdown(language) {
+        if (language == "en") this.markdownFile = "MarkdownEn"
+        else if (language == "hi") this.markdownFile = "MarkdownHi"
       },
     },
   }

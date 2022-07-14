@@ -19,9 +19,9 @@
   import ProjectContent from "./ProjectContent"
   import MainMenu from "@/components/Menu/MainMenu.vue"
   import MenuBar from "@/components/Menu/MenuBar.vue"
-  import AppSettings from "@/store/Modules/Settings"
+  import Settings from "@/store/Modules/Settings"
   import { getModule } from "vuex-module-decorators"
-  const settingsModule = getModule(AppSettings)
+  const settingsModule = getModule(Settings)
 
   export default {
     name: "Project",
