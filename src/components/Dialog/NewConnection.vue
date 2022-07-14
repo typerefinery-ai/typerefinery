@@ -298,7 +298,8 @@
             connectionIdx: this.connectionsIndex,
             projectIdx: this.projectsIndex,
             data: {
-              ...projectsModule.getLocalConnections[this.connectionsIndex],
+              ...projectsModule.getProjects[this.projectsIndex].connections
+                .list[this.connectionsIndex],
               label: this.v$.name.$model,
               host: this.v$.host.$model,
               port: this.v$.port.$model,
