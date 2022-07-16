@@ -295,7 +295,9 @@
             algorithmIdx: this.algorithmsIndex,
             projectIdx: this.projectsIndex,
             data: {
-              ...projectsModule.getLocalAlgorithms[this.algorithmsIndex],
+              ...projectsModule.getProjects[this.projectsIndex].algorithms.list[
+                this.algorithmsIndex
+              ],
               label: this.v$.name.$model,
               icon: this.v$.icon.$model,
               description: this.v$.description.$model,
