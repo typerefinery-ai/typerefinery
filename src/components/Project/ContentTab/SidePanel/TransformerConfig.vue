@@ -233,6 +233,7 @@
           })
         }
         const payload = { key: "transformer", value: transformer, ...this.tab }
+        this.$emit("handle-dependencies", transformer.dependencies)
         projectsModule.updateQuery(payload)
       },
       saveTransformer(scope) {
