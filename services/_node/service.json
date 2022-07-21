@@ -8,9 +8,13 @@
   "icon": "pi pi-globe",
   "servicetype": 10,
   "execconfig": {
+    "archive": {
+      "source": "node-v18.6.0-win-x64.zip",
+      "destination": "v18.6.0"
+    },
     "executable": {
-      "win32": "v18.6.0\\npm.cmd",
-      "default": "v18.6.0\\npm"
+      "win32": "node-v18.6.0-win-x64\\npm.cmd",
+      "default": "node-v18.6.0-win-x64\\npm"
     }
   }
 }
