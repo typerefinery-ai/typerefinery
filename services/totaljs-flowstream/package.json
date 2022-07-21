@@ -1,0 +1,23 @@
+{
+  "name": "FlowStream",
+  "version": "12.0.0",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/totaljs/flowstream"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.12",
+    "total4": "^0.0.64"
+  },
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [
+    "flow",
+    "flowstream",
+    "iot"
+  ],
+  "author": "Peter Širka",
+  "license": "MIT"
+}
