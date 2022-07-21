@@ -1,6 +1,6 @@
 @echo off
 SET "SERVICE_NAME=totaljs-messageservice"
-SET "NODE_HOME=%cd%\_node\v18.6.0"
+SET "NODE_HOME=%cd%\_node\node-v18.6.0-win-x64"
 SET "SERVER_HOME=%cd%\%SERVICE_NAME%"
 SET "PATH=%NODE_HOME%"
 SET "SERVICE_DATA_PATH=./database"
