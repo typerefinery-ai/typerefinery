@@ -1,7 +1,7 @@
 {
-  "id": "totaljs-flowstreams",
-  "name": "Total JS Flowstreams",
-  "description": "Flowstreams server",
+  "id": "totaljs-messageservice",
+  "name": "Total JS TMS",
+  "description": "TMS server",
   "enabled": true,
   "status": "30",
   "logoutput": "",
@@ -13,13 +13,13 @@
       "i total4"
     ],
     "commandline": "start",
-    "serviceport": 8111,
+    "serviceport": 8112,
     "depend_on": [
       "node"
     ],
     "healthcheck": {
       "type": "http",
-      "url": "http://localhost:${SERVICE_PORT}/",
+      "url": "ws://localhost:${SERVICE_PORT}/$tms",
       "expected_status": 200
     }
   }

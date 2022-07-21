@@ -64,8 +64,8 @@
 			"il5tumroo": {
 				"id": "il5tumroo",
 				"config": {},
-				"x": 393,
-				"y": 47,
+				"x": 323,
+				"y": 62,
 				"component": "pubsrck95z660d2Xconnections_insert",
 				"connections": {
 					"publish": [
@@ -95,8 +95,8 @@
 			"il5tun1ov": {
 				"id": "il5tun1ov",
 				"config": {},
-				"x": 710,
-				"y": 438,
+				"x": 708,
+				"y": 445,
 				"component": "subsrck95z660d2Xconnections_insert",
 				"connections": {},
 				"template": {
