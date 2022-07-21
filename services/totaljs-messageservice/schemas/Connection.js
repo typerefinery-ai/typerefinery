@@ -2,7 +2,8 @@ let CONNECTIONS = []
 
 console.log("connections")
 
-NEWSCHEMA("connection", function (schema) {
+NEWSCHEMA("Connection", function (schema) {
+  console.log(schema)
   schema.define("name", "String")
   schema.define("description", "String")
   schema.define("host", "String")

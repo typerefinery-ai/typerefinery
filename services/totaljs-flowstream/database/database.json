@@ -64,8 +64,8 @@
 			"il5tumroo": {
 				"id": "il5tumroo",
 				"config": {},
-				"x": 323,
-				"y": 62,
+				"x": 317,
+				"y": 61,
 				"component": "pubsrck95z660d2Xconnections_insert",
 				"connections": {
 					"publish": [
@@ -95,8 +95,8 @@
 			"il5tun1ov": {
 				"id": "il5tun1ov",
 				"config": {},
-				"x": 708,
-				"y": 445,
+				"x": 834,
+				"y": 510,
 				"component": "subsrck95z660d2Xconnections_insert",
 				"connections": {},
 				"template": {
@@ -146,11 +146,15 @@
 				"connections": {
 					"output": [
 						{
+							"id": "il5tvst90",
+							"index": "input"
+						},
+						{
 							"id": "il5tun1ov",
 							"index": "subscribe"
 						},
 						{
-							"id": "il5tvst90",
+							"id": "il5undcmy",
 							"index": "input"
 						}
 					]
@@ -201,14 +205,36 @@
 			"il5tvst90": {
 				"id": "il5tvst90",
 				"config": {},
-				"x": 605,
-				"y": 615,
+				"x": 618,
+				"y": 620,
 				"component": "csl8z67b6d",
 				"connections": {},
 				"template": {
 					"icon": "fa fa-calculator",
 					"group": "Common",
 					"name": "Counter",
+					"inputs": [
+						{
+							"id": "input",
+							"name": "Input"
+						}
+					]
+				}
+			},
+			"il5undcmy": {
+				"id": "il5undcmy",
+				"config": {
+					"repo": false,
+					"data": true
+				},
+				"x": 586,
+				"y": 312,
+				"component": "cmh84a7822",
+				"connections": {},
+				"template": {
+					"icon": "fa fa-print",
+					"group": "Common",
+					"name": "Print JSON",
 					"inputs": [
 						{
 							"id": "input",
@@ -463,6 +489,6 @@
 		},
 		"origin": "http://localhost:8111",
 		"dtcreated": "2022-07-20T16:54:57.401Z",
-		"size": 58525
+		"size": 58797
 	}
 }
