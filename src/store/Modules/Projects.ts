@@ -212,7 +212,10 @@ export default class Projects extends VuexModule {
         returnoutput: "log",
       }
       const response = await axios.post(query.endpoint, payload)
-      const path = response.headers["output"].replace(/\\/g, "/")
+      const outputExists =
+        response.headers["output.exists"].toLowerCase() == "true"
+      let path = ""
+      if (outputExists) path = response.headers["output.url"]
       const data = { path, projectIdx, queryIdx }
       this.setQueryDataPath(data)
       return { data: response.data, type: "data" }

@@ -102,7 +102,7 @@
   import InputText from "primevue/inputtext"
   import MarkdownEn from "../Markdown/TransformHelpEng.md"
   import MarkdownHi from "../Markdown/TransformHelpHindi.md"
-  import "../Markdown/markdown.css"
+  import "../../../../styles/_markdown.css"
   import Projects from "@/store/Modules/Projects"
   import Transformers from "@/store/Modules/Transformers"
   import Settings from "@/store/Modules/Settings"
@@ -233,6 +233,7 @@
           })
         }
         const payload = { key: "transformer", value: transformer, ...this.tab }
+        this.$emit("handle-dependencies", transformer.dependencies)
         projectsModule.updateQuery(payload)
       },
       saveTransformer(scope) {

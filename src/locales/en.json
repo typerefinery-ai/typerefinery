@@ -2,6 +2,7 @@
   "components": {
     "mainmenu": {
       "project": "Project",
+      "workflow": "Workflow",
       "charts": "Charts",
       "maps": "Maps",
       "chats": "Chat",

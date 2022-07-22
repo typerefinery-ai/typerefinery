@@ -28,6 +28,7 @@
   import { Codemirror } from "vue-codemirror"
   import { javascript } from "@codemirror/lang-javascript"
   import { oneDark } from "@codemirror/theme-one-dark"
+  import * as d3 from "d3"
   import axios from "axios"
   import Button from "primevue/button"
   import Settings from "@/store/Modules/Settings"
@@ -61,6 +62,11 @@
         const { projectIdx, queryIdx } = this.tab
         return projectsModule.getQuery(projectIdx, queryIdx).dataPath
       },
+      origin() {
+        const { projectIdx, queryIdx } = this.tab
+        const endpoint = projectsModule.getQuery(projectIdx, queryIdx).endpoint
+        return new URL(endpoint).origin
+      },
     },
     watch: {
       viewResized() {
@@ -87,6 +93,7 @@
       },
       async handleRequest() {
         this.loading = true
+        this.data = "loading..."
         const response = await projectsModule.runAlgorithm(this.tab)
         if (response.type == "data") {
           this.loading = false
@@ -97,8 +104,14 @@
       },
       async getData() {
         if (this.path) {
-          const response = await axios.get(this.path)
-          this.data = JSON.stringify(response.data, null, "\t")
+          try {
+            this.data = "loading..."
+            const { data } = await axios.get(this.origin + this.path)
+            this.data = JSON.stringify(data, null, "\t")
+          } catch (err) {
+            this.data = "Unable to fetch data"
+            console.log(err)
+          }
         }
       },
       handleData(data) {

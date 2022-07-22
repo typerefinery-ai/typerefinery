@@ -2,6 +2,7 @@
   "components": {
     "mainmenu": {
       "project": "परियोजना",
+      "workflow": "कार्यप्रवाह",
       "charts": "चार्ट",
       "maps": "नक़्शे",
       "chats": "चैट",
