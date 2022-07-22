@@ -1,0 +1,26 @@
+{
+  "id": "totaljs-flowstreams",
+  "name": "Total JS Flowstreams",
+  "description": "Flowstreams server",
+  "enabled": true,
+  "status": "30",
+  "logoutput": "",
+  "icon": "pi pi-globe",
+  "servicetype": 10,
+  "execconfig": {
+    "execservice": { "id": "node" },
+    "setup": [
+      "i total4"
+    ],
+    "commandline": "start",
+    "serviceport": 8111,
+    "depend_on": [
+      "node"
+    ],
+    "healthcheck": {
+      "type": "http",
+      "url": "http://localhost:${SERVICE_PORT}/",
+      "expected_status": 200
+    }
+  }
+}

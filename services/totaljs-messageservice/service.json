@@ -1,0 +1,26 @@
+{
+  "id": "totaljs-messageservice",
+  "name": "Total JS TMS",
+  "description": "TMS server",
+  "enabled": true,
+  "status": "30",
+  "logoutput": "",
+  "icon": "pi pi-globe",
+  "servicetype": 10,
+  "execconfig": {
+    "execservice": { "id": "node" },
+    "setup": [
+      "i total4"
+    ],
+    "commandline": "start",
+    "serviceport": 8112,
+    "depend_on": [
+      "node"
+    ],
+    "healthcheck": {
+      "type": "http",
+      "url": "ws://localhost:${SERVICE_PORT}/$tms",
+      "expected_status": 200
+    }
+  }
+}

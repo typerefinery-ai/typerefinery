@@ -1,0 +1,21 @@
+name                    : FlowStream
+allow_custom_titles     : true
+cdn                     : https://cdn.componentator.com
+flowstream_designer     : flowstreamdesigner.totaljs.com
+backup                  : false
+flowstream_worker       : fork
+
+// Disables: Worker/Fork
+// flowstream_worker       : false
+
+// Replaces WorkerThread for the ChildProcess/Fork
+// flowstream_worker       : fork
+
+// Enables sandbox for NPM dependencies (we recommend to use it for "worker" mode only)
+flowstream_sandbox          : false
+
+// Own list of components and the structure must be the same as https://cdn.totaljs.com/flowstream/components/db.json
+// flowstream_components   : https://website.com/components.json
+
+// Flow directory
+directory               (env)    : SERVICE_DATA_PATH
