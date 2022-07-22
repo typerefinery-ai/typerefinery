@@ -1,5 +1,6 @@
 .markdown code {
-  font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
+  font-family: Roboto, Helvetica Neue Light, Helvetica Neue, Helvetica, Arial,
+    Lucida Grande, sans-serif;
   padding: 0.2em 0.4em;
   background-color: rgba(27, 31, 35, 0.05);
   border-radius: 3px;
