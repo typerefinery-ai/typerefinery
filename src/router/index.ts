@@ -2,6 +2,7 @@
 
 import { createRouter, createWebHashHistory } from "vue-router"
 import Home from "@/views/Home.vue"
+import Workflow from "@/views/Workflow.vue"
 import Chat from "@/components/Chat/index.vue"
 import Maps from "@/components/Maps/index.vue"
 import Login from "@/components/Auth/Login.vue"
@@ -32,6 +33,11 @@ const router = createRouter({
       path: "/home/chats",
       name: "chat",
       component: Chat,
+    },
+    {
+      path: "/workflow",
+      name: "workflow",
+      component: Workflow,
     },
   ],
 })
