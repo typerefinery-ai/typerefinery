@@ -31,3 +31,6 @@ SUBSCRIBE("connections_remove", function (model) {
   // Set $.id param to EXEC call - https://docs.totaljs.com/total4/407ff001jy51c/#485dc001cl51c
   controller.id = model.id
 })
+
+// Registers RPC
+NEWCALL('connections_query', '-Connections --> query')
