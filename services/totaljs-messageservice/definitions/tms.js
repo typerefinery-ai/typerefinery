@@ -1,14 +1,14 @@
-NEWPUBLISH("connections_insert", "Connection")
-NEWPUBLISH("connections_update", "Connection")
-NEWPUBLISH("connections_remove", "Connection")
+NEWPUBLISH("connections_insert", "Connections")
+NEWPUBLISH("connections_update", "Connections")
+NEWPUBLISH("connections_remove", "Connections")
 
 // NEWPUBLISH('products_insert', 'Products');
 // NEWPUBLISH('products_update', 'Products');
 // NEWPUBLISH('products_remove', 'Products');
 
-NEWSUBSCRIBE("connections_insert", "Connection")
-NEWSUBSCRIBE("connections_update", "Connection")
-NEWSUBSCRIBE("connections_remove", "Connection")
+NEWSUBSCRIBE("connections_insert", "Connections")
+NEWSUBSCRIBE("connections_update", "Connections")
+NEWSUBSCRIBE("connections_remove", "Connections")
 
 // NEWSUBSCRIBE('products_insert', 'Products');
 // NEWSUBSCRIBE('products_update', 'Products');
