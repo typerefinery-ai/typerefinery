@@ -2,7 +2,7 @@
   "id": "typedb",
   "name": "DB",
   "description": "Database",
-  "enabled": false,
+  "enabled": true,
   "status": "30",
   "logoutput": "...",
   "icon": "pi pi-database",

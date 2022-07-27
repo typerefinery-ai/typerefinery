@@ -11,7 +11,7 @@
 		"version": "",
 		"readme": "",
 		"url": "https://",
-		"name": "test",
+		"name": "TMS Test",
 		"components": {
 			"cmbr250a48": "<script total>\n\n\texports.name = 'Trigger';\n\texports.group = 'Triggers';\n\texports.version = '2';\n\texports.icon = 'fa fa-bullhorn';\n\texports.author = 'Total.js';\n\texports.config = { random: true, type: 'string', data: '', restart: false };\n\texports.outputs = [{ id: 'output', name: 'Output' }];\n\n\texports.make = function(instance, config) {\n\n\t\tinstance.trigger = function() {\n\n\t\t\tvar val;\n\n\t\t\tswitch (config.type) {\n\t\t\t\tcase 'number':\n\t\t\t\t\tval = config.random ? U.random() : config.data.parseFloat();\n\t\t\t\t\tbreak;\n\t\t\t\tcase 'buffer':\n\t\t\t\t\ttry {\n\t\t\t\t\t\tval = config.random ? Buffer.from(U.random_string()) : Buffer.from(config.data, 'base64');\n\t\t\t\t\t} catch (e) {\n\t\t\t\t\t\tinstance.throw(e);\n\t\t\t\t\t}\n\t\t\t\t\tbreak;\n\t\t\t\tcase 'date':\n\t\t\t\t\tval = config.random ? NOW.add('-' + U.random(500, 10) + ' seconds') : config.data.parseDate();\n\t\t\t\t\tbreak;\n\t\t\t\tcase 'object':\n\t\t\t\t\ttry {\n\t\t\t\t\t\tval = config.random ? {} : (new Function('return ' + config.data))();\n\t\t\t\t\t} catch (e) {\n\t\t\t\t\t\tinstance.throw(e);\n\t\t\t\t\t}\n\t\t\t\t\tbreak;\n\t\t\t\tcase 'boolean':\n\t\t\t\t\tval = config.random ? U.random() % 2 === 0 : config.data === 'true' || config.data === 'on' || config.data === '1';\n\t\t\t\t\tbreak;\n\t\t\t\tdefault:\n\t\t\t\t\tval = config.random ? U.random_string(20) : config.data;\n\t\t\t\t\tbreak;\n\t\t\t}\n\n\t\t\tinstance.send('output', val);\n\t\t};\n\n\t\tconfig.restart && setTimeout(() => instance.trigger(), 5000);\n\t};\n\n</script>\n\n<style>\n\t.CLASS .padding { padding: 0 10px 10px; }\n\t.CLASS button { width: 100%; height: 24px; border: 1px solid #E0E0E0; border-radius: var(--radius); color: #000; background-color: #F0F0F0; margin: 0; }\n\t.CLASS button:hover { background-color: #F8F8F8; }\n\t.CLASS button:active { background-color: #E0E0E0; }\n\t.ui-dark .CLASS button { border-color: #404040; color: #FFF; background-color: #222; }\n\t.ui-dark .CLASS button:hover { background-color: #303030; }\n\t.ui-dark .CLASS button:active { background-color: #404040; }\n</style>\n\n<settings>\n\t<div class=\"padding\">\n\t\t<div data---=\"input__?.type__dirsource:string|String,number|Number,boolean|Boolean,date|Date,object|Object,buffer|Buffer as Base64;required:1\">Type</div>\n\t\t<div class=\"mt10 m\">\n\t\t\t<div data---=\"input__?.restart__type:checkbox\">Trigger 5s after initialization.</div>\n\t\t\t<div data---=\"input__?.random__type:checkbox\">Random data</div>\n\t\t</div>\n\t\t<div data-bind=\"?.random__hide\" class=\"hidden\">\n\t\t\t<hr />\n\t\t\t<div data---=\"input__?.data__required:1\">Data</div>\n\t\t</div>\n\t</div>\n</settings>\n\n<readme>\nThe component triggers data into the Flow.\n</readme>\n\n<body>\n\t<header>\n\t\t<i class=\"ICON\"></i>NAME\n\t</header>\n\t<div class=\"padding\">\n\t\t<button class=\"exec\" data-exec=\"FUNC.trigger\">Run</button>\n\t</div>\n</body>",
 			"cmfjj64e18": "<script total>\n\n\texports.name = 'Print';\n\texports.group = 'Common';\n\texports.version = '3';\n\texports.icon = 'fa fa-print';\n\texports.author = 'Total.js';\n\texports.config = { repo: false, data: true };\n\texports.inputs = [{ id: 'input', name: 'Input' }];\n\n\texports.make = function(instance, config) {\n\t\tinstance.message = function($) {\n\n\t\t\tvar data = $.data;\n\n\t\t\tif (config.data !== false) {\n\t\t\t\tif (data instanceof Buffer)\n\t\t\t\t\tdata = data.toString('hex').substring(0, 200);\n\t\t\t}\n\n\t\t\tvar count = 0;\n\n\t\t\tfor (var key in config) {\n\t\t\t\tif (config[key])\n\t\t\t\t\tcount++;\n\t\t\t}\n\n\t\t\tvar output = count > 1 ? {} : null;\n\n\t\t\tif (config.repo) {\n\t\t\t\tif (output)\n\t\t\t\t\toutput.repo = $.repo;\n\t\t\t\telse\n\t\t\t\t\toutput = $.repository;\n\t\t\t}\n\n\t\t\tif (config.data) {\n\t\t\t\tif (output)\n\t\t\t\t\toutput.data = $.data;\n\t\t\t\telse\n\t\t\t\t\toutput = $.data;\n\t\t\t}\n\n\t\t\toutput && instance.status(output, 200);\n\t\t\t$.destroy();\n\t\t};\n\n\t\tinstance.trigger = function() {\n\t\t\tinstance.status('');\n\t\t};\n\n\t};\n\n</script>\n\n<style>\n\t.CLASS footer > div { margin: 10px; }\n\t.CLASS pre { font-size: 10px; margin: 0; padding: 5px; background-color: #F0F0F0; border-radius: var(--radius); }\n\t.CLASS .noscrollbar { max-height: 250px; }\n\t.ui-dark .CLASS pre { background-color: #404040; tab-size: 2; }\n</style>\n\n<readme>\nThe component prints incoming data in a JSON format.\n</readme>\n\n<settings>\n\t<div class=\"padding\">\n\t\t<div data---=\"input__?.repo__type:checkbox\">Shows repository</div>\n\t\t<div data---=\"input__?.data__type:checkbox\">Shows data</div>\n\t</div>\n</settings>\n\n<body>\n\t<header>\n\t\t<button class=\"exec button\" data-exec=\"FUNC.trigger\">Clear</button>\n\t\t<i class=\"ICON\"></i>NAME\n\t</header>\n\t<footer>\n\t\t<div data-bind=\"!STATUS__html pre:Thelpers.jsonformat(JSON.stringify(value, null, '\\t'))__show\" class=\"hidden selectable\">\n\t\t\t<div class=\"noscrollbar\">\n\t\t\t\t<pre class=\"json\"></pre>\n\t\t\t</div>\n\t\t</div>\n\t</footer>\n</body>",
@@ -30,7 +30,8 @@
 			"subsrcvjer4415aXconnections_insert": "<script total>\n\n\texports.name = 'TMS Example';\n\texports.icon = 'fas fa-satellite-dish';\n\texports.group = 'Subscribers';\n\texports.config = {};\n\texports.inputs = [{ id: 'subscribe', name: 'Input' }];\n\texports.type = 'sub';\n\texports.schemaid = ['srcvjer4415a', 'connections_insert'];\n\n\texports.make = function(instance) {\n\t\tinstance.message = function($) {\n\t\t\tvar socket = instance.main.sockets['srcvjer4415a'];\n\t\t\tif (socket && socket.subscribers && socket.subscribers['connections_insert']) {\n\n\t\t\t\tvar data = $.data;\n\n\t\t\t\t/*\n\t\t\t\t\tvar err = new ErrorBuilder();\n\t\t\t\t\tdata = framework_jsonschema.transform(schema, err, data, true);\n\n\t\t\t\t\tif (err.is) {\n\t\t\t\t\t\t$.destroy();\n\t\t\t\t\t\treturn;\n\t\t\t\t\t}\n\n\t\t\t\t*/\n\n\t\t\t\tsocket.send({ type: 'subscribe', id: 'connections_insert', data: data });\n\t\t\t}\n\t\t\t$.destroy();\n\t\t};\n\t};\n\n</script>\n\n<style>\n\t.f-subsrcvjer4415aXconnections_insert .url { font-size: 11px; }\n</style>\n\n<readme>\n# connections_insert\n- URL address: <http://localhost:8112>\n- Channel: __subscribe__\n- JSON schema `connections_insert.json`\n- Version: 24\n\n```json\n{\n  \"id\": \"connections_insert\",\n  \"schema\": {\n    \"$id\": \"https://schemas.totaljs.com/Connections.json\",\n    \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n    \"type\": \"object\",\n    \"properties\": {\n      \"name\": {\n        \"type\": \"string\"\n      },\n      \"description\": {\n        \"type\": \"string\"\n      },\n      \"host\": {\n        \"type\": \"string\"\n      },\n      \"icon\": {\n        \"type\": \"string\"\n      },\n      \"id\": {\n        \"type\": \"string\"\n      },\n      \"type\": {\n        \"type\": \"string\"\n      },\n      \"scope\": {\n        \"type\": \"string\"\n      },\n      \"port\": {\n        \"type\": \"number\"\n      },\n      \"dtcreated\": {\n        \"type\": \"date\"\n      },\n      \"dtupdated\": {\n        \"type\": \"date\"\n      }\n    }\n  }\n}\n```\n</readme>\n\n<body>\n\t<header>\n\t\t<div><i class=\"fas fa-satellite-dish mr5\"></i><span>TMS Example / <b>connections_insert</b></span></div>\n\t\t<div class=\"url\"></div>\n\t</header>\n</body>",
 			"subsrcvjer4415aXconnections_update": "<script total>\n\n\texports.name = 'TMS Example';\n\texports.icon = 'fas fa-satellite-dish';\n\texports.group = 'Subscribers';\n\texports.config = {};\n\texports.inputs = [{ id: 'subscribe', name: 'Input' }];\n\texports.type = 'sub';\n\texports.schemaid = ['srcvjer4415a', 'connections_update'];\n\n\texports.make = function(instance) {\n\t\tinstance.message = function($) {\n\t\t\tvar socket = instance.main.sockets['srcvjer4415a'];\n\t\t\tif (socket && socket.subscribers && socket.subscribers['connections_update']) {\n\n\t\t\t\tvar data = $.data;\n\n\t\t\t\t/*\n\t\t\t\t\tvar err = new ErrorBuilder();\n\t\t\t\t\tdata = framework_jsonschema.transform(schema, err, data, true);\n\n\t\t\t\t\tif (err.is) {\n\t\t\t\t\t\t$.destroy();\n\t\t\t\t\t\treturn;\n\t\t\t\t\t}\n\n\t\t\t\t*/\n\n\t\t\t\tsocket.send({ type: 'subscribe', id: 'connections_update', data: data });\n\t\t\t}\n\t\t\t$.destroy();\n\t\t};\n\t};\n\n</script>\n\n<style>\n\t.f-subsrcvjer4415aXconnections_update .url { font-size: 11px; }\n</style>\n\n<readme>\n# connections_update\n- URL address: <http://localhost:8112>\n- Channel: __subscribe__\n- JSON schema `connections_update.json`\n- Version: 24\n\n```json\n{\n  \"id\": \"connections_update\",\n  \"schema\": {\n    \"$id\": \"https://schemas.totaljs.com/Connections.json\",\n    \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n    \"type\": \"object\",\n    \"properties\": {\n      \"name\": {\n        \"type\": \"string\"\n      },\n      \"description\": {\n        \"type\": \"string\"\n      },\n      \"host\": {\n        \"type\": \"string\"\n      },\n      \"icon\": {\n        \"type\": \"string\"\n      },\n      \"id\": {\n        \"type\": \"string\"\n      },\n      \"type\": {\n        \"type\": \"string\"\n      },\n      \"scope\": {\n        \"type\": \"string\"\n      },\n      \"port\": {\n        \"type\": \"number\"\n      },\n      \"dtcreated\": {\n        \"type\": \"date\"\n      },\n      \"dtupdated\": {\n        \"type\": \"date\"\n      }\n    }\n  }\n}\n```\n</readme>\n\n<body>\n\t<header>\n\t\t<div><i class=\"fas fa-satellite-dish mr5\"></i><span>TMS Example / <b>connections_update</b></span></div>\n\t\t<div class=\"url\"></div>\n\t</header>\n</body>",
 			"subsrcvjer4415aXconnections_remove": "<script total>\n\n\texports.name = 'TMS Example';\n\texports.icon = 'fas fa-satellite-dish';\n\texports.group = 'Subscribers';\n\texports.config = {};\n\texports.inputs = [{ id: 'subscribe', name: 'Input' }];\n\texports.type = 'sub';\n\texports.schemaid = ['srcvjer4415a', 'connections_remove'];\n\n\texports.make = function(instance) {\n\t\tinstance.message = function($) {\n\t\t\tvar socket = instance.main.sockets['srcvjer4415a'];\n\t\t\tif (socket && socket.subscribers && socket.subscribers['connections_remove']) {\n\n\t\t\t\tvar data = $.data;\n\n\t\t\t\t/*\n\t\t\t\t\tvar err = new ErrorBuilder();\n\t\t\t\t\tdata = framework_jsonschema.transform(schema, err, data, true);\n\n\t\t\t\t\tif (err.is) {\n\t\t\t\t\t\t$.destroy();\n\t\t\t\t\t\treturn;\n\t\t\t\t\t}\n\n\t\t\t\t*/\n\n\t\t\t\tsocket.send({ type: 'subscribe', id: 'connections_remove', data: data });\n\t\t\t}\n\t\t\t$.destroy();\n\t\t};\n\t};\n\n</script>\n\n<style>\n\t.f-subsrcvjer4415aXconnections_remove .url { font-size: 11px; }\n</style>\n\n<readme>\n# connections_remove\n- URL address: <http://localhost:8112>\n- Channel: __subscribe__\n- JSON schema `connections_remove.json`\n- Version: 24\n\n```json\n{\n  \"id\": \"connections_remove\",\n  \"schema\": {\n    \"$id\": \"https://schemas.totaljs.com/Connections.json\",\n    \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n    \"type\": \"object\",\n    \"properties\": {\n      \"name\": {\n        \"type\": \"string\"\n      },\n      \"description\": {\n        \"type\": \"string\"\n      },\n      \"host\": {\n        \"type\": \"string\"\n      },\n      \"icon\": {\n        \"type\": \"string\"\n      },\n      \"id\": {\n        \"type\": \"string\"\n      },\n      \"type\": {\n        \"type\": \"string\"\n      },\n      \"scope\": {\n        \"type\": \"string\"\n      },\n      \"port\": {\n        \"type\": \"number\"\n      },\n      \"dtcreated\": {\n        \"type\": \"date\"\n      },\n      \"dtupdated\": {\n        \"type\": \"date\"\n      }\n    }\n  }\n}\n```\n</readme>\n\n<body>\n\t<header>\n\t\t<div><i class=\"fas fa-satellite-dish mr5\"></i><span>TMS Example / <b>connections_remove</b></span></div>\n\t\t<div class=\"url\"></div>\n\t</header>\n</body>",
-			"calsrcvjer4415aXconnections_query": "<script total>\n\n\texports.name = 'TMS Example';\n\texports.icon = 'fa fa-plug';\n\texports.config = { timeout: 60000 };\n\texports.inputs = [{ id: 'input', name: 'Input' }];\n\texports.outputs = [{ id: 'output', name: 'Output' }, { id: 'error', name: 'Error' }];\n\texports.group = 'Calls';\n\texports.type = 'call';\n\texports.schemaid = ['srcvjer4415a', 'connections_query'];\n\n\texports.make = function(instance, config) {\n\n\t\tinstance.message = function($, client) {\n\t\t\tvar socket = instance.main.sockets['srcvjer4415a'];\n\t\t\tif (socket && socket.calls && socket.calls['connections_query']) {\n\n\t\t\t\tvar data = $.data;\n\n\t\t\t\t/*\n\t\t\t\t\tvar err = new ErrorBuilder();\n\t\t\t\t\tdata = framework_jsonschema.transform(schema, err, data, true);\n\n\t\t\t\t\tif (err.is) {\n\t\t\t\t\t\t$.send('error', err.toString());\n\t\t\t\t\t\treturn;\n\t\t\t\t\t}\n\n\t\t\t\t*/\n\n\t\t\t\tvar callback = function(err, response) {\n\t\t\t\t\tif (err)\n\t\t\t\t\t\t$.send('error', err);\n\t\t\t\t\telse\n\t\t\t\t\t\t$.send('output', response);\n\t\t\t\t};\n\n\t\t\t\tvar callbackid = (socket.callbackindexer++) + '';\n\n\t\t\t\tif (socket.callbackindexer > 999999999)\n\t\t\t\t\tsocket.callbackindexer = 0;\n\n\t\t\t\tsocket.callbacks[callbackid] = { callback: callback, id: setTimeout(socket.callbacktimeout, config.timeout, callbackid) };\n\t\t\t\tsocket.send({ type: 'call', id: 'connections_query', data: data, callbackid: callbackid });\n\n\t\t\t} else\n\t\t\t\t$.destroy();\n\t\t};\n\t};\n\n</script>\n\n<style>\n\t.f-calsrcvjer4415aXconnections_query .url { font-size: 11px; }\n</style>\n\n<readme>\n# connections_query\n- URL address: <http://localhost:8112>\n- Channel: __call__\n- JSON schema `connections_query.json`\n- Version: 24\n\n```json\n{\n  \"$id\": \"https://schemas.totaljs.com/Connections.json\",\n  \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"name\": {\n      \"type\": \"string\"\n    },\n    \"description\": {\n      \"type\": \"string\"\n    },\n    \"host\": {\n      \"type\": \"string\"\n    },\n    \"icon\": {\n      \"type\": \"string\"\n    },\n    \"id\": {\n      \"type\": \"string\"\n    },\n    \"type\": {\n      \"type\": \"string\"\n    },\n    \"scope\": {\n      \"type\": \"string\"\n    },\n    \"port\": {\n      \"type\": \"number\"\n    },\n    \"dtcreated\": {\n      \"type\": \"date\"\n    },\n    \"dtupdated\": {\n      \"type\": \"date\"\n    }\n  }\n}\n```\n</readme>\n\n<body>\n\t<header>\n\t\t<div><i class=\"fa fa-plug mr5\"></i><span>TMS Example / <b>connections_query</b></span></div>\n\t\t<div class=\"url\"></div>\n\t</header>\n</body>"
+			"calsrcvjer4415aXconnections_query": "<script total>\n\n\texports.name = 'TMS Example';\n\texports.icon = 'fa fa-plug';\n\texports.config = { timeout: 60000 };\n\texports.inputs = [{ id: 'input', name: 'Input' }];\n\texports.outputs = [{ id: 'output', name: 'Output' }, { id: 'error', name: 'Error' }];\n\texports.group = 'Calls';\n\texports.type = 'call';\n\texports.schemaid = ['srcvjer4415a', 'connections_query'];\n\n\texports.make = function(instance, config) {\n\n\t\tinstance.message = function($, client) {\n\t\t\tvar socket = instance.main.sockets['srcvjer4415a'];\n\t\t\tif (socket && socket.calls && socket.calls['connections_query']) {\n\n\t\t\t\tvar data = $.data;\n\n\t\t\t\t/*\n\t\t\t\t\tvar err = new ErrorBuilder();\n\t\t\t\t\tdata = framework_jsonschema.transform(schema, err, data, true);\n\n\t\t\t\t\tif (err.is) {\n\t\t\t\t\t\t$.send('error', err.toString());\n\t\t\t\t\t\treturn;\n\t\t\t\t\t}\n\n\t\t\t\t*/\n\n\t\t\t\tvar callback = function(err, response) {\n\t\t\t\t\tif (err)\n\t\t\t\t\t\t$.send('error', err);\n\t\t\t\t\telse\n\t\t\t\t\t\t$.send('output', response);\n\t\t\t\t};\n\n\t\t\t\tvar callbackid = (socket.callbackindexer++) + '';\n\n\t\t\t\tif (socket.callbackindexer > 999999999)\n\t\t\t\t\tsocket.callbackindexer = 0;\n\n\t\t\t\tsocket.callbacks[callbackid] = { callback: callback, id: setTimeout(socket.callbacktimeout, config.timeout, callbackid) };\n\t\t\t\tsocket.send({ type: 'call', id: 'connections_query', data: data, callbackid: callbackid });\n\n\t\t\t} else\n\t\t\t\t$.destroy();\n\t\t};\n\t};\n\n</script>\n\n<style>\n\t.f-calsrcvjer4415aXconnections_query .url { font-size: 11px; }\n</style>\n\n<readme>\n# connections_query\n- URL address: <http://localhost:8112>\n- Channel: __call__\n- JSON schema `connections_query.json`\n- Version: 24\n\n```json\n{\n  \"$id\": \"https://schemas.totaljs.com/Connections.json\",\n  \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"name\": {\n      \"type\": \"string\"\n    },\n    \"description\": {\n      \"type\": \"string\"\n    },\n    \"host\": {\n      \"type\": \"string\"\n    },\n    \"icon\": {\n      \"type\": \"string\"\n    },\n    \"id\": {\n      \"type\": \"string\"\n    },\n    \"type\": {\n      \"type\": \"string\"\n    },\n    \"scope\": {\n      \"type\": \"string\"\n    },\n    \"port\": {\n      \"type\": \"number\"\n    },\n    \"dtcreated\": {\n      \"type\": \"date\"\n    },\n    \"dtupdated\": {\n      \"type\": \"date\"\n    }\n  }\n}\n```\n</readme>\n\n<body>\n\t<header>\n\t\t<div><i class=\"fa fa-plug mr5\"></i><span>TMS Example / <b>connections_query</b></span></div>\n\t\t<div class=\"url\"></div>\n\t</header>\n</body>",
+			"cy4pw82f66": "<script total>\n\n\texports.name = 'Request';\n\texports.group = 'Common';\n\texports.version = '3';\n\texports.icon = 'fas fa-cloud-download';\n\texports.author = 'Total.js';\n\texports.config = { url: '', method: 'GET', dnscache: true, insecure: false, nocookies: true, xhr: false, parse: true, timeout: 10000, limit: 1024 * 500, responsebody: true, headers: {}, cookies: {}, serialize: null, send: 'all' };\n\texports.inputs = [{ id: 'payload', name: 'Payload' }];\n\texports.outputs = [{ id: 'response', name: 'Response' }, { id: 'error', name: 'Error' }];\n\n\texports.make = function(instance, config) {\n\n\t\tinstance.trigger = function() {\n\t\t\tinstance.message(instance.newmessage({}));\n\t\t};\n\n\t\tinstance.message = function($) {\n\n\t\t\tif (!config.url) {\n\t\t\t\t$.end();\n\t\t\t\treturn;\n\t\t\t}\n\n\t\t\tvar opt = {};\n\n\t\t\tfor (var key in config.headers) {\n\t\t\t\tif (!opt.headers)\n\t\t\t\t\topt.headers = {};\n\t\t\t\topt.headers[$.variables(key, true)] = $.variables(config.headers[key], true);\n\t\t\t}\n\n\t\t\tfor (var key in config.cookies) {\n\t\t\t\tif (!opt.cookies)\n\t\t\t\t\topt.cookies = {};\n\t\t\t\topt.cookies[$.variables(key, true)] = $.variables(config.cookies[key], true);\n\t\t\t}\n\n\t\t\topt.method = config.method;\n\t\t\topt.url = $.variables(config.url, true);\n\t\t\topt.cook = true;\n\n\t\t\tif (config.serialize) {\n\t\t\t\tswitch (config.serialize) {\n\n\t\t\t\t\tcase 'json':\n\t\t\t\t\t\topt.type = 'json';\n\t\t\t\t\t\tif (opt.method !== 'GET')\n\t\t\t\t\t\t\topt.body = JSON.stringify($.data);\n\t\t\t\t\t\tbreak;\n\n\t\t\t\t\tcase 'urlencoded':\n\t\t\t\t\t\topt.type = 'urlencoded';\n\t\t\t\t\t\tif (opt.method === 'GET')\n\t\t\t\t\t\t\topt.query = U.toURLEncode($.data);\n\t\t\t\t\t\telse\n\t\t\t\t\t\t\topt.body = U.toURLEncode($.data);\n\t\t\t\t\t\tbreak;\n\n\t\t\t\t\tcase 'buffer':\n\t\t\t\t\t\topt.type = 'raw';\n\t\t\t\t\t\topt.body = $.data;\n\t\t\t\t\t\tbreak;\n\n\t\t\t\t}\n\t\t\t}\n\n\t\t\tif (config.dnscache)\n\t\t\t\topt.dnscache = true;\n\n\t\t\tif (config.insecure)\n\t\t\t\topt.insecure = true;\n\n\t\t\tif (config.nocookies)\n\t\t\t\topt.nocookies = true;\n\n\t\t\tif (config.xhr)\n\t\t\t\topt.xhr = true;\n\n\t\t\tif (config.timeout)\n\t\t\t\topt.timeout = config.timeout;\n\n\t\t\tif (config.limit)\n\t\t\t\topt.limit = config.limit;\n\n\t\t\tif (config.send === 'chunks')\n\t\t\t\topt.custom = true;\n\n\t\t\topt.callback = function(err, response) {\n\n\t\t\t\tif (err) {\n\t\t\t\t\t$.data = err + '';\n\t\t\t\t\t$.send('error');\n\t\t\t\t\treturn;\n\t\t\t\t}\n\n\t\t\t\tif (opt.custom) {\n\t\t\t\t\tresponse.stream.on('data', data => $.send('response', data));\n\t\t\t\t\treturn;\n\t\t\t\t}\n\n\t\t\t\tif (config.send === 'headers') {\n\t\t\t\t\t$.send('response', response.headers);\n\t\t\t\t\treturn;\n\t\t\t\t}\n\n\t\t\t\tif (config.send === 'status') {\n\t\t\t\t\t$.send('response', response.status);\n\t\t\t\t\treturn;\n\t\t\t\t}\n\n\t\t\t\tbody = response.body;\n\n\t\t\t\tif (config.parse) {\n\t\t\t\t\tvar type = response.headers['content-type'] || '';\n\t\t\t\t\tif (type) {\n\t\t\t\t\t\tvar index = type.lastIndexOf(';');\n\t\t\t\t\t\tif (index !== -1)\n\t\t\t\t\t\t\ttype = type.substring(0, index).trim();\n\t\t\t\t\t}\n\t\t\t\t\tswitch (type.toLowerCase()) {\n\t\t\t\t\t\tcase 'text/xml':\n\t\t\t\t\t\tcase 'application/xml':\n\t\t\t\t\t\t\tbody = body ? body.parseXML(true) : {};\n\t\t\t\t\t\t\tbreak;\n\t\t\t\t\t\tcase 'application/x-www-form-urlencoded':\n\t\t\t\t\t\t\tbody = body ? DEF.parsers.urlencoded(body) : {};\n\t\t\t\t\t\t\tbreak;\n\t\t\t\t\t\tcase 'application/json':\n\t\t\t\t\t\tcase 'text/json':\n\t\t\t\t\t\t\tbody = body ? body.parseJSON(true) : null;\n\t\t\t\t\t\t\tbreak;\n\t\t\t\t\t\tdefault:\n\t\t\t\t\t\t\tbody = body && body.isJSON() ? body.parseJSON(true) : body;\n\t\t\t\t\t\t\tbreak;\n\t\t\t\t\t}\n\t\t\t\t}\n\n\t\t\t\tswitch (config.send) {\n\t\t\t\t\tcase 'all':\n\t\t\t\t\t\t$.data = { headers: response.headers, cookies: response.cookies, status: response.status, host: response.host, body: body };\n\t\t\t\t\t\tbreak;\n\t\t\t\t\tcase 'response':\n\t\t\t\t\t\t$.data = body;\n\t\t\t\t\t\tbreak;\n\t\t\t\t}\n\n\t\t\t\t$.send('response');\n\t\t\t};\n\n\t\t\tREQUEST(opt);\n\t\t};\n\n\t};\n\n</script>\n\n<style>\n\t.CLASS .status { font-size: 12px; margin: 0; padding: 10px; overflow-wrap: break-word; }\n\t.CLASS .status span { padding: 2px 3px; border-radius: var(--radius); color: #FFF; }\n</style>\n\n<readme>\nThe component makes a HTTP request. The response data will be serialized as the payload.\n\n__Response__:\n\n```json\n{\n\tstatus: Number,\n\theaders: { key: value },\n\tcookies: { key: value },\n\thost: String,\n\tbody: String/Object/Buffer\n}\n```\n</readme>\n\n<body>\n\t<header>\n\t\t<i class=\"ICON\"></i>NAME\n\t</header>\n\t<footer class=\"hidden\" data-bind=\"CONFIG.url__show\">\n\t\t<div class=\"status\" data-bind=\"CONFIG__template\">\n\t\t\t<script type=\"text/html\">\n\t\t\t\t<div class=\"monospace\"><span style=\"background:{{ value.method | color }}\">{{ value.method }}</span> {{ value.url }}</div>\n\t\t\t</script>\n\t\t</div>\n\t</footer>\n</body>\n\n<settings>\n\t<div class=\"padding bg-smoke npb\">\n\t\t<div class=\"row\">\n\t\t\t<div class=\"col-md-3 m\">\n\t\t\t\t<div data---=\"input__?.method__dirsource:GET|GET,POST|POST,PUT|PUT,DELETE|DELETE,PATCH|PATCH,API|API;required:1\">Method</div>\n\t\t\t</div>\n\t\t\t<div class=\"col-md-9 m\">\n\t\t\t\t<div data---=\"input__?.url__required:1\"><b>URL address</b></div>\n\t\t\t\t<div class=\"help\">URL address supports dynamic variables in the form <code>{key}</code></div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n\t<div class=\"padding\">\n\t\t<div class=\"row\">\n\t\t\t<div class=\"col-md-3 m\">\n\t\t\t\t<div data---=\"input__?.timeout__type:number\">Timeout</div>\n\t\t\t\t<div class=\"help\"><i class=\"far fa-clock-o\"></i><span data-bind=\"?.timeout__text:((value||0)/1000).floor(2)+' sec.'\"></span><br />Timeout <b>in milliseconds</b></div>\n\t\t\t</div>\n\t\t\t<div class=\"col-md-3 m\">\n\t\t\t\t<div data---=\"input__?.limit__type:number\">Max. size</div>\n\t\t\t\t<div class=\"help\"><i class=\"fas fa-calculator\"></i><span data-bind=\"?.limit__text:(value||0).filesize()\"></span><br />Response max. size <b>in bytes</b></div>\n\t\t\t</div>\n\t\t\t<div class=\"col-md-6 m\">\n\t\t\t\t<div data---=\"input__?.send__required:1;dirsource:all|Everything,response|Response body,chunks|Chunks of buffer,headers|Headers only,status|Status code\">Send to output</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n\t<hr class=\"nmt nmb\" />\n\t<div class=\"padding\">\n\t\t<div data---=\"input__?.serialize__dirsource:json|JSON,urlencoded|URL encode,buffer|Buffer;dirraw:1;placeholder:Choose serialization;dirempty:None\" class=\"m\">Data serialization</div>\n\t\t<div data---=\"keyvalue__?.headers__placeholderkey:Header name;placeholdervalue:Header value and press enter\">Headers</div>\n\t\t<div class=\"help m\">Headers support dynamic variables in the form <code>{key}</code></div>\n\t\t<div data---=\"keyvalue__?.cookies__placeholderkey:Cookie name;placeholdervalue:Cookie value and press enter\">Cookies</div>\n\t\t<div class=\"help m\">Cookies support dynamic variables in the form <code>{key}</code></div>\n\t\t<hr />\n\t\t<div data---=\"input__?.parse__type:checkbox\">Parse Response to Object</div>\n\t\t<div data---=\"input__?.dnscache__type:checkbox\">Enable DNS cache</div>\n\t\t<div data---=\"input__?.insecure__type:checkbox\">Allow insecure connection</div>\n\t\t<div data---=\"input__?.xhr__type:checkbox\">Add XHR header</div>\n\t</div>\n</settings>"
 		},
 		"design": {
 			"il5tummbw": {
@@ -41,8 +42,8 @@
 					"data": "",
 					"restart": false
 				},
-				"x": 30,
-				"y": 621,
+				"x": 42,
+				"y": 632,
 				"component": "cmbr250a48",
 				"connections": {
 					"output": [
@@ -70,8 +71,8 @@
 					"repo": false,
 					"data": true
 				},
-				"x": 863,
-				"y": 32,
+				"x": 869,
+				"y": 41,
 				"component": "cmfjj64e18",
 				"connections": {},
 				"template": {
@@ -92,8 +93,8 @@
 					"outputs": 1,
 					"code": "// instance {FlowStreamInstance};\n// $ {FlowStreamMessage};\n// vars {Object};\n// repo {Object};\n// data {String/Number/Boolean/Date/Buffer/Object};\n// $.send('output', data); // or simply send(data); which uses the first output\n// $.destroy();\n// $.throw(err);\n\n// IMPORTANT: If you do not perform re-send, you need to destroy this message via $.destroy() method\n// IMPORTANT: methods $.send(), $.destroy() and $.throw() can be executed only once\n\n$.send('output',\n\t   {\n\t\t\"name\": \"connection1\",\n\t\t\"description\": \"connection1\",\n\t\t\"host\": \"localhost\",\n\t\t\"icon\": \"gear\",\n\t\t\"id\": \"connection1\",\n\t\t\"type\": \"connection\",\n\t\t\"scope\": \"local\",\n\t\t\"port\": 1729\n\t   }\n\t  );\n$.destroy();"
 				},
-				"x": 343,
-				"y": 724,
+				"x": 337,
+				"y": 667,
 				"component": "coi2uf35a9",
 				"connections": {
 					"output": [
@@ -130,8 +131,8 @@
 			"il5tvst90": {
 				"id": "il5tvst90",
 				"config": {},
-				"x": 577,
-				"y": 754,
+				"x": 672,
+				"y": 639,
 				"component": "csl8z67b6d",
 				"connections": {},
 				"template": {
@@ -153,8 +154,8 @@
 					"dependencies": "asf",
 					"database": "datbase"
 				},
-				"x": 289,
-				"y": 853,
+				"x": 356,
+				"y": 870,
 				"component": "cij905b3d1",
 				"connections": {
 					"output": [
@@ -189,8 +190,8 @@
 					"data": "",
 					"restart": false
 				},
-				"x": 53,
-				"y": 782,
+				"x": 30,
+				"y": 819,
 				"component": "cmbr250a48",
 				"connections": {
 					"output": [
@@ -218,8 +219,8 @@
 					"repo": false,
 					"data": true
 				},
-				"x": 573,
-				"y": 878,
+				"x": 714,
+				"y": 888,
 				"component": "cmfjj64e18",
 				"connections": {},
 				"template": {
@@ -242,8 +243,8 @@
 					"data": "{\"name\":\"connection1\",\"description\":\"connection1\",\"host\":\"localhost\",\"icon\":\"gear\",\"id\":\"connection1\",\"type\":\"connection\",\"scope\":\"local\",\"port\":1729}",
 					"restart": false
 				},
-				"x": 234,
-				"y": 186,
+				"x": 250,
+				"y": 203,
 				"component": "cmbr250a48",
 				"connections": {
 					"output": [
@@ -270,8 +271,8 @@
 				"config": {
 					"timeout": 60000
 				},
-				"x": 498,
-				"y": 366,
+				"x": 500,
+				"y": 367,
 				"component": "calsrcvjer4415aXconnections_query",
 				"connections": {
 					"error": [
@@ -313,8 +314,8 @@
 			"il5xew47s": {
 				"id": "il5xew47s",
 				"config": {},
-				"x": 441,
-				"y": 221,
+				"x": 444,
+				"y": 224,
 				"component": "subsrcvjer4415aXconnections_insert",
 				"connections": {},
 				"template": {
@@ -333,8 +334,8 @@
 			"il5xex8ks": {
 				"id": "il5xex8ks",
 				"config": {},
-				"x": 331,
-				"y": 53,
+				"x": 332,
+				"y": 56,
 				"component": "pubsrcvjer4415aXconnections_insert",
 				"connections": {
 					"publish": [
@@ -365,8 +366,8 @@
 					"data": "",
 					"restart": false
 				},
-				"x": 127,
-				"y": 457,
+				"x": 129,
+				"y": 459,
 				"component": "cmbr250a48",
 				"connections": {
 					"output": [
@@ -394,7 +395,7 @@
 					"repo": false,
 					"data": true
 				},
-				"x": 902,
+				"x": 909,
 				"y": 320,
 				"component": "cmfjj64e18",
 				"connections": {},
@@ -578,54 +579,34 @@
 								"type": "object",
 								"properties": {
 									"name": {
-										"type": "string",
-										"$$ID": "name",
-										"$$REQUIRED": false
+										"type": "string"
 									},
 									"description": {
-										"type": "string",
-										"$$ID": "description",
-										"$$REQUIRED": false
+										"type": "string"
 									},
 									"host": {
-										"type": "string",
-										"$$ID": "host",
-										"$$REQUIRED": false
+										"type": "string"
 									},
 									"icon": {
-										"type": "string",
-										"$$ID": "icon",
-										"$$REQUIRED": false
+										"type": "string"
 									},
 									"id": {
-										"type": "string",
-										"$$ID": "id",
-										"$$REQUIRED": false
+										"type": "string"
 									},
 									"type": {
-										"type": "string",
-										"$$ID": "type",
-										"$$REQUIRED": false
+										"type": "string"
 									},
 									"scope": {
-										"type": "string",
-										"$$ID": "scope",
-										"$$REQUIRED": false
+										"type": "string"
 									},
 									"port": {
-										"type": "number",
-										"$$ID": "port",
-										"$$REQUIRED": false
+										"type": "number"
 									},
 									"dtcreated": {
-										"type": "date",
-										"$$ID": "dtcreated",
-										"$$REQUIRED": false
+										"type": "date"
 									},
 									"dtupdated": {
-										"type": "date",
-										"$$ID": "dtupdated",
-										"$$REQUIRED": false
+										"type": "date"
 									}
 								}
 							}
@@ -768,7 +749,7 @@
 		},
 		"origin": "http://localhost:8111",
 		"dtcreated": "2022-07-20T16:54:57.401Z",
-		"size": 81171,
+		"size": 88276,
 		"variables2": {},
 		"directory": "./database",
 		"sandbox": false

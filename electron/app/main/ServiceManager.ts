@@ -66,6 +66,7 @@ class ServiceManager {
     if (restart) {
       this.stopAll()
     }
+    this.#clearServices()
 
     this.#loadServiceConfigs()
     this.#loadServices()
@@ -78,6 +79,10 @@ class ServiceManager {
     if (restart) {
       this.startAll()
     }
+  }
+
+  #clearServices() {
+    this.#services = []
   }
 
   // process all service configs and load Service objects
