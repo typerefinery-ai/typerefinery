@@ -88,7 +88,7 @@
             @click="showD3LabelsChart"
             >Show D3 Labels Graph</Button
           >
-          <div class="graph-container">
+          <div v-if="activeView === 'G'" class="graph-container">
             <graph
               :graph-id="`graph-${tab.id}-${paneId}`"
               :dependencies="dependencies"

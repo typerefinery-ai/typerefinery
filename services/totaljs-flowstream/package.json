@@ -8,6 +8,8 @@
   },
   "dependencies": {
     "cheerio": "^1.0.0-rc.12",
+    "mongodb": "^4.8.0",
+    "mquery": "^4.0.3",
     "total4": "^0.0.64"
   },
   "scripts": {
