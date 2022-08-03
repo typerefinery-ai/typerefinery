@@ -8,9 +8,15 @@
   },
   "dependencies": {
     "cheerio": "^1.0.0-rc.12",
+    "d3": "^4.13.0",
+    "fs": "^0.0.1-security",
+    "jsdom": "^20.0.0",
     "mongodb": "^4.8.0",
     "mquery": "^4.0.3",
-    "total4": "^0.0.64"
+    "total4": "^0.0.64",
+    "typedb": "^0.0.0",
+    "typedb-client": "^2.11.1",
+    "webcola": "^3.4.0"
   },
   "scripts": {
     "start": "node index.js"
