@@ -2,11 +2,11 @@
 import { createStore } from "vuex"
 import VuexPersistence from "vuex-persist"
 
-const Algorithms = new VuexPersistence({
-  key: "algorithms",
-  storage: window.localStorage,
-  reducer: (state: any) => ({ Algorithms: state.Algorithms }),
-})
+// const Algorithms = new VuexPersistence({
+//   key: "algorithms",
+//   storage: window.localStorage,
+//   reducer: (state: any) => ({ Algorithms: state.Algorithms }),
+// })
 
 const AppData = new VuexPersistence({
   key: "appData",
@@ -50,15 +50,15 @@ const Settings = new VuexPersistence({
   reducer: (state: any) => ({ Settings: state.Settings }),
 })
 
-const Transformers = new VuexPersistence({
-  key: "transformers",
-  storage: window.localStorage,
-  reducer: (state: any) => ({ Transformers: state.Transformers }),
-})
+// const Transformers = new VuexPersistence({
+//   key: "transformers",
+//   storage: window.localStorage,
+//   reducer: (state: any) => ({ Transformers: state.Transformers }),
+// })
 
 export default createStore({
   plugins: [
-    Algorithms.plugin,
+    // Algorithms.plugin,
     AppData.plugin,
     Auth.plugin,
     Connections.plugin,
@@ -66,6 +66,6 @@ export default createStore({
     Projects.plugin,
     Services.plugin,
     Settings.plugin,
-    Transformers.plugin,
+    // Transformers.plugin,
   ],
 })

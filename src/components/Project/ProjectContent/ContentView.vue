@@ -91,7 +91,10 @@
       allTabs() {
         return this.tabs.map((el) => ({
           ...el,
-          label: projectsModule.getQueries(el.projectIdx)[el.queryIdx].label,
+          label:
+            el.type === "query"
+              ? projectsModule.getQueries(el.projectIdx)[el.queryIdx].label
+              : el.label,
         }))
       },
     },
