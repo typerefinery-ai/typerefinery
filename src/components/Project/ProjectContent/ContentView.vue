@@ -94,6 +94,10 @@
           label:
             el.type === "query"
               ? projectsModule.getQueries(el.projectIdx)[el.queryIdx].label
+              : el.type === "connection"
+              ? projectsModule.getProjects[el.parentIdx].connections.list[
+                  el.key.split("-").pop()
+                ].label
               : el.label,
         }))
       },

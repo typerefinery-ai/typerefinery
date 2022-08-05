@@ -7,9 +7,9 @@
     :pane-id="paneId"
     @toggle="$emit('toggle')"
   />
-  <connection v-if="tab.type === 'connection'" />
+  <connection v-if="tab.type === 'connection'" :tab="tab" />
   <wiring v-if="tab.type === 'wiring'" />
-  <theme v-if="tab.type === 'theme'" />
+  <theme v-if="tab.type === 'theme'" :tab="tab" />
   <output-content v-if="tab.type === 'output'" />
 </template>
 

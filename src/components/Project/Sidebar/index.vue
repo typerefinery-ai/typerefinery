@@ -83,6 +83,7 @@
               {
                 key: `0-${projectIdx}-0`,
                 label: "Queries",
+                parentIdx: projectIdx,
                 icon: "pi pi-fw pi-database",
                 children: project.queries.list.map((query, qIdx) => {
                   return {
@@ -93,6 +94,7 @@
                     icon: "pi pi-fw pi-file",
                     connection: query.connection,
                     parent: project.id,
+                    parentIdx: projectIdx,
                   }
                 }),
               },
@@ -108,6 +110,7 @@
                     label: connection.label,
                     icon: "pi pi-fw pi-file",
                     parent: project.id,
+                    parentIdx: projectIdx,
                   }
                 }),
               },
@@ -123,6 +126,7 @@
                     label: theme.label,
                     icon: "pi pi-fw pi-file",
                     parent: project.id,
+                    parentIdx: projectIdx,
                   }
                 }),
               },
@@ -138,6 +142,7 @@
                     label: wiring.label,
                     icon: "pi pi-fw pi-file",
                     parent: project.id,
+                    parentIdx: projectIdx,
                   }
                 }),
               },

@@ -100,7 +100,8 @@
               "scope": "local",
               "description": "",
               "port": "1729",
-              "host": "localhost"
+              "host": "localhost",
+              "database": "typerefinery"
             },
             {
               "type": "connection",
@@ -110,7 +111,8 @@
               "scope": "local",
               "description": "",
               "port": "1729",
-              "host": "localhost"
+              "host": "localhost",
+              "database": "typerefinery"
             }
           ]
         },
@@ -137,7 +139,8 @@
                 "scope": "local",
                 "description": "",
                 "port": "1729",
-                "host": "localhost"
+                "host": "localhost",
+                "database": "typerefinery"
               },
               "transformer": {
                 "type": "transformer",
@@ -181,7 +184,8 @@
                 "scope": "local",
                 "description": "",
                 "port": "1729",
-                "host": "localhost"
+                "host": "localhost",
+                "database": "typerefinery"
               },
               "transformer": {
                 "type": "transformer",

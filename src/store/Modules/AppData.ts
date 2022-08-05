@@ -15,12 +15,14 @@ export default class AppData extends VuexModule {
 
   @Mutation
   toggleTreeNode() {
-    this.data.treeNodeClicked = !this.data.treeNodeClicked
+    const value = !this.data.treeNodeClicked
+    this.data.treeNodeClicked = value
   }
 
   @Mutation
   setSelectedTreeNodes(node: { id: string }) {
-    const nodes = JSON.parse(JSON.stringify(this.data.selectedTreeNodes))
+    const data = JSON.parse(JSON.stringify(this.data))
+    const nodes = data.selectedTreeNodes
     nodes.list[0] = node
     this.data.selectedTreeNodes = nodes
   }

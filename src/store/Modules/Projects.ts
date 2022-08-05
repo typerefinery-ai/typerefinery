@@ -106,6 +106,14 @@ export default class Projects extends VuexModule {
   }
 
   @Mutation
+  updateConnection(data) {
+    const { projectIdx, connectionIdx, key, value } = data
+    const projects = JSON.parse(JSON.stringify(this.data.list))
+    projects[projectIdx].connections.list[connectionIdx][key] = value
+    this.data.list = projects
+  }
+
+  @Mutation
   addLocalConnection(connectionData) {
     const { projectIdx, data } = connectionData
     this.data.list[projectIdx].connections.list.push(data)
