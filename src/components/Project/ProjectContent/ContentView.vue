@@ -138,6 +138,7 @@
         if (this.paneId == "pane2") {
           return this.$emit("close-split-view")
         }
+        projectsModule.updateSelectedNode({ key: null })
         appDataModule.removeSelectedTreeNodes(tab.id)
         appDataModule.toggleTreeNode()
       },

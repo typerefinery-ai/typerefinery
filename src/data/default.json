@@ -3,7 +3,6 @@
     "type": "algorithms",
     "label": "Algorithms",
     "icon": "",
-    "expanded": false,
     "list": [
       {
         "type": "algorithm",
@@ -51,7 +50,6 @@
     "type": "connections",
     "label": "Connections",
     "icon": "",
-    "expanded": false,
     "list": [
       {
         "type": "connection",
@@ -78,7 +76,8 @@
   "projects": {
     "label": "Projects",
     "icon": "",
-    "expanded": false,
+    "selectedNode": {},
+    "expandedNodes": {},
     "list": [
       {
         "type": "project",
@@ -86,11 +85,9 @@
         "label": "Project 1",
         "description": "",
         "icon": "",
-        "expanded": false,
         "connections": {
           "type": "connections",
           "icon": "",
-          "expanded": false,
           "list": [
             {
               "type": "connection",
@@ -119,7 +116,6 @@
         "queries": {
           "type": "queries",
           "icon": "",
-          "expanded": false,
           "list": [
             {
               "type": "query",
@@ -217,7 +213,6 @@
         "themes": {
           "type": "themes",
           "icon": "",
-          "expanded": false,
           "list": [
             {
               "type": "theme",
@@ -384,7 +379,6 @@
         "wirings": {
           "type": "wirings",
           "icon": "",
-          "expanded": false,
           "list": [
             {
               "type": "wiring",
@@ -400,7 +394,6 @@
         "outputs": {
           "type": "outputs",
           "icon": "",
-          "expanded": false,
           "list": [
             {
               "type": "output",
@@ -416,7 +409,6 @@
         "transformers": {
           "type": "tranformers",
           "icon": "",
-          "expanded": false,
           "list": [
             {
               "type": "transformer",
@@ -447,7 +439,6 @@
         "algorithms": {
           "type": "algorithms",
           "icon": "",
-          "expanded": false,
           "list": [
             {
               "type": "algorithm",
@@ -553,7 +544,6 @@
     "type": "tranformers",
     "label": "Tranformers",
     "icon": "",
-    "expanded": false,
     "list": [
       {
         "type": "transformer",

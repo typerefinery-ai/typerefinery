@@ -92,6 +92,28 @@ export default class Projects extends VuexModule {
   }
 
   @Mutation
+  updateExpandedNodes({ key, value }) {
+    const projects = JSON.parse(JSON.stringify(this.data))
+    if (value) {
+      projects.expandedNodes[key] = value
+    } else {
+      delete projects.expandedNodes[key]
+    }
+    this.data = projects
+  }
+
+  @Mutation
+  updateSelectedNode({ key, value }) {
+    const projects = JSON.parse(JSON.stringify(this.data))
+    if (key) {
+      projects.selectedNode[key] = value
+    } else {
+      projects.selectedNode = {}
+    }
+    this.data = projects
+  }
+
+  @Mutation
   addNewQuery(queryData) {
     const { projectIdx, data } = queryData
     this.data.list[projectIdx].queries.list.push(data)

@@ -22,17 +22,20 @@
     <div id="sidebar-draggable" class="sidebar-draggable">
       <Tree
         class="h-full tree-wrapper"
-        :meta-key-selection="false"
         :value="nodesData"
         :filter="true"
         filter-mode="lenient"
         :expanded-keys="expandedKeys"
+        selection-mode="single"
+        :selection-keys="selectionKeys"
         scroll-height="75vh"
-        selection-mode="multiple"
+        @node-expand="expandNode"
+        @node-collapse="collapseNode"
         @node-select="onNodeSelect"
         @node-unselect="onNodeUnselect"
         @dblclick="handleNodeSelection"
-      />
+      >
+      </Tree>
     </div>
   </div>
 </template>
@@ -63,7 +66,6 @@
     data() {
       return {
         selectedNode: null,
-        expandedKeys: {},
       }
     },
     computed: {
@@ -82,12 +84,31 @@
             children: [
               {
                 key: `0-${projectIdx}-0`,
+                label: "Connections",
+                type: "connections",
+                parentIdx: projectIdx,
+                icon: "pi pi-fw pi-server",
+                children: project.connections.list.map((connection, cIdx) => {
+                  return {
+                    key: `0-${projectIdx}-0-${cIdx}`,
+                    id: connection.id,
+                    type: connection.type,
+                    label: connection.label,
+                    icon: "pi pi-fw pi-file",
+                    parent: project.id,
+                    parentIdx: projectIdx,
+                  }
+                }),
+              },
+              {
+                key: `0-${projectIdx}-1`,
                 label: "Queries",
+                type: "queries",
                 parentIdx: projectIdx,
                 icon: "pi pi-fw pi-database",
                 children: project.queries.list.map((query, qIdx) => {
                   return {
-                    key: `0-${projectIdx}-0-${qIdx}`,
+                    key: `0-${projectIdx}-1-${qIdx}`,
                     id: query.id,
                     type: query.type,
                     label: query.label,
@@ -99,28 +120,14 @@
                 }),
               },
               {
-                key: `0-${projectIdx}-1`,
-                label: "Connections",
-                icon: "pi pi-fw pi-server",
-                children: project.connections.list.map((connection, cIdx) => {
-                  return {
-                    key: `0-${projectIdx}-1-${cIdx}`,
-                    id: connection.id,
-                    type: connection.type,
-                    label: connection.label,
-                    icon: "pi pi-fw pi-file",
-                    parent: project.id,
-                    parentIdx: projectIdx,
-                  }
-                }),
-              },
-              {
                 key: `0-${projectIdx}-2`,
                 label: "Themes",
+                type: "themes",
+                parentIdx: projectIdx,
                 icon: "pi pi-fw pi-server",
                 children: project.themes.list.map((theme, tIdx) => {
                   return {
-                    key: `0-${projectIdx}-1-${tIdx}`,
+                    key: `0-${projectIdx}-2-${tIdx}`,
                     id: theme.id,
                     type: theme.type,
                     label: theme.label,
@@ -133,10 +140,12 @@
               {
                 key: `0-${projectIdx}-3`,
                 label: "Wirings",
+                type: "wirings",
+                parentIdx: projectIdx,
                 icon: "pi pi-fw pi-server",
                 children: project.wirings.list.map((wiring, wIdx) => {
                   return {
-                    key: `0-${projectIdx}-1-${wIdx}`,
+                    key: `0-${projectIdx}-3-${wIdx}`,
                     id: wiring.id,
                     type: wiring.type,
                     label: wiring.label,
@@ -149,96 +158,31 @@
               {
                 key: `0-${projectIdx}-4`,
                 label: "Outputs",
+                type: "outputs",
+                parentIdx: projectIdx,
                 icon: "pi pi-fw pi-server",
                 children: project.outputs.list.map((output, oIdx) => {
                   return {
-                    key: `0-${projectIdx}-1-${oIdx}`,
+                    key: `0-${projectIdx}-4-${oIdx}`,
                     id: output.id,
                     type: output.type,
                     label: output.label,
                     icon: "pi pi-fw pi-file",
                     parent: project.id,
+                    parentIdx: projectIdx,
                   }
                 }),
               },
-              // {
-              //   key: `0-${projectIdx}-2`,
-              //   label: "Transformers",
-
-              //   icon: "pi pi-fw pi-cog",
-              //   children: project.transformers.list.map((transformer, tIdx) => {
-              //     return {
-              //       key: `0-${projectIdx}-2-${tIdx}`,
-              //       id: transformer.id,
-              //       type: transformer.type,
-              //       label: transformer.label,
-              //       icon: "pi pi-fw pi-file",
-              //       parent: project.id,
-              //     }
-              //   }),
-              // },
-              // {
-              //   key: `0-${projectIdx}-3`,
-              //   label: "Algorithms",
-              //   icon: "pi pi-fw pi-cog",
-              //   children: project.algorithms.list.map((algorithm, aIdx) => {
-              //     return {
-              //       key: `0-${projectIdx}-3-${aIdx}`,
-              //       id: algorithm.id,
-              //       type: algorithm.type,
-              //       label: algorithm.label,
-              //       icon: "pi pi-fw pi-file",
-              //       parent: project.id,
-              //     }
-              //   }),
-              // },
             ],
           })),
         }
-        // const connections = {
-        //   key: 1,
-        //   type: "connections",
-        //   label: "Connections",
-        //   icon: "pi pi-fw pi-book",
-        //   children: connectionsModule.data.list.map((connection, idx) => ({
-        //     key: `1-${idx}`,
-        //     id: connection.id,
-        //     type: connection.type,
-        //     label: connection.label,
-        //     icon: "pi pi-fw pi-file",
-        //   })),
-        // }
-        // const transformers = {
-        //   key: 2,
-        //   type: "transformers",
-        //   label: "Transformers",
-        //   icon: "pi pi-fw pi-book",
-        //   children: transformersModule.data.list.map((transformer, idx) => ({
-        //     key: `2-${idx}`,
-        //     id: transformer.id,
-        //     type: transformer.type,
-        //     label: transformer.label,
-        //     icon: "pi pi-fw pi-file",
-        //   })),
-        // }
-        // const algorithms = {
-        //   key: 3,
-        //   type: "algorithms",
-        //   label: "Algorithms",
-        //   icon: "pi pi-fw pi-book",
-        //   children: algorithmsModule.data.list.map((algorithm, idx) => ({
-        //     key: `3-${idx}`,
-        //     id: algorithm.id,
-        //     type: algorithm.type,
-        //     label: algorithm.label,
-        //     icon: "pi pi-fw pi-file",
-        //   })),
-        // }
-        return [
-          projects,
-          // connections,
-          //  transformers, algorithms
-        ]
+        return [projects]
+      },
+      expandedKeys() {
+        return projectsModule.data.expandedNodes
+      },
+      selectionKeys() {
+        return projectsModule.data.selectedNode
       },
     },
     methods: {
@@ -250,47 +194,10 @@
         this.$router.push({ name: "Login" })
       },
       handleNodes(data) {
-        // let path
-        switch (data.type) {
-          case "query":
-            this.openQuery(data)
-            return
-          default:
-            this.openTab(data)
-            return
-          // if (data.parent) {
-          //   path = `${data.parent}/${data.id}`
-          //   appDataModule.toggleConnectionDialog()
-          //   appDataModule.setTreeNodePath(path)
-          //   return
-          // } else {
-          //   path = `${data.id}`
-          //   appDataModule.toggleConnectionDialog()
-          //   appDataModule.setTreeNodePath(path)
-          //   return
-          // }
-          // case "transformer":
-          //   if (data.parent) {
-          //     path = `${data.parent}/${data.id}`
-          //     appDataModule.toggleTransformerDialog()
-          //     appDataModule.setTreeNodePath(path)
-          //   } else {
-          //     path = `${data.id}`
-          //     appDataModule.toggleTransformerDialog()
-          //     appDataModule.setTreeNodePath(path)
-          //   }
-          //   return
-          // case "algorithm":
-          //   if (data.parent) {
-          //     path = `${data.parent}/${data.id}`
-          //     appDataModule.toggleAlgorithmDialog()
-          //     appDataModule.setTreeNodePath(path)
-          //   } else {
-          //     path = `${data.id}`
-          //     appDataModule.toggleAlgorithmDialog()
-          //     appDataModule.setTreeNodePath(path)
-          //   }
-          //   return
+        if (data.type === "query") {
+          this.openQuery(data)
+        } else {
+          this.openTab(data)
         }
       },
       openQuery(data) {
@@ -302,11 +209,8 @@
           .getQueries(projectIdx)
           .findIndex((el) => el.id == id)
         const queryData = { type, id, projectIdx, queryIdx }
-        // const isNew = !appDataModule.data.selectedTreeNodes.list.includes(id)
-        // if (isNew) {
         appDataModule.toggleTreeNode()
         appDataModule.setSelectedTreeNodes(queryData)
-        // }
       },
       openTab(data) {
         appDataModule.toggleTreeNode()
@@ -319,12 +223,24 @@
         this.selectedNode = null
       },
       handleNodeSelection(e) {
+        const nodesInStore = projectsModule.data.selectedNode
+        if (Object.keys(nodesInStore).length) {
+          projectsModule.updateSelectedNode({ key: null, value: null })
+        }
         const node = e.target.getAttribute("role")
         const parent = e.target.parentElement.getAttribute("role")
         const isTreeNode = node == "treeitem" || parent == "treeitem"
-        if (isTreeNode && !this.selectedNode.children) {
+        const { key, children } = this.selectedNode
+        if (isTreeNode && !children) {
+          projectsModule.updateSelectedNode({ key, value: true })
           this.handleNodes(this.selectedNode)
         }
+      },
+      expandNode({ key }) {
+        projectsModule.updateExpandedNodes({ key, value: true })
+      },
+      collapseNode({ key }) {
+        projectsModule.updateExpandedNodes({ key, value: false })
       },
     },
   }
@@ -332,4 +248,8 @@
 
 <style lang="scss" scoped>
   @import "./Sidebar.scss";
+
+  .yo {
+    background: red;
+  }
 </style>
