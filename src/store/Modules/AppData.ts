@@ -15,24 +15,25 @@ export default class AppData extends VuexModule {
 
   @Mutation
   toggleTreeNode() {
-    this.data.treeNodeClicked = !this.data.treeNodeClicked
+    const value = !this.data.treeNodeClicked
+    this.data.treeNodeClicked = value
   }
 
   @Mutation
   setSelectedTreeNodes(node: { id: string }) {
-    const nodes = JSON.parse(JSON.stringify(this.data.selectedTreeNodes))
-    nodes.list.push(node.id)
-    nodes[node.id] = node
+    const data = JSON.parse(JSON.stringify(this.data))
+    const nodes = data.selectedTreeNodes
+    nodes.list[0] = node
     this.data.selectedTreeNodes = nodes
   }
 
   @Mutation
-  removeSelectedTreeNodes(id: string) {
-    const nodes = JSON.parse(JSON.stringify(this.data.selectedTreeNodes))
-    const idx = nodes.list.findIndex((el) => el == id)
-    nodes.list.splice(idx, 1)
-    delete nodes[id]
-    this.data.selectedTreeNodes = nodes
+  removeSelectedTreeNodes() {
+    // const nodes = JSON.parse(JSON.stringify(this.data.selectedTreeNodes))
+    // const idx = nodes.list.findIndex((el) => el == id)
+    // nodes.list.splice(idx, 1)
+    // delete nodes[id]
+    this.data.selectedTreeNodes = { list: [] }
   }
 
   @Mutation

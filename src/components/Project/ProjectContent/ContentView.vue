@@ -91,7 +91,14 @@
       allTabs() {
         return this.tabs.map((el) => ({
           ...el,
-          label: projectsModule.getQueries(el.projectIdx)[el.queryIdx].label,
+          label:
+            el.type === "query"
+              ? projectsModule.getQueries(el.projectIdx)[el.queryIdx].label
+              : el.type === "connection"
+              ? projectsModule.getProjects[el.parentIdx].connections.list[
+                  el.key.split("-").pop()
+                ].label
+              : el.label,
         }))
       },
     },
@@ -131,6 +138,7 @@
         if (this.paneId == "pane2") {
           return this.$emit("close-split-view")
         }
+        projectsModule.updateSelectedNode({ key: null })
         appDataModule.removeSelectedTreeNodes(tab.id)
         appDataModule.toggleTreeNode()
       },

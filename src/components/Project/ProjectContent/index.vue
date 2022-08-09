@@ -113,7 +113,7 @@
         const existingTabs = [...this.panes[0].tabs]
         const newTabs = []
         projectsArray.list.forEach((el) => {
-          const tab = { ...projectsArray[el] }
+          const tab = { ...el }
           if (!existingTabs.includes(tab)) {
             newTabs.push(tab)
           }
