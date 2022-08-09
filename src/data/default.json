@@ -91,20 +91,9 @@
           "list": [
             {
               "type": "connection",
-              "id": "connection1",
-              "label": "Connection 1",
-              "icon": "connection",
-              "scope": "local",
-              "description": "",
-              "port": "1729",
-              "host": "localhost",
-              "database": "typerefinery"
-            },
-            {
-              "type": "connection",
-              "id": "connection2",
-              "label": "Connection 2",
-              "icon": "connection",
+              "id": "Local Logs",
+              "label": "Local Logs",
+              "icon": "Local Logs",
               "scope": "local",
               "description": "",
               "port": "1729",
@@ -119,9 +108,9 @@
           "list": [
             {
               "type": "query",
-              "id": "query1",
-              "label": "Query 1",
-              "icon": "query",
+              "id": "Log L1",
+              "label": "Log L1",
+              "icon": "Log L1",
               "description": "sample query",
               "endpoint": "http://localhost:8000/algorithm",
               "database": "typerefinery",
@@ -129,9 +118,9 @@
               "dataPath": "",
               "connection": {
                 "type": "connection",
-                "id": "connection1",
-                "label": "Connection 1",
-                "icon": "connection",
+                "id": "Local Logs",
+                "label": "Local Logs",
+                "icon": "Local Logs",
                 "scope": "local",
                 "description": "",
                 "port": "1729",
@@ -162,51 +151,6 @@
                 "error": "",
                 "logs": [""]
               }
-            },
-            {
-              "type": "query",
-              "id": "query2",
-              "label": "Query 2",
-              "icon": "query",
-              "description": "sample query",
-              "endpoint": "http://localhost:8000/algorithm",
-              "query": "match $a isa log, has logName 'L1';\n$b isa event, has eventName $c;\n$d (owner: $a, item: $b) isa trace,\nhas traceId $e, has index $f;\n offset 0; limit 10;",
-              "dataPath": "",
-              "connection": {
-                "type": "connection",
-                "id": "connection2",
-                "label": "Connection 2",
-                "icon": "connection",
-                "scope": "local",
-                "description": "",
-                "port": "1729",
-                "host": "localhost",
-                "database": "typerefinery"
-              },
-              "transformer": {
-                "type": "transformer",
-                "id": "transformer2",
-                "label": "Transformer 2",
-                "icon": "transformer",
-                "scope": "local",
-                "description": "",
-                "dependencies": [],
-                "code": "",
-                "error": "",
-                "logs": []
-              },
-              "algorithm": {
-                "type": "algorithm",
-                "id": "algorithm1",
-                "label": "Algorithm 1",
-                "icon": "algorithm",
-                "scope": "local",
-                "description": "",
-                "dependencies": "",
-                "code": "",
-                "error": "",
-                "logs": [""]
-              }
             }
           ]
         },
@@ -222,7 +166,7 @@
               "scope": "local",
               "description": "",
               "data": {
-                "flatly": {
+                "webcola_flatly": {
                   "attribute": {
                     "colour": "#7f2704",
                     "tcolour": "white",
@@ -297,7 +241,7 @@
                     "number": true
                   }
                 },
-                "darkly": {
+                "webcola_darkly": {
                   "attribute": {
                     "colour": "#7f2704",
                     "tcolour": "white",
@@ -383,8 +327,8 @@
             {
               "type": "wiring",
               "id": "wiring",
-              "label": "Wiring",
-              "icon": "wiring",
+              "label": "Log_ForceGraph",
+              "icon": "Log_ForceGraph",
               "scope": "local",
               "description": "",
               "data": []
@@ -398,8 +342,8 @@
             {
               "type": "output",
               "id": "output",
-              "label": "Output",
-              "icon": "output",
+              "label": "ForceGraph",
+              "icon": "ForceGraph",
               "scope": "local",
               "description": "",
               "data": []
