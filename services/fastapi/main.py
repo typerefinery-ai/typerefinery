@@ -354,7 +354,7 @@ async def execute_transformer(request: Request, response: Response, body: Transf
     request_logger = Logger.bind(requestid=requestid)
 
     # encode multiline string to json string
-    transformerscript_json = json.dumps(body.transformerscript)
+    transformerscript_json = json.dumps(body.transformer)
     transformerrequirements_json = json.dumps(body.transformerrequirements)
     request_logger.info(f'request - {transformerscript_json}, {transformerrequirements_json}')
 
@@ -366,7 +366,7 @@ async def execute_transformer(request: Request, response: Response, body: Transf
       with open(new_script, "w") as new_file:
         new_file.write(TRANSFORMER_HEADER_STRING)
         new_file.write(TRANSFORMER_BODY_HEADER_STRING)
-        new_file.write(body.algorithm)
+        new_file.write(body.transformer)
         new_file.write(TRANSFORMER_BODY_FOOTER_STRING)
         new_file.write(TRANSFORMER_FOOTER_STRING)
 
