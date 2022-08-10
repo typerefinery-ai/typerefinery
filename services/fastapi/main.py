@@ -85,20 +85,34 @@ Logger.info(f'SERVICE_USER_DATA_LOCATION arg: {args.userdir}')
 Logger.info(f'ORIGINS: {origins}')
 
 # read template/header.py into a string
-with open(os.path.join(SERVICE_LOCATION, "template", "header.py"), "r") as header_file:
-  HEADER_STRING = header_file.read()
+with open(os.path.join(SERVICE_LOCATION, "template", "algorithm", "header.py"), "r") as header_file:
+  ALGORITHM_HEADER_STRING = header_file.read()
 # read template/footer.py into a string
-with open(os.path.join(SERVICE_LOCATION, "template", "footer.py"), "r") as footer_file:
-  FOOTER_STRING = footer_file.read()
+with open(os.path.join(SERVICE_LOCATION, "template", "algorithm", "footer.py"), "r") as footer_file:
+  ALGORITHM_FOOTER_STRING = footer_file.read()
 # read template/body-header.py into a string
-with open(os.path.join(SERVICE_LOCATION, "template", "body-header.py"), "r") as body_header_file:
-  BODY_HEADER_STRING = body_header_file.read()
+with open(os.path.join(SERVICE_LOCATION, "template", "algorithm", "body-header.py"), "r") as body_header_file:
+  ALGORITHM_BODY_HEADER_STRING = body_header_file.read()
 # read template/body-footer.py into a string
-with open(os.path.join(SERVICE_LOCATION, "template", "body-footer.py"), "r") as body_footer_file:
-  BODY_FOOTER_STRING = body_footer_file.read()
+with open(os.path.join(SERVICE_LOCATION, "template", "algorithm", "body-footer.py"), "r") as body_footer_file:
+  ALGORITHM_BODY_FOOTER_STRING = body_footer_file.read()
 
 
-def importOrInstallPackage(package, logger):
+# read template/header.py into a string
+with open(os.path.join(SERVICE_LOCATION, "template", "transformer", "header.py"), "r") as header_file:
+  TRANSFORMER_HEADER_STRING = header_file.read()
+# read template/footer.py into a string
+with open(os.path.join(SERVICE_LOCATION, "template", "transformer", "footer.py"), "r") as footer_file:
+  TRANSFORMER_FOOTER_STRING = footer_file.read()
+# read template/body-header.py into a string
+with open(os.path.join(SERVICE_LOCATION, "template", "transformer", "body-header.py"), "r") as body_header_file:
+  TRANSFORMER_BODY_HEADER_STRING = body_header_file.read()
+# read template/body-footer.py into a string
+with open(os.path.join(SERVICE_LOCATION, "template", "transformer", "body-footer.py"), "r") as body_footer_file:
+  TRANSFORMER_BODY_FOOTER_STRING = body_footer_file.read()
+
+
+def importOrInstallPackagePython(package, logger):
     logger.info(f'checking if {package} is installed.')
     try:
       __import__(package)
@@ -108,8 +122,25 @@ def importOrInstallPackage(package, logger):
       logging_call([sys.executable, "-m", "pip", "install", f"--target={PACKAGE_TARGET_PATH}", package], logger)
 
 
-def runScript(script, logger, args):
+def importOrInstallPackageNode(package, logger):
+    kargs= { "cwd": "transformer" }
+    logger.info(f'checking if {package} is installed.')
+
+    output = logging_call(["npm", "ls", package, "--json"], logger, INFO, kargs)
+    # parse output as json and check if it has a keyword "dependencies" and name of package
+    json_output = json.loads(output)
+    if "dependencies" in json_output and package in json_output["dependencies"]:
+      logger.info(f'package {package} is installed.')
+    else:
+      logger.info(f'package {package} is not installed, installing...')
+      logging_call(["npm", "install", package], logger, INFO, kargs)
+
+def runScriptPython(script, logger, args):
     logging_call([sys.executable, script] + args, logger)
+
+def runScriptNode(script, logger, args):
+    kargs= { "cwd": "transformer" }
+    logging_call(["npm", script] + args, logger, INFO, kargs)
 
 # call a subprocess with logger and return the output
 def logging_call(popenargs, logger, loglevel=INFO, **kwargs):
@@ -203,21 +234,21 @@ async def execute_algorithm(request: Request, response: Response, body: Algoritm
 
       # create new file with raandom name in scripts folder with header, algorithm, and footer as contents
       with open(new_script, "w") as new_file:
-        new_file.write(HEADER_STRING)
-        new_file.write(BODY_HEADER_STRING)
+        new_file.write(ALGORITHM_HEADER_STRING)
+        new_file.write(ALGORITHM_BODY_HEADER_STRING)
         new_file.write(body.algorithm)
-        new_file.write(BODY_FOOTER_STRING)
-        new_file.write(FOOTER_STRING)
+        new_file.write(ALGORITHM_BODY_FOOTER_STRING)
+        new_file.write(ALGORITHM_FOOTER_STRING)
 
       request_logger.info(f'created file - {new_script}')
 
       # for each algorithmrequirements install package
       for package in body.algorithmrequirements.split('\n'):
           request_logger.info(f'installing - {package}')
-          importOrInstallPackage(package, request_logger)
+          importOrInstallPackagePython(package, request_logger)
 
       # run new script
-      runScript(new_script, request_logger, [body.dbhost, body.dbport, body.dbdatabase, body.dbquery, new_script_output])
+      runScriptPython(new_script, request_logger, [body.dbhost, body.dbport, body.dbdatabase, body.dbquery, new_script_output])
 
     except Exception as error:
           # code that handle exceptions
@@ -287,3 +318,117 @@ async def read_algorithm_output(script: str):
 @app.get("/string2json")
 async def convert_string2json(source: str = Form(...)):
   return Response(content=json.dumps(source), media_type="text/plain")
+
+
+@Logger.catch
+@app.post("/transformer")
+async def execute_transformer(request: Request, response: Response, body: AlgoritmRequestModel):
+    # generate unique request id
+    requestid = f'{datetime.timestamp(datetime.now())}.{str(random.randint(1, 100000))}'
+    # get new name for a new script
+    new_script_name = f'req-{requestid}.js'
+    new_script = os.path.join(USER_DATA_LOCATION, "transformer", new_script_name)
+    new_script_url = f"/transformer/{new_script_name}/script"
+    new_script_path = new_script
+    new_script_output = f'{new_script}.output'
+    new_script_output_url = f"/transformer/{new_script_name}/output"
+    new_script_output_path = new_script_output
+    new_script_log = f'{new_script}.log'
+    new_script_log_url = f"/transformer/{new_script_name}/log"
+    new_script_log_path = new_script_log
+
+    # add request specific log file
+    logfile_hander = Logger.add(new_script_log, level="INFO", filter=lambda record: record["extra"]["requestid"] == requestid)
+    # get specific request logger
+    request_logger = Logger.bind(requestid=requestid)
+
+    # encode multiline string to json string
+    transformerscript_json = json.dumps(body.transformerscript)
+    transformerrequirements_json = json.dumps(body.transformerrequirements)
+    request_logger.info(f'request - {transformerscript_json}, {transformerrequirements_json}')
+
+    scripterror = "false"
+    # try catch finaly
+    try:
+
+      # create new file with raandom name in scripts folder with header, transformer, and footer as contents
+      with open(new_script, "w") as new_file:
+        new_file.write(TRANSFORMER_HEADER_STRING)
+        new_file.write(TRANSFORMER_BODY_HEADER_STRING)
+        new_file.write(body.algorithm)
+        new_file.write(TRANSFORMER_BODY_FOOTER_STRING)
+        new_file.write(TRANSFORMER_FOOTER_STRING)
+
+      request_logger.info(f'created file - {new_script}')
+
+      # for each transformerrequirements install package
+      for package in body.transformerrequirements.split('\n'):
+          request_logger.info(f'installing - {package}')
+          importOrInstallPackageNode(package, request_logger)
+
+      # run new script
+      runScriptPython(new_script, request_logger, [body.dbhost, body.dbport, body.dbdatabase, body.dbquery, new_script_output])
+
+    except Exception as error:
+          # code that handle exceptions
+        request_logger.error(error)
+        scripterror = "true"
+    finally:
+        # code that clean up
+        request_logger.info(f'done')
+        Logger.remove(logfile_hander)
+
+    new_script_name_exists = os.path.exists(new_script)
+    new_script_output_exists = os.path.exists(new_script_output)
+    new_script_log_exists = os.path.exists(new_script_log)
+
+    # set response headers and body
+    returncontent = {
+      "error": scripterror,
+      "script.name": new_script_name,
+      "script": new_script_path,
+      "script.exists": str(new_script_name_exists),
+      "script.url": new_script_url,
+      "output": new_script_output_path,
+      "output.exists": str(new_script_output_exists),
+      "output.url": new_script_output_url,
+      "log": new_script_log_path,
+      "log.exists": str(new_script_log_exists),
+      "log.url": new_script_log_url,
+      "return.output": body.returnoutput,
+	    "Access-Control-Expose-Headers": "output.url,output.exists,output",
+    }
+
+    if os.path.exists(new_script_output) and body.returnoutput == "output":
+      with open(new_script_output, "r") as script_output:
+        return Response(content=script_output.read(), media_type="text/plain", headers=returncontent)
+    elif os.path.exists(new_script_log) and body.returnoutput == "log":
+      with open(new_script_log, "r") as script_log:
+        return Response(content=script_log.read(), media_type="text/plain", headers=returncontent)
+    else:
+      return Response(content=json.dumps(returncontent), media_type="application/json", headers=returncontent)
+
+@Logger.catch
+@app.get("/transformer/{script}/log")
+async def read_transformer_log(script: str):
+  returnfile = os.path.join(USER_DATA_LOCATION, "transformer", f'{script}.log')
+  # return contents of logfile withoput encoding
+  with open(returnfile, "r") as new_file:
+    return Response(content=new_file.read(), media_type="text/plain")
+
+
+@Logger.catch
+@app.get("/transformer/{script}/script")
+async def read_transformer_script(script: str):
+  returnfile = os.path.join(USER_DATA_LOCATION, "transformer", f'{script}')
+  # return contents of logfile withoput encoding
+  with open(returnfile, "r") as new_file:
+    return Response(content=new_file.read(), media_type="text/plain")
+
+@Logger.catch
+@app.get("/transformer/{script}/output")
+async def read_transformer_output(script: str):
+  returnfile = os.path.join(USER_DATA_LOCATION, "transformer", f'{script}.output')
+  # return contents of logfile withoput encoding
+  with open(returnfile, "r") as new_file:
+    return Response(content=new_file.read(), media_type="text/plain")
