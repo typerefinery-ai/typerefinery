@@ -260,7 +260,7 @@ async def execute_algorithm(request: Request, response: Response, body: Algoritm
 
       # for each algorithmrequirements install package
       for package in body.algorithmrequirements.split('\n'):
-          request_logger.info(f'installing - {package}')
+          request_logger.info(f'check dependency - {package}')
           importOrInstallPackagePython(package, request_logger)
 
       # run new script
@@ -389,7 +389,7 @@ async def execute_transformer(request: Request, response: Response, body: Transf
 
       # for each transformerrequirements install package
       for package in body.transformerrequirements.split('\n'):
-          request_logger.info(f'installing - {package}')
+          request_logger.info(f'check dependency - {package}')
           importOrInstallPackageNode(package, request_logger)
 
       # run new script
