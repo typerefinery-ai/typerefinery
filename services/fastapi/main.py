@@ -78,6 +78,16 @@ app.add_middleware(
 Logger.add(os.path.join(LOG_LOCATION, f"{__name__}.py.log"), rotation="1 day")
 PACKAGE_TARGET_PATH=os.path.join(SERVICE_LOCATION, "__packages__")
 
+
+NODE_SERVICE_LOCATION = os.path.abspath(os.path.join(SCRIPT_PATH, "..", "_node", "node-v18.6.0-win-x64"))
+NODE_SERVICE = os.path.join(NODE_SERVICE_LOCATION, "node.exe")
+NPM_SERVICE_LOCATION = os.path.join(NODE_SERVICE_LOCATION, "node_modules", "npm", "bin", "npm-cli.js")
+
+Logger.info(f'NODE_SERVICE_LOCATION: {NODE_SERVICE_LOCATION}')
+Logger.info(f'NODE_SERVICE: {NODE_SERVICE}')
+Logger.info(f'NPM_SERVICE_LOCATION: {NPM_SERVICE_LOCATION}')
+
+
 Logger.info(f'SERVICE_LOCATION: {SERVICE_LOCATION}')
 Logger.info(f'SERVICE_USER_DATA_LOCATION: {USER_DATA_LOCATION}')
 Logger.info(f'SERVICE_USER_DATA_LOCATION env: {os.getenv("SERVICE_DATA_PATH")}')
@@ -123,27 +133,28 @@ def importOrInstallPackagePython(package, logger):
 
 
 def importOrInstallPackageNode(package, logger):
-    kargs= { "cwd": "transformer" }
+    kwargs= { "cwd": os.path.join(USER_DATA_LOCATION, "transformer") }
     logger.info(f'checking if {package} is installed.')
 
-    output = logging_call(["npm", "ls", package, "--json"], logger, INFO, kargs)
+    output = logging_call2([NODE_SERVICE, NPM_SERVICE_LOCATION, "ls", package, "--json"], logger, **kwargs)
+    logger.info(f'output {output}')
     # parse output as json and check if it has a keyword "dependencies" and name of package
     json_output = json.loads(output)
     if "dependencies" in json_output and package in json_output["dependencies"]:
       logger.info(f'package {package} is installed.')
     else:
       logger.info(f'package {package} is not installed, installing...')
-      logging_call(["npm", "install", package], logger, INFO, kargs)
+      logging_call([NODE_SERVICE, NPM_SERVICE_LOCATION, "install", package], logger, **kwargs)
 
 def runScriptPython(script, logger, args):
     logging_call([sys.executable, script] + args, logger)
 
 def runScriptNode(script, logger, args):
-    kargs= { "cwd": "transformer" }
-    logging_call(["npm", script] + args, logger, INFO, kargs)
+    kwargs= { "cwd": os.path.join(USER_DATA_LOCATION, "transformer") }
+    logging_call([NODE_SERVICE, script] + args, logger, **kwargs)
 
 # call a subprocess with logger and return the output
-def logging_call(popenargs, logger, loglevel=INFO, **kwargs):
+def logging_call(popenargs, logger, **kwargs):
     logger.info(popenargs)
     process = subprocess.Popen(popenargs, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, **kwargs)
 
@@ -167,6 +178,11 @@ def logging_call(popenargs, logger, loglevel=INFO, **kwargs):
     # keep checking stdout/stderr until the child exits
     while process.poll() is None:
       check_io()
+
+def logging_call2(popenargs, logger, **kwargs):
+    logger.info(popenargs)
+    process = subprocess.run(popenargs, capture_output=True, **kwargs)
+    return process.stdout.decode()
 
 # redirect to docs
 @app.get("/", response_class=RedirectResponse, status_code=302)
@@ -354,9 +370,8 @@ async def execute_transformer(request: Request, response: Response, body: Transf
     request_logger = Logger.bind(requestid=requestid)
 
     # encode multiline string to json string
-    transformerscript_json = json.dumps(body.transformer)
     transformerrequirements_json = json.dumps(body.transformerrequirements)
-    request_logger.info(f'request - {transformerscript_json}, {transformerrequirements_json}')
+    request_logger.info(f'request - {transformerrequirements_json}')
 
     scripterror = "false"
     # try catch finaly
