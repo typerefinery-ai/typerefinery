@@ -571,7 +571,7 @@ export class Service extends EventEmitter<ServiceEvent> {
     if (this.#healthCheck && this.#healthCheck.url) {
       const urlFixed = this.#getServiceCommand(this.#healthCheck.url, this)
       const url: URL = new URL(urlFixed)
-      const hostname = url.hostname
+      const hostname = url.hostname == "127.0.0.1" ? "localhost" : url.hostname
       const port = url.port
       const path = url.pathname
       const expected_status = this.#healthCheck.expected_status || 200

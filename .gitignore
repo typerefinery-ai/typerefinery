@@ -50,6 +50,8 @@ services/**/*.pid
 services/**/*.setup
 services/fastapi/algorithm/*.*
 !services/fastapi/algorithm/.gitkeep
+services/fastapi/transformer/req-*
+!services/fastapi/algorithm/.gitkeep
 
 # type db data
 services/typedb/server/data/**/*
