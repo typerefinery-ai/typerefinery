@@ -1,6 +1,6 @@
 @echo off
 SET "SERVICE_NAME=_node"
-SET "NODE_HOME=%cd%\_node\v18.6.0"
+SET "NODE_HOME=%cd%\_node\node-v18.6.0-win-x64"
 SET "ARCHIVE_HOME=%cd%\_archive"
 SET "SERVER_HOME=%cd%\%SERVICE_NAME%"
 SET "PATH=%NODE_HOME%"
