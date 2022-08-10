@@ -50,7 +50,7 @@
     },
     data() {
       return {
-        selectedTheme: { label: "flatly", key: "flatly" },
+        selectedTheme: { label: "webcola_flatly", key: "webcola_flatly" },
       }
     },
     computed: {

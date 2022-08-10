@@ -1633,6 +1633,281 @@
 		"sources": {},
 		"origin": "http://localhost:8111",
 		"dtcreated": "2022-07-27T08:15:26.472Z",
-		"size": 110722
+		"size": 110871,
+		"variables2": {},
+		"directory": "./database",
+		"sandbox": false
+	},
+	"fsfkt001xx41d": {
+		"paused": false,
+		"id": "fsfkt001xx41d",
+		"reference": "",
+		"author": "",
+		"group": "",
+		"icon": "fa fa-chart-pie",
+		"color": "#041EF5",
+		"version": "",
+		"readme": "",
+		"url": "https://",
+		"name": "Typerefinery_Wiring",
+		"components": {
+			"cp4jz5dbcd": "<script total>\n\n\texports.name = 'Connection';\n\texports.icon = 'fa fa-code';\n\texports.author = 'Total Avengers';\n\texports.group = 'TypeRefinery';\n\texports.version = '1';\n\texports.config = {};\n\texports.inputs = [{ id: 'input', name: 'Input' }];\n\texports.outputs = [{ id: 'output', name: 'Output' }];\n    exports.meta = { settingswidth: 1200 };\n\n\texports.make = function(instance, config) {\n\t\tconst { TypeDB, SessionType } = require(\"typedb-client\");\n\n\t\tinstance.message = function($) {\n\t\t\tvar data = {\n\t\t\t\tdbport: config.port,\n\t\t\t\tdbhost: config.host,\n\t\t\t\tdbdatabase: config.database\n\t\t\t};\n\t\t\tinstance.send('output', data);\n\t\t};\n\n\t\tinstance.call = async function(data, answer) {\n\t\t\tconst client = TypeDB.coreClient(\"localhost:1729\");\n  \t\t\tlet databases = await client.databases.all();\n\t\t\tconst output = databases.map(el => ({id: el._name, name: el._name}))\n            answer(output);\n        };\n\n\t\tinstance.configure = function() {\n\t\t};\n\n\t\tinstance.close = function() {\n\t\t};\n\n\t\tinstance.configure();\n\n\t};\n\n</script>\n\n<readme>\n\n</readme>\n<script>\n    // yourdatabase is the name of your component in lower-case\n    ON('configure_connection', function(data) {\n        // Global exports.call\n        // data.call(function(response) {\n//             SET('%yourdatabase', response);\n//         }, true);\n\n        // Private instance.call (from the existing instance)\n        data.call(function(response) {\n            SET('%yourdatabase', response);\n        });\n    });\n</script>\n<settings>\n\t<div class=\"padding\">\n\t\t<div data---=\"input__?.host__required:1\" class=\"m\">Host</div>\n\t\t<div data---=\"input__?.port__required:1\" class=\"m\">Port</div>\n\t\t<div data---=\"input__?.database__dirsource:%yourdatabase;dirraw:1;placeholder:Choose a database;dirempty:No database\" class=\"m\"><b>Database</b></div>\n\t</div>\n</settings>\n\n<body>\n\t<header>\n\t\t<i class=\"ICON\"></i>NAME\n\t</header>\n</body>",
+			"cprs59650b": "<script total>\n\n\texports.name = 'TQL Query';\n\texports.icon = 'fa fa-code';\n\texports.author = 'Total Avengers';\n\texports.group = 'TypeRefinery';\n\texports.version = '1';\n\texports.config = {};\n\texports.inputs = [{ id: 'input', name: 'Input' }];\n\texports.outputs = [{ id: 'output', name: 'Output' }];\n    exports.meta = { settingswidth: 1200 };\n\n\texports.make = function(instance, config) {\n\n\t\tinstance.message = function($) {\n\t\t\tvar data = {\n\t\t\t\t...$.data,\n\t\t\t\tdbquery: config.query\n\t\t\t};\n\t\t\tinstance.send('output', data);\n\t\t};\n\n\t\tinstance.configure = function() {\n\t\t};\n\n\t\tinstance.close = function() {\n\t\t};\n\n\t\tinstance.configure();\n\n\t};\n\n</script>\n\n<readme>\n\n</readme>\n\n<settings>\n\t<div class=\"padding\">\n\t\t<div class=\"ui-input-label\">Query:</div>\n\t\t<div data---=\"codemirror__?.query__type:tql;minheight:300;parent:auto;margin:60;tabs:true;trim:true\" class=\"m\"></div>\n\t</div>\n</settings>\n\n<body>\n\t<header>\n\t\t<i class=\"ICON\"></i>NAME\n\t</header>\n</body>",
+			"csbozf107f": "<script total>\n\n\texports.name = 'Svg';\n\texports.icon = 'fa fa-code';\n\texports.author = 'Total Avengers';\n\texports.group = 'TypeRefinery';\n\texports.version = '1';\n\texports.config = {};\n\texports.inputs = [{ id: 'input', name: 'Input' }];\n\texports.outputs = [{ id: 'output', name: 'Output' }];\n\texports.meta = { settingswidth: 1200 };\n\n\t// exports.npm = ['npm_module_1', 'npm_module_2@version'];\n\n\texports.make = function(instance, config) {\n\n\t\t// instance.main.variables {Object}\n\t\t// instance.main.variables2 {Object}\n\t\t// instance.save();\n\t\t// instance.replace(str); // replaces {variable_name} for values from \"variables\" and \"variables2\"\n\n\t\tinstance.message = function($) {\n\t\t\tvar data = $.data;\n\t\t\t$.send('output', data);\n\t\t\t// or $.destroy();\n\t\t};\n\n\t\tinstance.configure = function() {\n\t\t\t// \"config\" is changed\n\t\t};\n\n\t\tinstance.close = function() {\n\t\t\t// this instance is closed\n\t\t};\n\n\t\tinstance.variables = function(variables) {\n\t\t\t// FlowStream variables are changed\n\t\t};\n\n\t\tinstance.variables2 = function(variables) {\n\t\t\t// Global variables are changed\n\t\t};\n\n\t\tinstance.configure();\n\n\t};\n\n</script>\n\n<readme>\nMarkdown readme\n\n```js\nvar total = 'Hello world!';\n```\n</readme>\n\n<settings>\n\t<div class=\"padding\">\n\t\tSETTINGS for this component (optional)\n\t</div>\n</settings>\n\n<style>\n\t.CLASS footer { padding: 10px; font-size: 12px; }\n</style>\n\n<script>\n\n\t// Client-side script\n\t// Optional, you can remove it\n\n\t// A custom helper for the component instances\n\t// The method below captures each instance of this component\n\tTOUCH(function(exports, reinit) {\n\n\t\tvar name = exports.name + ' --> ' + exports.id;\n\n\t\tconsole.log(name, 'initialized' + (reinit ? ' : UPDATE' : ''));\n\n\t\texports.settings = function(meta) {\n\t\t\t// Triggered when the user opens settings\n\t\t\tconsole.log(name, 'settings', meta);\n\t\t};\n\n\t\texports.configure = function(config, isinit) {\n\t\t\t// Triggered when the config is changed\n\t\t\tconsole.log(name, 'configure', config);\n\t\t};\n\n\t\texports.status = function(status, isinit) {\n\t\t\t// Triggered when the status is changed\n\t\t\tconsole.log(name, 'status', status);\n\t\t};\n\n\t\texports.note = function(note, isinit) {\n\t\t\t// Triggered when the note is changed\n\t\t\tconsole.log(name, 'note', note);\n\t\t};\n\n\t\texports.variables = function(variables) {\n\t\t\t// Triggered when the variables are changed\n\t\t\tconsole.log(name, 'variables', variables);\n\t\t};\n\n\t\texports.variables2 = function(variables) {\n\t\t\t// Triggered when the variables2 are changed\n\t\t\tconsole.log(name, 'variables2', variables);\n\t\t};\n\n\t\texports.close = function() {\n\t\t\t// Triggered when the instance is closing due to some reasons\n\t\t\tconsole.log(name, 'close');\n\t\t};\n\n\t});\n\n</script>\n\n<body>\n\t<header>\n\t\t<i class=\"ICON\"></i>NAME\n\t</header>\n</body>",
+			"cvmjg78f25": "<script total>\n\n\texports.name = 'webCola Viz';\n\texports.icon = 'fa fa-code';\n\texports.author = 'Total Avengers';\n\texports.group = 'TypeRefinery';\n\texports.version = '1';\n\texports.config = {};\n\texports.inputs = [{ id: 'input', name: 'Node' },{ id: 'input2', name: 'Edge' },{ id: 'input3', name: 'Theme' },{ id: 'input4', name: 'Svg' }];\n\texports.outputs = [{ id: 'output', name: 'Visualisation' }];\n\texports.meta = { settingswidth: 1200 };\n\n\t// exports.npm = ['npm_module_1', 'npm_module_2@version'];\n\n\texports.make = function(instance, config) {\n\n\t\t// instance.main.variables {Object}\n\t\t// instance.main.variables2 {Object}\n\t\t// instance.save();\n\t\t// instance.replace(str); // replaces {variable_name} for values from \"variables\" and \"variables2\"\n\n\t\tinstance.message = function($) {\n\t\t\tvar data = $.data;\n\t\t\t$.send('output', data);\n\t\t\t// or $.destroy();\n\t\t};\n\n\t\tinstance.configure = function() {\n\t\t\t// \"config\" is changed\n\t\t};\n\n\t\tinstance.close = function() {\n\t\t\t// this instance is closed\n\t\t};\n\n\t\tinstance.variables = function(variables) {\n\t\t\t// FlowStream variables are changed\n\t\t};\n\n\t\tinstance.variables2 = function(variables) {\n\t\t\t// Global variables are changed\n\t\t};\n\n\t\tinstance.configure();\n\n\t};\n\n</script>\n\n<readme>\nMarkdown readme\n\n```js\nvar total = 'Hello world!';\n```\n</readme>\n\n<settings>\n\t<div class=\"padding\">\n\t\tSETTINGS for this component (optional)\n\t</div>\n</settings>\n\n<style>\n\t.CLASS footer { padding: 10px; font-size: 12px; }\n</style>\n\n<script>\n\n\t// Client-side script\n\t// Optional, you can remove it\n\n\t// A custom helper for the component instances\n\t// The method below captures each instance of this component\n\tTOUCH(function(exports, reinit) {\n\n\t\tvar name = exports.name + ' --> ' + exports.id;\n\n\t\tconsole.log(name, 'initialized' + (reinit ? ' : UPDATE' : ''));\n\n\t\texports.settings = function(meta) {\n\t\t\t// Triggered when the user opens settings\n\t\t\tconsole.log(name, 'settings', meta);\n\t\t};\n\n\t\texports.configure = function(config, isinit) {\n\t\t\t// Triggered when the config is changed\n\t\t\tconsole.log(name, 'configure', config);\n\t\t};\n\n\t\texports.status = function(status, isinit) {\n\t\t\t// Triggered when the status is changed\n\t\t\tconsole.log(name, 'status', status);\n\t\t};\n\n\t\texports.note = function(note, isinit) {\n\t\t\t// Triggered when the note is changed\n\t\t\tconsole.log(name, 'note', note);\n\t\t};\n\n\t\texports.variables = function(variables) {\n\t\t\t// Triggered when the variables are changed\n\t\t\tconsole.log(name, 'variables', variables);\n\t\t};\n\n\t\texports.variables2 = function(variables) {\n\t\t\t// Triggered when the variables2 are changed\n\t\t\tconsole.log(name, 'variables2', variables);\n\t\t};\n\n\t\texports.close = function() {\n\t\t\t// Triggered when the instance is closing due to some reasons\n\t\t\tconsole.log(name, 'close');\n\t\t};\n\n\t});\n\n</script>\n\n<body>\n\t<header>\n\t\t<i class=\"ICON\"></i>NAME\n\t</header>\n</body>",
+			"cxpqdf0935": "<script total>\n\n\texports.name = 'Run (node & edges)';\n\texports.icon = 'fa fa-code';\n\texports.author = 'Total Avengers';\n\texports.group = 'TypeRefinery';\n\texports.version = '1';\n\texports.config = {};\n\texports.inputs = [{ id: 'input', name: 'Connection' },{ id: 'input2', name: 'TQL Query' }];\n\texports.outputs = [{ id: 'output', name: 'Node' },{ id: 'output2', name: 'Edge' }];\n\texports.meta = { settingswidth: 1200 };\n\n\t// exports.npm = ['npm_module_1', 'npm_module_2@version'];\n\n\texports.make = function(instance, config) {\n\n\t\t// instance.main.variables {Object}\n\t\t// instance.main.variables2 {Object}\n\t\t// instance.save();\n\t\t// instance.replace(str); // replaces {variable_name} for values from \"variables\" and \"variables2\"\n\n\t\tinstance.message = function($) {\n\t\t\tvar data = $.data;\n\t\t\t$.send('output', data);\n\t\t\t// or $.destroy();\n\t\t};\n\n\t\tinstance.configure = function() {\n\t\t\t// \"config\" is changed\n\t\t};\n\n\t\tinstance.close = function() {\n\t\t\t// this instance is closed\n\t\t};\n\n\t\tinstance.variables = function(variables) {\n\t\t\t// FlowStream variables are changed\n\t\t};\n\n\t\tinstance.variables2 = function(variables) {\n\t\t\t// Global variables are changed\n\t\t};\n\n\t\tinstance.configure();\n\n\t};\n\n</script>\n\n<readme>\nMarkdown readme\n\n```js\nvar total = 'Hello world!';\n```\n</readme>\n\n<settings>\n\t<div class=\"padding\">\n\t\tSETTINGS for this component (optional)\n\t</div>\n</settings>\n\n<style>\n\t.CLASS footer { padding: 10px; font-size: 12px; }\n</style>\n\n<script>\n\n\t// Client-side script\n\t// Optional, you can remove it\n\n\t// A custom helper for the component instances\n\t// The method below captures each instance of this component\n\tTOUCH(function(exports, reinit) {\n\n\t\tvar name = exports.name + ' --> ' + exports.id;\n\n\t\tconsole.log(name, 'initialized' + (reinit ? ' : UPDATE' : ''));\n\n\t\texports.settings = function(meta) {\n\t\t\t// Triggered when the user opens settings\n\t\t\tconsole.log(name, 'settings', meta);\n\t\t};\n\n\t\texports.configure = function(config, isinit) {\n\t\t\t// Triggered when the config is changed\n\t\t\tconsole.log(name, 'configure', config);\n\t\t};\n\n\t\texports.status = function(status, isinit) {\n\t\t\t// Triggered when the status is changed\n\t\t\tconsole.log(name, 'status', status);\n\t\t};\n\n\t\texports.note = function(note, isinit) {\n\t\t\t// Triggered when the note is changed\n\t\t\tconsole.log(name, 'note', note);\n\t\t};\n\n\t\texports.variables = function(variables) {\n\t\t\t// Triggered when the variables are changed\n\t\t\tconsole.log(name, 'variables', variables);\n\t\t};\n\n\t\texports.variables2 = function(variables) {\n\t\t\t// Triggered when the variables2 are changed\n\t\t\tconsole.log(name, 'variables2', variables);\n\t\t};\n\n\t\texports.close = function() {\n\t\t\t// Triggered when the instance is closing due to some reasons\n\t\t\tconsole.log(name, 'close');\n\t\t};\n\n\t});\n\n</script>\n\n<body>\n\t<header>\n\t\t<i class=\"ICON\"></i>NAME\n\t</header>\n</body>",
+			"cye905a0fe": "<script total>\n\n\texports.name = 'Theme';\n\texports.icon = 'fa fa-code';\n\texports.author = 'Total Avengers';\n\texports.group = 'TypeRefinery';\n\texports.meta = { settingswidth: 1200 };\n\texports.version = '1';\n\texports.config = {};\n\texports.inputs = [{ id: 'input', name: 'Input' }];\n\texports.outputs = [{ id: 'output', name: 'Output' }];\n\texports.meta = { settingswidth: 1200 };\n\n\t// exports.npm = ['npm_module_1', 'npm_module_2@version'];\n\n\texports.make = function(instance, config) {\n\n\t\t// instance.main.variables {Object}\n\t\t// instance.main.variables2 {Object}\n\t\t// instance.save();\n\t\t// instance.replace(str); // replaces {variable_name} for values from \"variables\" and \"variables2\"\n\n\t\tinstance.message = function($) {\n\t\t\tvar data = $.data;\n\t\t\t$.send('output', data);\n\t\t\t// or $.destroy();\n\t\t};\n\n\t\tinstance.configure = function() {\n\t\t\t// \"config\" is changed\n\t\t};\n\n\t\tinstance.close = function() {\n\t\t\t// this instance is closed\n\t\t};\n\n\t\tinstance.variables = function(variables) {\n\t\t\t// FlowStream variables are changed\n\t\t};\n\n\t\tinstance.variables2 = function(variables) {\n\t\t\t// Global variables are changed\n\t\t};\n\n\t\tinstance.configure();\n\n\t};\n\n</script>\n\n<readme>\nMarkdown readme\n\n```js\nvar total = 'Hello world!';\n```\n</readme>\n\n<settings>\n\t<div class=\"padding\">\n\t\tSETTINGS for this component (optional)\n\t</div>\n</settings>\n\n<style>\n\t.CLASS footer { padding: 10px; font-size: 12px; }\n</style>\n\n<script>\n\n\t// Client-side script\n\t// Optional, you can remove it\n\n\t// A custom helper for the component instances\n\t// The method below captures each instance of this component\n\tTOUCH(function(exports, reinit) {\n\n\t\tvar name = exports.name + ' --> ' + exports.id;\n\n\t\tconsole.log(name, 'initialized' + (reinit ? ' : UPDATE' : ''));\n\n\t\texports.settings = function(meta) {\n\t\t\t// Triggered when the user opens settings\n\t\t\tconsole.log(name, 'settings', meta);\n\t\t};\n\n\t\texports.configure = function(config, isinit) {\n\t\t\t// Triggered when the config is changed\n\t\t\tconsole.log(name, 'configure', config);\n\t\t};\n\n\t\texports.status = function(status, isinit) {\n\t\t\t// Triggered when the status is changed\n\t\t\tconsole.log(name, 'status', status);\n\t\t};\n\n\t\texports.note = function(note, isinit) {\n\t\t\t// Triggered when the note is changed\n\t\t\tconsole.log(name, 'note', note);\n\t\t};\n\n\t\texports.variables = function(variables) {\n\t\t\t// Triggered when the variables are changed\n\t\t\tconsole.log(name, 'variables', variables);\n\t\t};\n\n\t\texports.variables2 = function(variables) {\n\t\t\t// Triggered when the variables2 are changed\n\t\t\tconsole.log(name, 'variables2', variables);\n\t\t};\n\n\t\texports.close = function() {\n\t\t\t// Triggered when the instance is closing due to some reasons\n\t\t\tconsole.log(name, 'close');\n\t\t};\n\n\t});\n\n</script>\n\n<body>\n\t<header>\n\t\t<i class=\"ICON\"></i>NAME\n\t</header>\n</body>",
+			"czdhyf4603": "<script total>\n\n\texports.name = 'Visualisation';\n\texports.icon = 'fa fa-code';\n\texports.author = 'Total Avengers';\n\texports.group = 'TypeRefinery';\n\texports.version = '1';\n\texports.config = {};\n\texports.inputs = [{ id: 'input', name: 'Input' }];\n\texports.outputs = [{ id: 'output', name: 'Output' }];\n\texports.meta = { settingswidth: 1200 };\n\n\t// exports.npm = ['npm_module_1', 'npm_module_2@version'];\n\n\texports.make = function(instance, config) {\n\n\t\t// instance.main.variables {Object}\n\t\t// instance.main.variables2 {Object}\n\t\t// instance.save();\n\t\t// instance.replace(str); // replaces {variable_name} for values from \"variables\" and \"variables2\"\n\n\t\tinstance.message = function($) {\n\t\t\tvar data = $.data;\n\t\t\t$.send('output', data);\n\t\t\t// or $.destroy();\n\t\t};\n\n\t\tinstance.configure = function() {\n\t\t\t// \"config\" is changed\n\t\t};\n\n\t\tinstance.close = function() {\n\t\t\t// this instance is closed\n\t\t};\n\n\t\tinstance.variables = function(variables) {\n\t\t\t// FlowStream variables are changed\n\t\t};\n\n\t\tinstance.variables2 = function(variables) {\n\t\t\t// Global variables are changed\n\t\t};\n\n\t\tinstance.configure();\n\n\t};\n\n</script>\n\n<readme>\nMarkdown readme\n\n```js\nvar total = 'Hello world!';\n```\n</readme>\n\n<settings>\n\t<div class=\"padding\">\n\t\tSETTINGS for this component (optional)\n\t</div>\n</settings>\n\n<style>\n\t.CLASS footer { padding: 10px; font-size: 12px; }\n</style>\n\n<script>\n\n\t// Client-side script\n\t// Optional, you can remove it\n\n\t// A custom helper for the component instances\n\t// The method below captures each instance of this component\n\tTOUCH(function(exports, reinit) {\n\n\t\tvar name = exports.name + ' --> ' + exports.id;\n\n\t\tconsole.log(name, 'initialized' + (reinit ? ' : UPDATE' : ''));\n\n\t\texports.settings = function(meta) {\n\t\t\t// Triggered when the user opens settings\n\t\t\tconsole.log(name, 'settings', meta);\n\t\t};\n\n\t\texports.configure = function(config, isinit) {\n\t\t\t// Triggered when the config is changed\n\t\t\tconsole.log(name, 'configure', config);\n\t\t};\n\n\t\texports.status = function(status, isinit) {\n\t\t\t// Triggered when the status is changed\n\t\t\tconsole.log(name, 'status', status);\n\t\t};\n\n\t\texports.note = function(note, isinit) {\n\t\t\t// Triggered when the note is changed\n\t\t\tconsole.log(name, 'note', note);\n\t\t};\n\n\t\texports.variables = function(variables) {\n\t\t\t// Triggered when the variables are changed\n\t\t\tconsole.log(name, 'variables', variables);\n\t\t};\n\n\t\texports.variables2 = function(variables) {\n\t\t\t// Triggered when the variables2 are changed\n\t\t\tconsole.log(name, 'variables2', variables);\n\t\t};\n\n\t\texports.close = function() {\n\t\t\t// Triggered when the instance is closing due to some reasons\n\t\t\tconsole.log(name, 'close');\n\t\t};\n\n\t});\n\n</script>\n\n<body>\n\t<header>\n\t\t<i class=\"ICON\"></i>NAME\n\t</header>\n</body>"
+		},
+		"design": {
+			"il6n4y08m": {
+				"id": "il6n4y08m",
+				"config": {},
+				"x": 161,
+				"y": 56,
+				"component": "cp4jz5dbcd",
+				"connections": {
+					"output": [
+						{
+							"id": "il6n4zo58",
+							"index": "input"
+						}
+					]
+				},
+				"template": {
+					"icon": "fa fa-code",
+					"group": "TypeRefinery",
+					"name": "Connection",
+					"inputs": [
+						{
+							"id": "input",
+							"name": "Input"
+						}
+					],
+					"outputs": [
+						{
+							"id": "output",
+							"name": "Output"
+						}
+					]
+				}
+			},
+			"il6n4y35v": {
+				"id": "il6n4y35v",
+				"config": {},
+				"x": 155,
+				"y": 246,
+				"component": "cprs59650b",
+				"connections": {
+					"output": [
+						{
+							"id": "il6n4zo58",
+							"index": "input2"
+						}
+					]
+				},
+				"template": {
+					"icon": "fa fa-code",
+					"group": "TypeRefinery",
+					"name": "TQL Query",
+					"inputs": [
+						{
+							"id": "input",
+							"name": "Input"
+						}
+					],
+					"outputs": [
+						{
+							"id": "output",
+							"name": "Output"
+						}
+					]
+				}
+			},
+			"il6n4zo58": {
+				"id": "il6n4zo58",
+				"config": {},
+				"x": 447,
+				"y": 172,
+				"component": "cxpqdf0935",
+				"connections": {
+					"output": [
+						{
+							"id": "il6n54oq4",
+							"index": "input"
+						}
+					],
+					"output2": [
+						{
+							"id": "il6n54oq4",
+							"index": "input2"
+						}
+					]
+				},
+				"template": {
+					"icon": "fa fa-code",
+					"group": "TypeRefinery",
+					"name": "Run (node & edges)",
+					"inputs": [
+						{
+							"id": "input",
+							"name": "Connection"
+						},
+						{
+							"id": "input2",
+							"name": "TQL Query"
+						}
+					],
+					"outputs": [
+						{
+							"id": "output",
+							"name": "Node"
+						},
+						{
+							"id": "output2",
+							"name": "Edge"
+						}
+					]
+				}
+			},
+			"il6n52nb8": {
+				"id": "il6n52nb8",
+				"config": {},
+				"x": 299,
+				"y": 370,
+				"component": "cye905a0fe",
+				"connections": {
+					"output": [
+						{
+							"id": "il6n54oq4",
+							"index": "input3"
+						}
+					]
+				},
+				"template": {
+					"icon": "fa fa-code",
+					"group": "TypeRefinery",
+					"name": "Theme",
+					"inputs": [
+						{
+							"id": "input",
+							"name": "Input"
+						}
+					],
+					"outputs": [
+						{
+							"id": "output",
+							"name": "Output"
+						}
+					]
+				}
+			},
+			"il6n52v1w": {
+				"id": "il6n52v1w",
+				"config": {},
+				"x": 623,
+				"y": 422,
+				"component": "csbozf107f",
+				"connections": {
+					"output": [
+						{
+							"id": "il6n54oq4",
+							"index": "input4"
+						}
+					]
+				},
+				"template": {
+					"icon": "fa fa-code",
+					"group": "TypeRefinery",
+					"name": "Svg",
+					"inputs": [
+						{
+							"id": "input",
+							"name": "Input"
+						}
+					],
+					"outputs": [
+						{
+							"id": "output",
+							"name": "Output"
+						}
+					]
+				}
+			},
+			"il6n549ys": {
+				"id": "il6n549ys",
+				"config": {},
+				"x": 1077,
+				"y": 228,
+				"component": "czdhyf4603",
+				"connections": {},
+				"template": {
+					"icon": "fa fa-code",
+					"group": "TypeRefinery",
+					"name": "Visualisation",
+					"inputs": [
+						{
+							"id": "input",
+							"name": "Input"
+						}
+					],
+					"outputs": [
+						{
+							"id": "output",
+							"name": "Output"
+						}
+					]
+				}
+			},
+			"il6n54oq4": {
+				"id": "il6n54oq4",
+				"config": {},
+				"x": 810,
+				"y": 215,
+				"component": "cvmjg78f25",
+				"connections": {
+					"output": [
+						{
+							"id": "il6n549ys",
+							"index": "input"
+						}
+					]
+				},
+				"template": {
+					"icon": "fa fa-code",
+					"group": "TypeRefinery",
+					"name": "webCola Viz",
+					"inputs": [
+						{
+							"id": "input",
+							"name": "Node"
+						},
+						{
+							"id": "input2",
+							"name": "Edge"
+						},
+						{
+							"id": "input3",
+							"name": "Theme"
+						},
+						{
+							"id": "input4",
+							"name": "Svg"
+						}
+					],
+					"outputs": [
+						{
+							"id": "output",
+							"name": "Visualisation"
+						}
+					]
+				}
+			}
+		},
+		"variables": {},
+		"sources": {},
+		"origin": "http://localhost:8111",
+		"dtcreated": "2022-08-10T04:16:32.454Z",
+		"size": 21050
 	}
 }
