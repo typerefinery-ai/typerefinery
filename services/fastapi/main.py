@@ -378,7 +378,7 @@ async def execute_transformer(request: Request, response: Response, body: Transf
           importOrInstallPackageNode(package, request_logger)
 
       # run new script
-      runScriptPython(new_script, request_logger, [body.dbhost, body.dbport, body.dbdatabase, body.dbquery, new_script_output])
+      runScriptNode(new_script, request_logger, [new_script_output])
 
     except Exception as error:
           # code that handle exceptions
