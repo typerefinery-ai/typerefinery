@@ -179,6 +179,7 @@ def logging_call(popenargs, logger, **kwargs):
     while process.poll() is None:
       check_io()
 
+# run a subprocess with logger and return the output
 def logging_call2(popenargs, logger, **kwargs):
     logger.info(popenargs)
     process = subprocess.run(popenargs, capture_output=True, **kwargs)
