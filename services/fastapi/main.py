@@ -320,9 +320,20 @@ async def convert_string2json(source: str = Form(...)):
   return Response(content=json.dumps(source), media_type="text/plain")
 
 
+class TransformerRequestModel(BaseModel):
+    transformer: str | None = Field(
+        default="", title="transformer code"
+    )
+    transformerrequirements: str | None = Field(
+        default="", title="install dependecies"
+    )
+    returnoutput: str | None = Field(
+        default="output", title="what to return (output, log, status)"
+    )
+
 @Logger.catch
 @app.post("/transformer")
-async def execute_transformer(request: Request, response: Response, body: AlgoritmRequestModel):
+async def execute_transformer(request: Request, response: Response, body: TransformerRequestModel):
     # generate unique request id
     requestid = f'{datetime.timestamp(datetime.now())}.{str(random.randint(1, 100000))}'
     # get new name for a new script
