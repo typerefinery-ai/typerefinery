@@ -99,16 +99,16 @@ with open(os.path.join(SERVICE_LOCATION, "template", "algorithm", "body-footer.p
 
 
 # read template/header.py into a string
-with open(os.path.join(SERVICE_LOCATION, "template", "transformer", "header.py"), "r") as header_file:
+with open(os.path.join(SERVICE_LOCATION, "template", "transformer", "header.js"), "r") as header_file:
   TRANSFORMER_HEADER_STRING = header_file.read()
 # read template/footer.py into a string
-with open(os.path.join(SERVICE_LOCATION, "template", "transformer", "footer.py"), "r") as footer_file:
+with open(os.path.join(SERVICE_LOCATION, "template", "transformer", "footer.js"), "r") as footer_file:
   TRANSFORMER_FOOTER_STRING = footer_file.read()
 # read template/body-header.py into a string
-with open(os.path.join(SERVICE_LOCATION, "template", "transformer", "body-header.py"), "r") as body_header_file:
+with open(os.path.join(SERVICE_LOCATION, "template", "transformer", "body-header.js"), "r") as body_header_file:
   TRANSFORMER_BODY_HEADER_STRING = body_header_file.read()
 # read template/body-footer.py into a string
-with open(os.path.join(SERVICE_LOCATION, "template", "transformer", "body-footer.py"), "r") as body_footer_file:
+with open(os.path.join(SERVICE_LOCATION, "template", "transformer", "body-footer.js"), "r") as body_footer_file:
   TRANSFORMER_BODY_FOOTER_STRING = body_footer_file.read()
 
 
