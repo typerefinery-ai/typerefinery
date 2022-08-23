@@ -3,6 +3,11 @@ let Connection: connection
 
 console.log("create ws client")
 const ws = new WebSocketClient()
+// const ws = new WebSocket(WEB_SOCKETS_URL, null, {
+//   headers: {
+//     ['x-token']: "typerefinery",
+//   },
+// })
 
 console.log("set events")
 ws.on("connectFailed", function (err) {
