@@ -3,6 +3,7 @@
     "type": "algorithms",
     "label": "Algorithms",
     "icon": "",
+    "expanded": false,
     "list": [
       {
         "type": "algorithm",
@@ -50,6 +51,7 @@
     "type": "connections",
     "label": "Connections",
     "icon": "",
+    "expanded": false,
     "list": [
       {
         "type": "connection",
@@ -76,8 +78,7 @@
   "projects": {
     "label": "Projects",
     "icon": "",
-    "selectedNode": {},
-    "expandedNodes": {},
+    "expanded": false,
     "list": [
       {
         "type": "project",
@@ -85,32 +86,44 @@
         "label": "Project 1",
         "description": "",
         "icon": "",
+        "expanded": false,
         "connections": {
           "type": "connections",
           "icon": "",
+          "expanded": false,
           "list": [
             {
               "type": "connection",
-              "id": "Local Logs",
-              "label": "Local Logs",
-              "icon": "Local Logs",
+              "id": "connection1",
+              "label": "Connection 1",
+              "icon": "connection",
               "scope": "local",
               "description": "",
               "port": "1729",
-              "host": "localhost",
-              "database": "typerefinery"
+              "host": "localhost"
+            },
+            {
+              "type": "connection",
+              "id": "connection2",
+              "label": "Connection 2",
+              "icon": "connection",
+              "scope": "local",
+              "description": "",
+              "port": "1729",
+              "host": "localhost"
             }
           ]
         },
         "queries": {
           "type": "queries",
           "icon": "",
+          "expanded": false,
           "list": [
             {
               "type": "query",
-              "id": "Log L1",
-              "label": "Log L1",
-              "icon": "Log L1",
+              "id": "query1",
+              "label": "Query 1",
+              "icon": "query",
               "description": "sample query",
               "endpoint": "http://localhost:8000/algorithm",
               "database": "typerefinery",
@@ -118,14 +131,13 @@
               "dataPath": "",
               "connection": {
                 "type": "connection",
-                "id": "Local Logs",
-                "label": "Local Logs",
-                "icon": "Local Logs",
+                "id": "connection1",
+                "label": "Connection 1",
+                "icon": "connection",
                 "scope": "local",
                 "description": "",
                 "port": "1729",
-                "host": "localhost",
-                "database": "typerefinery"
+                "host": "localhost"
               },
               "transformer": {
                 "type": "transformer",
@@ -151,208 +163,57 @@
                 "error": "",
                 "logs": [""]
               }
-            }
-          ]
-        },
-        "themes": {
-          "type": "themes",
-          "icon": "",
-          "list": [
+            },
             {
-              "type": "theme",
-              "id": "theme",
-              "label": "Theme",
-              "icon": "theme",
-              "scope": "local",
-              "description": "",
-              "data": {
-                "webcola_flatly": {
-                  "attribute": {
-                    "colour": "#7f2704",
-                    "tcolour": "white",
-                    "label_name": true,
-                    "label_value": true,
-                    "corner": 5,
-                    "split_line": false,
-                    "tsize": "10px"
-                  },
-                  "entity": {
-                    "colour": "#08306b",
-                    "tcolour": "white",
-                    "label_name": true,
-                    "label_iid": true,
-                    "iid_shorten": true,
-                    "corner": 5,
-                    "split_line": false,
-                    "tsize": "10px"
-                  },
-                  "relation": {
-                    "colour": "#006d2c",
-                    "tcolour": "black",
-                    "label_name": true,
-                    "label_iid": false,
-                    "label_offset": 0,
-                    "radius": 10,
-                    "tsize": "10px",
-                    "iid_shorten": true,
-                    "split_line": false
-                  },
-                  "shadow": { "colour": "#fdae6b", "tcolour": "black" },
-                  "edges": {
-                    "colour": "black",
-                    "stroke": "1px",
-                    "arrow": true,
-                    "acolour": "black",
-                    "labels": true,
-                    "split_line": true,
-                    "tsize": "10px"
-                  },
-                  "tooltip": {
-                    "fill": "lightgray",
-                    "stroke": "1px",
-                    "scolour": "black",
-                    "corner": 5,
-                    "tcolour": "black",
-                    "tsize": "10px",
-                    "padding": "10px"
-                  },
-                  "d3sim": { "linkdistance": 150, "charge": -200 },
-                  "super": {
-                    "radius": 25,
-                    "label_name": true,
-                    "label_iid": false,
-                    "iid_shorten": true,
-                    "split_line": true,
-                    "tsize": "10px"
-                  },
-                  "tt_description": {
-                    "title": true,
-                    "name": true,
-                    "role": true,
-                    "value": true,
-                    "boldtitle": true,
-                    "subtitle": true,
-                    "type": true,
-                    "g_G_name": true,
-                    "g_role": true,
-                    "v_G_name": true,
-                    "v_Value": true,
-                    "where": true,
-                    "number": true
-                  }
-                },
-                "webcola_darkly": {
-                  "attribute": {
-                    "colour": "#7f2704",
-                    "tcolour": "white",
-                    "label_name": true,
-                    "label_value": true,
-                    "corner": 5,
-                    "split_line": true,
-                    "tsize": "10px"
-                  },
-                  "entity": {
-                    "colour": "#08306b",
-                    "tcolour": "white",
-                    "label_name": true,
-                    "label_iid": true,
-                    "iid_shorten": true,
-                    "corner": 5,
-                    "split_line": true,
-                    "tsize": "10px"
-                  },
-                  "relation": {
-                    "colour": "#006d2c",
-                    "tcolour": "black",
-                    "label_name": true,
-                    "label_iid": true,
-                    "label_offset": 0,
-                    "radius": 5,
-                    "iid_shorten": true,
-                    "split_line": true,
-                    "tsize": "10px"
-                  },
-                  "shadow": { "colour": "#fdae6b", "tcolour": "black" },
-                  "edges": {
-                    "colour": "black",
-                    "stroke": "1px",
-                    "arrow": true,
-                    "acolour": "black",
-                    "labels": true,
-                    "split_line": true,
-                    "tsize": "10px"
-                  },
-                  "tooltip": {
-                    "fill": "white",
-                    "stroke": "1px",
-                    "scolour": "black",
-                    "corner": 5,
-                    "tcolour": "black",
-                    "tsize": "11px",
-                    "padding": "10px"
-                  },
-                  "d3sim": { "linkdistance": 150, "charge": -200 },
-                  "super": {
-                    "radius": 25,
-                    "label_name": true,
-                    "label_iid": true,
-                    "iid_shorten": true,
-                    "split_line": true,
-                    "tsize": "10px"
-                  },
-                  "tt_description": {
-                    "title": true,
-                    "name": true,
-                    "role": true,
-                    "value": true,
-                    "boldtitle": true,
-                    "subtitle": true,
-                    "type": true,
-                    "g_G_name": true,
-                    "g_role": true,
-                    "v_G_name": true,
-                    "v_Value": true,
-                    "where": true,
-                    "number": true
-                  }
-                }
+              "type": "query",
+              "id": "query2",
+              "label": "Query 2",
+              "icon": "query",
+              "description": "sample query",
+              "endpoint": "http://localhost:8000/algorithm",
+              "query": "match $a isa log, has logName 'L1';\n$b isa event, has eventName $c;\n$d (owner: $a, item: $b) isa trace,\nhas traceId $e, has index $f;\n offset 0; limit 10;",
+              "dataPath": "",
+              "connection": {
+                "type": "connection",
+                "id": "connection2",
+                "label": "Connection 2",
+                "icon": "connection",
+                "scope": "local",
+                "description": "",
+                "port": "1729",
+                "host": "localhost"
+              },
+              "transformer": {
+                "type": "transformer",
+                "id": "transformer2",
+                "label": "Transformer 2",
+                "icon": "transformer",
+                "scope": "local",
+                "description": "",
+                "dependencies": [],
+                "code": "",
+                "error": "",
+                "logs": []
+              },
+              "algorithm": {
+                "type": "algorithm",
+                "id": "algorithm1",
+                "label": "Algorithm 1",
+                "icon": "algorithm",
+                "scope": "local",
+                "description": "",
+                "dependencies": "",
+                "code": "",
+                "error": "",
+                "logs": [""]
               }
-            }
-          ]
-        },
-        "wirings": {
-          "type": "wirings",
-          "icon": "",
-          "list": [
-            {
-              "type": "wiring",
-              "id": "wiring",
-              "label": "Log_ForceGraph",
-              "icon": "Log_ForceGraph",
-              "scope": "local",
-              "description": "",
-              "data": []
-            }
-          ]
-        },
-        "outputs": {
-          "type": "outputs",
-          "icon": "",
-          "list": [
-            {
-              "type": "output",
-              "id": "output",
-              "label": "ForceGraph",
-              "icon": "ForceGraph",
-              "scope": "local",
-              "description": "",
-              "data": []
             }
           ]
         },
         "transformers": {
           "type": "tranformers",
           "icon": "",
+          "expanded": false,
           "list": [
             {
               "type": "transformer",
@@ -383,6 +244,7 @@
         "algorithms": {
           "type": "algorithms",
           "icon": "",
+          "expanded": false,
           "list": [
             {
               "type": "algorithm",
@@ -488,6 +350,7 @@
     "type": "tranformers",
     "label": "Tranformers",
     "icon": "",
+    "expanded": false,
     "list": [
       {
         "type": "transformer",

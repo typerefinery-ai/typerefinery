@@ -238,6 +238,10 @@
     },
     "data": {
       "refresh": "रिफ्रेश"
+    },
+    "output": {
+      "viz": "विज़",
+      "table": "टेबल"
     }
   },
   "tooltips": {
