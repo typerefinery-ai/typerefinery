@@ -48,10 +48,12 @@ __pycache__
 __packages__
 services/**/*.pid
 services/**/*.setup
-services/fastapi/algorithm/*.*
-!services/fastapi/algorithm/.gitkeep
-services/fastapi/transformer/req-*
-!services/fastapi/algorithm/.gitkeep
+services/fastapi/generated/algorithm/req-*
+!services/fastapi/generated/algorithm/.gitkeep
+services/fastapi/generated/transformer/req-*
+!services/fastapi/generated/transformer/.gitkeep
+services/fastapi/generated/createsvg/req-*
+!services/fastapi/generated/createsvg/.gitkeep
 
 # type db data
 services/typedb/server/data/**/*
