@@ -210,17 +210,6 @@
         return appDataModule.data.selectedTreeNodes.activeNode
       },
     },
-    created() {
-      console.log("starting web socket connection")
-      this.connection = new WebSocket("ws://localhost:8112/$tms/")
-      this.connection.onopen = function (event) {
-        console.log(event)
-        console.log("successfully connected")
-      }
-      this.connection.onmessage = function (event) {
-        console.log(event, "message")
-      }
-    },
     mounted() {
       const selectedNodes = appDataModule.data.selectedTreeNodes.list
       if (selectedNodes.length) {
