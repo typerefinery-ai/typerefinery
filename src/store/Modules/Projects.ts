@@ -105,10 +105,10 @@ export default class Projects extends VuexModule {
   @Mutation
   updateSelectedNode({ key, value }) {
     const projects = JSON.parse(JSON.stringify(this.data))
-    if (key) {
+    if (value) {
       projects.selectedNode[key] = value
     } else {
-      projects.selectedNode = {}
+      delete projects.selectedNode[key]
     }
     this.data = projects
   }

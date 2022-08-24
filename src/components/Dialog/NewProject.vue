@@ -150,31 +150,43 @@
           label: this.name,
           description: this.description,
           icon: this.icon,
-          expanded: false,
           connections: {
             type: "connections",
             icon: "",
-            expanded: false,
             list: [],
           },
           queries: {
             type: "queries",
             icon: "",
-            expanded: false,
             list: [],
           },
-          transformers: {
-            type: "tranformers",
+          themes: {
+            type: "themes",
             icon: "",
-            expanded: false,
             list: [],
           },
-          algorithms: {
-            type: "algorithms",
+          wirings: {
+            type: "themes",
             icon: "",
-            expanded: false,
             list: [],
+            outputs: {
+              type: "outputs",
+              icon: "",
+              list: [],
+            },
           },
+          // transformers: {
+          //   type: "tranformers",
+          //   icon: "",
+          //   expanded: false,
+          //   list: [],
+          // },
+          // algorithms: {
+          //   type: "algorithms",
+          //   icon: "",
+          //   expanded: false,
+          //   list: [],
+          // },
         }
         this.submitted = true
 

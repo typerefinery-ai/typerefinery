@@ -79,11 +79,36 @@
             to: "/home/project",
             type: "regular",
             subMenu: [
-              { id: "new-project", icon: "pi pi-book", to: "#" },
-              { id: "new-query", icon: "pi pi-file", to: "#" },
-              { id: "new-connection", icon: "pi pi-server", to: "#" },
-              { id: "new-transformer", icon: "pi pi-cog", to: "#" },
-              { id: "new-algorithm", icon: "pi pi-cog", to: "#" },
+              {
+                id: "new-project",
+                icon: "pi pi-book",
+                to: "#",
+                experimental: false,
+              },
+              {
+                id: "new-query",
+                icon: "pi pi-file",
+                to: "#",
+                experimental: false,
+              },
+              {
+                id: "new-connection",
+                icon: "pi pi-server",
+                to: "#",
+                experimental: false,
+              },
+              {
+                id: "new-transformer",
+                icon: "pi pi-cog",
+                to: "#",
+                experimental: true,
+              },
+              {
+                id: "new-algorithm",
+                icon: "pi pi-cog",
+                to: "#",
+                experimental: true,
+              },
             ],
           },
           {
@@ -132,7 +157,9 @@
         })
       },
       subItems() {
-        return this.items.filter((el) => el.to == this.$route.path)[0].subMenu
+        return this.items
+          .filter((el) => el.to == this.$route.path)[0]
+          .subMenu.filter((el) => !el.experimental)
       },
       connectionDialog() {
         return appDataModule.data.connectionDialog

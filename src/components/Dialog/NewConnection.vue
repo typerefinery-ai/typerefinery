@@ -128,6 +128,29 @@
           >{{ v$.port.required.$message.replace("Value", "Port") }}</small
         >
       </div>
+      <div class="field">
+        <label
+          for="database"
+          :class="{ 'p-error': v$.database.$invalid && submitted }"
+        >
+          {{ $t("components.dialog.connections.info.database") + "*" }}</label
+        >
+        <InputText
+          id="database"
+          v-model="v$.database.$model"
+          :class="{ 'p-invalid': v$.database.$invalid && submitted }"
+        />
+        <small
+          v-if="
+            (v$.database.$invalid && submitted) ||
+            v$.database.$pending.$response
+          "
+          class="p-error"
+          >{{
+            v$.database.required.$message.replace("Value", "Database")
+          }}</small
+        >
+      </div>
     </Panel>
     <template #footer>
       <Button
@@ -193,6 +216,7 @@
         icon: "",
         host: "",
         port: "",
+        database: "",
         display: true,
         selected: null,
         submitted: false,
@@ -211,6 +235,7 @@
         icon: { required },
         host: { required },
         port: { required },
+        database: { required },
       }
     },
     computed: {
@@ -251,6 +276,7 @@
           this.v$.icon.$model = connection.icon
           this.v$.host.$model = connection.host
           this.v$.port.$model = connection.port
+          this.v$.database.$model = connection.database
         } else {
           this.selectedEditNode = true
           // set connection
@@ -267,6 +293,7 @@
           this.v$.icon.$model = connection.icon
           this.v$.host.$model = connection.host
           this.v$.port.$model = connection.port
+          this.v$.database.$model = connection.database
         }
       }
     },
@@ -287,6 +314,7 @@
               icon: this.v$.icon.$model,
               host: this.v$.host.$model,
               port: this.v$.port.$model,
+              database: this.v$.database.$model,
               description: this.v$.description.$model,
               type: "connection",
               scope: "local",
@@ -303,6 +331,7 @@
               label: this.v$.name.$model,
               host: this.v$.host.$model,
               port: this.v$.port.$model,
+              database: this.v$.database.$model,
               icon: this.v$.icon.$model,
               description: this.v$.description.$model,
               type: "connection",
@@ -332,6 +361,7 @@
             label: this.name,
             host: this.host,
             port: this.port,
+            database: this.database,
             icon: this.icon,
             description: this.description,
             type: "connection",

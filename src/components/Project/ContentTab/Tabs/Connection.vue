@@ -116,7 +116,9 @@
   import Fieldset from "primevue/fieldset"
   // import Dropdown from "primevue/dropdown"
   import Projects from "@/store/Modules/Projects"
+  import Connections from "@/store/Modules/Connections"
   const projectsModule = getModule(Projects)
+  const connectionsModule = getModule(Connections)
   export default {
     name: "ConnectionContent",
     components: { InputText, Fieldset },
@@ -150,9 +152,18 @@
     methods: {
       setInitialData() {
         const { parentIdx: projectIdx, key } = this.tab
-        const project = projectsModule.getProjects[projectIdx]
         const connectionIdx = key.split("-").pop()
-        const connection = project.connections.list[connectionIdx]
+        let connection
+
+        if (projectIdx != null || projectIdx != undefined) {
+          // local
+          const project = projectsModule.getProjects[projectIdx]
+          connection = project.connections.list[connectionIdx]
+        } else {
+          // global
+          connection = connectionsModule.data.list[connectionIdx]
+        }
+
         const { host, port, database, label, icon, description } = connection
         this.v$.host.$model = host
         this.v$.port.$model = port
@@ -164,8 +175,14 @@
       handleInput({ target: { value } }, key) {
         const { parentIdx: projectIdx, key: id } = this.tab
         const connectionIdx = id.split("-").pop()
-        const payload = { key, value, projectIdx, connectionIdx }
-        projectsModule.updateConnection(payload)
+        if (projectIdx != null || projectIdx != undefined) {
+          const payload = { key, value, projectIdx, connectionIdx }
+          projectsModule.updateConnection(payload)
+        } else {
+          // global
+          const payload = { key, value, connectionIdx }
+          connectionsModule.updateGlobalConnection(payload)
+        }
       },
     },
   }
