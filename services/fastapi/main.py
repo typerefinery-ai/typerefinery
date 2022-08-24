@@ -47,16 +47,11 @@ app.add_middleware(
 
 Logger.add(os.path.join(CONFIG.APP_LOG_LOCATION, f"{__name__}.py.log"), rotation="1 day")
 
-# PACKAGE_TARGET_PATH is CONFIG.APP_SERVICE_PACKAGES_PATH
-
-
 CONFIG.APP_SERVICE_NODE_LOCATION = os.path.abspath(os.path.join(CONFIG.APP_SCRIPT_PATH, "..", "_node", "node-v18.6.0-win-x64"))
 CONFIG.APP_SERVICE_NODE_EXECUTABLE = os.path.join(CONFIG.APP_SERVICE_NODE_LOCATION, "node.exe")
 CONFIG.APP_SERVICE_NPM_EXECUTABLE = os.path.join(CONFIG.APP_SERVICE_NODE_LOCATION, "node_modules", "npm", "bin", "npm-cli.js")
 
 Logger.info(CONFIG.toString())
-
-
 
 # import modules
 from internal import admin
