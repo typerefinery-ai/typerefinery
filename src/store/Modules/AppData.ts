@@ -20,20 +20,68 @@ export default class AppData extends VuexModule {
   }
 
   @Mutation
+  toggleSplitNode() {
+    const value = !this.data.splitNodeClicked
+    this.data.splitNodeClicked = value
+  }
+
+  @Mutation
   setSelectedTreeNodes(node: { id: string }) {
     const data = JSON.parse(JSON.stringify(this.data))
     const nodes = data.selectedTreeNodes
-    nodes.list[0] = node
+    nodes.list.push(node.id)
+    nodes[node.id] = node
+    nodes.activeNode = node.id
     this.data.selectedTreeNodes = nodes
   }
 
   @Mutation
-  removeSelectedTreeNodes() {
-    // const nodes = JSON.parse(JSON.stringify(this.data.selectedTreeNodes))
-    // const idx = nodes.list.findIndex((el) => el == id)
-    // nodes.list.splice(idx, 1)
-    // delete nodes[id]
-    this.data.selectedTreeNodes = { list: [] }
+  setActiveTreeNode(id: string) {
+    const data = JSON.parse(JSON.stringify(this.data))
+    const nodes = data.selectedTreeNodes
+    nodes.activeNode = id
+    this.data.selectedTreeNodes = nodes
+  }
+
+  @Mutation
+  setSelectedSplitNodes(node: { id: string }) {
+    const data = JSON.parse(JSON.stringify(this.data))
+    const nodes = data.selectedSplitNodes
+    nodes.list.push(node.id)
+    nodes[node.id] = node
+    this.data.selectedSplitNodes = nodes
+  }
+
+  @Mutation
+  setActiveSplitNode(id: string) {
+    const data = JSON.parse(JSON.stringify(this.data))
+    const nodes = data.selectedSplitNodes
+    nodes.activeNode = id
+    this.data.selectedSplitNodes = nodes
+  }
+
+  @Mutation
+  removeSelectedTreeNodes(id: string) {
+    const nodes = JSON.parse(JSON.stringify(this.data.selectedTreeNodes))
+    const idx = nodes.list.findIndex((el) => el == id)
+    nodes.list.splice(idx, 1)
+    delete nodes[id]
+    if (nodes.list.length) {
+      nodes.activeNode = nodes.list[0]
+    }
+    this.data.selectedTreeNodes = nodes
+  }
+
+  @Mutation
+  removeSelectedSplitNodes(id: string) {
+    const nodes = JSON.parse(JSON.stringify(this.data.selectedSplitNodes))
+    const idx = nodes.list.findIndex((el) => el == id)
+    nodes.list.splice(idx, 1)
+    delete nodes[id]
+    if (nodes.list.length) {
+      nodes.activeNode = nodes.list[0]
+    }
+    this.data.selectedSplitNodes = nodes
   }
 
   @Mutation

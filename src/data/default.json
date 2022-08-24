@@ -32,9 +32,15 @@
   },
   "appData": {
     "treeNodeClicked": false,
+    "splitNodeClicked": false,
     "treeNodePath": "",
     "selectedTreeNodes": {
-      "list": []
+      "list": [],
+      "activeNode": null
+    },
+    "selectedSplitNodes": {
+      "list": [],
+      "activeNode": null
     },
     "queryDialog": false,
     "connectionDialog": false,
@@ -58,8 +64,9 @@
         "icon": "connection",
         "scope": "global",
         "description": "",
-        "port": "",
-        "host": ""
+        "port": "1729",
+        "host": "localhost",
+        "database": "typerefinery"
       },
       {
         "type": "connection",
@@ -68,8 +75,9 @@
         "icon": "connection",
         "scope": "global",
         "description": "",
-        "port": "",
-        "host": ""
+        "port": "1729",
+        "host": "localhost",
+        "database": "typerefinery"
       }
     ]
   },
@@ -333,22 +341,22 @@
               "description": "",
               "data": []
             }
-          ]
-        },
-        "outputs": {
-          "type": "outputs",
-          "icon": "",
-          "list": [
-            {
-              "type": "output",
-              "id": "output",
-              "label": "ForceGraph",
-              "icon": "ForceGraph",
-              "scope": "local",
-              "description": "",
-              "data": []
-            }
-          ]
+          ],
+          "outputs": {
+            "type": "outputs",
+            "icon": "",
+            "list": [
+              {
+                "type": "output",
+                "id": "output",
+                "label": "ForceGraph",
+                "icon": "ForceGraph",
+                "scope": "local",
+                "description": "",
+                "data": []
+              }
+            ]
+          }
         },
         "transformers": {
           "type": "tranformers",

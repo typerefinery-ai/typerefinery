@@ -20,11 +20,19 @@ export default class Connections extends VuexModule {
     this.data.list.push(connection)
   }
 
+  // @Mutation
+  // editGlobalConnection(connectionData) {
+  //   const { connectionIdx, data } = connectionData
+  //   const connections = JSON.parse(JSON.stringify(this.data.list))
+  //   connections[connectionIdx] = data
+  //   this.data.list = connections
+  // }
+
   @Mutation
-  editGlobalConnection(connectionData) {
-    const { connectionIdx, data } = connectionData
-    const connections = JSON.parse(JSON.stringify(this.data.list))
-    connections[connectionIdx] = data
-    this.data.list = connections
+  updateGlobalConnection(connectionData) {
+    const { connectionIdx, key, value } = connectionData
+    const connections = JSON.parse(JSON.stringify(this.data))
+    connections.list[connectionIdx][key] = value
+    this.data = connections
   }
 }

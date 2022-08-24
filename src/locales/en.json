@@ -104,6 +104,7 @@
           "name": "Name",
           "host": "Host",
           "port": "Port",
+          "database": "Database",
           "description": "Description",
           "icon": "Icon",
           "submit": "Submit"
