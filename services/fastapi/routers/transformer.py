@@ -6,9 +6,7 @@ import os
 from pydantic import BaseModel, Field
 from datetime import datetime
 import random
-from services import fastapi
 
-from services.fastapi.__packages__.google.protobuf import util
 
 router = APIRouter()
 
