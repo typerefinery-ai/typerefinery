@@ -155,7 +155,7 @@
           }}</small
         >
       </div>
-      <div class="field">
+      <!-- <div class="field">
         <label
           for="expand"
           :class="{ 'p-error': v$.tranformerselected.$invalid && submitted }"
@@ -211,7 +211,7 @@
             v$.algorithmselected.required.$message.replace("Value", "Algorithm")
           }}</small
         >
-      </div>
+      </div> -->
     </Panel>
     <template #footer>
       <Button
@@ -246,13 +246,13 @@
   import Projects from "@/store/Modules/Projects"
   import Settings from "@/store/Modules/Settings"
   import Connections from "@/store/Modules/Connections"
-  import Algorithms from "@/store/Modules/Algorithms"
-  import Transformers from "@/store/Modules/Transformers"
+  // import Algorithms from "@/store/Modules/Algorithms"
+  // import Transformers from "@/store/Modules/Transformers"
   const settingsModule = getModule(Settings)
   const projectsModule = getModule(Projects)
   const connectionsModule = getModule(Connections)
-  const transformersModule = getModule(Transformers)
-  const algorithmsModule = getModule(Algorithms)
+  // const transformersModule = getModule(Transformers)
+  // const algorithmsModule = getModule(Algorithms)
 
   export default {
     name: "NewQuery",
@@ -280,13 +280,13 @@
         display: true,
         projectselected: null,
         connectionselected: null,
-        tranformerselected: null,
-        algorithmselected: null,
-        transformdata: null,
+        // tranformerselected: null,
+        // algorithmselected: null,
+        // transformdata: null,
         connectiondata: null,
         submitted: false,
         displayModal: true,
-        algorithmdata: null,
+        // algorithmdata: null,
       }
     },
     validations() {
@@ -296,8 +296,8 @@
         name: { required },
         description: { required },
         icon: { required },
-        tranformerselected: { required },
-        algorithmselected: { required },
+        // tranformerselected: { required },
+        // algorithmselected: { required },
       }
     },
     computed: {
@@ -330,54 +330,54 @@
           },
         ]
       },
-      transformerList() {
-        let projectIdx = projectsModule.getProjects.findIndex(
-          (el) => el.id == this.projectselected
-        )
-        const localTransformers =
-          projectIdx == -1
-            ? []
-            : projectsModule.getLocalTransformers(projectIdx)
-        return [
-          {
-            label: "Global",
-            code: "global",
-            items: transformersModule.getGlobalTransformers.map((el) => {
-              return { label: el.label, key: el.id, scope: el.scope }
-            }),
-          },
-          {
-            label: "Local",
-            code: "local",
-            items: localTransformers.map((el) => {
-              return { label: el.label, key: el.id, scope: el.scope }
-            }),
-          },
-        ]
-      },
-      algorithmList() {
-        let projectIdx = projectsModule.getProjects.findIndex(
-          (el) => el.id == this.projectselected
-        )
-        const localAlgorithms =
-          projectIdx == -1 ? [] : projectsModule.getLocalAlgorithms(projectIdx)
-        return [
-          {
-            label: "Global",
-            code: "global",
-            items: algorithmsModule.getGlobalAlgorithms.map((el) => {
-              return { label: el.label, key: el.id, scope: el.scope }
-            }),
-          },
-          {
-            label: "Local",
-            code: "local",
-            items: localAlgorithms.map((el) => {
-              return { label: el.label, key: el.id, scope: el.scope }
-            }),
-          },
-        ]
-      },
+      // transformerList() {
+      //   let projectIdx = projectsModule.getProjects.findIndex(
+      //     (el) => el.id == this.projectselected
+      //   )
+      //   const localTransformers =
+      //     projectIdx == -1
+      //       ? []
+      //       : projectsModule.getLocalTransformers(projectIdx)
+      //   return [
+      //     {
+      //       label: "Global",
+      //       code: "global",
+      //       items: transformersModule.getGlobalTransformers.map((el) => {
+      //         return { label: el.label, key: el.id, scope: el.scope }
+      //       }),
+      //     },
+      //     {
+      //       label: "Local",
+      //       code: "local",
+      //       items: localTransformers.map((el) => {
+      //         return { label: el.label, key: el.id, scope: el.scope }
+      //       }),
+      //     },
+      //   ]
+      // },
+      // algorithmList() {
+      //   let projectIdx = projectsModule.getProjects.findIndex(
+      //     (el) => el.id == this.projectselected
+      //   )
+      //   const localAlgorithms =
+      //     projectIdx == -1 ? [] : projectsModule.getLocalAlgorithms(projectIdx)
+      //   return [
+      //     {
+      //       label: "Global",
+      //       code: "global",
+      //       items: algorithmsModule.getGlobalAlgorithms.map((el) => {
+      //         return { label: el.label, key: el.id, scope: el.scope }
+      //       }),
+      //     },
+      //     {
+      //       label: "Local",
+      //       code: "local",
+      //       items: localAlgorithms.map((el) => {
+      //         return { label: el.label, key: el.id, scope: el.scope }
+      //       }),
+      //     },
+      //   ]
+      // },
       extensions() {
         return settingsModule.data.theme === "dark"
           ? [javascript(), oneDark]
@@ -404,46 +404,46 @@
         }
         this.connectiondata = connection
       },
-      handleTransformer(el) {
-        this.setTransformerCode(el.value)
-      },
-      handleAlgorithm(el) {
-        this.setAlgorithmCode(el.value)
-      },
-      setTransformerCode(value) {
-        const projectIdx = projectsModule.getProjects.findIndex(
-          (el) => el.id == this.projectselected
-        )
-        let transformercode
-        if (value.scope == "local") {
-          transformercode = projectsModule
-            .getLocalTransformers(projectIdx)
-            .find((el) => el.id == value.key)
-        } else {
-          transformercode = transformersModule.getGlobalTransformers.find(
-            (el) => {
-              return el.id == value.key
-            }
-          )
-        }
-        this.transformdata = transformercode
-      },
-      setAlgorithmCode(value) {
-        const projectIdx = projectsModule.getProjects.findIndex(
-          (el) => el.id == this.projectselected
-        )
-        let algorithmcode
-        if (value.scope == "local") {
-          algorithmcode = projectsModule
-            .getLocalAlgorithms(projectIdx)
-            .find((el) => el.id == value.key)
-        } else {
-          algorithmcode = algorithmsModule.getGlobalAlgorithms.find((el) => {
-            return el.id == value.key
-          })
-        }
-        this.algorithmdata = algorithmcode
-      },
+      // handleTransformer(el) {
+      //   this.setTransformerCode(el.value)
+      // },
+      // handleAlgorithm(el) {
+      //   this.setAlgorithmCode(el.value)
+      // },
+      // setTransformerCode(value) {
+      //   const projectIdx = projectsModule.getProjects.findIndex(
+      //     (el) => el.id == this.projectselected
+      //   )
+      //   let transformercode
+      //   if (value.scope == "local") {
+      //     transformercode = projectsModule
+      //       .getLocalTransformers(projectIdx)
+      //       .find((el) => el.id == value.key)
+      //   } else {
+      //     transformercode = transformersModule.getGlobalTransformers.find(
+      //       (el) => {
+      //         return el.id == value.key
+      //       }
+      //     )
+      //   }
+      //   this.transformdata = transformercode
+      // },
+      // setAlgorithmCode(value) {
+      //   const projectIdx = projectsModule.getProjects.findIndex(
+      //     (el) => el.id == this.projectselected
+      //   )
+      //   let algorithmcode
+      //   if (value.scope == "local") {
+      //     algorithmcode = projectsModule
+      //       .getLocalAlgorithms(projectIdx)
+      //       .find((el) => el.id == value.key)
+      //   } else {
+      //     algorithmcode = algorithmsModule.getGlobalAlgorithms.find((el) => {
+      //       return el.id == value.key
+      //     })
+      //   }
+      //   this.algorithmdata = algorithmcode
+      // },
       handlequerystore(isFormValid) {
         const projectIdx = projectsModule.getProjects.findIndex(
           (el) => el.id == this.projectselected
@@ -458,8 +458,8 @@
             icon: this.icon,
             query: this.query,
             type: "query",
-            transformer: this.transformdata,
-            algorithm: this.algorithmdata,
+            // transformer: this.transformdata,
+            // algorithm: this.algorithmdata,
             dataPath: "",
             endpoint: "",
             database: "",

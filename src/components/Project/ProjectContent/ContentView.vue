@@ -10,7 +10,7 @@
         <TabPanel v-for="(tab, i) in allTabs" :key="tab.id">
           <template #header>
             <div class="tab-item" :class="{ active: activeIndex === i }">
-              <span>{{ tab.label }}</span>
+              <span :id="tab.id">{{ tab.label }}</span>
               <i class="pi pi-times" @click.stop="closeSplitView(tab)"></i>
             </div>
           </template>
@@ -52,9 +52,11 @@
   import ContentTab from "../ContentTab"
   import Settings from "@/store/Modules/Settings"
   import Projects from "@/store/Modules/Projects"
+  import Connections from "@/store/Modules/Connections"
   import AppData from "@/store/Modules/AppData"
   const settingsModule = getModule(Settings)
   const projectsModule = getModule(Projects)
+  const connectionsModule = getModule(Connections)
   const appDataModule = getModule(AppData)
 
   TabView.methods.onTabClick = function (event, i) {
@@ -95,11 +97,18 @@
             el.type === "query"
               ? projectsModule.getQueries(el.projectIdx)[el.queryIdx].label
               : el.type === "connection"
-              ? projectsModule.getProjects[el.parentIdx].connections.list[
-                  el.key.split("-").pop()
-                ].label
+              ? el.parent
+                ? projectsModule.getProjects[el.parentIdx].connections.list[
+                    el.key.split("-").pop()
+                  ].label
+                : connectionsModule.data.list[el.key.split("-").pop()].label
               : el.label,
         }))
+      },
+      activeNode() {
+        return this.paneId === "pane1"
+          ? appDataModule.data.selectedTreeNodes.activeNode
+          : appDataModule.data.selectedSplitNodes.activeNode
       },
     },
 
@@ -108,21 +117,37 @@
         if (isTrue) this.contentToolsVisible = false
         else this.contentToolsVisible = true
       },
-      tabs(newVal) {
-        if (newVal.length === 1) {
-          this.activeIndex = 0
-        }
+      tabs(newVal, oldVal) {
+        // to fix a bug
+        if (newVal.length - oldVal.length > 1) return
+        // actual logic
+        const index = newVal.findIndex((el) => el.id == this.activeNode)
+        if (index === -1) this.activeIndex = 0
+        else this.activeIndex = index
+      },
+      activeNode(newVal) {
+        const index = this.allTabs.findIndex((el) => el.id == newVal)
+        if ((this.activeIndex !== index) & (index !== -1))
+          this.activeIndex = index
       },
     },
 
     methods: {
       onTabClick(e) {
-        const ctrl = e.originalEvent?.ctrlKey
-        if (ctrl) {
-          this.splitView(e.index)
+        const id = e.originalEvent.target.id
+        if (!id) return
+        if (this.paneId === "pane1") {
+          appDataModule.setActiveTreeNode(id)
         } else {
-          this.activeIndex = e.index
+          appDataModule.setActiveSplitNode(id)
         }
+        this.activeIndex = e.index
+        // const ctrl = e.originalEvent?.ctrlKey
+        // if (ctrl) {
+        //   this.splitView(e.index)
+        // } else {
+        //   this.activeIndex = e.index
+        // }
       },
 
       toggleContentTools() {
@@ -135,12 +160,17 @@
       },
 
       closeSplitView(tab) {
-        if (this.paneId == "pane2") {
-          return this.$emit("close-split-view")
+        // if (this.paneId == "pane2") {
+        //   return this.$emit("close-split-view")
+        // }
+        if (tab.type == "output") {
+          appDataModule.removeSelectedSplitNodes(tab.id)
+          appDataModule.toggleSplitNode()
+        } else {
+          appDataModule.removeSelectedTreeNodes(tab.id)
+          appDataModule.toggleTreeNode()
         }
-        projectsModule.updateSelectedNode({ key: null })
-        appDataModule.removeSelectedTreeNodes(tab.id)
-        appDataModule.toggleTreeNode()
+        projectsModule.updateSelectedNode({ key: tab.key })
       },
     },
   }
