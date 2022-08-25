@@ -1,6 +1,6 @@
-import { TMSCLIENT } from "total4"
+import * as Total4 from "total4"
 
-TMSCLIENT(
+global.TMSCLIENT(
   "http://localhost:8112/$tms/",
   "typerefinery",
   function (err, client, meta) {
