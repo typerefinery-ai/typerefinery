@@ -1,4 +1,4 @@
-name                          : TMS Example
+name: TMS Example
 
-allow_tms                     : true
+allow_tms: true
 # secret_tms                    : typerefinery
