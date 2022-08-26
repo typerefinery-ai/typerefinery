@@ -2,7 +2,7 @@ import * as Total4 from "total4"
 
 global.TMSCLIENT(
   "http://localhost:8112/$tms/",
-  "typerefinery",
+  "",
   function (err, client, meta) {
     console.log(client)
     // @err {Error/String}

@@ -71,8 +71,8 @@
 					"repo": false,
 					"data": true
 				},
-				"x": 869,
-				"y": 41,
+				"x": 821,
+				"y": 65,
 				"component": "cmfjj64e18",
 				"connections": {},
 				"template": {
@@ -314,8 +314,8 @@
 			"il5xew47s": {
 				"id": "il5xew47s",
 				"config": {},
-				"x": 444,
-				"y": 224,
+				"x": 482,
+				"y": 188,
 				"component": "subsrcvjer4415aXconnections_insert",
 				"connections": {},
 				"template": {
@@ -579,34 +579,54 @@
 								"type": "object",
 								"properties": {
 									"name": {
-										"type": "string"
+										"type": "string",
+										"$$ID": "name",
+										"$$REQUIRED": false
 									},
 									"description": {
-										"type": "string"
+										"type": "string",
+										"$$ID": "description",
+										"$$REQUIRED": false
 									},
 									"host": {
-										"type": "string"
+										"type": "string",
+										"$$ID": "host",
+										"$$REQUIRED": false
 									},
 									"icon": {
-										"type": "string"
+										"type": "string",
+										"$$ID": "icon",
+										"$$REQUIRED": false
 									},
 									"id": {
-										"type": "string"
+										"type": "string",
+										"$$ID": "id",
+										"$$REQUIRED": false
 									},
 									"type": {
-										"type": "string"
+										"type": "string",
+										"$$ID": "type",
+										"$$REQUIRED": false
 									},
 									"scope": {
-										"type": "string"
+										"type": "string",
+										"$$ID": "scope",
+										"$$REQUIRED": false
 									},
 									"port": {
-										"type": "number"
+										"type": "number",
+										"$$ID": "port",
+										"$$REQUIRED": false
 									},
 									"dtcreated": {
-										"type": "date"
+										"type": "date",
+										"$$ID": "dtcreated",
+										"$$REQUIRED": false
 									},
 									"dtupdated": {
-										"type": "date"
+										"type": "date",
+										"$$ID": "dtupdated",
+										"$$REQUIRED": false
 									}
 								}
 							}
@@ -749,10 +769,7 @@
 		},
 		"origin": "http://localhost:8111",
 		"dtcreated": "2022-07-20T16:54:57.401Z",
-		"size": 88428,
-		"variables2": {},
-		"directory": "./database",
-		"sandbox": false
+		"size": 88626
 	},
 	"fry40001ha41d": {
 		"paused": false,
@@ -1158,7 +1175,7 @@
 		"sources": {},
 		"origin": "http://localhost:8111",
 		"dtcreated": "2022-07-25T11:00:09.159Z",
-		"size": 44109,
+		"size": 44110,
 		"variables2": {},
 		"directory": "./database",
 		"sandbox": false
@@ -1633,7 +1650,7 @@
 		"sources": {},
 		"origin": "http://localhost:8111",
 		"dtcreated": "2022-07-27T08:15:26.472Z",
-		"size": 110871,
+		"size": 110872,
 		"variables2": {},
 		"directory": "./database",
 		"sandbox": false
@@ -1908,6 +1925,9 @@
 		"sources": {},
 		"origin": "http://localhost:8111",
 		"dtcreated": "2022-08-10T04:16:32.454Z",
-		"size": 21050
+		"size": 21199,
+		"variables2": {},
+		"directory": "./database",
+		"sandbox": false
 	}
 }
