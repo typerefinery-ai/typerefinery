@@ -4,7 +4,7 @@ global.TMSCLIENT(
   "http://localhost:8112/$tms/",
   "",
   function (err, client, meta) {
-    console.log(client)
+    console.log("started")
     // @err {Error/String}
     // @client {WebSocketClient} with extended functionality
     // @meta {Object}
