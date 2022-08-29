@@ -1,6 +1,7 @@
 // import websocket = require('websocket');
 import * as websocket from 'websocket';
 import * as http from 'http';
+import { json } from 'stream/consumers';
 
 //connect to the server ws://localhost:8112/$tms/
 var client = new websocket.client();
@@ -14,7 +15,7 @@ client.on('connect', function (connection) {
         console.log('echo-protocol Connection Closed');
     });
     connection.on('message', function (message) {
-        console.log("Received: '" + message + "'");
+        console.log("Received: '" + JSON.stringify(message) + "'");
         // if (message.type === 'utf8') {
         //     console.log("Received: '" + message.utf8Data + "'");
         // }
