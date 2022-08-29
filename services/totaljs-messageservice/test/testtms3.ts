@@ -4,65 +4,8 @@ import * as http from "http"
 import { json } from "stream/consumers"
 
 const subscribe_insert = {
-  type: "subscribe",
-  id: "connections_insert",
-  data: {
-    $id: "https://schemas.totaljs.com/Connections.json",
-    $schema: "https://json-schema.org/draft/2020-12/schema",
-    type: "object",
-    properties: {
-      name: {
-        type: "string",
-        $$ID: "name",
-        $$REQUIRED: false,
-      },
-      description: {
-        type: "string",
-        $$ID: "description",
-        $$REQUIRED: false,
-      },
-      host: {
-        type: "string",
-        $$ID: "host",
-        $$REQUIRED: false,
-      },
-      icon: {
-        type: "string",
-        $$ID: "icon",
-        $$REQUIRED: false,
-      },
-      id: {
-        type: "string",
-        $$ID: "id",
-        $$REQUIRED: false,
-      },
-      type: {
-        type: "string",
-        $$ID: "type",
-        $$REQUIRED: false,
-      },
-      scope: {
-        type: "string",
-        $$ID: "scope",
-        $$REQUIRED: false,
-      },
-      port: {
-        type: "number",
-        $$ID: "port",
-        $$REQUIRED: false,
-      },
-      dtcreated: {
-        type: "date",
-        $$ID: "dtcreated",
-        $$REQUIRED: false,
-      },
-      dtupdated: {
-        type: "date",
-        $$ID: "dtupdated",
-        $$REQUIRED: false,
-      },
-    },
-  },
+  type: "subscribers",
+  subscribers: ["connections_insert"],
 }
 
 const W3CWebSocket = websocket.w3cwebsocket
