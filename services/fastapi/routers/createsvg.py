@@ -110,12 +110,14 @@ async def execute_createsvg(request: Request, response: Response, body: CodeRequ
 	    "Access-Control-Expose-Headers": "output.url,output.exists,output",
     }
 
-    if os.path.exists(new_output_log) and body.returnoutput == "log":
+    if os.path.exists(new_output) and body.returnoutput == "output":
+      with open(new_output, "r") as script_output:
+        return Response(content=script_output.read(), media_type="text/plain", headers=returncontent)
+    elif os.path.exists(new_output_log) and body.returnoutput == "log":
       with open(new_output_log, "r") as script_log:
         return Response(content=script_log.read(), media_type="text/plain", headers=returncontent)
     else:
-      with open(new_output, "r") as script_output:
-        return Response(content=script_output.read(), media_type="text/plain", headers=returncontent)
+      return Response(content=json.dumps(returncontent), media_type="application/json", headers=returncontent)
 
 @Logger.catch
 @router.get(f"/{CREATESVG_ENDPOINT_NAME}" + "/{script}/log")
