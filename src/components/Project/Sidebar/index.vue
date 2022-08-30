@@ -36,8 +36,10 @@
         @dblclick="handleNodeSelection"
       >
         <template #default="slotProps">
-          <b v-if="isSelected(slotProps.node.id)">{{ slotProps.node.label }}</b>
-          <span v-else>{{ slotProps.node.label }}</span>
+          <b v-if="isSelected(slotProps.node.id)" role="treeitem">{{
+            slotProps.node.label
+          }}</b>
+          <span v-else role="treeitem">{{ slotProps.node.label }}</span>
         </template>
       </Tree>
     </div>
@@ -284,12 +286,14 @@
         this.selectedNode = null
       },
       handleNodeSelection(e) {
+        console.log(e)
         // const nodesInStore = projectsModule.data.selectedNode
         // if (Object.keys(nodesInStore).length) {
         //   projectsModule.updateSelectedNode({ key: null, value: null })
         // }
         const node = e.target.getAttribute("role")
         const parent = e.target.parentElement.getAttribute("role")
+        console.log({ node, parent })
         const isTreeNode = node == "treeitem" || parent == "treeitem"
         const { key, children } = this.selectedNode
         if (isTreeNode && !children) {

@@ -20,9 +20,10 @@
   import MainMenu from "@/components/Menu/MainMenu.vue"
   import MenuBar from "@/components/Menu/MenuBar.vue"
   import Settings from "@/store/Modules/Settings"
+  import FlowMessage from "@/store/Modules/FlowMessage"
   import { getModule } from "vuex-module-decorators"
   const settingsModule = getModule(Settings)
-
+  const flowModule = getModule(FlowMessage)
   export default {
     name: "Project",
     components: { ProjectContent, MenuBar, MainMenu },
@@ -37,6 +38,9 @@
       focusMode() {
         return settingsModule.data.focus
       },
+    },
+    mounted() {
+      flowModule.initTMS()
     },
     methods: {
       toggleMainMenu() {
