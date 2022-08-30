@@ -35,6 +35,12 @@
         @node-unselect="onNodeUnselect"
         @dblclick="handleNodeSelection"
       >
+        <template #default="slotProps">
+          <b v-if="isSelected(slotProps.node.id)" role="treeitem">{{
+            slotProps.node.label
+          }}</b>
+          <span v-else role="treeitem">{{ slotProps.node.label }}</span>
+        </template>
       </Tree>
     </div>
   </div>
@@ -49,13 +55,13 @@
   import { getModule } from "vuex-module-decorators"
   import Projects from "@/store/Modules/Projects"
   import Settings from "@/store/Modules/Settings"
-  // import Connections from "@/store/Modules/Connections"
+  import Connections from "@/store/Modules/Connections"
   // import Transformers from "@/store/Modules/Transformers"
   // import Algorithms from "@/store/Modules/Algorithms"
   import AppData from "@/store/Modules/AppData"
   const settingsModule = getModule(Settings)
   const projectsModule = getModule(Projects)
-  // const connectionsModule = getModule(Connections)
+  const connectionsModule = getModule(Connections)
   // const transformersModule = getModule(Transformers)
   // const algorithmsModule = getModule(Algorithms)
   const appDataModule = getModule(AppData)
@@ -66,6 +72,7 @@
     data() {
       return {
         selectedNode: null,
+        connection: null,
       }
     },
     computed: {
@@ -143,40 +150,57 @@
                 type: "wirings",
                 parentIdx: projectIdx,
                 icon: "pi pi-fw pi-server",
-                children: project.wirings.list.map((wiring, wIdx) => {
-                  return {
-                    key: `0-${projectIdx}-3-${wIdx}`,
-                    id: wiring.id,
-                    type: wiring.type,
-                    label: wiring.label,
-                    icon: "pi pi-fw pi-file",
-                    parent: project.id,
+                children: [
+                  ...project.wirings.list.map((wiring) => {
+                    return {
+                      key: `0-${projectIdx}-3-0`,
+                      id: wiring.id,
+                      type: wiring.type,
+                      label: wiring.label,
+                      icon: "pi pi-fw pi-file",
+                      parent: project.id,
+                      parentIdx: projectIdx,
+                    }
+                  }),
+                  {
+                    key: `0-${projectIdx}-3-1`,
+                    label: "Outputs",
+                    type: "outputs",
                     parentIdx: projectIdx,
-                  }
-                }),
-              },
-              {
-                key: `0-${projectIdx}-4`,
-                label: "Outputs",
-                type: "outputs",
-                parentIdx: projectIdx,
-                icon: "pi pi-fw pi-server",
-                children: project.outputs.list.map((output, oIdx) => {
-                  return {
-                    key: `0-${projectIdx}-4-${oIdx}`,
-                    id: output.id,
-                    type: output.type,
-                    label: output.label,
-                    icon: "pi pi-fw pi-file",
-                    parent: project.id,
-                    parentIdx: projectIdx,
-                  }
-                }),
+                    icon: "pi pi-fw pi-server",
+                    children: project.wirings.outputs.list.map(
+                      (output, oIdx) => {
+                        return {
+                          key: `0-${projectIdx}-0-${projectIdx}-3-1-${oIdx}`,
+                          id: output.id,
+                          type: output.type,
+                          label: output.label,
+                          icon: "pi pi-fw pi-file",
+                          parent: project.id,
+                          parentIdx: projectIdx,
+                        }
+                      }
+                    ),
+                  },
+                ],
               },
             ],
           })),
         }
-        return [projects]
+        const connections = {
+          key: 1,
+          type: "connections",
+          label: "Connections",
+          icon: "pi pi-fw pi-book",
+          children: connectionsModule.data.list.map((connection, idx) => ({
+            key: `1-${idx}`,
+            id: connection.id,
+            type: connection.type,
+            label: connection.label,
+            icon: "pi pi-fw pi-file",
+          })),
+        }
+        return [projects, connections]
       },
       expandedKeys() {
         return projectsModule.data.expandedNodes
@@ -184,8 +208,26 @@
       selectionKeys() {
         return projectsModule.data.selectedNode
       },
+      activeNode() {
+        return appDataModule.data.selectedTreeNodes.activeNode
+      },
+    },
+    mounted() {
+      const selectedNodes = appDataModule.data.selectedTreeNodes.list
+      if (selectedNodes.length) {
+        appDataModule.setActiveTreeNode(selectedNodes[0])
+      }
     },
     methods: {
+      isSelected(id) {
+        if (
+          this.activeNode === id &&
+          appDataModule.data.selectedTreeNodes.list.includes(id)
+        ) {
+          return true
+        }
+        return false
+      },
       openSettings() {
         settingsModule.openSettingsDialog("general")
       },
@@ -201,20 +243,41 @@
         }
       },
       openQuery(data) {
-        const { id, parent, type } = data
+        const { id, parent, type, key } = data
         const projectIdx = projectsModule.getProjects.findIndex(
           (el) => el.id == parent
         )
         const queryIdx = projectsModule
           .getQueries(projectIdx)
           .findIndex((el) => el.id == id)
-        const queryData = { type, id, projectIdx, queryIdx }
-        appDataModule.toggleTreeNode()
-        appDataModule.setSelectedTreeNodes(queryData)
+        const queryData = { key, type, id, projectIdx, queryIdx, ...data }
+        const isNew = !appDataModule.data.selectedTreeNodes.list.includes(id)
+        if (isNew) {
+          appDataModule.toggleTreeNode()
+          appDataModule.setSelectedTreeNodes(queryData)
+        } else {
+          appDataModule.setActiveTreeNode(id)
+        }
       },
       openTab(data) {
-        appDataModule.toggleTreeNode()
-        appDataModule.setSelectedTreeNodes(data)
+        const { id, type } = data
+        if (type == "output") {
+          // split the tab
+          const isNew = !appDataModule.data.selectedSplitNodes.list.includes(id)
+          if (isNew) {
+            appDataModule.toggleSplitNode()
+            appDataModule.setSelectedSplitNodes(data)
+          }
+          appDataModule.setActiveSplitNode(id)
+        } else {
+          // open tab
+          const isNew = !appDataModule.data.selectedTreeNodes.list.includes(id)
+          if (isNew) {
+            appDataModule.toggleTreeNode()
+            appDataModule.setSelectedTreeNodes(data)
+          }
+          appDataModule.setActiveTreeNode(id)
+        }
       },
       onNodeSelect(node) {
         this.selectedNode = node
@@ -223,12 +286,13 @@
         this.selectedNode = null
       },
       handleNodeSelection(e) {
-        const nodesInStore = projectsModule.data.selectedNode
-        if (Object.keys(nodesInStore).length) {
-          projectsModule.updateSelectedNode({ key: null, value: null })
-        }
+        // const nodesInStore = projectsModule.data.selectedNode
+        // if (Object.keys(nodesInStore).length) {
+        //   projectsModule.updateSelectedNode({ key: null, value: null })
+        // }
         const node = e.target.getAttribute("role")
         const parent = e.target.parentElement.getAttribute("role")
+        console.log({ node, parent })
         const isTreeNode = node == "treeitem" || parent == "treeitem"
         const { key, children } = this.selectedNode
         if (isTreeNode && !children) {
@@ -248,8 +312,4 @@
 
 <style lang="scss" scoped>
   @import "./Sidebar.scss";
-
-  .yo {
-    background: red;
-  }
 </style>

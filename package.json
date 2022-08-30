@@ -102,7 +102,9 @@
     "primevue": "^3.12.2",
     "register-service-worker": "^1.7.2",
     "roboto-fontface": "*",
+    "socket.io-client": "^4.5.1",
     "splitpanes": "^3.1.1",
+    "total4": "^0.0.65",
     "tree-kill": "^1.2.2",
     "typedb-client": "^2.11.1",
     "vite-plugin-markdown-vue": "^0.1.2",
@@ -117,6 +119,7 @@
     "vuex-persist": "^3.1.3",
     "webcola": "^3.4.0",
     "webfontloader": "^1.0.0",
+    "websocket": "^1.0.34",
     "winston": "^3.7.2"
   },
   "devDependencies": {

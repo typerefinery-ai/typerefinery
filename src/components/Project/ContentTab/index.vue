@@ -10,7 +10,7 @@
   <connection v-if="tab.type === 'connection'" :tab="tab" />
   <wiring v-if="tab.type === 'wiring'" />
   <theme v-if="tab.type === 'theme'" :tab="tab" />
-  <output-content v-if="tab.type === 'output'" />
+  <output-content v-show="tab.type === 'output'" />
 </template>
 
 <script>

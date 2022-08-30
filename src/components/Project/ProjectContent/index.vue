@@ -66,20 +66,28 @@
             tabs: [],
           },
         ],
+        activeTabIndex: 0,
       }
     },
     computed: {
       nodeSelected() {
         return appDataModule.data.treeNodeClicked
       },
+      splitNodeSelected() {
+        return appDataModule.data.splitNodeClicked
+      },
     },
     watch: {
       nodeSelected() {
         this.updateTabs()
       },
+      splitNodeSelected() {
+        this.updateSplitTabs()
+      },
     },
     mounted() {
       this.updateTabs()
+      this.updateSplitTabs()
     },
 
     methods: {
@@ -113,12 +121,55 @@
         const existingTabs = [...this.panes[0].tabs]
         const newTabs = []
         projectsArray.list.forEach((el) => {
-          const tab = { ...el }
+          const tab = { ...projectsArray[el] }
           if (!existingTabs.includes(tab)) {
             newTabs.push(tab)
           }
         })
         this.panes[0].tabs = newTabs
+      },
+      updateSplitTabs() {
+        const nodes = appDataModule.data.selectedSplitNodes
+        if (nodes.list.length) {
+          const allTabs = []
+          nodes.list.forEach((el) => {
+            allTabs.push(nodes[el])
+          })
+          const pane = { id: "pane2", tabs: allTabs }
+          if (this.panes.length === 1) {
+            this.panes.push(pane)
+            setTimeout(() => {
+              this.pane1Size = 0
+              this.panesSize = 45
+            }, 0)
+          } else {
+            this.panes[1] = pane
+          }
+        } else if (this.panes.length > 1) {
+          this.panes = this.panes.filter((el) => el.id !== "pane2")
+        }
+        // const splitTabs = appDataModule.data.selectedTreeNodes || {
+        //   split_list: [],
+        // }
+        // const newTabs = []
+        // const existingTabs =
+        //   this.panes.length > 1 ? [...this.panes[1].tabs] : []
+        // splitTabs.split_list.forEach((el) => {
+        //   const tab = { ...splitTabs[el] }
+        //   if (!existingTabs.includes(tab)) {
+        //     newTabs.push(tab)
+        //   }
+        // })
+        // const pane = { id: "pane2", tabs: newTabs }
+        // if (this.panes.length === 1) {
+        //   this.panes.push(pane)
+        //   setTimeout(() => {
+        //     this.pane1Size = 0
+        //     this.panesSize = 45
+        //   }, 0)
+        // } else {
+        //   this.panes[1] = pane
+        // }
       },
     },
   }
