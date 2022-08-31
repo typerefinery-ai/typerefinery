@@ -43,8 +43,8 @@ export default class FlowMessage extends VuexModule {
         // console.log("Received: '" + e.data + "'")
         // console.log(JSON.parse(e.data))
         const response = JSON.parse(e.data)
-        console.log(response)
-        const data = this.context.state.data
+        // console.log(response)
+        // const data = this.context.state.data
         // if (data.dtcreated && response.type === "publish") {
         //   const d1 = new Date(this.context.state.data.dtcreated)
         //   const d2 = new Date(response.data.dtcreated)
