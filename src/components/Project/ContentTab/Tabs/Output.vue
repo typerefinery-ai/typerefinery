@@ -56,8 +56,7 @@
       path() {
         console.log(flowModule.data["output.url"])
         const path = `/services/fastapi/generated${flowModule.data["output.url"]}`
-        const yo = path.replace(".svg/output", ".svg")
-        return yo
+        return path.replace(".svg/output", ".svg")
       },
     },
     // watch: {
