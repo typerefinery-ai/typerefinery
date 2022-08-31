@@ -4,29 +4,34 @@
   "title": "Svg",
   "type": "object",
   "properties": {
-    "name": {
+    "error": {
       "type": "string"
     },
-    "description": {
+    "output.name": {
       "type": "string"
     },
-    "port": {
-      "type": "integer",
-      "minimum": 0
-    },
-    "host": {
+    "output": {
       "type": "string"
     },
-    "icon": {
+    "output.exists": {
       "type": "string"
     },
-    "id": {
+    "output.url": {
       "type": "string"
     },
-    "type": {
+    "log": {
       "type": "string"
     },
-    "scope": {
+    "log.exists": {
+      "type": "string"
+    },
+    "log.url": {
+      "type": "string"
+    },
+    "return.output": {
+      "type": "string"
+    },
+    "Access-Control-Expose-Headers": {
       "type": "string"
     }
   }

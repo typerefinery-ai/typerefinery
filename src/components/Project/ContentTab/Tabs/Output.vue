@@ -20,14 +20,23 @@
     </div>
     <div class="config-container-content">
       <!-- <graph-view v-show="activeView === 'viz'" /> -->
+      <object
+        v-show="activeView === 'viz'"
+        :data="path"
+        type="image/svg+xml"
+      ></object>
       <table-view v-show="activeView === 'table'" />
     </div>
   </div>
 </template>
 
 <script>
+  // import axios from "axios"
   import Button from "primevue/button"
   import TableView from "../Table/TableView.vue"
+  import FlowMessage from "@/store/Modules/FlowMessage"
+  import { getModule } from "vuex-module-decorators"
+  const flowModule = getModule(FlowMessage)
   // import GraphView from "../../../Workflow/FlowGraph.vue"
 
   export default {
@@ -40,12 +49,39 @@
     data() {
       return {
         activeView: "viz",
+        // svgPath: "",
       }
     },
+    computed: {
+      path() {
+        console.log(flowModule.data["output.url"])
+        const path = `/services/fastapi/generated${flowModule.data["output.url"]}`
+        const yo = path.replace(".svg/output", ".svg")
+        return yo
+      },
+    },
+    // watch: {
+    //   path(newVal) {
+    //     console.log("path changes", newVal)
+    //   },
+    // },
+    // async mounted() {
+    //   await this.getData()
+    // },
     methods: {
       handleView(view) {
         this.activeView = view
       },
+      // async getData() {
+      // try {
+      //   const origin = `http://localhost:8000`
+      //   const { data } = await axios.get(origin + this.path)
+      // this.svgPath = data
+      //   console.log(data)
+      // } catch (err) {
+      //   console.log(err)
+      // }
+      // },
     },
   }
 </script>
