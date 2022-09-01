@@ -186,7 +186,7 @@
             return el.id == value.key
           })
         }
-        const payload = { key: "algorithm", value: algorithm, ...this.tab }
+        const payload = { field: "algorithm", value: algorithm, ...this.tab }
         projectsModule.updateQuery(payload)
       },
       saveAlgorithm(scope) {
@@ -215,7 +215,7 @@
         const query = projectsModule.getQuery(projectIdx, queryIdx)
         const algorithm = { ...query.algorithm }
         algorithm.dependencies = e.target.value
-        const payload = { key: "algorithm", value: algorithm, ...this.tab }
+        const payload = { field: "algorithm", value: algorithm, ...this.tab }
         projectsModule.updateQuery(payload)
       },
     },

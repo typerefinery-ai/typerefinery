@@ -199,7 +199,11 @@
         const query = projectsModule.getQuery(projectIdx, queryIdx)
         const transformer = { ...query.transformer }
         transformer.dependencies = dependencies
-        const payload = { key: "transformer", value: transformer, ...this.tab }
+        const payload = {
+          field: "transformer",
+          value: transformer,
+          ...this.tab,
+        }
         projectsModule.updateQuery(payload)
       },
       handleTransformer(el) {
@@ -232,7 +236,11 @@
             return el.id == value.key
           })
         }
-        const payload = { key: "transformer", value: transformer, ...this.tab }
+        const payload = {
+          field: "transformer",
+          value: transformer,
+          ...this.tab,
+        }
         this.$emit("handle-dependencies", transformer.dependencies)
         projectsModule.updateQuery(payload)
       },

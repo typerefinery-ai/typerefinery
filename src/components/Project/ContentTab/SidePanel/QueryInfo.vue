@@ -22,7 +22,7 @@
       />
     </div>
 
-    <div class="field">
+    <!-- <div class="field">
       <label>{{ $t(`components.transformer.transformer`) }}</label>
       <Dropdown
         :model-value="tranformer"
@@ -33,11 +33,11 @@
         :placeholder="$t(`components.transformer.select`)"
         @change="handleTransformer($event)"
       />
-    </div>
+    </div> -->
     <div class="field">
       <label>{{ $t(`components.tabquery.connection`) }}</label>
       <Dropdown
-        v-model="connection"
+        :model-value="connection"
         :options="connections"
         option-label="label"
         option-group-label="label"
@@ -46,14 +46,14 @@
         @change="handleConnection"
       />
     </div>
-    <div class="field">
+    <!-- <div class="field">
       <label for="database">{{ $t(`components.tabquery.db`) }}</label>
       <InputText
         id="database"
         :model-value="database"
         @input="handleInput($event, 'database')"
       />
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -64,10 +64,10 @@
   import Textarea from "primevue/textarea"
   import Projects from "@/store/Modules/Projects"
   import Connections from "@/store/Modules/Connections"
-  import Transformers from "@/store/Modules/Transformers"
+  // import Transformers from "@/store/Modules/Transformers"
   const projectsModule = getModule(Projects)
   const connectionsModule = getModule(Connections)
-  const transformersModule = getModule(Transformers)
+  // const transformersModule = getModule(Transformers)
   export default {
     name: "QueryInfo",
     components: { InputText, Dropdown, Textarea },
@@ -118,61 +118,61 @@
         }
       },
 
-      tranformer() {
-        const { projectIdx: pI, queryIdx: qI } = this.tab
-        const transformer = projectsModule.getQuery(pI, qI).transformer
-        return {
-          key: transformer.id,
-          label: transformer.label,
-          scope: transformer.scope,
-        }
-      },
+      // tranformer() {
+      //   const { projectIdx: pI, queryIdx: qI } = this.tab
+      //   const transformer = projectsModule.getQuery(pI, qI).transformer
+      //   return {
+      //     key: transformer.id,
+      //     label: transformer.label,
+      //     scope: transformer.scope,
+      //   }
+      // },
 
-      transformers() {
-        const { projectIdx } = this.tab
-        return [
-          {
-            label: "Local",
-            code: "local",
-            items: projectsModule.getLocalTransformers(projectIdx).map((el) => {
-              return { label: el.label, key: el.id, scope: el.scope }
-            }),
-          },
-          {
-            label: "Global",
-            code: "global",
-            items: transformersModule.getGlobalTransformers.map((el) => {
-              return { label: el.label, key: el.id, scope: el.scope }
-            }),
-          },
-        ]
-      },
+      // transformers() {
+      //   const { projectIdx } = this.tab
+      //   return [
+      //     {
+      //       label: "Local",
+      //       code: "local",
+      //       items: projectsModule.getLocalTransformers(projectIdx).map((el) => {
+      //         return { label: el.label, key: el.id, scope: el.scope }
+      //       }),
+      //     },
+      //     {
+      //       label: "Global",
+      //       code: "global",
+      //       items: transformersModule.getGlobalTransformers.map((el) => {
+      //         return { label: el.label, key: el.id, scope: el.scope }
+      //       }),
+      //     },
+      //   ]
+      // },
 
-      database() {
-        const { projectIdx, queryIdx } = this.tab
-        return projectsModule.getQuery(projectIdx, queryIdx).database
-      },
+      // database() {
+      //   const { projectIdx, queryIdx } = this.tab
+      //   return projectsModule.getQuery(projectIdx, queryIdx).database
+      // },
     },
     methods: {
-      handleInput({ target: { value } }, key) {
-        const payload = { key, value, ...this.tab }
+      handleInput({ target: { value } }, field) {
+        const payload = { field, value, ...this.tab }
         projectsModule.updateQuery(payload)
       },
 
-      handleTransformer({ value }) {
-        let transformer
-        if (value.scope == "local") {
-          transformer = projectsModule
-            .getLocalTransformers(this.tab.projectIdx)
-            .find((el) => el.id == value.key)
-        } else {
-          transformer = transformersModule.getGlobalTransformers.find(
-            (el) => el.id == value.key
-          )
-        }
-        const payload = { key: "transformer", value: transformer, ...this.tab }
-        projectsModule.updateQuery(payload)
-      },
+      // handleTransformer({ value }) {
+      //   let transformer
+      //   if (value.scope == "local") {
+      //     transformer = projectsModule
+      //       .getLocalTransformers(this.tab.projectIdx)
+      //       .find((el) => el.id == value.key)
+      //   } else {
+      //     transformer = transformersModule.getGlobalTransformers.find(
+      //       (el) => el.id == value.key
+      //     )
+      //   }
+      //   const payload = { key: "transformer", value: transformer, ...this.tab }
+      //   projectsModule.updateQuery(payload)
+      // },
 
       handleConnection({ value }) {
         let connection
@@ -185,7 +185,7 @@
             (el) => el.id == value.key
           )
         }
-        const payload = { key: "connection", value: connection, ...this.tab }
+        const payload = { field: "connection", value: connection, ...this.tab }
         projectsModule.updateQuery(payload)
       },
     },

@@ -77,12 +77,12 @@
       setTimeout(() => this.setEditorHeight(), 0)
     },
     methods: {
-      handleInput({ target: { value } }, key) {
-        const payload = { key, value, ...this.tab }
+      handleInput({ target: { value } }, field) {
+        const payload = { field, value, ...this.tab }
         projectsModule.updateQuery(payload)
       },
       handleQuery(code) {
-        const payload = { key: "query", value: code, ...this.tab }
+        const payload = { field: "query", value: code, ...this.tab }
         projectsModule.updateQuery(payload)
       },
       setEditorHeight() {
