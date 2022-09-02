@@ -7,11 +7,11 @@ exports.install = function () {
   // ROUTE('API   /api/      -connections_remove/id      *Connections --> remove');
 
   // REST API
-  ROUTE("GET       /api/connections/           *Connections --> query")
-  ROUTE("GET       /api/connections/{id}/      *Connections --> read")
-  ROUTE("POST      /api/connections/           *Connections --> insert")
-  ROUTE("PUT       /api/connections/{id}/      *Connections --> update")
-  ROUTE("DELETE    /api/connections/{id}/      *Connections --> remove")
+  // ROUTE("GET       /api/connections/           *Connections --> query")
+  // ROUTE("GET       /api/connections/{id}/      *Connections --> read")
+  // ROUTE("POST      /api/connections/           *Connections --> insert")
+  // ROUTE("PUT       /api/connections/{id}/      *Connections --> update")
+  // ROUTE("DELETE    /api/connections/{id}/      *Connections --> remove")
 
   // SVG
   ROUTE("GET       /api/svg/           *Svg --> query")
