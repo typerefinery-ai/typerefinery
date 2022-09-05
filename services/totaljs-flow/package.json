@@ -1,0 +1,33 @@
+{
+  "name": "flow",
+  "version": "10.0.0",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/totaljs/flow"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.12",
+    "d3": "^4.13.0",
+    "jsdom": "^20.0.0",
+    "mongodb": "^4.9.1",
+    "mquery": "^4.0.3",
+    "total4": "^0.0.66",
+    "typedb-client": "^2.11.1",
+    "webcola": "^3.4.0"
+  },
+  "scripts": {
+    "start": "node index.js 8000"
+  },
+  "keywords": [
+    "flow",
+    "flowstream",
+    "iot"
+  ],
+  "author": "Total.js",
+  "contributors": [
+    "Peter Širka",
+    "Martin Smola"
+  ],
+  "license": "MIT"
+}

@@ -1,0 +1,214 @@
+@{title(CONF.name)}
+@{layout('')}
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+	<meta http-equiv="X-UA-Compatible" content="IE=10" />
+	<meta name="robots" content="all,follow" />
+	@{import('meta', 'head', 'spa.min@19.css + editor.min@1.css + ui.css + editor.css + designer.css', 'spa.min@19.js + filesaver.min.js + editor.min@1.js + ui.js + func.js + editor.js', 'favicon.ico')}
+</head>
+<body data---="exec"@{if query.darkmode === '1'} class="ui-dark"@{fi}>
+
+	<div data---="locale"></div>
+	<div data---="windows__common.windows"></div>
+
+	<div data---="LAZY menu__null__style:2"></div>
+	<div data---="LAZY approve__null__cancel:@(Cancel)"></div>
+	<div data---="LAZY message__null__style:2"></div>
+	<div data---="LAZY notify__null__position:bottom right"></div>
+	<div data---="LAZY notifybar"></div>
+	<div data---="LAZY fileuploader"></div>
+	<div data---="LAZY clipboard"></div>
+	<div data---="LAZY faicons"></div>
+	<div data---="LAZY timepicker"></div>
+	<div data---="LAZY datepicker"></div>
+	<div data---="LAZY directory__null__placeholder:@(Search)"></div>
+	<div data---="LAZY colorpicker"></div>
+	<div data---="LAZY floatinginput"></div>
+	<div data---="LAZY tooltip"></div>
+
+	<div data---="edit"></div>
+	<div data---="markdown"></div>
+	<div data---="paste"></div>
+	<div data---="shortcuts"></div>
+	<div data---="loading"></div>
+	<div data---="console__common.console__datasource:common.logs"></div>
+
+	<div data---="part__common.page__if:flow;url:@{#}/parts/flow.html;loading:0" class="hidden invisible"></div>
+	<div data---="part__common.page__if:componenteditor;url:@{#}/parts/component.html;invisible:1;reload:?/reload" class="hidden invisible"></div>
+
+	<div data---="importer__common.form__if:componentsform;url:@{#}/forms/components.html"></div>
+	<div data---="importer__common.form__if:sourcesform;url:@{#}/forms/sources.html"></div>
+	<div data---="importer__common.form__if:versionform;url:@{#}/forms/version.html"></div>
+	<div data---="importer__common.form2__if:sourceform;url:@{#}/forms/source.html"></div>
+	<div data---="importer__common.form__if:variablesform;url:@{#}/forms/variables.html"></div>
+	<div data---="importer__common.form__if:importform;url:@{#}/forms/import.html"></div>
+
+	<script>
+
+		var common = {};
+
+		DEF.fallback = '@{#}/cdn/j-{0}.html';
+		DEF.versionhtml = '@{MAIN.flowstream.version}';
+
+		ENVIRONMENT('designer');
+
+		common.secret = 'flowstream';
+		common.marketplace = 'https://marketplace.totaljs.com';
+		common.components = '@{PREF.components}';
+		common.components2 = '@{PREF.components2}';
+		common.page = '';
+		common.windows = [];
+		// common.tms = '@{query.tms}' === '1';
+		common.socket = '@{query.socket}';
+		common.root = '@{#}';
+		common.logs = {};
+		common.logs.errors = { icon: 'fas fa-exclamation-circle', name: '@(Errors)', encode: false, items: [] };
+		common.page = common.socket ? 'flow' : '';
+
+		$(document).on('click', function() {
+			W.parent && W.parent.postMessage(STRINGIFY({ TYPE: 'focus', SOURCE: 'flow', socket: NAV.query.socket }), '*');
+		});
+
+		ON('@flag showloading', function() {
+			SETTER('loading/show');
+		});
+
+		ON('@flag hideloading', function() {
+			SETTER('loading/hide', 1000);
+		});
+
+		$(W).on('message', function(e) {
+			var data = e.originalEvent.data;
+			if (data) {
+				var msg = PARSE(data);
+				if (msg && msg.TYPE) {
+					switch (msg.TYPE) {
+						case 'shortcut':
+							SETTER('shortcuts/exec', msg.key);
+							break;
+						case 'darkmode':
+							$('body').tclass('ui-dark', msg.value === true);
+							break;
+						case 'components':
+							common.components = msg.value;
+							break;
+						case 'components2':
+							common.components2 = msg.value;
+							break;
+					}
+				}
+			}
+		});
+
+		function saveshortcut(e) {
+			var is = false;
+			if (common.page === 'componenteditor' && !common.form && !common.form2) {
+				EXEC('componenteditor/submit');
+				is = true;
+			} else if (common.form === 'noteform') {
+				EXEC('noteform/submit');
+				is = true;
+			} else if (common.form === 'settings' && !FIND('#flowsettings').find('button[name="submit"]').prop('disabled')) {
+				EXEC('flow/settings_submit');
+				is = true;
+			} else if (common.page === 'flow' && !common.form && !common.form2) {
+				EXEC('flow/submit');
+				is = true;
+			}
+			is && e && e.preventDefault();
+		}
+
+		SETTER(true, 'shortcuts/register', 'CMD+F, CTRL+F', function(e) {
+			if (common.page === 'flow' && !common.form && !common.form2) {
+				$('.ui-layout-left').find('input').focus();
+				e.preventDefault();
+			}
+		});
+
+		SETTER(true, 'shortcuts/register', 'CMD+ENTER, CTRL+ENTER', saveshortcut);
+
+		SETTER(true, 'shortcuts/register', 'CMD+D, CTRL+D', function(e) {
+			if (common.page === 'flow' && !common.form && !common.form2) {
+				EXEC('flow/clone');
+				e.preventDefault();
+				e.stopPropagation();
+			}
+		}, true);
+
+		SETTER(true, 'shortcuts/register', 'CMD+C, CTRL+C', function(e) {
+			if (!window.getSelection().toString() && common.page === 'flow' && !common.form && !common.form2 && flow.selected) {
+				EXEC('flow/copy_components');
+				e.preventDefault();
+				e.stopPropagation();
+			}
+		});
+
+		SETTER(true, 'shortcuts/register', 'CMD+V, CTRL+V', function(e) {
+			if (common.page === 'flow' && !common.form && !common.form2 && (e.target.nodeName !== 'INPUT' && e.target.nodeName !== 'TEXTAREA')) {
+				EXEC('flow/paste_components', { x: 0, y: 0 }, true);
+				e.preventDefault();
+				e.stopPropagation();
+			}
+		});
+
+		SETTER(true, 'shortcuts/register', 'remove', function(e) {
+			if (common.page === 'flow' && !common.form && !common.form2) {
+				CMD('flow.selected.clear');
+				SET('flow.changed', true);
+				e.preventDefault();
+			}
+		});
+
+		SETTER(true, 'shortcuts/register', 'save', saveshortcut, true);
+
+		SETTER(true, 'shortcuts/register', 'CMD+A, CTRL+A', function(e) {
+			var designer = FIND('flow');
+			var selected = designer.selected();
+			if (!selected.components.length) {
+				var keys = Object.keys(flow.data);
+				for (var key in keys) {
+					if (key !== 'groups' && key !== 'paused')
+						designer.op.select(key, true);
+				}
+			} else
+				select_connected(flow.selected);
+		}, false, function(e) {
+			var is = common.page === 'flow' && !common.form && !common.form2 && (!e.target || (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA'));
+			is && e.preventDefault();
+			return is;
+		});
+
+		SETTER(true, 'exec/register', function(attr, el, e, type) {
+			var c = attr.charAt(0);
+			if (c === '=' || c === '/') {
+				var id = ATTRD(el);
+				var instance = flowinstances.instances[id];
+				if (instance) {
+					attr = attr.substring(1);
+					instance[attr] && instance[attr](el, e);
+				}
+				return true;
+			}
+		});
+
+		function select_connected(comp) {
+			var conns = comp.connections;
+			if (!conns)
+				return;
+			var designer = FIND('flow');
+			Object.keys(conns).forEach(output => {
+				for (let com of conns[output]) {
+					designer.op.select(com.id, true);
+					select_connected(flow.data[com.id]);
+				}
+			});
+		};
+
+	</script>
+
+</body>
+</html>
