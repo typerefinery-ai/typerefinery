@@ -1,0 +1,102 @@
+<div data---="box__common.form__if:~PATH~;icon:far fa-object-ungroup;autofocus:true;reload:?/reload;scrollbar:1;submit:?/submit;width:800" class="hidden" data-scope="~PATH~">
+	<div class="padding bg-smoke">
+		<div class="grid-2">
+			<div class="m">
+				<div data---="input__?.name__required:1__''" class="m">@(Name)</div>
+				<div class="help">@(Enter FlowStream name)</div>
+			</div>
+			<div class="m">
+				<div data---="input__?.url__null__'https://'">@(Support URL address)</div>
+				<div class="help">@(Optional, you can enter the URL address for support)</div>
+			</div>
+		</div>
+	</div>
+	<div class="padding">
+
+		<div class="row">
+			<div class="col-md-3 m">
+				<div data---="input__?.group__dirsource:common.groupsform;dircustom:1;dirempty:@(Empty);dirplaceholder:@(Choose or enter new)">@(Group)</div>
+			</div>
+			<div class="col-md-3 m">
+				<div data---="input__?.reference__align:1">@(Reference)</div>
+			</div>
+			<div class="col-md-3 m">
+				<div data---="input__?.version__align:1">@(Version)</div>
+			</div>
+			<div class="col-md-3 m">
+				<div data---="input__?.author__align:1">@(Author)</div>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-md-3 m">
+				<div data---="input__?.icon__required:1;type:icon__'fas fa-microchip'">@(Icon)</div>
+			</div>
+			<div class="col-md-3 m">
+				<div data---="input__?.color__type:color">@(Color)</div>
+			</div>
+			<div class="col-md-6">
+				<div data---="input__?.proxypath__placeholder:@(/users/)"><i class="fa fa-server"></i><b>@(Proxy endpoint)</b></div>
+				<div class="help">@(It will route all incoming requests to this FlowStream.)</div>
+			</div>
+		</div>
+
+	</div>
+	<hr class="nmb nmt" />
+	<div class="padding">
+		<div class="ui-input-label">@(Additional information):</div>
+		<div data---="codemirror__?.readme__minheight:300;parent:auto;margin:390;monospace:1;type:markdown;linenumbers:0"></div>
+		<div class="help">@(Markdown format)</div>
+	</div>
+	<nav data---="validation__?">
+		<button name="submit" disabled><i class="fa fa-check-circle"></i>@(SUBMIT)</button>
+		<button name="cancel">@(Cancel)</button>
+	</nav>
+</div>
+
+<script>
+
+	PLUGIN('~PATH~', function(exports) {
+
+		exports.reload = function(com) {
+			var model = GET('?');
+			var id = model ? model.id : null;
+			com.reconfigure({ title: id ? '@(Update FlowStream)' : '@(Add FlowStream)' });
+		};
+
+		exports.submit = function(hide) {
+
+			var model = CLONE(exports.form);
+
+			if (model.proxypath) {
+				if (model.proxypath.charAt(0) !== '/')
+					model.proxypath = '/' + model.proxypath;
+				if (model.proxypath.charAt(model.proxypath.length - 1) !== '/')
+					model.proxypath += '/';
+
+				var error;
+				for (var i = 0; i < common.items.length; i++) {
+					var item = common.items[i];
+					if (item.id === model.id)
+						continue;
+					if (item.proxypath && (item.proxypath === model.proxypath || item.proxypath.startsWith(model.proxypath) || model.proxypath.startsWith(item.proxypath))) {
+						error = '@(Invalid endpoint) <span class="link">{0}</span>.<br>@(Overlapping with <span class="link">{1}</span> used by <b>{2}</b>)'.format(model.proxypath, item.proxypath, item.name);
+						break;
+					}
+				}
+
+				if (error) {
+					SETTER('message/warning', error);
+					return;
+				}
+			}
+
+			WAPI('streams_save', model, ASETTER('message/response', function() {
+				EXEC('common/refresh');
+				hide();
+			}));
+		};
+
+	});
+
+</script>

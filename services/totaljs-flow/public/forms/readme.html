@@ -1,0 +1,12 @@
+--PATH=readmeform--
+
+<div data---="viewbox__null__parent:auto" class="invisible">
+	<div data-bind="null__exec:renderreadme" class="padding markdown-small"></div>
+</div>
+
+<script>
+	function renderreadme(value, path, el) {
+		var value = FUNC.strim(common.readmewindow || '');
+		el.html(Thelpers.markdown(value, { element: el }));
+	}
+</script>
