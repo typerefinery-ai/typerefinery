@@ -195,7 +195,7 @@ function getServicesPage(services: Service[]) {
       <td>${execservice}</td>
       <td>${serviceStatusName}</td>
       <td>${configured.toUpperCase()}</td>
-      <td>${service.port}</td>
+      <td><a href="http://localhost:${service.port}" target="_blank">${service.port}</a></td>
       <td>
         <button onclick="triggerServiceAPI('${
           service.id
