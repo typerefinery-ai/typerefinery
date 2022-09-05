@@ -292,7 +292,6 @@
         // }
         const node = e.target.getAttribute("role")
         const parent = e.target.parentElement.getAttribute("role")
-        console.log({ node, parent })
         const isTreeNode = node == "treeitem" || parent == "treeitem"
         const { key, children } = this.selectedNode
         if (isTreeNode && !children) {

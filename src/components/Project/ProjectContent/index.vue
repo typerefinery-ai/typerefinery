@@ -4,6 +4,8 @@
       :dbl-click-splitter="false"
       :push-other-panes="false"
       @splitter-click="handleSplitterClick"
+      @resize="handleResize"
+      @resized="handleResized"
     >
       <pane
         v-if="!focus"
@@ -170,6 +172,13 @@
         // } else {
         //   this.panes[1] = pane
         // }
+      },
+      handleResize() {
+        const isResizingFlow = appDataModule.data.resizingFlow
+        if (!isResizingFlow) appDataModule.setResizingFlow(true)
+      },
+      handleResized() {
+        appDataModule.setResizingFlow(false)
       },
     },
   }

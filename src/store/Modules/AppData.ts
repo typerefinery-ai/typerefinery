@@ -115,4 +115,10 @@ export default class AppData extends VuexModule {
   toggleAlgorithmDialog() {
     this.data.algorithmDialog = !this.data.algorithmDialog
   }
+
+  // Flow
+  @Mutation
+  setResizingFlow(value: boolean) {
+    this.data.resizingFlow = value
+  }
 }

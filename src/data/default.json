@@ -45,7 +45,8 @@
     "queryDialog": false,
     "connectionDialog": false,
     "transformerDialog": false,
-    "algorithmDialog": false
+    "algorithmDialog": false,
+    "resizingFlow": false
   },
   "auth": {
     "username": "TypeRefinery User",

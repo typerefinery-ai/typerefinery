@@ -38,22 +38,39 @@ export default class FlowMessage extends VuexModule {
       console.log("WebSocket Client Error: " + error)
     }
     client.onmessage = (e) => {
+      // console.log(e)
       if (typeof e.data === "string") {
-        console.log("Received: '" + e.data + "'")
-        console.log(JSON.parse(e.data))
+        // console.log("Received: '" + e.data + "'")
+        // console.log(JSON.parse(e.data))
         const response = JSON.parse(e.data)
+        // console.log(response)
+        // const data = this.context.state.data
+        // if (data.dtcreated && response.type === "publish") {
+        //   const d1 = new Date(this.context.state.data.dtcreated)
+        //   const d2 = new Date(response.data.dtcreated)
+        //   console.log({ d1: d1.getTime(), d2: d2.getTime() })
+        //   if (d1.getTime() !== d2.getTime()) {
+        //     console.log("setting state....!!!!!!!!!!!!")
+        //     this.context.commit("setData", response.data)
+        //   }
+        // } else if (response.type === "publish") {
+        //   console.log("setting state for the first time+++++++")
+        //   this.context.commit("setData", response.data)
+        // }
+
         if (response.type === "publish") {
           this.context.commit("setData", response.data)
         }
+
         sendSubscribe()
       }
     }
 
     function sendSubscribe() {
       if (client.readyState === client.OPEN) {
-        console.log("sending subscribe")
+        // console.log("sending subscribe")
         client.send(JSON.stringify(subscribe_insert))
-        console.log("sending subscribe done")
+        // console.log("sending subscribe done")
       }
     }
   }
