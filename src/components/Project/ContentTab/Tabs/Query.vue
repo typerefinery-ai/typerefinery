@@ -10,7 +10,7 @@
           }"
           @click="handleView('Q')"
         />
-        <Button
+        <!-- <Button
           :label="$t(`components.tab.algorithm`)"
           class="p-button-raised"
           :class="{
@@ -41,7 +41,7 @@
             'p-button-text p-button-plain': activeView !== 'G',
           }"
           @click="handleView('G')"
-        />
+        /> -->
       </div>
       <div
         v-tooltip="$t(`tooltips.hide-content-tools`)"
@@ -58,23 +58,23 @@
       @splitter-click="handleSplitterClick"
     >
       <pane :ref="`w-${tab.id}-${paneId}`">
-        <div class="content-area-window" :class="{ show: activeView === 'D' }">
+        <!-- <div class="content-area-window" :class="{ show: activeView === 'D' }">
           <data-view :tab="tab" :view="activeView" />
         </div>
 
         <div class="content-area-window" :class="{ show: activeView === 'A' }">
           <algorithm-view :tab="tab" :view="activeView" />
-        </div>
+        </div> -->
 
         <div class="content-area-window" :class="{ show: activeView === 'Q' }">
           <query-view :tab="tab" :view="activeView" />
         </div>
 
-        <div class="content-area-window" :class="{ show: activeView === 'T' }">
+        <!-- <div class="content-area-window" :class="{ show: activeView === 'T' }">
           <transformer-view :tab="tab" :view="activeView" />
-        </div>
+        </div> -->
 
-        <div class="content-area-window" :class="{ show: activeView === 'G' }">
+        <!-- <div class="content-area-window" :class="{ show: activeView === 'G' }">
           <Button class="p-button-raised m-3 hidden" @click="showD3Chart"
             >Show D3 Graph</Button
           >
@@ -109,7 +109,7 @@
             </div>
             <div class="graph-toolbar-button"><control-icon :size="15" /></div>
           </div>
-        </div>
+        </div> -->
       </pane>
 
       <pane :ref="`p-${tab.id}-${paneId}`" size="25" max-size="50">
@@ -125,20 +125,20 @@
 </template>
 
 <script>
-  import FullIcon from "vue-material-design-icons/Fullscreen.vue"
-  import MinusIcon from "vue-material-design-icons/MagnifyMinus.vue"
-  import PlusIcon from "vue-material-design-icons/MagnifyPlus.vue"
-  import ControlIcon from "vue-material-design-icons/CameraControl.vue"
+  // import FullIcon from "vue-material-design-icons/Fullscreen.vue"
+  // import MinusIcon from "vue-material-design-icons/MagnifyMinus.vue"
+  // import PlusIcon from "vue-material-design-icons/MagnifyPlus.vue"
+  // import ControlIcon from "vue-material-design-icons/CameraControl.vue"
   //   import InputText from "primevue/inputtext"
   import { getModule } from "vuex-module-decorators"
   import { Splitpanes, Pane } from "splitpanes"
   import Button from "primevue/button"
-  import DataView from "../Views/DataView.vue"
+  // import DataView from "../Views/DataView.vue"
   import QueryView from "../Views/QueryView.vue"
-  import TransformerView from "../Views/TransformerView.vue"
-  import AlgorithmView from "../Views/AlgorithmView.vue"
+  // import TransformerView from "../Views/TransformerView.vue"
+  // import AlgorithmView from "../Views/AlgorithmView.vue"
   import SidePanel from "../SidePanel"
-  import Graph from "../../../Graph/Graph.vue"
+  // import Graph from "../../../Graph/Graph.vue"
   import renderD3 from "../../../Transformer/D3/d3"
   import renderWebcola from "../../../Transformer/WebCola/webcola"
   import renderD3LabelsChart from "../../../Transformer/D3Labels/d3labels"
@@ -149,16 +149,16 @@
     components: {
       Splitpanes,
       Pane,
-      DataView,
+      // DataView,
       QueryView,
-      TransformerView,
-      AlgorithmView,
+      // TransformerView,
+      // AlgorithmView,
       Button,
-      FullIcon,
-      MinusIcon,
-      PlusIcon,
-      ControlIcon,
-      Graph,
+      // FullIcon,
+      // MinusIcon,
+      // PlusIcon,
+      // ControlIcon,
+      // Graph,
       SidePanel,
     },
     props: {

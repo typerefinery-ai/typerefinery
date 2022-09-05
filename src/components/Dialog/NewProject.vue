@@ -99,6 +99,7 @@
   import { required } from "@vuelidate/validators"
   import { useVuelidate } from "@vuelidate/core"
   import { getRandomId } from "@/utils"
+  import axios from "axios"
   import Dialog from "primevue/dialog"
   import Panel from "primevue/panel"
   import InputText from "primevue/inputtext"
@@ -143,7 +144,7 @@
       closeDialog() {
         this.$emit("close")
       },
-      handleProjectstore(isFormValid) {
+      async handleProjectstore(isFormValid) {
         const data = {
           type: "project",
           id: getRandomId(),
@@ -195,8 +196,39 @@
         if (!isFormValid) {
           return
         }
+        await this.createInitialData(data.id)
         projectsModule.addNewProject(data)
         this.$emit("close")
+      },
+      async createInitialData(id) {
+        try {
+          const payload = {
+            schema: "streams_save",
+            data: {
+              icon: "fas fa-microchip",
+              url: "https://",
+              name: id,
+            },
+          }
+          const { data } = axios.post("http://localhost:8111/api/", payload, {
+            headers: { "Access-Control-Allow-Origin": "http://localhost:3000" },
+          })
+          console.log(data, "create")
+          if (data.success) {
+            const { data } = axios.post(
+              "http://localhost:8111/api/",
+              {
+                schema: "streams",
+              },
+              {
+                headers: { "Access-Control-Allow-Origin": "*" },
+              }
+            )
+            console.log(data, "all")
+          }
+        } catch (err) {
+          console.log(err)
+        }
       },
     },
   }

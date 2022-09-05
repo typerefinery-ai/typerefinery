@@ -44,10 +44,8 @@
       class="panel2"
     >
       <div class="field">
-        <label
-          for="name"
-          :class="{ 'p-error': v$.name.$invalid && submitted }"
-          >{{ $t("components.dialog.connections.info.name") }}</label
+        <label for="name" :class="{ 'p-error': v$.name.$invalid && submitted }"
+          >{{ $t("components.dialog.connections.info.name") }}*</label
         >
         <InputText
           id="name"

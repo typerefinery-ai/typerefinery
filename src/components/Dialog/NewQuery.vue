@@ -27,7 +27,7 @@
           for="expand"
           :class="{ 'p-error': v$.projectselected.$invalid && submitted }"
         >
-          {{ $t("components.dialog.new-query.panel1.label1") }}</label
+          {{ $t("components.dialog.new-query.panel1.label1") }}*</label
         >
         <Dropdown
           v-model="v$.projectselected.$model"
@@ -54,10 +54,8 @@
       class="panel2"
     >
       <div class="field">
-        <label
-          for="name"
-          :class="{ 'p-error': v$.name.$invalid && submitted }"
-          >{{ $t("components.dialog.new-query.panel2.name") }}</label
+        <label for="name" :class="{ 'p-error': v$.name.$invalid && submitted }"
+          >{{ $t("components.dialog.new-query.panel2.name") }}*</label
         >
         <InputText
           id="name"
@@ -72,9 +70,9 @@
       </div>
 
       <div class="field">
-        <label :class="{ 'p-error': v$.description.$invalid && submitted }">{{
-          $t("components.dialog.new-query.panel2.description")
-        }}</label>
+        <label :class="{ 'p-error': v$.description.$invalid && submitted }"
+          >{{ $t("components.dialog.new-query.panel2.description") }}*</label
+        >
         <InputText
           v-model="v$.description.$model"
           :class="{ 'p-error': v$.description.$invalid && submitted }"
@@ -92,7 +90,7 @@
       </div>
       <div class="field">
         <label for="icon" :class="{ 'p-error': v$.icon.$invalid && submitted }">
-          {{ $t("components.dialog.projects.info.icon") }}</label
+          {{ $t("components.dialog.projects.info.icon") }}*</label
         >
         <InputText
           id="icon"
@@ -129,7 +127,7 @@
         <label
           for="expand"
           :class="{ 'p-error': v$.connectionselected.$invalid && submitted }"
-          >{{ $t("components.dialog.new-query.panel1.label2") }}</label
+          >{{ $t("components.dialog.new-query.panel1.label2") }}*</label
         >
         <Dropdown
           v-model="v$.connectionselected.$model"
@@ -462,7 +460,7 @@
             // algorithm: this.algorithmdata,
             dataPath: "",
             endpoint: "",
-            database: "",
+            // database: "",
           },
         }
         this.submitted = true

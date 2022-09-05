@@ -121,9 +121,9 @@ export default class Projects extends VuexModule {
 
   @Mutation
   updateQuery(data) {
-    const { projectIdx, queryIdx, key, value } = data
+    const { projectIdx, queryIdx, field, value } = data
     const projects = JSON.parse(JSON.stringify(this.data.list))
-    projects[projectIdx].queries.list[queryIdx][key] = value
+    projects[projectIdx].queries.list[queryIdx][field] = value
     this.data.list = projects
   }
 

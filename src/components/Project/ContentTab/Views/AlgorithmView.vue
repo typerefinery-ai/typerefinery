@@ -143,8 +143,8 @@
           editor.style.setProperty("display", "flex", "important")
         }
       },
-      handleEndpoint({ target: { value } }, key) {
-        const payload = { key, value, ...this.tab }
+      handleEndpoint({ target: { value } }, field) {
+        const payload = { field, value, ...this.tab }
         projectsModule.updateQuery(payload)
       },
       setQueryState(loading, error, text) {

@@ -111,13 +111,13 @@
               },
             ],
           },
-          {
-            label: this.$t("components.mainmenu.workflow"),
-            icon: "pi pi-briefcase",
-            to: "/workflow",
-            type: "regular",
-            subMenu: [],
-          },
+          // {
+          //   label: this.$t("components.mainmenu.workflow"),
+          //   icon: "pi pi-briefcase",
+          //   to: "/workflow",
+          //   type: "regular",
+          //   subMenu: [],
+          // },
           {
             label: this.$t("components.mainmenu.charts"),
             icon: "pi pi-chart-pie",

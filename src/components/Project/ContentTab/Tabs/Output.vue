@@ -21,7 +21,7 @@
     <div class="config-container-content">
       <!-- <graph-view v-show="activeView === 'viz'" /> -->
       <object
-        v-show="activeView === 'viz'"
+        v-show="activeView === 'viz' && path"
         :data="path"
         type="image/svg+xml"
       ></object>
@@ -54,7 +54,6 @@
     },
     computed: {
       path() {
-        console.log(flowModule.data["output.url"])
         const path = `/services/fastapi/generated${flowModule.data["output.url"]}`
         return path.replace(".svg/output", ".svg")
       },
@@ -104,6 +103,11 @@
       display: block;
       margin: 1rem;
       height: 100%;
+
+      object {
+        height: 100%;
+        width: 100%;
+      }
 
       .field {
         label {
