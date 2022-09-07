@@ -22,7 +22,7 @@
     ],
     "healthcheck": {
       "type": "http",
-      "url": "http://localhost:${SERVICE_PORT}/",
+      "url": "http://127.0.0.1:${SERVICE_PORT}/",
       "expected_status": 200,
       "retries": 30
     }
