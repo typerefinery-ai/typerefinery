@@ -238,11 +238,11 @@ export class Service extends EventEmitter<ServiceEvent> {
         } with destination ${this.#options.execconfig?.setuparchive?.output}.`
       )
       this.#setuparchiveFile = path.join(
-        this.#servicedatapath,
+        this.#servicepath,
         this.#options.execconfig?.setuparchive.name
       )
       this.#setuparchiveOutputPath = path.join(
-        this.#servicedatapath,
+        this.#servicepath,
         this.#options.execconfig?.setuparchive.output
       )
       this.#log(
@@ -582,7 +582,7 @@ export class Service extends EventEmitter<ServiceEvent> {
     if (this.#healthCheck && this.#healthCheck.url) {
       const urlFixed = this.#getServiceCommand(this.#healthCheck.url, this)
       const url: URL = new URL(urlFixed)
-      const hostname = url.hostname == "127.0.0.1" ? "localhost" : url.hostname
+      const hostname = url.hostname
       const port = url.port
       const path = url.pathname
       const expected_status = this.#healthCheck.expected_status || 200
@@ -593,6 +593,9 @@ export class Service extends EventEmitter<ServiceEvent> {
         path: path,
         timeout: this.#healthCheck?.timeout || 1000,
       }
+
+      this.#log(`http health check request ${hostname}; url ${url}`)
+
       try {
         const req = http.get(options, (res) => {
           if (res.statusCode == expected_status) {
@@ -854,10 +857,25 @@ export class Service extends EventEmitter<ServiceEvent> {
         let serviceExecutable = this.getServiceExecutable()
         this.#execservicepath = this.getServiceExecutableRoot()
 
-        // check if executing service is requested to be cli
+        // check if executing service with another service
         if (this.#options.execconfig.execservice) {
           // find service executable
           const execservice: ExecService = this.#options.execconfig.execservice
+          if (execservice.id) {
+            const serviceExecutableService = this.#serviceManager.getService(
+              execservice.id
+            )
+            if (!serviceExecutableService.isSetup) {
+              this.#log(
+                `parent services ${serviceExecutableService.id} needs to be configured.`
+              )
+              await serviceExecutableService.#doSetup()
+              this.#log(
+                `parent services ${serviceExecutableService.id} has been configured.`
+              )
+            }
+          }
+          //check if using cli command for the service
           if (execservice.id && execservice.cli) {
             const serviceExecutableService = this.#serviceManager.getService(
               execservice.id
@@ -872,8 +890,8 @@ export class Service extends EventEmitter<ServiceEvent> {
             this.#log(`executing using command cli ${serviceExecutable}`)
           }
         }
-        //for each setup command in #setup, execute it
 
+        //for each setup command in #setup, execute it
         for (let i = 0; i < this.#setup.length; i++) {
           const step = this.#setup[i]
           const setupCommand = this.#getServiceCommand(step, this)
