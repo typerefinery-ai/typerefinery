@@ -41,6 +41,7 @@
     "electron:builder": "electron-builder",
     "electron:start": "node scripts/build.mjs && electron ./dist/main/index.cjs",
     "electron:run": "electron ./dist/main/index.cjs",
+    "electron:clean": "cd services && .\\reset.bat clean && cd ..",
     "app:build": "npm run build && npm run electron:builder",
     "postinstall": "electron-builder install-app-deps",
     "postuninstall": "electron-builder install-app-deps",
