@@ -32,12 +32,13 @@ goto exiterror
 
 echo REMOVE FOLDERS FROM APPDATA:
 if exist %USER_APP_LOG_PATH% (
-  echo  - %USER_APP_LOG_PATH%
+  echo Would remove %USER_APP_LOG_PATH%
 )
 if exist %USER_APP_SERVICES_PATH% (
-  echo  - %USER_APP_SERVICES_PATH%
+  echo Would remove %USER_APP_SERVICES_PATH%
 )
 echo REMOVE GENERATED FILES:
+cd ..
 git clean -xn services
 goto exit
 
@@ -45,12 +46,15 @@ goto exit
 
 echo REMOVE FOLDERS FROM APPDATA:
 if exist %USER_APP_LOG_PATH% (
-  del %USER_APP_LOG_PATH%
+  echo Removing %USER_APP_LOG_PATH%
+  rmdir /S /Q %USER_APP_LOG_PATH%
 )
 if exist %USER_APP_SERVICES_PATH% (
-  del %USER_APP_SERVICES_PATH%
+  echo Removing %USER_APP_SERVICES_PATH%
+  rmdir /S /Q %USER_APP_SERVICES_PATH%
 )
 echo REMOVE GENERATED FILES:
+cd ..
 git clean -xdf services
 goto exit
 
