@@ -232,13 +232,23 @@ export class Service extends EventEmitter<ServiceEvent> {
       this.#options.execconfig?.setuparchive?.name &&
       this.#options.execconfig?.setuparchive?.output
     ) {
+      this.#log(
+        `service ${this.#id} archive ${
+          this.#options.execconfig?.setuparchive?.name
+        } with destination ${this.#options.execconfig?.setuparchive?.output}.`
+      )
       this.#setuparchiveFile = path.join(
-        this.#servicepath,
+        this.#servicedatapath,
         this.#options.execconfig?.setuparchive.name
       )
       this.#setuparchiveOutputPath = path.join(
-        this.#servicepath,
+        this.#servicedatapath,
         this.#options.execconfig?.setuparchive.output
+      )
+      this.#log(
+        `service ${this.#id} archive file ${
+          this.#setuparchiveFile
+        } with output path ${this.#setuparchiveOutputPath}.`
       )
       // set status to archived if setuparchiveOutputPath does not exist
       if (!this.isSetup && !fs.existsSync(this.#setuparchiveOutputPath)) {
@@ -246,6 +256,7 @@ export class Service extends EventEmitter<ServiceEvent> {
       }
     }
 
+    this.#log(`service ${this.#id} loaded with status ${this.#status}.`)
     this.#checkRunning()
   }
 
@@ -814,11 +825,16 @@ export class Service extends EventEmitter<ServiceEvent> {
     if (this.#setuparchiveFile) {
       if (!os.isPathExist(this.#setuparchiveOutputPath)) {
         this.#log(`extracting setup archive ${this.#setuparchiveFile}`)
-        await this.#doExtract(this.#setuparchiveFile, this.#servicepath)
-        this.#log(`extracted setup archive ${this.#setuparchiveFile}`)
-        if (os.isPathExist(this.#setuparchiveOutputPath)) {
-          fs.writeFileSync(this.#setupstatefile, "archive extracted")
-        }
+        await this.#doExtract(
+          this.#setuparchiveFile,
+          this.#servicepath
+        ).finally(() => {
+          this.#log(`extracted setup archive ${this.#setuparchiveFile}`)
+
+          if (os.isPathExist(this.#setuparchiveOutputPath)) {
+            fs.writeFileSync(this.#setupstatefile, "archive extracted")
+          }
+        })
       } else {
         this.#log(
           `setup archive already extracted in ${this.#setuparchiveOutputPath}`
