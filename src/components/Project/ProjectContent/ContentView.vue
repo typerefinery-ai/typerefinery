@@ -16,7 +16,6 @@
           </template>
           <!-- tab 1 -->
           <content-tab
-            v-if="activeIndex === i"
             :pane-id="paneId"
             :focus="focus"
             :tools-visible="contentToolsVisible"

@@ -4,34 +4,16 @@
   "title": "Svg",
   "type": "object",
   "properties": {
-    "error": {
+    "stepId": {
       "type": "string"
     },
-    "output.name": {
+    "flowId": {
       "type": "string"
     },
-    "output": {
+    "stepName": {
       "type": "string"
     },
-    "output.exists": {
-      "type": "string"
-    },
-    "output.url": {
-      "type": "string"
-    },
-    "log": {
-      "type": "string"
-    },
-    "log.exists": {
-      "type": "string"
-    },
-    "log.url": {
-      "type": "string"
-    },
-    "return.output": {
-      "type": "string"
-    },
-    "Access-Control-Expose-Headers": {
+    "path": {
       "type": "string"
     }
   }

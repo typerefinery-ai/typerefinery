@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Action, Module, Mutation, VuexModule } from "vuex-module-decorators"
 import store from "../index"
 import * as websocket from "websocket"
@@ -9,11 +10,15 @@ import * as websocket from "websocket"
   preserveState: localStorage.getItem("flowMessage") !== null,
 })
 export default class FlowMessage extends VuexModule {
-  data = {}
+  data: any = {}
 
   @Mutation
-  setData(data) {
-    this.data = data
+  setData(item) {
+    this.data[item.stepId] = item
+    // const itemExists = this.data.find((el) => el.stepId === item.stepId)
+    // if (!itemExists) {
+    //   this.data.push(item)
+    // }
   }
 
   @Action
@@ -59,6 +64,7 @@ export default class FlowMessage extends VuexModule {
         // }
 
         if (response.type === "publish") {
+          // console.log(response)
           this.context.commit("setData", response.data)
         }
 

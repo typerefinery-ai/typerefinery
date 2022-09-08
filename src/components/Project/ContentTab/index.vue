@@ -8,9 +8,9 @@
     @toggle="$emit('toggle')"
   />
   <connection v-if="tab.type === 'connection'" :tab="tab" />
-  <wiring v-if="tab.type === 'wiring'" />
+  <wiring v-show="tab.type === 'wiring'" />
   <theme v-if="tab.type === 'theme'" :tab="tab" />
-  <output-content v-show="tab.type === 'output'" />
+  <output-content v-show="tab.type === 'output'" :tab="tab" />
 </template>
 
 <script>
