@@ -17,10 +17,6 @@
     },
     "commandline": "-m uvicorn --host localhost --port ${SERVICE_PORT} --app-dir ${SERVICE_PATH} main:app",
     "serviceport": 8000,
-    "depend_on": [
-      "python",
-      "typedb"
-    ],
     "healthcheck": {
       "type": "http",
       "url": "http://localhost:${SERVICE_PORT}/healthcheck",

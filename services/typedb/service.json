@@ -10,11 +10,10 @@
   "execconfig": {
     "execservice": { "id": "java" },
     "commandline": "-Xms256m -Xmx1024m -cp \"${SERVICE_PATH}\\server\\conf\\;${SERVICE_PATH}\\server\\lib\\common\\*;${SERVICE_PATH}\\server\\lib\\prod\\*;\" -Dtypedb.dir=\"${SERVICE_PATH}\" com.vaticle.typedb.core.server.TypeDBServer --storage.data=\"${SERVICE_DATA_PATH}\"",
-    "commandlinecli": "-Xms256m -Xmx1024m -cp \"${SERVICE_PATH}\\console\\conf\\;${SERVICE_PATH}\\console\\lib\\*;\" -Dtypedb.dir=\"${SERVICE_PATH}\" com.vaticle.typedb.console.TypeDBConsole",
+    "commandlinecli": "-Xms256m -Xmx1024m -cp \"${SERVICE_PATH}\\console\\conf\\;${SERVICE_PATH}\\console\\lib\\*;\" -D\"typedb.dir=${SERVICE_PATH}\" com.vaticle.typedb.console.TypeDBConsole ",
     "datapath": "/server/data",
     "serviceorder": 1,
     "serviceport": 1729,
-    "depend_on": ["java"],
     "healthcheck": {
       "type": "tcp",
       "retries": 30

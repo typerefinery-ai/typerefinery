@@ -36,6 +36,7 @@ export enum ServiceStatus {
   INVALIDCONFIG = "-10",
   ERROR = "-1",
   DISABLED = "0",
+  LOADED = "1",
   ARCHIVED = "5",
   AVAILABLE = "10",
   INSTALLING = "15",
@@ -170,7 +171,7 @@ export class Service extends EventEmitter<ServiceEvent> {
     this.#servicehost = this.#options.execconfig?.servicehost || "localhost"
     this.#healthCheck = this.#options.execconfig?.healthcheck
     this.#setup = this.#options.execconfig?.setup || []
-    this.#status = ServiceStatus.AVAILABLE
+    this.#status = ServiceStatus.LOADED
     if (this.#options.enabled === false) {
       this.#status = ServiceStatus.DISABLED
     }
@@ -671,6 +672,9 @@ export class Service extends EventEmitter<ServiceEvent> {
       return
     }
 
+    // wait untill all depend_on services are started
+    await this.#waitForDependOnServices()
+
     //run setup if it exists
     await this.#doSetup()
 
@@ -970,7 +974,43 @@ export class Service extends EventEmitter<ServiceEvent> {
         )
       }
     } else {
-      //this.#status = ServiceStatus.STOPPED
+      this.#status = ServiceStatus.AVAILABLE
     }
+  }
+
+  // wait untill all depend_on services are started
+  async #waitForDependOnServices() {
+    return new Promise((resolve) => {
+      if (
+        this.#options.execconfig.depend_on &&
+        this.#options.execconfig.depend_on.length > 0
+      ) {
+        const dependOnServices = this.#options.execconfig.depend_on
+        this.#log(`waiting for depend_on services ${dependOnServices}`)
+        const interval = setInterval(() => {
+          let depend_on_services_started = true
+          for (let i = 0; i < dependOnServices.length; i++) {
+            const depend_on_service = dependOnServices[i]
+            const service = this.#serviceManager.getService(depend_on_service)
+            if (service) {
+              this.#log(
+                `checking services ${service.id} status ${service.status} and setup ${service.isSetup}.`
+              )
+              if (service.status != ServiceStatus.STARTED) {
+                depend_on_services_started = false
+                break
+              }
+            }
+          }
+          if (depend_on_services_started) {
+            this.#log(`services started`)
+            clearInterval(interval)
+            resolve(true)
+          }
+        }, 1000)
+      } else {
+        resolve(true)
+      }
+    })
   }
 }

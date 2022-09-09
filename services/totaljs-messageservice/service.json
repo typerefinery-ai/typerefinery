@@ -14,9 +14,6 @@
     ],
     "commandline": "index.js",
     "serviceport": 8112,
-    "depend_on": [
-      "node"
-    ],
     "healthcheck": {
       "type": "http",
       "url": "http://127.0.0.1:${SERVICE_PORT}/",

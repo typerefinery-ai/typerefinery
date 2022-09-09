@@ -16,7 +16,6 @@
     "commandline": "",
     "serviceport": 8000,
     "depend_on": [
-      "python",
       "typedb"
     ]
   }
