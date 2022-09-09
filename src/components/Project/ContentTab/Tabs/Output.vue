@@ -46,6 +46,9 @@
       TableView,
       // GraphView,
     },
+    props: {
+      tab: { type: Object, required: true },
+    },
     data() {
       return {
         activeView: "viz",
@@ -54,8 +57,13 @@
     },
     computed: {
       path() {
-        const path = `/services/fastapi/generated${flowModule.data["output.url"]}`
-        return path.replace(".svg/output", ".svg")
+        const svg = flowModule.data[this.tab.id]
+        if (svg) {
+          let path = `/services/fastapi/generated${svg.path}`
+          return path.replace(".svg/output", ".svg")
+        } else {
+          return ""
+        }
       },
     },
     // watch: {

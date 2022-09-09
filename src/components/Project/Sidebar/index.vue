@@ -56,12 +56,14 @@
   import Projects from "@/store/Modules/Projects"
   import Settings from "@/store/Modules/Settings"
   import Connections from "@/store/Modules/Connections"
+  import FlowMessage from "@/store/Modules/FlowMessage"
   // import Transformers from "@/store/Modules/Transformers"
   // import Algorithms from "@/store/Modules/Algorithms"
   import AppData from "@/store/Modules/AppData"
   const settingsModule = getModule(Settings)
   const projectsModule = getModule(Projects)
   const connectionsModule = getModule(Connections)
+  const flowMessageModule = getModule(FlowMessage)
   // const transformersModule = getModule(Transformers)
   // const algorithmsModule = getModule(Algorithms)
   const appDataModule = getModule(AppData)
@@ -168,13 +170,13 @@
                     type: "outputs",
                     parentIdx: projectIdx,
                     icon: "pi pi-fw pi-server",
-                    children: project.wirings.outputs.list.map(
-                      (output, oIdx) => {
+                    children: Object.keys(flowMessageModule.data).map(
+                      (objkey, oIdx) => {
                         return {
                           key: `0-${projectIdx}-0-${projectIdx}-3-1-${oIdx}`,
-                          id: output.id,
-                          type: output.type,
-                          label: output.label,
+                          id: objkey,
+                          type: "output",
+                          label: "Output_Viz " + ++oIdx,
                           icon: "pi pi-fw pi-file",
                           parent: project.id,
                           parentIdx: projectIdx,
