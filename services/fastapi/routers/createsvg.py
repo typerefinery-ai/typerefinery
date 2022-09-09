@@ -134,4 +134,4 @@ async def read_createsvg_output(script: str):
   returnfile = os.path.join(CONFIG.APP_USER_DATA_LOCATION, "generated", f"{CREATESVG_DATA_FOLDER}", f'{script}')
   # return contents of logfile withoput encoding
   with open(returnfile, "r") as new_file:
-    return Response(content=new_file.read(), media_type="text/plain")
+    return Response(content=new_file.read(), media_type="image/svg+xml")
