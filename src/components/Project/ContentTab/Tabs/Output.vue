@@ -20,11 +20,7 @@
     </div>
     <div class="config-container-content">
       <!-- <graph-view v-show="activeView === 'viz'" /> -->
-      <object
-        v-show="activeView === 'viz' && path"
-        :data="path"
-        type="image/svg+xml"
-      ></object>
+      <object v-show="activeView === 'viz' && path" :data="path"></object>
       <table-view v-show="activeView === 'table'" />
     </div>
   </div>
@@ -59,8 +55,8 @@
       path() {
         const svg = flowModule.data[this.tab.id]
         if (svg) {
-          let path = `/services/fastapi/generated${svg.path}`
-          return path.replace(".svg/output", ".svg")
+          let path = `http://localhost:8000${svg.path}`
+          return path
         } else {
           return ""
         }

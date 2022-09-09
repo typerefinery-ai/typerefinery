@@ -29,7 +29,7 @@ export default class FlowMessage extends VuexModule {
     }
 
     const W3CWebSocket = websocket.w3cwebsocket
-    const client = new W3CWebSocket("ws://localhost:8112/$tms/")
+    const client = new W3CWebSocket("ws://127.0.0.1:8112/$tms/")
     client.onopen = function () {
       console.log("WebSocket Client Connected")
       console.log(
@@ -43,7 +43,7 @@ export default class FlowMessage extends VuexModule {
       console.log("WebSocket Client Error: " + error)
     }
     client.onmessage = (e) => {
-      // console.log(e)
+      console.log(e)
       if (typeof e.data === "string") {
         // console.log("Received: '" + e.data + "'")
         // console.log(JSON.parse(e.data))
