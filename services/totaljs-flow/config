@@ -1,6 +1,6 @@
 name                        : Total.js Flow v10
-cookie                      : typerefinery
-cookie_secret               : typerefinery
+//cookie                      : typerefinery
+//cookie_secret               : typerefinery
 allow_custom_titles         : true
 
 flowstream_worker           : fork
