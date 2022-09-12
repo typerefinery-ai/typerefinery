@@ -110,9 +110,8 @@
           class="codemirror"
           placeholder="Code goes here..."
           :style="{ height: '20vh' }"
-          :autofocus="true"
           :indent-with-tab="true"
-          :tab-zize="2"
+          :tab-size="2"
           :extensions="extensions"
         />
 
@@ -142,29 +141,33 @@
         :label="$t(`components.dialog.new-algorithm.footer.save`)"
         icon="pi pi-check"
         autofocus
-        @click="handlealgorithmstore(!v$.$invalid)"
+        @click="handleAlgorithmStore(!v$.$invalid)"
       />
     </template>
   </Dialog>
 </template>
 
 <script>
-  import Dialog from "primevue/dialog"
-  //import Avatar from "primevue/avatar"
-  import Dropdown from "primevue/dropdown"
-  import InputText from "primevue/inputtext"
-  import Button from "primevue/button"
-  import Panel from "primevue/panel"
-  import Projects from "@/store/Modules/Projects"
   import { getModule } from "vuex-module-decorators"
   import { required } from "@vuelidate/validators"
   import { useVuelidate } from "@vuelidate/core"
   import { oneDark } from "@codemirror/theme-one-dark"
   import { Codemirror } from "vue-codemirror"
   import { javascript } from "@codemirror/lang-javascript"
-  import AppSettings from "@/store/Modules/AppSettings"
-  const appSettings = getModule(AppSettings)
-  const appData = getModule(Projects)
+  import { getRandomId } from "@/utils"
+  import Dialog from "primevue/dialog"
+  import Dropdown from "primevue/dropdown"
+  import InputText from "primevue/inputtext"
+  import Button from "primevue/button"
+  import Panel from "primevue/panel"
+  import Projects from "@/store/Modules/Projects"
+  import Settings from "@/store/Modules/Settings"
+  import Algorithms from "@/store/Modules/Algorithms"
+  import AppData from "@/store/Modules/AppData"
+  const settingsModule = getModule(Settings)
+  const projectsModule = getModule(Projects)
+  const algorithmsModule = getModule(Algorithms)
+  const appDataModule = getModule(AppData)
 
   export default {
     name: "NewAlgorithms",
@@ -210,17 +213,20 @@
     },
     computed: {
       projectList() {
-        return appData.projectsList
+        return projectsModule.getProjects.map((el) => ({
+          label: el.label,
+          key: el.id,
+        }))
       },
       extensions() {
-        return appSettings.theme === "dark"
+        return settingsModule.data.theme === "dark"
           ? [javascript(), oneDark]
           : [javascript()]
       },
     },
     mounted() {
-      if (appData.treeNodePath) {
-        const nodeData = appData.treeNodePath.split("/")
+      if (appDataModule.data.treeNodePath) {
+        const nodeData = appDataModule.data.treeNodePath.split("/")
 
         // Check for local and global
         this.lengthData = nodeData
@@ -228,10 +234,8 @@
           this.selectedEditNode = true
 
           // set project
-          const projects = appData.allProjects
-          const projectIndex = appData.allProjects.findIndex(
-            (el) => el.id == nodeData[0]
-          )
+          const projects = projectsModule.getProjects
+          const projectIndex = projects.findIndex((el) => el.id == nodeData[0])
           this.projectsIndex = projectIndex
           this.selected = projects[projectIndex].id
           // algorithm index
@@ -251,12 +255,12 @@
         } else {
           this.selectedEditNode = true
           // set algorithm
-          const algorithmIndex = appData.globalAlgorithms.findIndex(
+          const algorithmIndex = algorithmsModule.getGlobalAlgorithms.findIndex(
             (el) => el.id == nodeData[0]
           )
           this.algorithmsIndex = algorithmIndex
           // for algorithm data
-          const algorithm = appData.globalAlgorithms[algorithmIndex]
+          const algorithm = algorithmsModule.getGlobalAlgorithms[algorithmIndex]
           this.v$.name.$model = algorithm.label
           this.v$.description.$model = algorithm.description
           this.v$.icon.$model = algorithm.icon
@@ -266,7 +270,7 @@
     },
     methods: {
       algorithmcloseDialog() {
-        appData.resetTreeNodePath()
+        appDataModule.resetTreeNodePath()
         this.$emit("close")
       },
       //update dialog
@@ -275,30 +279,26 @@
         if (this.lengthData.length == 1) {
           data = {
             algorithmIdx: this.algorithmsIndex,
-            projectIdx: -1,
-            // name: this.v$.selected.$model,
             data: {
-              ...appData.globalAlgorithms[this.algorithmsIndex],
-              //name: this.v$.name.$model,
+              ...algorithmsModule.getGlobalAlgorithms[this.algorithmsIndex],
               label: this.v$.name.$model,
               icon: this.v$.icon.$model,
-              query: this.v$.query.$model,
+              code: this.v$.query.$model,
               description: this.v$.description.$model,
               type: "algorithm",
               scope: "global",
             },
           }
+          algorithmsModule.editGlobalAlgorithm(data)
         } else {
           data = {
             algorithmIdx: this.algorithmsIndex,
             projectIdx: this.projectsIndex,
             data: {
-              ...appData.allProjects[this.projectsIndex].algorithms.list[
+              ...projectsModule.getProjects[this.projectsIndex].algorithms.list[
                 this.algorithmsIndex
               ],
               label: this.v$.name.$model,
-              // host: "",
-              // port: "",
               icon: this.v$.icon.$model,
               description: this.v$.description.$model,
               query: this.v$.query.$model,
@@ -306,6 +306,7 @@
               scope: "local",
             },
           }
+          projectsModule.editLocalAlgorithm(data)
         }
 
         this.submitted = true
@@ -313,31 +314,26 @@
         if (!isFormValid) {
           return
         }
-
-        appData.editAlgorithm(data)
         this.algorithmcloseDialog()
       },
 
       // new dialog
-      handlealgorithmstore(isFormValid) {
-        const projectIndex = appData.allProjects.findIndex(
+      handleAlgorithmStore(isFormValid) {
+        const projectIndex = projectsModule.getProjects.findIndex(
           (el) => el.id == this.selected
         )
         const data = {
-          name: this.selected,
           projectIdx: projectIndex,
           data: {
-            // name: this.name,
-            // id: this.name,
             label: this.name,
             icon: this.icon,
             description: this.description,
             query: this.query,
             type: "algorithm",
-            id: Math.random()
-              .toString(36)
-              .replace(/[^a-z]+/g, "")
-              .substr(2, 10),
+            id: getRandomId(),
+            logs: [""],
+            error: "",
+            scope: projectIndex == -1 ? "global" : "local",
           },
         }
         this.submitted = true
@@ -345,7 +341,11 @@
         if (!isFormValid) {
           return
         }
-        appData.addNewAlgorithm(data)
+        if (projectIndex == -1) {
+          algorithmsModule.addGlobalAlgorithm(data.data)
+        } else {
+          projectsModule.addLocalAlgorithm(data)
+        }
         this.$emit("close")
       },
     },
@@ -355,6 +355,11 @@
   .algorithm-dialog {
     height: 100vh;
     width: 40vw;
+    .p-panel.p-component {
+      .p-panel-content {
+        padding-top: 5px;
+      }
+    }
     .p-dropdown {
       width: 100%;
     }

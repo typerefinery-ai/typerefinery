@@ -1,55 +1,133 @@
 <template>
-  <div class="data-view-wrapper">
+  <div ref="datawrapper" class="data-view-wrapper h-full">
     <div class="refresh-data">
-      <!-- <Button icon="pi pi-refresh" /> -->
-      <Button label="Refresh" icon="pi pi-refresh" />
+      <Button
+        :label="$t('components.data.refresh')"
+        :icon="`pi ${loading ? 'pi-spin pi-refresh' : 'pi-refresh'}`"
+        :style="{ 'pointer-events': loading ? 'none' : 'auto' }"
+        @click="handleRequest"
+      />
     </div>
-    <DataTable
-      :value="data"
-      striped-rows
-      responsive-layout="scroll"
-      :scrollable="true"
-      scroll-height="415px"
-    >
-      <Column field="year" header="Year"></Column>
-      <Column field="brand" header="Brand"></Column>
-      <Column field="color" header="Color"></Column>
-    </DataTable>
+    <div id="data_view_cm" class="shadow-3">
+      <codemirror
+        :model-value="data"
+        placeholder="NO DATA"
+        :style="{ height: '60vh' }"
+        :autofocus="true"
+        :indent-with-tab="true"
+        :tab-size="2"
+        :extensions="extensions"
+        @change="handleData"
+      />
+    </div>
   </div>
 </template>
 
 <script>
-  import DataTable from "primevue/datatable"
-  import Column from "primevue/column"
+  import { getModule } from "vuex-module-decorators"
+  import { Codemirror } from "vue-codemirror"
+  import { javascript } from "@codemirror/lang-javascript"
+  import { oneDark } from "@codemirror/theme-one-dark"
+  import * as d3 from "d3"
+  import axios from "axios"
   import Button from "primevue/button"
+  import Settings from "@/store/Modules/Settings"
+  import Projects from "@/store/Modules/Projects"
+  const settingsModule = getModule(Settings)
+  const projectsModule = getModule(Projects)
+
   export default {
     name: "DataView",
-    components: { DataTable, Column, Button },
+    components: { Codemirror, Button },
+    props: {
+      tab: { type: Object, required: true },
+      view: { type: String, required: true },
+    },
     data() {
       return {
-        data: [
-          {
-            brand: "Volkswagen",
-            year: 2012,
-            color: "Orange",
-            vin: "dsad231ff",
-          },
-          { brand: "Audi", year: 2011, color: "Black", vin: "gwregre345" },
-          { brand: "Renault", year: 2005, color: "Gray", vin: "h354htr" },
-          { brand: "BMW", year: 2003, color: "Blue", vin: "j6w54qgh" },
-          { brand: "Mercedes", year: 1995, color: "Orange", vin: "hrtwy34" },
-          { brand: "Volvo", year: 2005, color: "Black", vin: "jejtyj" },
-          { brand: "Honda", year: 2012, color: "Yellow", vin: "g43gr" },
-          { brand: "Jaguar", year: 2013, color: "Orange", vin: "greg34" },
-          { brand: "Ford", year: 2000, color: "Black", vin: "h54hw5" },
-        ],
+        data: "",
+        loading: false,
       }
+    },
+    computed: {
+      extensions() {
+        return settingsModule.data.theme === "dark"
+          ? [javascript(), oneDark]
+          : [javascript()]
+      },
+      viewResized() {
+        return settingsModule.data.viewResized
+      },
+      path() {
+        const { projectIdx, queryIdx } = this.tab
+        return projectsModule.getQuery(projectIdx, queryIdx).dataPath
+      },
+      origin() {
+        const { projectIdx, queryIdx } = this.tab
+        const endpoint = projectsModule.getQuery(projectIdx, queryIdx).endpoint
+        return new URL(endpoint).origin
+      },
+    },
+    watch: {
+      viewResized() {
+        setTimeout(() => this.setEditorHeight(), 0)
+      },
+      path() {
+        this.getData()
+      },
+    },
+    mounted() {
+      setTimeout(() => this.setEditorHeight(), 0)
+      this.getData()
+    },
+    methods: {
+      setEditorHeight() {
+        if (this.view !== "D") return
+        const wrapper = this.$refs.datawrapper
+        const editor = document.querySelector("#data_view_cm .cm-editor")
+        if (wrapper) {
+          editor.style.setProperty("display", "none", "important")
+          editor.style.height = wrapper.clientHeight - 75 + "px"
+          editor.style.setProperty("display", "flex", "important")
+        }
+      },
+      async handleRequest() {
+        this.loading = true
+        this.data = "loading..."
+        const response = await projectsModule.runAlgorithm(this.tab)
+        if (response.type == "data") {
+          this.loading = false
+          this.getData()
+        } else {
+          this.loading = false
+        }
+      },
+      async getData() {
+        if (this.path) {
+          try {
+            this.data = "loading..."
+            const { data } = await axios.get(this.origin + this.path)
+            this.data = JSON.stringify(data, null, "\t")
+          } catch (err) {
+            this.data = "Unable to fetch data"
+            console.log(err)
+          }
+        }
+      },
+      handleData(data) {
+        this.data = data
+      },
     },
   }
 </script>
 
 <style scoped lang="scss">
-  .refresh-data {
-    text-align: right;
+  .data-view-wrapper {
+    padding: 1rem;
+
+    .refresh-data {
+      text-align: right;
+      margin-bottom: 1rem;
+    }
   }
 </style>

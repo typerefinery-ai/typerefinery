@@ -9,38 +9,23 @@
 </template>
 
 <script>
-import { getModule } from "vuex-module-decorators"
-import Project from "@/components/Project"
-import Charts from "@/components/Charts"
-import Maps from "@/components/Maps"
-import Chat from "@/components/Chat"
-import CodeEditor from "@/components/CodeEditor/MonacoEditor"
-import Settings from "@/components/Settings/Settings.vue"
-import AppSettings from "@/store/Modules/AppSettings"
-const appSettings = getModule(AppSettings)
-// import axios from "axios"
+  import { getModule } from "vuex-module-decorators"
+  import Project from "@/components/Project"
+  import Charts from "@/components/Charts"
+  import Maps from "@/components/Maps"
+  import Chat from "@/components/Chat"
+  import CodeEditor from "@/components/CodeEditor/MonacoEditor"
+  import Settings from "@/components/Settings/Settings.vue"
+  import SettingsStore from "@/store/Modules/Settings"
+  const settingsModule = getModule(SettingsStore)
 
-export default {
-  name: "Home",
-  components: { Project, Charts, Maps, Settings, Chat, CodeEditor },
-  computed: {
-    settingsDialogVisible() {
-      return appSettings.settingsDialogVisible
+  export default {
+    name: "Home",
+    components: { Project, Charts, Maps, Settings, Chat, CodeEditor },
+    computed: {
+      settingsDialogVisible() {
+        return settingsModule.data.settingsDialogVisible
+      },
     },
-  },
-  // methods:{
-    
-  //    async loadData()
-  //    {
-  //      let user = localStorage.getItem("user-info");
-  //   this.name = JSON.parse(user).name;
-  //   if (!user) {
-  //     this.$router.push({ name: "SignUp" });
-  //   }
-  //    }
-  // }, async mounted() 
-  // {
-  //   this.loadData();
-  // },
-}
+  }
 </script>

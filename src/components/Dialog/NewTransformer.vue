@@ -124,7 +124,7 @@
           :style="{ height: '20vh' }"
           :autofocus="true"
           :indent-with-tab="true"
-          :tab-zize="2"
+          :tab-size="2"
           :extensions="extensions"
         />
 
@@ -161,22 +161,26 @@
 </template>
 
 <script>
-  import Dialog from "primevue/dialog"
-  //import Avatar from "primevue/avatar"
-  import Dropdown from "primevue/dropdown"
-  import InputText from "primevue/inputtext"
-  import Button from "primevue/button"
-  import Panel from "primevue/panel"
-  import Projects from "@/store/Modules/Projects"
   import { getModule } from "vuex-module-decorators"
   import { required } from "@vuelidate/validators"
   import { useVuelidate } from "@vuelidate/core"
   import { oneDark } from "@codemirror/theme-one-dark"
   import { Codemirror } from "vue-codemirror"
   import { javascript } from "@codemirror/lang-javascript"
-  import AppSettings from "@/store/Modules/AppSettings"
-  const appSettings = getModule(AppSettings)
-  const appData = getModule(Projects)
+  import { getRandomId } from "@/utils"
+  import Dialog from "primevue/dialog"
+  import Dropdown from "primevue/dropdown"
+  import InputText from "primevue/inputtext"
+  import Button from "primevue/button"
+  import Panel from "primevue/panel"
+  import Projects from "@/store/Modules/Projects"
+  import Settings from "@/store/Modules/Settings"
+  import AppData from "@/store/Modules/AppData"
+  import Transformers from "@/store/Modules/Transformers"
+  const settingsModule = getModule(Settings)
+  const projectsModule = getModule(Projects)
+  const appDataModule = getModule(AppData)
+  const transformersModule = getModule(Transformers)
 
   export default {
     name: "NewTransformers",
@@ -217,23 +221,25 @@
         name: { required },
         description: { required },
         icon: { required },
-        // selected: { required },
         query: { required },
       }
     },
     computed: {
       projectList() {
-        return appData.projectsList
+        return projectsModule.getProjects.map((el) => ({
+          label: el.label,
+          key: el.id,
+        }))
       },
       extensions() {
-        return appSettings.theme === "dark"
+        return settingsModule.data.theme === "dark"
           ? [javascript(), oneDark]
           : [javascript()]
       },
     },
     mounted() {
-      if (appData.treeNodePath) {
-        const nodeData = appData.treeNodePath.split("/")
+      if (appDataModule.data.treeNodePath) {
+        const nodeData = appDataModule.data.treeNodePath.split("/")
 
         // For local
         this.lengthData = nodeData
@@ -241,10 +247,8 @@
           this.selectedEditNode = true
 
           // set project
-          const projects = appData.allProjects
-          const projectIndex = appData.allProjects.findIndex(
-            (el) => el.id == nodeData[0]
-          )
+          const projects = projectsModule.getProjects
+          const projectIndex = projects.findIndex((el) => el.id == nodeData[0])
           this.projectsIndex = projectIndex
           this.selected = projects[projectIndex].id
           // transformer index
@@ -264,12 +268,14 @@
         } else {
           this.selectedEditNode = true
           // set transformer
-          const transformerIndex = appData.globalTransformers.findIndex(
-            (el) => el.id == nodeData[0]
-          )
+          const transformerIndex =
+            transformersModule.getGlobalTransformers.findIndex(
+              (el) => el.id == nodeData[0]
+            )
           this.transformersIndex = transformerIndex
           // for transformer data
-          const transformer = appData.globalTransformers[transformerIndex]
+          const transformer =
+            transformersModule.getGlobalTransformers[transformerIndex]
           this.v$.name.$model = transformer.label
           this.v$.description.$model = transformer.description
           this.v$.icon.$model = transformer.icon
@@ -279,9 +285,8 @@
     },
     methods: {
       transformercloseDialog() {
-        appData.resetTreeNodePath()
+        appDataModule.resetTreeNodePath()
         this.$emit("close")
-        //clear store here for editnode
       },
       //update dialog
       handleEditedTransformerStore(isFormValid) {
@@ -289,9 +294,10 @@
         if (this.lengthData.length == 1) {
           data = {
             transformerIdx: this.transformersIndex,
-            projectIdx: -1,
             data: {
-              ...appData.globalTransformers[this.transformersIndex],
+              ...transformersModule.getGlobalTransformers[
+                this.transformersIndex
+              ],
               // name: this.v$.name.$model,
               label: this.v$.name.$model,
               icon: this.v$.icon.$model,
@@ -301,14 +307,14 @@
               scope: "global",
             },
           }
+          transformersModule.editGlobalTransformer(data)
         } else {
           data = {
             transformerIdx: this.transformersIndex,
             projectIdx: this.projectsIndex,
             data: {
-              ...appData.allProjects[this.projectsIndex].transformers.list[
-                this.transformersIndex
-              ],
+              ...projectsModule.getProjects[this.projectsIndex].transformers
+                .list[this.transformersIndex],
               label: this.v$.name.$model,
               icon: this.v$.icon.$model,
               description: this.v$.description.$model,
@@ -317,6 +323,7 @@
               scope: "local",
             },
           }
+          projectsModule.editLocalTransformer(data)
         }
         this.updateData = data
 
@@ -325,30 +332,26 @@
         if (!isFormValid) {
           return
         }
-
-        appData.editTransformer(data)
         this.transformercloseDialog()
       },
 
       // new dialog
       handletransformerstore(isFormValid) {
-        const projectIndex = appData.allProjects.findIndex(
+        const projectIndex = projectsModule.getProjects.findIndex(
           (el) => el.id == this.selected
         )
         const data = {
-          name: this.selected,
           projectIdx: projectIndex,
           data: {
-            // name: this.name,
             label: this.name,
             icon: this.icon,
             description: this.description,
             query: this.query,
             type: "transformer",
-            id: Math.random()
-              .toString(36)
-              .replace(/[^a-z]+/g, "")
-              .substr(2, 10),
+            id: getRandomId(),
+            logs: [""],
+            error: "",
+            scope: projectIndex == -1 ? "global" : "local",
           },
         }
         this.submitted = true
@@ -356,7 +359,11 @@
         if (!isFormValid) {
           return
         }
-        appData.addNewTransformer(data)
+        if (projectIndex == -1) {
+          transformersModule.addGlobalTransformer(data.data)
+        } else {
+          projectsModule.addLocalTransformer(data)
+        }
         this.$emit("close")
       },
     },
@@ -366,6 +373,11 @@
   .transformer-dialog {
     height: 100vh;
     width: 40vw;
+    .p-panel.p-component {
+      .p-panel-content {
+        padding-top: 5px;
+      }
+    }
     .p-dropdown {
       width: 100%;
     }

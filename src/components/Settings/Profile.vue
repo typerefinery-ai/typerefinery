@@ -29,7 +29,7 @@
   import InputText from "primevue/inputtext"
   import { getModule } from "vuex-module-decorators"
   import Auth from "@/store/Modules/Auth"
-  const appAuth = getModule(Auth)
+  const authModule = getModule(Auth)
 
   export default {
     name: "Profile",
@@ -38,13 +38,13 @@
 
     computed: {
       username() {
-        return appAuth.username
+        return authModule.data.username
       },
       alias() {
-        return appAuth.alias
+        return authModule.data.alias
       },
       email() {
-        return appAuth.email
+        return authModule.data.email
       },
     },
     mounted() {
@@ -55,13 +55,13 @@
     },
     methods: {
       setUsername(e) {
-        return appAuth.setUsername(e.target.value)
+        return authModule.setUsername(e.target.value)
       },
       setAlias(e) {
-        return appAuth.setAliasname(e.target.value)
+        return authModule.setAliasname(e.target.value)
       },
       setEmail(e) {
-        return appAuth.setEmail(e.target.value)
+        return authModule.setEmail(e.target.value)
       },
     },
   }

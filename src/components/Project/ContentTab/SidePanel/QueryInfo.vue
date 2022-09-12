@@ -7,9 +7,8 @@
       <Textarea
         id="description"
         :model-value="description"
-        :auto-resize="true"
-        rows="5"
-        cols="30"
+        rows="3"
+        cols="20"
         @input="handleInput($event, 'description')"
       />
     </div>
@@ -23,7 +22,7 @@
       />
     </div>
 
-    <div class="field">
+    <!-- <div class="field">
       <label>{{ $t(`components.transformer.transformer`) }}</label>
       <Dropdown
         :model-value="tranformer"
@@ -32,94 +31,162 @@
         option-group-label="label"
         option-group-children="items"
         :placeholder="$t(`components.transformer.select`)"
-        @change="handleDropdown($event)"
+        @change="handleTransformer($event)"
       />
-    </div>
+    </div> -->
     <div class="field">
       <label>{{ $t(`components.tabquery.connection`) }}</label>
       <Dropdown
-        v-model="selectedconnection"
-        :options="connectionList"
-         option-label="label"
+        :model-value="connection"
+        :options="connections"
+        option-label="label"
         option-group-label="label"
         option-group-children="items"
         :placeholder="$t(`components.tabquery.select`)"
-        @change="handler"
+        @change="handleConnection"
       />
     </div>
-     <div class="field">
+    <!-- <div class="field">
       <label for="database">{{ $t(`components.tabquery.db`) }}</label>
       <InputText
         id="database"
-        :model-value="db"
+        :model-value="database"
+        @input="handleInput($event, 'database')"
       />
-    </div>
+    </div> -->
   </div>
 </template>
 
 <script>
+  import { getModule } from "vuex-module-decorators"
   import InputText from "primevue/inputtext"
   import Dropdown from "primevue/dropdown"
   import Textarea from "primevue/textarea"
-  import AppData from "@/store/Modules/Projects"
-  import { getModule } from "vuex-module-decorators"
-  const appData = getModule(AppData)
+  import Projects from "@/store/Modules/Projects"
+  import Connections from "@/store/Modules/Connections"
+  // import Transformers from "@/store/Modules/Transformers"
+  const projectsModule = getModule(Projects)
+  const connectionsModule = getModule(Connections)
+  // const transformersModule = getModule(Transformers)
   export default {
     name: "QueryInfo",
     components: { InputText, Dropdown, Textarea },
-     data(){
-      return{
-      selectedconnection: null,
-      }
-    },
     props: {
       tab: { type: Object, required: true },
     },
     computed: {
       description() {
         const { projectIdx, queryIdx } = this.tab
-        return appData.list[0].list[projectIdx].queries.list[queryIdx]
-          .description
+        return projectsModule.getQuery(projectIdx, queryIdx).description
       },
+
       icon() {
         const { projectIdx, queryIdx } = this.tab
-        return appData.list[0].list[projectIdx].queries.list[queryIdx].icon
+        return projectsModule.getQuery(projectIdx, queryIdx).icon
       },
-      connectionList() {
-          const { projectIdx } = this.tab 
-         return projectIdx== -1? []:appData.connectionsList(projectIdx)
+
+      connections() {
+        const { projectIdx } = this.tab
+        return [
+          {
+            label: "Local",
+            code: "local",
+            items: projectsModule.getLocalConnections(projectIdx).map((el) => {
+              return { label: el.label, key: el.id, scope: el.scope }
+            }),
+          },
+          {
+            label: "Global",
+            code: "global",
+            items: connectionsModule.getGlobalConnections.map((el) => {
+              return { label: el.label, key: el.id, scope: el.scope }
+            }),
+          },
+        ]
       },
-      tranformer() {
+
+      connection() {
         const { projectIdx, queryIdx } = this.tab
-        const transformer =
-          appData.list[0].list[projectIdx].queries.list[queryIdx].transformer
+        const connection = projectsModule.getQuery(
+          projectIdx,
+          queryIdx
+        ).connection
         return {
-          key: transformer.id,
-          label: transformer.label,
-          scope: transformer.scope,
+          key: connection.id,
+          label: connection.label,
+          scope: connection.scope,
         }
       },
-      transformers() {
-        const { projectIdx } = this.tab
-        return appData.transformersList(projectIdx)
-      },
+
+      // tranformer() {
+      //   const { projectIdx: pI, queryIdx: qI } = this.tab
+      //   const transformer = projectsModule.getQuery(pI, qI).transformer
+      //   return {
+      //     key: transformer.id,
+      //     label: transformer.label,
+      //     scope: transformer.scope,
+      //   }
+      // },
+
+      // transformers() {
+      //   const { projectIdx } = this.tab
+      //   return [
+      //     {
+      //       label: "Local",
+      //       code: "local",
+      //       items: projectsModule.getLocalTransformers(projectIdx).map((el) => {
+      //         return { label: el.label, key: el.id, scope: el.scope }
+      //       }),
+      //     },
+      //     {
+      //       label: "Global",
+      //       code: "global",
+      //       items: transformersModule.getGlobalTransformers.map((el) => {
+      //         return { label: el.label, key: el.id, scope: el.scope }
+      //       }),
+      //     },
+      //   ]
+      // },
+
+      // database() {
+      //   const { projectIdx, queryIdx } = this.tab
+      //   return projectsModule.getQuery(projectIdx, queryIdx).database
+      // },
     },
     methods: {
-      handleInput({ target: { value } }, key) {
-        const payload = { key, value, ...this.tab }
-        appData.updateQuery(payload)
+      handleInput({ target: { value } }, field) {
+        const payload = { field, value, ...this.tab }
+        projectsModule.updateQuery(payload)
       },
-      handleDropdown({ value }) {
-        let transformer
+
+      // handleTransformer({ value }) {
+      //   let transformer
+      //   if (value.scope == "local") {
+      //     transformer = projectsModule
+      //       .getLocalTransformers(this.tab.projectIdx)
+      //       .find((el) => el.id == value.key)
+      //   } else {
+      //     transformer = transformersModule.getGlobalTransformers.find(
+      //       (el) => el.id == value.key
+      //     )
+      //   }
+      //   const payload = { key: "transformer", value: transformer, ...this.tab }
+      //   projectsModule.updateQuery(payload)
+      // },
+
+      handleConnection({ value }) {
+        let connection
         if (value.scope == "local") {
-          transformer = appData.list[0].list[
-            this.tab.projectIdx
-          ].transformers.list.find((el) => el.id == value.key)
+          connection = projectsModule
+            .getLocalConnections(this.tab.projectIdx)
+            .find((el) => el.id == value.key)
         } else {
-          transformer = appData.list[2].list.find((el) => el.id == value.key)
+          connection = connectionsModule.getGlobalConnections.find(
+            (el) => el.id == value.key
+          )
         }
-        const payload = { key: "transformer", value: transformer, ...this.tab }
-        appData.updateQuery(payload)
+        const payload = { field: "connection", value: connection, ...this.tab }
+        projectsModule.updateQuery(payload)
       },
     },
   }

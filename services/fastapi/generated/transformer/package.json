@@ -1,0 +1,17 @@
+{
+  "name": "transformer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "d3": "^4.13.0",
+    "jsdom": "^20.0.0",
+    "webcola": "^3.4.0"
+  }
+}

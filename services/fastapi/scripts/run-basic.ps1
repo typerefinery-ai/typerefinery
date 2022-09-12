@@ -1,0 +1,1 @@
+python.exe ../fastapi/scripts/G_to_WebCola.py "localhost" 1729 "typerefinery" "match $a isa log, has logName 'L1';\n$b isa event, has eventName $c;\n$d (owner: $a, item: $b) isa trace,\nhas traceId $e, has index $f;\n offset 0;"

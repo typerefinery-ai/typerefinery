@@ -59,13 +59,13 @@
 </template>
 
 <script>
-  import Dialog from "primevue/dialog"
   import { getModule } from "vuex-module-decorators"
+  import Dialog from "primevue/dialog"
   import ProfileInfo from "./Profile.vue"
   import GeneralInfo from "./General.vue"
   import ServicesList from "../Services"
-  import AppSettings from "@/store/Modules/AppSettings"
-  const appSettings = getModule(AppSettings)
+  import Settings from "@/store/Modules/Settings"
+  const settingsModule = getModule(Settings)
 
   export default {
     name: "Settings",
@@ -73,15 +73,15 @@
     emits: ["hide"],
     data() {
       return {
-        selected: appSettings.settingPath?.split("/")[0],
+        selected: settingsModule.data.settingPath?.split("/")[0],
       }
     },
     computed: {
       settings() {
-        return appSettings.settings
+        return settingsModule.data.settings
       },
       path() {
-        const path = appSettings.settingPath?.split("/")
+        const path = settingsModule.data.settingPath?.split("/")
         return {
           tab: path[0],
           tabField: path[1],
@@ -90,11 +90,11 @@
     },
     methods: {
       closeDialog() {
-        appSettings.toggleSettingsDialog()
+        settingsModule.toggleSettingsDialog()
       },
       changeTab(id) {
         this.selected = id
-        appSettings.setSettingPath(id)
+        settingsModule.setSettingPath(id)
       },
     },
   }

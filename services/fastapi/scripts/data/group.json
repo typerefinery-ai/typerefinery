@@ -1,0 +1,1527 @@
+{
+  "G_types": {
+      "attribute": [
+          "eventName",
+          "index",
+          "logName"
+      ],
+      "entity": [
+          "log",
+          "event"
+      ],
+      "relation": [
+          "trace"
+      ],
+      "schema": [
+          {
+              "direction": "down",
+              "role": "owner",
+              "source_name": "trace",
+              "target_name": "log"
+          },
+          {
+              "direction": "down",
+              "role": "has",
+              "source_name": "trace",
+              "target_name": "index"
+          },
+          {
+              "direction": "down",
+              "role": "item",
+              "source_name": "trace",
+              "target_name": "event"
+          },
+          {
+              "direction": "down",
+              "role": "has",
+              "source_name": "event",
+              "target_name": "eventName"
+          },
+          {
+              "direction": "down",
+              "role": "has",
+              "source_name": "log",
+              "target_name": "logName"
+          }
+      ]
+  },
+  "constraints": [],
+  "groups": [
+      {
+          "leaves": [
+              14,
+              22
+          ],
+          "leaf_description": [
+              {
+                  "title": "trace record"
+              },
+              {
+                  "type": "relation",
+                  "name": "trace",
+                  "value": "V24608"
+              },
+              {
+                  "type": "attribute",
+                  "name": "index",
+                  "value": 1,
+                  "role": "has"
+              }
+          ],
+          "group_type": "leaves_to_group",
+          "constraints_layer": [],
+          "groups": [
+              4
+          ],
+          "group_description": [
+              [
+                  {
+                      "title": "event record",
+                      "direction": "down",
+                      "role": "item"
+                  },
+                  {
+                      "type": "entity",
+                      "name": "event",
+                      "value": "V16512"
+                  },
+                  {
+                      "type": "attribute",
+                      "name": "eventName",
+                      "value": "\"b\"",
+                      "role": "has"
+                  }
+              ]
+          ],
+          "colour_list": "Oranges",
+          "level": 0,
+          "label": "trace record",
+          "del": false
+      },
+      {
+          "leaves": [
+              15,
+              23
+          ],
+          "leaf_description": [
+              {
+                  "title": "trace record"
+              },
+              {
+                  "type": "relation",
+                  "name": "trace",
+                  "value": "V40972312"
+              },
+              {
+                  "type": "attribute",
+                  "name": "index",
+                  "value": 2,
+                  "role": "has"
+              }
+          ],
+          "group_type": "leaves_to_group",
+          "constraints_layer": [],
+          "groups": [
+              5
+          ],
+          "group_description": [
+              [
+                  {
+                      "title": "event record",
+                      "direction": "down",
+                      "role": "item"
+                  },
+                  {
+                      "type": "entity",
+                      "name": "event",
+                      "value": "V8264"
+                  },
+                  {
+                      "type": "attribute",
+                      "name": "eventName",
+                      "value": "\"c\"",
+                      "role": "has"
+                  }
+              ]
+          ],
+          "colour_list": "Oranges",
+          "level": 0,
+          "label": "trace record",
+          "del": false
+      },
+      {
+          "leaves": [
+              16,
+              24
+          ],
+          "leaf_description": [
+              {
+                  "title": "trace record"
+              },
+              {
+                  "type": "relation",
+                  "name": "trace",
+                  "value": "V40972456"
+              },
+              {
+                  "type": "attribute",
+                  "name": "index",
+                  "value": 3,
+                  "role": "has"
+              }
+          ],
+          "group_type": "leaves_to_group",
+          "constraints_layer": [],
+          "groups": [
+              6
+          ],
+          "group_description": [
+              [
+                  {
+                      "title": "event record",
+                      "direction": "down",
+                      "role": "item"
+                  },
+                  {
+                      "type": "entity",
+                      "name": "event",
+                      "value": "V40980656"
+                  },
+                  {
+                      "type": "attribute",
+                      "name": "eventName",
+                      "value": "\"d\"",
+                      "role": "has"
+                  }
+              ]
+          ],
+          "colour_list": "Oranges",
+          "level": 0,
+          "label": "trace record",
+          "del": false
+      },
+      {
+          "leaves": [
+              17,
+              25
+          ],
+          "leaf_description": [
+              {
+                  "title": "trace record"
+              },
+              {
+                  "type": "relation",
+                  "name": "trace",
+                  "value": "V40980544"
+              },
+              {
+                  "type": "attribute",
+                  "name": "index",
+                  "value": 0,
+                  "role": "has"
+              }
+          ],
+          "group_type": "leaves_to_group",
+          "constraints_layer": [],
+          "groups": [
+              7
+          ],
+          "group_description": [
+              [
+                  {
+                      "title": "event record",
+                      "direction": "down",
+                      "role": "item"
+                  },
+                  {
+                      "type": "entity",
+                      "name": "event",
+                      "value": "V20512"
+                  },
+                  {
+                      "type": "attribute",
+                      "name": "eventName",
+                      "value": "\"a\"",
+                      "role": "has"
+                  }
+              ]
+          ],
+          "colour_list": "Oranges",
+          "level": 0,
+          "label": "trace record",
+          "del": false
+      },
+      {
+          "leaves": [
+              0,
+              18
+          ],
+          "leaf_description": [
+              {
+                  "title": "event record"
+              },
+              {
+                  "type": "entity",
+                  "name": "event",
+                  "value": "V16512"
+              },
+              {
+                  "type": "attribute",
+                  "name": "eventName",
+                  "value": "\"b\"",
+                  "role": "has"
+              }
+          ],
+          "group_type": "group_of_leaves",
+          "constraints_layer": [],
+          "colour_list": "Yellows",
+          "level": 0,
+          "label": "event record",
+          "del": true
+      },
+      {
+          "leaves": [
+              1,
+              19
+          ],
+          "leaf_description": [
+              {
+                  "title": "event record"
+              },
+              {
+                  "type": "entity",
+                  "name": "event",
+                  "value": "V8264"
+              },
+              {
+                  "type": "attribute",
+                  "name": "eventName",
+                  "value": "\"c\"",
+                  "role": "has"
+              }
+          ],
+          "group_type": "group_of_leaves",
+          "constraints_layer": [],
+          "colour_list": "Yellows",
+          "level": 0,
+          "label": "event record",
+          "del": true
+      },
+      {
+          "leaves": [
+              2,
+              20
+          ],
+          "leaf_description": [
+              {
+                  "title": "event record"
+              },
+              {
+                  "type": "entity",
+                  "name": "event",
+                  "value": "V40980656"
+              },
+              {
+                  "type": "attribute",
+                  "name": "eventName",
+                  "value": "\"d\"",
+                  "role": "has"
+              }
+          ],
+          "group_type": "group_of_leaves",
+          "constraints_layer": [],
+          "colour_list": "Yellows",
+          "level": 0,
+          "label": "event record",
+          "del": true
+      },
+      {
+          "leaves": [
+              3,
+              21
+          ],
+          "leaf_description": [
+              {
+                  "title": "event record"
+              },
+              {
+                  "type": "entity",
+                  "name": "event",
+                  "value": "V20512"
+              },
+              {
+                  "type": "attribute",
+                  "name": "eventName",
+                  "value": "\"a\"",
+                  "role": "has"
+              }
+          ],
+          "group_type": "group_of_leaves",
+          "constraints_layer": [],
+          "colour_list": "Yellows",
+          "level": 0,
+          "label": "event record",
+          "del": true
+      }
+  ],
+  "links": [
+      {
+          "G_source": "V16512",
+          "G_target": "V4128",
+          "is_act_Attr": false,
+          "role": "has",
+          "source": 0,
+          "target": 18,
+          "del": true,
+          "orig_id": 0
+      },
+      {
+          "G_source": "V8264",
+          "G_target": "V40968368",
+          "is_act_Attr": false,
+          "role": "has",
+          "source": 1,
+          "target": 19,
+          "del": true,
+          "orig_id": 1
+      },
+      {
+          "G_source": "V40980656",
+          "G_target": "V40964160",
+          "is_act_Attr": false,
+          "role": "has",
+          "source": 2,
+          "target": 20,
+          "del": true,
+          "orig_id": 2
+      },
+      {
+          "G_source": "V20512",
+          "G_target": "V40964272",
+          "is_act_Attr": false,
+          "role": "has",
+          "source": 3,
+          "target": 21,
+          "del": true,
+          "orig_id": 3
+      },
+      {
+          "G_source": "V40964248",
+          "G_target": "V8320",
+          "is_act_Attr": true,
+          "role": "has",
+          "source": 4,
+          "target": 11,
+          "del": false,
+          "orig_id": 4
+      },
+      {
+          "G_source": "V24608",
+          "G_target": "V40972464",
+          "is_act_Attr": false,
+          "role": "has",
+          "source": 14,
+          "target": 22,
+          "del": false,
+          "orig_id": 5
+      },
+      {
+          "G_source": "V40972312",
+          "G_target": "V40972352",
+          "is_act_Attr": false,
+          "role": "has",
+          "source": 15,
+          "target": 23,
+          "del": false,
+          "orig_id": 6
+      },
+      {
+          "G_source": "V40972456",
+          "G_target": "V40976560",
+          "is_act_Attr": false,
+          "role": "has",
+          "source": 16,
+          "target": 24,
+          "del": false,
+          "orig_id": 7
+      },
+      {
+          "G_source": "V40980544",
+          "G_target": "V16416",
+          "is_act_Attr": false,
+          "role": "has",
+          "source": 17,
+          "target": 25,
+          "del": false,
+          "orig_id": 8
+      },
+      {
+          "G_source": "V24608",
+          "G_target": "V40964248",
+          "is_act_Attr": false,
+          "role": "owner",
+          "source": 14,
+          "target": 4,
+          "del": false,
+          "orig_id": 9
+      },
+      {
+          "G_source": "V24608",
+          "G_target": "V16512",
+          "is_act_Attr": false,
+          "role": "item",
+          "source": 14,
+          "target": 26,
+          "del": false,
+          "orig_id": 10
+      },
+      {
+          "G_source": "V40972312",
+          "G_target": "V40964248",
+          "is_act_Attr": false,
+          "role": "owner",
+          "source": 15,
+          "target": 4,
+          "del": false,
+          "orig_id": 11
+      },
+      {
+          "G_source": "V40972312",
+          "G_target": "V8264",
+          "is_act_Attr": false,
+          "role": "item",
+          "source": 15,
+          "target": 27,
+          "del": false,
+          "orig_id": 12
+      },
+      {
+          "G_source": "V40972456",
+          "G_target": "V40964248",
+          "is_act_Attr": false,
+          "role": "owner",
+          "source": 16,
+          "target": 4,
+          "del": false,
+          "orig_id": 13
+      },
+      {
+          "G_source": "V40972456",
+          "G_target": "V40980656",
+          "is_act_Attr": false,
+          "role": "item",
+          "source": 16,
+          "target": 28,
+          "del": false,
+          "orig_id": 14
+      },
+      {
+          "G_source": "V40980544",
+          "G_target": "V40964248",
+          "is_act_Attr": false,
+          "role": "owner",
+          "source": 17,
+          "target": 4,
+          "del": false,
+          "orig_id": 15
+      },
+      {
+          "G_source": "V40980544",
+          "G_target": "V20512",
+          "is_act_Attr": false,
+          "role": "item",
+          "source": 17,
+          "target": 29,
+          "del": false,
+          "orig_id": 16
+      },
+      {
+          "G_source": "V16512",
+          "G_target": "V4128",
+          "is_act_Attr": true,
+          "role": "has",
+          "source": 26,
+          "target": 5,
+          "del": false,
+          "orig_id": 17
+      },
+      {
+          "G_source": "V8264",
+          "G_target": "V40968368",
+          "is_act_Attr": true,
+          "role": "has",
+          "source": 27,
+          "target": 7,
+          "del": false,
+          "orig_id": 18
+      },
+      {
+          "G_source": "V40980656",
+          "G_target": "V40964160",
+          "is_act_Attr": true,
+          "role": "has",
+          "source": 28,
+          "target": 9,
+          "del": false,
+          "orig_id": 19
+      },
+      {
+          "G_source": "V20512",
+          "G_target": "V40964272",
+          "is_act_Attr": true,
+          "role": "has",
+          "source": 29,
+          "target": 12,
+          "del": false,
+          "orig_id": 20
+      },
+      {
+          "G_source": "V24608",
+          "G_target": "V40972464",
+          "is_act_Attr": true,
+          "role": "has",
+          "source": 22,
+          "target": 6,
+          "del": false,
+          "orig_id": 21
+      },
+      {
+          "G_source": "V40972312",
+          "G_target": "V40972352",
+          "is_act_Attr": true,
+          "role": "has",
+          "source": 23,
+          "target": 8,
+          "del": false,
+          "orig_id": 22
+      },
+      {
+          "G_source": "V40972456",
+          "G_target": "V40976560",
+          "is_act_Attr": true,
+          "role": "has",
+          "source": 24,
+          "target": 10,
+          "del": false,
+          "orig_id": 23
+      },
+      {
+          "G_source": "V40980544",
+          "G_target": "V16416",
+          "is_act_Attr": true,
+          "role": "has",
+          "source": 25,
+          "target": 13,
+          "del": false,
+          "orig_id": 24
+      }
+  ],
+  "nodes": [
+      {
+          "G_id": "V16512",
+          "G_name": "event",
+          "dtype": "actual",
+          "has": [
+              "V4128"
+          ],
+          "id": 0,
+          "symbol": "b",
+          "type": "entity",
+          "del": true,
+          "source_link": [
+              0
+          ],
+          "target_link": [
+              10
+          ]
+      },
+      {
+          "G_id": "V8264",
+          "G_name": "event",
+          "dtype": "actual",
+          "has": [
+              "V40968368"
+          ],
+          "id": 1,
+          "symbol": "b",
+          "type": "entity",
+          "del": true,
+          "source_link": [
+              1
+          ],
+          "target_link": [
+              12
+          ]
+      },
+      {
+          "G_id": "V40980656",
+          "G_name": "event",
+          "dtype": "actual",
+          "has": [
+              "V40964160"
+          ],
+          "id": 2,
+          "symbol": "b",
+          "type": "entity",
+          "del": true,
+          "source_link": [
+              2
+          ],
+          "target_link": [
+              14
+          ]
+      },
+      {
+          "G_id": "V20512",
+          "G_name": "event",
+          "dtype": "actual",
+          "has": [
+              "V40964272"
+          ],
+          "id": 3,
+          "symbol": "b",
+          "type": "entity",
+          "del": true,
+          "source_link": [
+              3
+          ],
+          "target_link": [
+              16
+          ]
+      },
+      {
+          "G_id": "V40964248",
+          "G_name": "log",
+          "dtype": "actual",
+          "has": [
+              "V8320"
+          ],
+          "id": 4,
+          "symbol": "a",
+          "type": "entity",
+          "del": false,
+          "source_link": [
+              4
+          ],
+          "target_link": [
+              9,
+              11,
+              13,
+              15
+          ]
+      },
+      {
+          "G_id": "V4128",
+          "G_name": "eventName",
+          "datatype": "STRING",
+          "dtype": "actual",
+          "has": [],
+          "id": 5,
+          "symbol": "c",
+          "type": "attribute",
+          "value": "b",
+          "del": false,
+          "target_link": [
+              17
+          ]
+      },
+      {
+          "G_id": "V40972464",
+          "G_name": "index",
+          "datatype": "LONG",
+          "dtype": "actual",
+          "has": [],
+          "id": 6,
+          "symbol": "f",
+          "type": "attribute",
+          "value": 1,
+          "del": false,
+          "target_link": [
+              21
+          ]
+      },
+      {
+          "G_id": "V40968368",
+          "G_name": "eventName",
+          "datatype": "STRING",
+          "dtype": "actual",
+          "has": [],
+          "id": 7,
+          "symbol": "c",
+          "type": "attribute",
+          "value": "c",
+          "del": false,
+          "target_link": [
+              18
+          ]
+      },
+      {
+          "G_id": "V40972352",
+          "G_name": "index",
+          "datatype": "LONG",
+          "dtype": "actual",
+          "has": [],
+          "id": 8,
+          "symbol": "f",
+          "type": "attribute",
+          "value": 2,
+          "del": false,
+          "target_link": [
+              22
+          ]
+      },
+      {
+          "G_id": "V40964160",
+          "G_name": "eventName",
+          "datatype": "STRING",
+          "dtype": "actual",
+          "has": [],
+          "id": 9,
+          "symbol": "c",
+          "type": "attribute",
+          "value": "d",
+          "del": false,
+          "target_link": [
+              19
+          ]
+      },
+      {
+          "G_id": "V40976560",
+          "G_name": "index",
+          "datatype": "LONG",
+          "dtype": "actual",
+          "has": [],
+          "id": 10,
+          "symbol": "f",
+          "type": "attribute",
+          "value": 3,
+          "del": false,
+          "target_link": [
+              23
+          ]
+      },
+      {
+          "G_id": "V8320",
+          "G_name": "logName",
+          "datatype": "STRING",
+          "dtype": "actual",
+          "has": [],
+          "id": 11,
+          "symbol": "l",
+          "type": "attribute",
+          "value": "L1",
+          "del": false,
+          "target_link": [
+              4
+          ]
+      },
+      {
+          "G_id": "V40964272",
+          "G_name": "eventName",
+          "datatype": "STRING",
+          "dtype": "actual",
+          "has": [],
+          "id": 12,
+          "symbol": "c",
+          "type": "attribute",
+          "value": "a",
+          "del": false,
+          "target_link": [
+              20
+          ]
+      },
+      {
+          "G_id": "V16416",
+          "G_name": "index",
+          "datatype": "LONG",
+          "dtype": "actual",
+          "has": [],
+          "id": 13,
+          "symbol": "f",
+          "type": "attribute",
+          "value": 0,
+          "del": false,
+          "target_link": [
+              24
+          ]
+      },
+      {
+          "G_id": "V24608",
+          "G_name": "trace",
+          "dtype": "actual",
+          "edges": {
+              "item": [
+                  "V16512"
+              ],
+              "owner": [
+                  "V40964248"
+              ]
+          },
+          "has": [
+              "V40972464"
+          ],
+          "id": 14,
+          "symbol": "d",
+          "type": "relation",
+          "del": false,
+          "source_link": [
+              5,
+              9,
+              10
+          ]
+      },
+      {
+          "G_id": "V40972312",
+          "G_name": "trace",
+          "dtype": "actual",
+          "edges": {
+              "item": [
+                  "V8264"
+              ],
+              "owner": [
+                  "V40964248"
+              ]
+          },
+          "has": [
+              "V40972352"
+          ],
+          "id": 15,
+          "symbol": "d",
+          "type": "relation",
+          "del": false,
+          "source_link": [
+              6,
+              11,
+              12
+          ]
+      },
+      {
+          "G_id": "V40972456",
+          "G_name": "trace",
+          "dtype": "actual",
+          "edges": {
+              "item": [
+                  "V40980656"
+              ],
+              "owner": [
+                  "V40964248"
+              ]
+          },
+          "has": [
+              "V40976560"
+          ],
+          "id": 16,
+          "symbol": "d",
+          "type": "relation",
+          "del": false,
+          "source_link": [
+              7,
+              13,
+              14
+          ]
+      },
+      {
+          "G_id": "V40980544",
+          "G_name": "trace",
+          "dtype": "actual",
+          "edges": {
+              "item": [
+                  "V20512"
+              ],
+              "owner": [
+                  "V40964248"
+              ]
+          },
+          "has": [
+              "V16416"
+          ],
+          "id": 17,
+          "symbol": "d",
+          "type": "relation",
+          "del": false,
+          "source_link": [
+              8,
+              15,
+              16
+          ]
+      },
+      {
+          "G_id": "V4128-810",
+          "G_name": "eventName",
+          "datatype": "STRING",
+          "dtype": "shadow",
+          "has": [],
+          "id": 18,
+          "symbol": "c",
+          "type": "attribute",
+          "value": "b",
+          "del": true,
+          "target_link": [
+              0
+          ],
+          "source_link": [
+              17
+          ]
+      },
+      {
+          "G_id": "V40968368-811",
+          "G_name": "eventName",
+          "datatype": "STRING",
+          "dtype": "shadow",
+          "has": [],
+          "id": 19,
+          "symbol": "c",
+          "type": "attribute",
+          "value": "c",
+          "del": true,
+          "target_link": [
+              1
+          ],
+          "source_link": [
+              18
+          ]
+      },
+      {
+          "G_id": "V40964160-812",
+          "G_name": "eventName",
+          "datatype": "STRING",
+          "dtype": "shadow",
+          "has": [],
+          "id": 20,
+          "symbol": "c",
+          "type": "attribute",
+          "value": "d",
+          "del": true,
+          "target_link": [
+              2
+          ],
+          "source_link": [
+              19
+          ]
+      },
+      {
+          "G_id": "V40964272-813",
+          "G_name": "eventName",
+          "datatype": "STRING",
+          "dtype": "shadow",
+          "has": [],
+          "id": 21,
+          "symbol": "c",
+          "type": "attribute",
+          "value": "a",
+          "del": true,
+          "target_link": [
+              3
+          ],
+          "source_link": [
+              20
+          ]
+      },
+      {
+          "G_id": "V40972464-814",
+          "G_name": "index",
+          "datatype": "LONG",
+          "dtype": "shadow",
+          "has": [],
+          "id": 22,
+          "symbol": "f",
+          "type": "attribute",
+          "value": 1,
+          "del": false,
+          "target_link": [
+              5
+          ],
+          "source_link": [
+              21
+          ]
+      },
+      {
+          "G_id": "V40972352-815",
+          "G_name": "index",
+          "datatype": "LONG",
+          "dtype": "shadow",
+          "has": [],
+          "id": 23,
+          "symbol": "f",
+          "type": "attribute",
+          "value": 2,
+          "del": false,
+          "target_link": [
+              6
+          ],
+          "source_link": [
+              22
+          ]
+      },
+      {
+          "G_id": "V40976560-816",
+          "G_name": "index",
+          "datatype": "LONG",
+          "dtype": "shadow",
+          "has": [],
+          "id": 24,
+          "symbol": "f",
+          "type": "attribute",
+          "value": 3,
+          "del": false,
+          "target_link": [
+              7
+          ],
+          "source_link": [
+              23
+          ]
+      },
+      {
+          "G_id": "V16416-817",
+          "G_name": "index",
+          "datatype": "LONG",
+          "dtype": "shadow",
+          "has": [],
+          "id": 25,
+          "symbol": "f",
+          "type": "attribute",
+          "value": 0,
+          "del": false,
+          "target_link": [
+              8
+          ],
+          "source_link": [
+              24
+          ]
+      },
+      {
+          "G_id": "S93790",
+          "G_name": "event record",
+          "colour_list": "Yellows",
+          "level": 0,
+          "type": "super",
+          "id": 26,
+          "dtype": "actual",
+          "del": false,
+          "leaf_description": [
+              {
+                  "title": "event record"
+              },
+              {
+                  "type": "entity",
+                  "name": "event",
+                  "value": "V16512"
+              },
+              {
+                  "type": "attribute",
+                  "name": "eventName",
+                  "value": "\"b\"",
+                  "role": "has"
+              }
+          ]
+      },
+      {
+          "G_id": "S69385",
+          "G_name": "event record",
+          "colour_list": "Yellows",
+          "level": 0,
+          "type": "super",
+          "id": 27,
+          "dtype": "actual",
+          "del": false,
+          "leaf_description": [
+              {
+                  "title": "event record"
+              },
+              {
+                  "type": "entity",
+                  "name": "event",
+                  "value": "V8264"
+              },
+              {
+                  "type": "attribute",
+                  "name": "eventName",
+                  "value": "\"c\"",
+                  "role": "has"
+              }
+          ]
+      },
+      {
+          "G_id": "S60153",
+          "G_name": "event record",
+          "colour_list": "Yellows",
+          "level": 0,
+          "type": "super",
+          "id": 28,
+          "dtype": "actual",
+          "del": false,
+          "leaf_description": [
+              {
+                  "title": "event record"
+              },
+              {
+                  "type": "entity",
+                  "name": "event",
+                  "value": "V40980656"
+              },
+              {
+                  "type": "attribute",
+                  "name": "eventName",
+                  "value": "\"d\"",
+                  "role": "has"
+              }
+          ]
+      },
+      {
+          "G_id": "S3150",
+          "G_name": "event record",
+          "colour_list": "Yellows",
+          "level": 0,
+          "type": "super",
+          "id": 29,
+          "dtype": "actual",
+          "del": false,
+          "leaf_description": [
+              {
+                  "title": "event record"
+              },
+              {
+                  "type": "entity",
+                  "name": "event",
+                  "value": "V20512"
+              },
+              {
+                  "type": "attribute",
+                  "name": "eventName",
+                  "value": "\"a\"",
+                  "role": "has"
+              }
+          ]
+      }
+  ],
+  "super": {
+      "S93790": {
+          "nodes": [
+              {
+                  "G_id": "V16512",
+                  "G_name": "event",
+                  "dtype": "actual",
+                  "has": [
+                      "V4128"
+                  ],
+                  "id": 0,
+                  "symbol": "b",
+                  "type": "entity",
+                  "del": true,
+                  "source_link": [
+                      0
+                  ],
+                  "target_link": [
+                      10
+                  ]
+              },
+              {
+                  "G_id": "V4128-810",
+                  "G_name": "eventName",
+                  "datatype": "STRING",
+                  "dtype": "shadow",
+                  "has": [],
+                  "id": 18,
+                  "symbol": "c",
+                  "type": "attribute",
+                  "value": "b",
+                  "del": true,
+                  "target_link": [
+                      0
+                  ],
+                  "source_link": [
+                      17
+                  ]
+              }
+          ],
+          "links": [
+              {
+                  "G_source": "V16512",
+                  "G_target": "V4128",
+                  "is_act_Attr": false,
+                  "role": "has",
+                  "source": 0,
+                  "target": 18,
+                  "del": false,
+                  "orig_id": 0
+              }
+          ],
+          "groups": [
+              {
+                  "leaves": [
+                      0,
+                      18
+                  ],
+                  "leaf_description": [
+                      {
+                          "title": "event record"
+                      },
+                      {
+                          "type": "entity",
+                          "name": "event",
+                          "value": "V16512"
+                      },
+                      {
+                          "type": "attribute",
+                          "name": "eventName",
+                          "value": "\"b\"",
+                          "role": "has"
+                      }
+                  ],
+                  "group_type": "group_of_leaves",
+                  "constraints_layer": [],
+                  "colour_list": "Yellows",
+                  "level": 0,
+                  "label": "event record",
+                  "del": true
+              }
+          ]
+      },
+      "S69385": {
+          "nodes": [
+              {
+                  "G_id": "V8264",
+                  "G_name": "event",
+                  "dtype": "actual",
+                  "has": [
+                      "V40968368"
+                  ],
+                  "id": 1,
+                  "symbol": "b",
+                  "type": "entity",
+                  "del": true,
+                  "source_link": [
+                      1
+                  ],
+                  "target_link": [
+                      12
+                  ]
+              },
+              {
+                  "G_id": "V40968368-811",
+                  "G_name": "eventName",
+                  "datatype": "STRING",
+                  "dtype": "shadow",
+                  "has": [],
+                  "id": 19,
+                  "symbol": "c",
+                  "type": "attribute",
+                  "value": "c",
+                  "del": true,
+                  "target_link": [
+                      1
+                  ],
+                  "source_link": [
+                      18
+                  ]
+              }
+          ],
+          "links": [
+              {
+                  "G_source": "V8264",
+                  "G_target": "V40968368",
+                  "is_act_Attr": false,
+                  "role": "has",
+                  "source": 1,
+                  "target": 19,
+                  "del": false,
+                  "orig_id": 1
+              }
+          ],
+          "groups": [
+              {
+                  "leaves": [
+                      1,
+                      19
+                  ],
+                  "leaf_description": [
+                      {
+                          "title": "event record"
+                      },
+                      {
+                          "type": "entity",
+                          "name": "event",
+                          "value": "V8264"
+                      },
+                      {
+                          "type": "attribute",
+                          "name": "eventName",
+                          "value": "\"c\"",
+                          "role": "has"
+                      }
+                  ],
+                  "group_type": "group_of_leaves",
+                  "constraints_layer": [],
+                  "colour_list": "Yellows",
+                  "level": 0,
+                  "label": "event record",
+                  "del": true
+              }
+          ]
+      },
+      "S60153": {
+          "nodes": [
+              {
+                  "G_id": "V40980656",
+                  "G_name": "event",
+                  "dtype": "actual",
+                  "has": [
+                      "V40964160"
+                  ],
+                  "id": 2,
+                  "symbol": "b",
+                  "type": "entity",
+                  "del": true,
+                  "source_link": [
+                      2
+                  ],
+                  "target_link": [
+                      14
+                  ]
+              },
+              {
+                  "G_id": "V40964160-812",
+                  "G_name": "eventName",
+                  "datatype": "STRING",
+                  "dtype": "shadow",
+                  "has": [],
+                  "id": 20,
+                  "symbol": "c",
+                  "type": "attribute",
+                  "value": "d",
+                  "del": true,
+                  "target_link": [
+                      2
+                  ],
+                  "source_link": [
+                      19
+                  ]
+              }
+          ],
+          "links": [
+              {
+                  "G_source": "V40980656",
+                  "G_target": "V40964160",
+                  "is_act_Attr": false,
+                  "role": "has",
+                  "source": 2,
+                  "target": 20,
+                  "del": false,
+                  "orig_id": 2
+              }
+          ],
+          "groups": [
+              {
+                  "leaves": [
+                      2,
+                      20
+                  ],
+                  "leaf_description": [
+                      {
+                          "title": "event record"
+                      },
+                      {
+                          "type": "entity",
+                          "name": "event",
+                          "value": "V40980656"
+                      },
+                      {
+                          "type": "attribute",
+                          "name": "eventName",
+                          "value": "\"d\"",
+                          "role": "has"
+                      }
+                  ],
+                  "group_type": "group_of_leaves",
+                  "constraints_layer": [],
+                  "colour_list": "Yellows",
+                  "level": 0,
+                  "label": "event record",
+                  "del": true
+              }
+          ]
+      },
+      "S3150": {
+          "nodes": [
+              {
+                  "G_id": "V20512",
+                  "G_name": "event",
+                  "dtype": "actual",
+                  "has": [
+                      "V40964272"
+                  ],
+                  "id": 3,
+                  "symbol": "b",
+                  "type": "entity",
+                  "del": true,
+                  "source_link": [
+                      3
+                  ],
+                  "target_link": [
+                      16
+                  ]
+              },
+              {
+                  "G_id": "V40964272-813",
+                  "G_name": "eventName",
+                  "datatype": "STRING",
+                  "dtype": "shadow",
+                  "has": [],
+                  "id": 21,
+                  "symbol": "c",
+                  "type": "attribute",
+                  "value": "a",
+                  "del": true,
+                  "target_link": [
+                      3
+                  ],
+                  "source_link": [
+                      20
+                  ]
+              }
+          ],
+          "links": [
+              {
+                  "G_source": "V20512",
+                  "G_target": "V40964272",
+                  "is_act_Attr": false,
+                  "role": "has",
+                  "source": 3,
+                  "target": 21,
+                  "del": false,
+                  "orig_id": 3
+              }
+          ],
+          "groups": [
+              {
+                  "leaves": [
+                      3,
+                      21
+                  ],
+                  "leaf_description": [
+                      {
+                          "title": "event record"
+                      },
+                      {
+                          "type": "entity",
+                          "name": "event",
+                          "value": "V20512"
+                      },
+                      {
+                          "type": "attribute",
+                          "name": "eventName",
+                          "value": "\"a\"",
+                          "role": "has"
+                      }
+                  ],
+                  "group_type": "group_of_leaves",
+                  "constraints_layer": [],
+                  "colour_list": "Yellows",
+                  "level": 0,
+                  "label": "event record",
+                  "del": true
+              }
+          ]
+      }
+  }
+}

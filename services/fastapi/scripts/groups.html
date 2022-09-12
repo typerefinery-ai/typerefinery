@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Groups</title>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/tgdwyer/WebCola/WebCola/cola.min.js"></script>
+    <style>
+      body {
+        margin: 0px;
+        overflow: hidden;
+      }
+
+      .node .shadow {
+        border-style: dotted;
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+    		var theme = {
+        	attribute: {colorlist: "Oranges", cindex: 7, tcolorlist: "Greys", tindex: 0 },
+          entity: {colorlist: "Blues", cindex: 7, tcolorlist: "Greys", tindex: 0 },
+          relation: {colorlist: "Blue-Green", cindex: 6, tcolorlist: "Greys", tindex: 7 },
+          shadow: {colorlist: "Oranges", cindex: 2, tcolorlist: "Greys", tindex: 7 }
+        }
+
+    </script>
+    <script>
+    		var svg = d3.select("body")
+               .append("svg")
+               .attr("width", "calc(100vw)")
+               .attr("height", "calc(100vh)")
+               .call(d3.zoom().on("zoom", function () {
+                  svg.attr("transform", d3.event.transform)
+               }))
+               .append("g")
+
+				const height = 500;
+				const width = +d3.select("body").attr('width');
+
+			  var simulation = d3
+				.forceSimulation()
+				.force(
+				  "link",
+				  d3.forceLink().id(function (d) {
+					return d.label
+				  })
+				)
+				.force("charge", d3.forceManyBody())
+				.force("center", d3.forceCenter(width / 2, height / 2))
+
+      	// setup the theme colour
+
+				const textPadding = 8;
+				const corner = 5;
+      	const grp_corner = 8;
+      	const pad = 5;
+        var ent_colour = '#03396c';
+        var ent_t_colour = 'white';
+        var att_colour = '#ff4d00';
+        var att_t_colour = 'white';
+      	var shad_colour = "#ff4d00";
+      	var shad_t_colour = 'white';
+        var rel_colour = '#007777';
+        var rel_t_colour = 'black';
+      	var colours;
+
+      	d3.json("data\\color.json", function (error, colors) {
+          colours = colors
+          // load the colours from the theme
+          ent_colour = colors.find(colour => colour.name == theme.entity.colorlist)['colors'][theme.entity.cindex];
+          ent_t_colour = colors.find(colour => colour.name == theme.entity.tcolorlist)['colors'][theme.entity.tindex];
+          att_colour = colors.find(colour => colour.name == theme.attribute.colorlist)['colors'][theme.attribute.cindex];
+          att_t_colour = colors.find(colour => colour.name == theme.attribute.tcolorlist)['colors'][theme.attribute.tindex];
+          shad_colour = colors.find(colour => colour.name == theme.shadow.colorlist)['colors'][theme.shadow.cindex];
+          shad_t_colour = colors.find(colour => colour.name == theme.shadow.tcolorlist)['colors'][theme.shadow.tindex];
+        	rel_colour = colors.find(colour => colour.name == theme.relation.colorlist)['colors'][theme.relation.cindex];
+          rel_t_colour = colors.find(colour => colour.name == theme.relation.tcolorlist)['colors'][theme.relation.tindex];
+        });
+
+        var cola = cola.d3adaptor(d3)
+            .size([width, height]);
+
+
+
+
+        // graph.json
+      	d3.json("data\\group.json", function (error, graph) {
+          //var constr = graph.grouped.constraints
+          //console.log('constraints ', constr)
+          //let local_edges = graph.grouped.links
+          //let filter_edges = local_edges.filter(function (e, i) {
+            //        return e.is_act_Attr == false;
+              //  })
+          console.log('======================================')
+          console.log(graph)
+          nodes = graph.nodes
+          links = graph.links
+          groups = graph.groups
+            cola
+                .nodes(nodes)
+                .links(links)
+          			.groups(groups)
+          .convergenceThreshold(1e-4)
+
+          //.constraints(constr)
+                //.linkDistance(100)
+         .jaccardLinkLengths(100, 0.9)
+         //.symmetricDiffLinkLengths(30)
+                .avoidOverlaps(true)
+                .handleDisconnected(false)
+                .start(30);
+
+          	var group = svg.selectAll(".group")
+                .data(groups)
+              .enter().append("rect")
+                .attr("rx", grp_corner).attr("ry", grp_corner)
+                .attr("class", "group")
+                .style("fill", function (d, i) {
+                  	return colours.find(colour => colour.name == d.colour_list)['colors'][d.level];
+                })
+            		.attr("stroke-width", 1)
+		             .attr("stroke", function (d, i) {
+                  	return colours.find(colour => colour.name == d.colour_list)['colors'][7];
+                })
+                .call(cola.drag);
+
+          group.append("title")
+            .text(function (d) { return d.label; });
+
+
+            var link = svg.selectAll(".link")
+                .data(links)
+              .enter().append("line")
+                .attr("class", "link")
+                .style("stroke-width", '1px')
+            		.attr('stroke', 'black');
+
+            var node = svg.selectAll(".node")
+                .data(nodes)
+              .enter().append("rect")
+            		.attr('class', "node")
+                .attr('class', d => d.type)
+                .attr('class', d => d.G_name)
+    						.attr('id', d => d.G_id);
+
+          	var label = svg.selectAll(".label")
+                  .data(nodes)
+               .enter().append("text")
+                  .attr("class", "label")
+                  .text(d => d.type == 'attribute'
+                            ? (d.G_name + ': ' + d.value)
+                            : (d.G_name + ': ' + d.G_id))
+                  .attr('id', d => 'heading-' + d.G_id)
+                  .style('font-size', 10)
+                  .style('text-anchor', 'middle')
+                  .style('color', d => text_colour(d))
+                  .style('fill', d => text_colour(d))
+                  .style("pointer-events", "none")
+            			.call(cola.drag);
+
+            // setup heading colours for attribute, entity and relation
+            function text_colour(d) {
+                let colour = 'black'
+                switch (d.type) {
+                    case 'attribute':
+                    		if (d.dtype == 'actual'){
+                        		colour = att_t_colour
+                        } else {
+                        		colour = shad_t_colour
+                        }
+                        break;
+                    case 'entity':
+                        colour = ent_t_colour
+                        break;
+                    case 'relation':
+                        colour = rel_t_colour
+                        break;
+                    default:
+                        colour = 'black'
+                        break;
+                }
+                return colour;
+            }
+
+
+          	node
+            		.attr('width', d => nodeWidth(d))
+                .attr('height', d => d.height)
+                .attr('rx', d => d.corner)
+                .attr('ry', d=> d.corner)
+                .attr('x', d => d.x)
+                .attr('y', d => d.y)
+                .attr("class", d => d.G_name)
+          			.style("fill", d => d.colour)
+                .on("click", function (d) {
+                    d.fixed = true;
+                })
+                .call(cola.drag);
+
+          	// function to set dimensions and colours for shapes
+            function nodeWidth(d) {
+                let headingid = '#heading-' + d.G_id;
+                let headingbbox = d3.select(headingid).node().getBBox();
+
+                d.width = d3.max([5, headingbbox.width]) + (textPadding * 2)
+                d.height = headingbbox.height  + textPadding * 2
+
+                // attributes and entities rounded rectangle, relation is circle
+                switch (d.type) {
+                    case 'attribute':
+                        d.corner = corner
+                        d.colour = att_colour
+                        d.x = headingbbox.x - textPadding
+                        d.y = headingbbox.y - textPadding
+                    		if (d.dtype === 'shadow'){
+                          	d.colour =  shad_colour;
+                        } else {
+                          	d.colour =  att_colour;
+                        }
+                        break;
+
+                    case 'entity':
+                        d.corner = corner
+                        d.colour = ent_colour
+                        d.x = headingbbox.x - textPadding
+                        d.y = headingbbox.y - textPadding
+                    		break;
+
+                    case 'relation':
+                        d.width = 16
+                        d.height = 16
+                        d.corner = 8
+                        d.colour = rel_colour
+                        d.x = headingbbox.x + (headingbbox.width)/2 - d.width/2
+                        d.y = headingbbox.y + d.height/2
+                    		break;
+
+                    case 'super':
+                        d.width = 50
+                        d.height = 50
+                        d.corner = 50
+                        d.colour = 'yellow'
+                        d.x = headingbbox.x + (headingbbox.width)/2 - d.width/2
+                        d.y = headingbbox.y + d.height/2
+                    		break;
+
+
+                    default:
+                        break;
+                }
+                return d.width;
+            };
+
+
+            cola.on("tick", function () {
+                link.attr("x1", function (d) { return d.source.x; })
+                    .attr("y1", function (d) { return d.source.y; })
+                    .attr("x2", function (d) { return d.target.x; })
+                    .attr("y2", function (d) { return d.target.y; });
+
+                node.attr("x", function (d) { return d.x - d.width/2; })
+                    .attr("y", function (d) { return d.y - d.height/2; });
+
+              	 group.attr("x", function (d) { return d.bounds.x -pad; })
+                      .attr("y", function (d) { return d.bounds.y - pad; })
+                      .attr("width", function (d) { return d.bounds.width() + 2 * pad; })
+                      .attr("height", function (d) { return d.bounds.height() + 2 * pad; });
+
+              	label.attr("x", function (d) { return d.x; })
+                     .attr("y", function (d) {
+                         var h = this.getBBox().height;
+                         return d.y + h/4;
+                     });
+            });
+
+        });
+
+
+
+    </script>
+  </body>
+</html>

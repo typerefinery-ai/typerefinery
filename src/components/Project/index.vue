@@ -17,12 +17,13 @@
 
 <script>
   import ProjectContent from "./ProjectContent"
-  import MainMenu from "@/components/MainMenu.vue"
-  import MenuBar from "@/components/MenuBar.vue"
-  import AppSettings from "@/store/Modules/AppSettings"
+  import MainMenu from "@/components/Menu/MainMenu.vue"
+  import MenuBar from "@/components/Menu/MenuBar.vue"
+  import Settings from "@/store/Modules/Settings"
+  import FlowMessage from "@/store/Modules/FlowMessage"
   import { getModule } from "vuex-module-decorators"
-  const appSettings = getModule(AppSettings)
-
+  const settingsModule = getModule(Settings)
+  const flowModule = getModule(FlowMessage)
   export default {
     name: "Project",
     components: { ProjectContent, MenuBar, MainMenu },
@@ -35,8 +36,11 @@
     },
     computed: {
       focusMode() {
-        return appSettings.focus
+        return settingsModule.data.focus
       },
+    },
+    mounted() {
+      flowModule.initTMS()
     },
     methods: {
       toggleMainMenu() {

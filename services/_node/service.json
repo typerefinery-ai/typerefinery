@@ -1,0 +1,20 @@
+{
+  "id": "node",
+  "name": "Node v18.6.0",
+  "description": "Portable node version.",
+  "enabled": true,
+  "status": "30",
+  "logoutput": "",
+  "icon": "pi pi-globe",
+  "servicetype": 10,
+  "execconfig": {
+    "setuparchive": {
+      "name": "node-v18.6.0-win-x64.zip",
+      "output": "node-v18.6.0-win-x64"
+    },
+    "executable": {
+      "win32": "node-v18.6.0-win-x64\\node.exe",
+      "default": "node-v18.6.0-win-x64\\node"
+    }
+  }
+}

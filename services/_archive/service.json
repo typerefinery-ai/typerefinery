@@ -1,0 +1,16 @@
+{
+  "id": "archive",
+  "name": "Archiving Service",
+  "description": "7zip 22.01",
+  "enabled": true,
+  "status": "30",
+  "logoutput": "",
+  "icon": "pi pi-globe",
+  "servicetype": 10,
+  "execconfig": {
+    "executable": {
+      "win32": "7za.exe",
+      "default": "7za"
+    }
+  }
+}

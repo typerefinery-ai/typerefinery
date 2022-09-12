@@ -4,10 +4,11 @@
 
 <script>
   import * as d3 from "d3"
-  import * as cola from "webcola"
-  import AppData from "@/store/Modules/Projects"
+  import * as webcola from "webcola"
   import { getModule } from "vuex-module-decorators"
-  const appData = getModule(AppData)
+  import Projects from "@/store/Modules/Projects"
+  import axios from "axios"
+  const projectsModule = getModule(Projects)
   export default {
     name: "Graph",
     props: {
@@ -15,13 +16,23 @@
       dependencies: { type: Array, required: true },
       tab: { type: Object, required: true },
     },
+    emits: ["set-node-data"],
+    data() {
+      return {
+        graphData: {},
+      }
+    },
     computed: {
       code() {
         const { projectIdx, queryIdx } = this.tab
-        return appData.transformerCode(projectIdx, queryIdx)
+        return projectsModule.getTransformerCode(projectIdx, queryIdx)
       },
       params() {
         return this.dependencies
+      },
+      path() {
+        const { projectIdx, queryIdx } = this.tab
+        return projectsModule.getQuery(projectIdx, queryIdx).dataPath
       },
     },
     watch: {
@@ -29,36 +40,58 @@
         this.renderGraph()
       },
       params() {
-        this.renderGraph()
+        this.getGraphData()
+      },
+      path() {
+        this.getGraphData()
       },
     },
     mounted() {
-      this.renderGraph()
+      this.getGraphData()
     },
-
     methods: {
-      renderGraph() {
+      async getGraphData() {
         const { projectIdx, queryIdx } = this.tab
-        const query = appData.list[0].list[projectIdx].queries.list[queryIdx]
+        const query = projectsModule.getQuery(projectIdx, queryIdx)
+        const origin = new URL(query.endpoint).origin
+        if (query.dataPath) {
+          try {
+            const { data } = await axios.get(origin + query.dataPath)
+            this.graphData = data
+            this.renderGraph()
+          } catch (err) {
+            console.log(err)
+            this.graphData = {}
+          }
+        } else {
+          this.renderGraph()
+        }
+      },
+      async renderGraph() {
+        const { projectIdx, queryIdx } = this.tab
         try {
           window.log = function (log) {
-            appData.setTransformerLogs({ log, projectIdx, queryIdx })
+            projectsModule.setTransformerLogs({ log, projectIdx, queryIdx })
           }
-          appData.clearTransformerLogs({ projectIdx, queryIdx }) // clear logs before each execution
-          const params = ["wrapper", "self", "output", ...this.params]
+          projectsModule.clearTransformerLogs({ projectIdx, queryIdx }) // clear logs before each execution
+          const params = ["Wrapper", "self", "Graph_Data", ...this.params]
           const func = new Function(...params, this.code)
           const wrapper = document.getElementById(this.graphId)
           this.removeInnerItems(wrapper)
-          const args = [wrapper, this, query.dataPath]
+          const args = [wrapper, this, this.graphData]
           const existingDependencies = {
             d3: d3,
-            cola: cola,
+            webcola: webcola,
           }
           this.params.forEach((el) => args.push(existingDependencies[el]))
           func.apply(this, args)
-          appData.setTransformerError({ error: "", projectIdx, queryIdx })
+          projectsModule.setTransformerError({
+            error: "",
+            projectIdx,
+            queryIdx,
+          })
         } catch (err) {
-          appData.setTransformerError({
+          projectsModule.setTransformerError({
             error: err.stack,
             projectIdx,
             queryIdx,
@@ -72,6 +105,9 @@
             wrapper.removeChild(wrapper.firstChild)
           }
         }
+      },
+      setNodeData(nodeData) {
+        this.$emit("set-node-data", nodeData)
       },
     },
   }

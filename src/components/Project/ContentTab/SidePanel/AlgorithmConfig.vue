@@ -23,10 +23,10 @@
         <div class="field">
           <label>{{ $t(`components.transformer.dependencies`) }}</label>
           <Textarea
-            v-model="dependencies"
-            :auto-resize="true"
-            rows="5"
+            :model-value="dependencies"
+            rows="3"
             cols="30"
+            @input="handleDependencies"
           />
         </div>
         <div class="field">
@@ -88,16 +88,17 @@
 </template>
 
 <script>
+  import { getModule } from "vuex-module-decorators"
+  import { getRandomId } from "@/utils"
   import Button from "primevue/button"
   import Dropdown from "primevue/dropdown"
   import Dialog from "primevue/dialog"
   import InputText from "primevue/inputtext"
   import Textarea from "primevue/textarea"
-  import { getModule } from "vuex-module-decorators"
-  //   import Algorithm from "@/store/Modules/Algorithm"
-  import AppData from "@/store/Modules/Projects"
-  //   const algorithm = getModule(Algorithm)
-  const appData = getModule(AppData)
+  import Projects from "@/store/Modules/Projects"
+  import Algorithms from "@/store/Modules/Algorithms"
+  const projectsModule = getModule(Projects)
+  const algorithmsModule = getModule(Algorithms)
 
   export default {
     name: "AlgorithmConfig",
@@ -111,21 +112,18 @@
     props: {
       tab: { type: Object, required: true },
     },
-    emits: ["handle-dependencies"],
     data() {
       return {
         algorithmName: "",
         activeView: "config",
         saveDialog: false,
         selectedAlgorithm: null,
-        dependencies: "",
       }
     },
     computed: {
       algorithm() {
-        const { projectIdx, queryIdx } = this.tab
-        const algorithm =
-          appData.list[0].list[projectIdx].queries.list[queryIdx].algorithm
+        const { projectIdx: pI, queryIdx: qI } = this.tab
+        const algorithm = projectsModule.getQuery(pI, qI).algorithm
         return {
           key: algorithm.id,
           label: algorithm.label,
@@ -134,7 +132,27 @@
       },
       algorithms() {
         const { projectIdx } = this.tab
-        return appData.algorithmsList(projectIdx)
+        return [
+          {
+            label: "Local",
+            code: "local",
+            items: projectsModule.getLocalAlgorithms(projectIdx).map((el) => {
+              return { label: el.label, key: el.id, scope: el.scope }
+            }),
+          },
+          {
+            label: "Global",
+            code: "global",
+            items: algorithmsModule.getGlobalAlgorithms.map((el) => {
+              return { label: el.label, key: el.id, scope: el.scope }
+            }),
+          },
+        ]
+      },
+      dependencies() {
+        const { projectIdx: pI, queryIdx: qI } = this.tab
+        const algorithm = projectsModule.getQuery(pI, qI).algorithm
+        return algorithm.dependencies
       },
     },
     methods: {
@@ -158,44 +176,47 @@
       },
       setAlgorithmCode(value) {
         let algorithm
+        const { projectIdx } = this.tab
         if (value.scope == "local") {
-          algorithm = appData.list[0].list[
-            this.tab.projectIdx
-          ].algorithms.list.find((el) => el.id == value.key)
+          algorithm = projectsModule
+            .getLocalAlgorithms(projectIdx)
+            .find((el) => el.id == value.key)
         } else {
-          algorithm = appData.list[3].list.find((el) => {
+          algorithm = algorithmsModule.getGlobalAlgorithms.find((el) => {
             return el.id == value.key
           })
         }
-        const payload = { key: "algorithm", value: algorithm, ...this.tab }
-        appData.updateQuery(payload)
+        const payload = { field: "algorithm", value: algorithm, ...this.tab }
+        projectsModule.updateQuery(payload)
       },
       saveAlgorithm(scope) {
         this.saveDialog = false
-        const algorithm =
-          appData.list[0].list[this.tab.projectIdx].queries.list[
-            this.tab.queryIdx
-          ].algorithm
-        const id = Math.random()
-          .toString(36)
-          .replace(/[^a-z]+/g, "")
-          .substr(2, 10)
+        const { projectIdx: pI, queryIdx: qI } = this.tab
+        const algorithm = projectsModule.getQuery(pI, qI).algorithm
         let data = {
           data: {
             ...algorithm,
-            id,
+            id: getRandomId(),
             label: this.algorithmName,
           },
         }
         if (scope == "local") {
           data.projectIdx = this.tab.projectIdx
           data.data.scope = "local"
+          projectsModule.addLocalAlgorithm(data)
         } else {
-          data.projectIdx = -1
           data.data.scope = "global"
+          algorithmsModule.addGlobalAlgorithm(data)
         }
-        appData.addNewAlgorithm(data)
         this.algorithmName = ""
+      },
+      handleDependencies(e) {
+        const { projectIdx, queryIdx } = this.tab
+        const query = projectsModule.getQuery(projectIdx, queryIdx)
+        const algorithm = { ...query.algorithm }
+        algorithm.dependencies = e.target.value
+        const payload = { field: "algorithm", value: algorithm, ...this.tab }
+        projectsModule.updateQuery(payload)
       },
     },
   }

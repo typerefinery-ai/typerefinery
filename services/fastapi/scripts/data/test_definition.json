@@ -1,0 +1,77 @@
+[
+  {
+      "leaves": [
+          {
+              "G_name": "event"
+          },
+          {
+              "G_name": "eventName",
+              "role": "has"
+          }
+      ],
+      "groups": [],
+      "results": [],
+      "ops": {
+          "name": "Event_Record",
+          "colour_list": "Yellows",
+          "level": 0,
+          "label": "Event Record",
+          "type": "Type1"
+      },
+      "constraints": {}
+  },
+  {
+      "leaves": [
+          {
+              "G_name": "trace"
+          },
+          {
+              "G_name": "index",
+              "role": "has"
+          },
+          {
+              "G_name": "traceId",
+              "role": "has"
+          }
+      ],
+      "groups": [
+          {
+              "group": "Event_Record",
+              "condition": "leaf",
+              "l_G_name": "trace",
+              "l_role": "item"
+          }
+      ],
+      "results": [],
+      "ops": {
+          "name": "Trace_Record",
+          "colour_list": "Reds",
+          "level": 0,
+          "label": "Trace Record",
+          "type": "Type2"
+      },
+      "constraints": {}
+  },
+  {
+      "leaves": [],
+      "groups": [
+          {
+              "group": "Trace_Record",
+              "condition": "value",
+              "g_G_name": "trace",
+              "basis": "distinct",
+              "v_G_name": "traceId",
+              "g_role": "has"
+          }
+      ],
+      "results": [],
+      "ops": {
+          "name": "Trace_Session",
+          "colour_list": "Blues",
+          "level": 0,
+          "label": "Trace Session",
+          "type": "Type3"
+      },
+      "constraints": {}
+  }
+]

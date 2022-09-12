@@ -2,6 +2,7 @@
   "components": {
     "mainmenu": {
       "project": "Project",
+      "workflow": "Workflow",
       "charts": "Charts",
       "maps": "Maps",
       "chats": "Chat",
@@ -39,7 +40,9 @@
           "enabled": "Enabled",
           "status": "Status",
           "type": "Type",
-          "description": "Description"
+          "description": "Description",
+          "serviceport": "Port",
+          "servicepid": "Process ID"
         }
       },
       "profile": {
@@ -50,7 +53,9 @@
       "general": {
         "experimental": "Experimental Features",
         "chat": "Chat",
-        "editor": "Editor"
+        "editor": "Editor",
+        "charts": "Charts",
+        "maps": "Maps"
       }
     },
 
@@ -99,6 +104,7 @@
           "name": "Name",
           "host": "Host",
           "port": "Port",
+          "database": "Database",
           "description": "Description",
           "icon": "Icon",
           "submit": "Submit"
@@ -236,6 +242,13 @@
         "save-as-local": "Save as Local",
         "save-as-global": "Save as Global"
       }
+    },
+    "data": {
+      "refresh": "Refresh"
+    },
+    "output": {
+      "viz": "Viz",
+      "table": "Table"
     }
   },
 

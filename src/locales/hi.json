@@ -2,6 +2,7 @@
   "components": {
     "mainmenu": {
       "project": "परियोजना",
+      "workflow": "कार्यप्रवाह",
       "charts": "चार्ट",
       "maps": "नक़्शे",
       "chats": "चैट",
@@ -39,7 +40,9 @@
           "enabled": "सक्षम",
           "status": "स्थिति",
           "type": "प्रकार",
-          "description": "विवरण"
+          "description": "विवरण",
+          "serviceport": "सेवा पोर्ट",
+          "servicepid": "सेवा पिडिएड"
         }
       },
       "profile": {
@@ -50,7 +53,9 @@
       "general": {
         "experimental": "प्रायोगिक विशेषताएं",
         "chat": "चैट",
-        "editor": "एडीटर"
+        "editor": "एडीटर",
+        "charts": "चार्ट",
+        "maps": "नक़्शे"
       }
     },
 
@@ -99,6 +104,7 @@
           "name": "नाम",
           "host": "मेज़बान",
           "port": "पत्तन",
+          "database": "डेटाबेस",
           "description": "विवरण",
           "icon": "आइकन",
           "submit": "प्रस्तुत"
@@ -230,6 +236,13 @@
         "save-as-local": "स्थानीय के रूप में सहेजें",
         "save-as-global": "वैश्विक के रूप में सहेजें"
       }
+    },
+    "data": {
+      "refresh": "रिफ्रेश"
+    },
+    "output": {
+      "viz": "विज़",
+      "table": "टेबल"
     }
   },
   "tooltips": {
