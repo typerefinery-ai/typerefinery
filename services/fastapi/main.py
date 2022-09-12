@@ -59,6 +59,7 @@ from routers import utils
 from routers import createsvg
 from routers import algorithm
 from routers import transformer
+from routers import datastore
 
 # include routes
 app.include_router(admin.router)
@@ -66,3 +67,4 @@ app.include_router(utils.router)
 app.include_router(createsvg.router)
 app.include_router(algorithm.router)
 app.include_router(transformer.router)
+app.include_router(datastore.router)
