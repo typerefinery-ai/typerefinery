@@ -33,10 +33,14 @@ class FlowUtils():
       results = self.read_flow(flowid=flowid, engine=engine)
       aflow = results.one()
       if aflow:
-        aflow.name = flow.name
-        aflow.description = flow.description
+        aflow.projectid = flow.projectid
+        aflow.scope = flow.scope
         aflow.icon = flow.icon
+        aflow.label = flow.label
+        aflow.description = flow.description
+        aflow.type = flow.type
         aflow.data = flow.data
+        aflow.default = flow.default
         session.add(aflow)
         session.commit()
         session.refresh(aflow)

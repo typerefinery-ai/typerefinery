@@ -33,9 +33,13 @@ class ThemeUtils():
       results = self.read_theme(themeid=themeid, engine=engine)
       atheme = results.one()
       if atheme:
-        atheme.name = theme.name
-        atheme.description = theme.description
+        atheme.projectid = theme.projectid
+        atheme.scope = theme.scope
         atheme.icon = theme.icon
+        atheme.label = theme.label
+        atheme.description = theme.description
+        atheme.type = theme.type
+        atheme.theme = theme.theme
         atheme.data = theme.data
         session.add(atheme)
         session.commit()
