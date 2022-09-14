@@ -10,10 +10,10 @@ exports.install = function() {
   ROUTE('GET      /fapi/streams/               *Streams      --> query');
 	ROUTE('GET      /fapi/streams_read/{id}/     *Streams      --> read');
   ROUTE('+POST    /fapi/stream_save/           *Streams      --> save');
-	ROUTE('GET    /fapi/streams_remove/{id}/   *Streams      --> remove');
+	ROUTE('GET      /fapi/streams_remove/{id}/   *Streams      --> remove');
 	ROUTE('GET      /fapi/streams_stats          *Streams      --> stats');
-	ROUTE('+POST    /fapi/streams_pause/{id}/    *Streams      --> pause');
-	ROUTE('+POST    /fapi/streams_restart/{id}/  *Streams      --> restart');
+	ROUTE('GET      /fapi/streams_pause/{id}/    *Streams      --> pause');
+	ROUTE('GET      /fapi/streams_restart/{id}/  *Streams      --> restart');
 
 	// FlowStream
 	ROUTE('+API    @api    -streams                          *Streams      --> query');
