@@ -91,11 +91,15 @@
       },
       sidebarVisible(visible) {
         if (visible) {
-          this.pane1Size = 25
-          this.panesSize = 75
+          setTimeout(() => {
+            this.pane1Size = 25
+            this.panesSize = 75
+          }, 0)
         } else {
-          this.pane1Size = 0
-          this.panesSize = 45
+          setTimeout(() => {
+            this.pane1Size = 0
+            this.panesSize = 45
+          }, 0)
         }
       },
     },
@@ -110,8 +114,10 @@
         const pane = { id: "pane2", tabs: [tab] }
         if (this.panes.length === 1) {
           this.panes.push(pane)
-          this.pane1Size = 0
-          this.panesSize = 45
+          setTimeout(() => {
+            this.pane1Size = 0
+            this.panesSize = 45
+          }, 0)
         } else {
           this.panes[1] = pane
         }
