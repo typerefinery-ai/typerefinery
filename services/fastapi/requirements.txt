@@ -7,3 +7,4 @@ argparse
 pydantic
 sqlmodel
 strawberry-graphql
+requests
