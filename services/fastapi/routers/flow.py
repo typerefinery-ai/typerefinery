@@ -73,12 +73,11 @@ async def flow_create(request: Request, response: Response, body: FlowSchema):
         print(service_reponse.json())
         service_url_get = "http://localhost:8111/fapi/streams/"
         service_reponse = requests.get(service_url_get)
-        # for each object in response json find object that has same reference as body.reference
-        for stream in service_reponse.json():
-            if stream["reference"] == body.reference:
-                return stream
+        # for each object in response json find last object that has same reference as body.reference and return it
+        return_object = None
+        for project in service_reponse.json():
+            if project["reference"] == body.reference:
+                return_object = project
+        return return_object
 
-        # if service_reponse.status_code == 200:
-        #     return service_reponse.json()
-        # print(json.loads(service_reponse.content.decode('utf-8')))
     return Response(content=json.dumps(service_reponse.json()), media_type="application/json", status_code=service_reponse.status_code)
