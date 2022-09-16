@@ -32,6 +32,7 @@
           @close-split-view="closeSplitView"
         />
       </pane>
+      <Home />
     </splitpanes>
   </div>
 </template>
@@ -41,6 +42,7 @@
   import { getModule } from "vuex-module-decorators"
   import Sidebar from "../Sidebar"
   import ContentView from "./ContentView.vue"
+  import Home from "../ContentTab/Tabs/DisplayHomePage.vue"
   import AppData from "@/store/Modules/AppData"
   const appDataModule = getModule(AppData)
 
@@ -51,6 +53,7 @@
       Splitpanes,
       Pane,
       ContentView,
+      Home,
     },
     props: {
       focus: {
