@@ -12,16 +12,6 @@ const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: "/sign-up",
-      name: "SignUp",
-      component: SignUp,
-    },
-    {
-      path: "/",
-      name: "Login",
-      component: Login,
-    },
-    {
       path: "/home/:id",
       name: "home",
       components: {
@@ -38,6 +28,10 @@ const router = createRouter({
       path: "/workflow",
       name: "workflow",
       component: Workflow,
+    },
+    {
+      path: "/",
+      redirect: "/home/project",
     },
   ],
 })
