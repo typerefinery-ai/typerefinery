@@ -7,6 +7,7 @@
     :pane-id="paneId"
     @toggle="$emit('toggle')"
   />
+  <project v-if="tab.type === 'project'" :tab="tab" />
   <connection v-if="tab.type === 'connection'" :tab="tab" />
   <wiring v-show="tab.type === 'wiring'" />
   <theme v-if="tab.type === 'theme'" :tab="tab" />
@@ -14,6 +15,7 @@
 </template>
 
 <script>
+  import Project from "./Tabs/Project.vue"
   import Query from "./Tabs/Query.vue"
   import Connection from "./Tabs/Connection.vue"
   import Theme from "./Tabs/Theme.vue"
@@ -23,6 +25,7 @@
     name: "ContentTab",
     components: {
       Query,
+      Project,
       Connection,
       Theme,
       Wiring,

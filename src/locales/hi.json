@@ -71,7 +71,16 @@
       "algorithm": "एल्गोरिथम",
       "data": "आंकड़े",
       "graph": "ग्राफ",
-      "transform": "ट्रांसफॉर्म"
+      "transform": "ट्रांसफॉर्म",
+      "project": {
+        "header": "परियोजना ",
+
+        "name": "नाम",
+
+        "description": "विवरण",
+
+        "icon": "आइकन"
+      }
     },
     "graph": {
       "properties": "प्रोपर्टीज",

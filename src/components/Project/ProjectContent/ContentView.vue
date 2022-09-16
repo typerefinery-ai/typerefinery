@@ -101,6 +101,8 @@
           label:
             el.type === "query"
               ? projectsModule.getQueries(el.projectIdx)[el.queryIdx].label
+              : el.type === "project"
+              ? projectsModule.getProjectLabel(el.id)
               : el.type === "connection"
               ? el.parent
                 ? projectsModule.getProjects[el.parentIdx].connections.list[

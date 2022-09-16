@@ -304,6 +304,11 @@
           projectsModule.updateSelectedNode({ key, value: true })
           this.handleNodes(this.selectedNode)
         }
+        if (isTreeNode && this.selectedNode.type == "project") {
+          projectsModule.updateSelectedNode({ key, value: true })
+
+          this.handleNodes(this.selectedNode)
+        }
       },
       expandNode({ key }) {
         projectsModule.updateExpandedNodes({ key, value: true })
