@@ -1,10 +1,16 @@
 <template>
   <div class="connection-wrapper">
-    <Fieldset legend="Database Details" class="mb-3">
+    <Fieldset
+      :legend="$t(`components.dialog.connections.info.database-detail`)"
+      class="mb-3"
+    >
       <div class="grid formgrid connection-form">
         <div class="col-12 p-fluid">
           <div class="field">
-            <label for="host">Host<span class="asterisk">*</span></label>
+            <label for="host"
+              >{{ $t("components.dialog.connections.info.host")
+              }}<span class="asterisk">*</span></label
+            >
             <InputText
               id="host"
               v-model="v$.host.$model"
@@ -17,7 +23,10 @@
         </div>
         <div class="col-12 p-fluid">
           <div class="field">
-            <label for="port">Port<span class="asterisk">*</span></label>
+            <label for="port">
+              {{ $t("components.dialog.connections.info.port")
+              }}<span class="asterisk">*</span></label
+            >
             <InputText
               id="port"
               v-model="v$.port.$model"
@@ -31,7 +40,8 @@
         <div class="col-12 p-fluid">
           <div class="field">
             <label for="port"
-              >Database Name<span class="asterisk">*</span></label
+              >{{ $t("components.dialog.connections.info.database")
+              }}<span class="asterisk">*</span></label
             >
             <InputText
               id="database"
@@ -63,11 +73,16 @@
       </div>
     </Fieldset> -->
 
-    <Fieldset legend="Connection Details">
+    <Fieldset
+      :legend="$t(`components.dialog.connections.info.connection-detail`)"
+    >
       <div class="grid formgrid connection-form">
         <div class="col-12 md:col-6 p-fluid">
           <div class="field">
-            <label for="label">Label<span class="asterisk">*</span></label>
+            <label for="label"
+              >{{ $t("components.dialog.connections.info.label")
+              }}<span class="asterisk">*</span></label
+            >
             <InputText
               id="label"
               v-model="v$.label.$model"
@@ -80,7 +95,9 @@
         </div>
         <div class="col-12 md:col-6 p-fluid">
           <div class="field">
-            <label for="icon">Icon</label>
+            <label for="icon">
+              {{ $t("components.dialog.connections.info.icon") }}</label
+            >
             <InputText
               id="icon"
               v-model="icon"
@@ -92,12 +109,18 @@
         </div>
         <div class="col-12 p-fluid">
           <div class="field">
-            <label for="description">Description</label>
+            <label for="description">{{
+              $t("components.dialog.connections.info.description")
+            }}</label>
             <InputText
               id="description"
               v-model="description"
               aria-describedby="description"
-              placeholder="Enter connection description"
+              :placeholder="
+                $t(
+                  `components.dialog.connections.info.enter-connection-description`
+                )
+              "
               @input="handleInput($event, 'description')"
             />
           </div>

@@ -1,7 +1,7 @@
 <template>
   <div class="theme-container">
     <div class="field">
-      <label for="label">Theme</label>
+      <label for="label">{{ $t(`components.theme.theme`) }}</label>
       <div class="field">
         <Dropdown
           :model-value="selectedTheme"

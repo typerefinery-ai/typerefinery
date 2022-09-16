@@ -104,10 +104,14 @@
           "name": "Name",
           "host": "Host",
           "port": "Port",
-          "database": "Database",
+          "database": "Database Name",
           "description": "Description",
           "icon": "Icon",
-          "submit": "Submit"
+          "submit": "Submit",
+          "connection-detail": "Connection Details",
+          "database-detail": "Database Details",
+          "enter-connection-description": "Enter Connection Description",
+          "label": "Label"
         },
         "updated-header": "Update Connection"
       },
@@ -249,6 +253,9 @@
     "output": {
       "viz": "Viz",
       "table": "Table"
+    },
+    "theme": {
+      "theme": "Theme"
     }
   },
 

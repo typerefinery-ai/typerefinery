@@ -10,7 +10,7 @@
     },
     "project": {
       "new-project": "नया काम",
-      "new-query": "नया प्रश्न",
+      "new-query": "नया क्वेरी",
       "new-connection": "नया कनेक्शन",
       "new-transformer": "नया ट्रांसफार्मर",
       "new-algorithm": "नया एल्गोरिथम",
@@ -20,7 +20,7 @@
       "queries": "प्रश्नों",
       "tab": "टैब",
       "name": "नाम",
-      "query": "प्रश्न",
+      "query": "क्वेरी",
       "calories": "कैलोरी",
       "description": "विवरण",
       "icon": "आइकन"
@@ -67,7 +67,7 @@
       "From": "से"
     },
     "tab": {
-      "query": "प्रश्न",
+      "query": "क्वेरी",
       "algorithm": "एल्गोरिथम",
       "data": "आंकड़े",
       "graph": "ग्राफ",
@@ -90,7 +90,7 @@
           "description": "विवरण",
           "icon": "आइकन",
           "cancel": "रद्द करना",
-          "save": "बचाना"
+          "save": "सेव करे"
         }
       },
       "connections": {
@@ -102,21 +102,25 @@
           "select": "परियोजना का चयन करें",
           "connection-info": "कनेक्शन जानकारी",
           "name": "नाम",
-          "host": "मेज़बान",
-          "port": "पत्तन",
+          "host": " होस्ट",
+          "port": "पोर्ट नंबर",
           "database": "डेटाबेस",
-          "description": "विवरण",
+          "description": " कनेक्शन विवरण",
           "icon": "आइकन",
-          "submit": "प्रस्तुत"
+          "submit": "प्रस्तुत",
+          "connection-detail": "कनेक्शन की जानकारी",
+          "database-detail": "डेटाबेस की जानकारी",
+          "enter-connection-description": "कनेक्शन विवरण दर्ज करें",
+          "label": "लेबल"
         },
         "updated-header": "कनेक्शन अपडेट करें"
       },
       "new-query": {
-        "header": "नया प्रश्न",
+        "header": "नया क्वेरी",
         "panel1": {
           "header": "कनेक्शन जानकारी",
           "label1": "परियोजनाओं",
-          "label2": "सम्बन्ध",
+          "label2": "कनेक्शन",
           "select1": "परियोजना का चयन करें",
           "select2": "कनेक्शन चुनें"
         },
@@ -125,7 +129,7 @@
           "name": "नाम",
           "description": "विवरण",
           "icon": "आइकन",
-          "query": "प्रश्न",
+          "query": "क्वेरी",
           "transformer": "ट्रांसफार्मर",
           "select1": "ट्रांसफार्मर का चयन करें",
           "algorithm": "एल्गोरिथम",
@@ -133,7 +137,7 @@
         },
         "footer": {
           "cancel": "रद्द करना",
-          "save": "बचाना"
+          "save": "सेव करे"
         }
       },
       "new-transformer": {
@@ -148,11 +152,11 @@
           "name": "नाम",
           "description": "विवरण",
           "icon": "आइकन",
-          "query": "प्रश्न"
+          "query": "क्वेरी"
         },
         "footer": {
           "cancel": "रद्द करना",
-          "save": "बचाना",
+          "save": "सेव करे",
           "update": "अपडेट करें"
         },
         "updated-header": "ट्रांसफार्मर अपडेट करें"
@@ -167,13 +171,13 @@
         "panel2": {
           "header": "एल्गोरिथम की जानकारी",
           "name": "नाम",
-          "query": "प्रश्न",
+          "query": "क्वेरी",
           "description": "विवरण",
           "icon": "आइकन"
         },
         "footer": {
           "cancel": "रद्द करना",
-          "save": "बचाना",
+          "save": "सेव करे",
           "update": "अपडेट करें"
         },
         "updated-header": "एल्गोरिथम अपडेट करें"
@@ -243,6 +247,9 @@
     "output": {
       "viz": "विज़",
       "table": "टेबल"
+    },
+    "theme": {
+      "theme": "थीम"
     }
   },
   "tooltips": {
