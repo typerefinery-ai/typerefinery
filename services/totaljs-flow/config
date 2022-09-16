@@ -24,4 +24,4 @@ flowstream_worker           : fork
 directory               (env)    : SERVICE_DATA_PATH
 
 // Own list of components and the structure must be the same as https://cdn.totaljs.com/flowstream/components/db.json
-flowstream_components         : https://github.com/innovolve-ai/flowcomponents/blob/main/db.json
+flowstream_components         : https://innovolve-ai.github.io/flowcomponents/db.json
