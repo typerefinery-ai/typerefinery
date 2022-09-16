@@ -36,9 +36,12 @@
         @dblclick="handleNodeSelection"
       >
         <template #default="slotProps">
-          <b v-if="isSelected(slotProps.node.id)" role="treeitem">{{
-            slotProps.node.label
-          }}</b>
+          <span v-if="isSelected(slotProps.node.id)" class="label_wrapper">
+            <b class="selected-node" role="treeitem"
+              >{{ slotProps.node.label }}
+            </b>
+            <i id="label_icon" class="pi pi-circle-fill"></i>
+          </span>
           <span v-else role="treeitem">{{ slotProps.node.label }}</span>
         </template>
       </Tree>
@@ -75,6 +78,7 @@
       return {
         selectedNode: null,
         connection: null,
+        displayHome: false,
       }
     },
     computed: {
@@ -311,6 +315,6 @@
   }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
   @import "./Sidebar.scss";
 </style>
