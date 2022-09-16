@@ -1,7 +1,7 @@
 <template>
   <div class="sidebar-container">
     <div class="sidebar-fixed">
-      <div class="sidebar-fixed-items text-primary">
+      <div class="sidebar-fixed-items text-primary" @click="toggleSidebar">
         <file-icon v-tooltip="$t(`tooltips.project`)" :size="20" />
       </div>
       <!-- SEARCH ICON -->
@@ -310,6 +310,9 @@
       },
       collapseNode({ key }) {
         projectsModule.updateExpandedNodes({ key, value: false })
+      },
+      toggleSidebar() {
+        appDataModule.toggleSidebarPanel()
       },
     },
   }
