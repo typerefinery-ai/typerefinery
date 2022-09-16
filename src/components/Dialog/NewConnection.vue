@@ -59,42 +59,16 @@
         >
       </div>
       <div class="field">
-        <label
-          for="description"
-          :class="{ 'p-error': v$.description.$invalid && submitted }"
+        <label for="description">
+          {{ $t("components.dialog.projects.info.description") }}</label
         >
-          {{ $t("components.dialog.projects.info.description") + "*" }}</label
-        >
-        <InputText
-          id="description"
-          v-model="v$.description.$model"
-          :class="{ 'p-invalid': v$.description.$invalid && submitted }"
-        />
-        <small
-          v-if="
-            (v$.description.$invalid && submitted) ||
-            v$.description.$pending.$response
-          "
-          class="p-error"
-          >{{
-            v$.description.required.$message.replace("Value", "Description")
-          }}</small
-        >
+        <InputText id="description" v-model="description" />
       </div>
       <div class="field">
-        <label for="icon" :class="{ 'p-error': v$.icon.$invalid && submitted }">
-          {{ $t("components.dialog.projects.info.icon") + "*" }}</label
+        <label for="icon">
+          {{ $t("components.dialog.projects.info.icon") }}</label
         >
-        <InputText
-          id="icon"
-          v-model="v$.icon.$model"
-          :class="{ 'p-invalid': v$.icon.$invalid && submitted }"
-        />
-        <small
-          v-if="(v$.icon.$invalid && submitted) || v$.icon.$pending.$response"
-          class="p-error"
-          >{{ v$.icon.required.$message.replace("Value", "Icon") }}</small
-        >
+        <InputText id="icon" v-model="icon" />
       </div>
       <div class="field">
         <label for="host" :class="{ 'p-error': v$.host.$invalid && submitted }">
@@ -229,8 +203,8 @@
     validations() {
       return {
         name: { required },
-        description: { required },
-        icon: { required },
+        // description: { required },
+        // icon: { required },
         host: { required },
         port: { required },
         database: { required },

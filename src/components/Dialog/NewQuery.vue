@@ -70,14 +70,11 @@
       </div>
 
       <div class="field">
-        <label :class="{ 'p-error': v$.description.$invalid && submitted }"
-          >{{ $t("components.dialog.new-query.panel2.description") }}*</label
-        >
-        <InputText
-          v-model="v$.description.$model"
-          :class="{ 'p-error': v$.description.$invalid && submitted }"
-        />
-        <small
+        <label>{{
+          $t("components.dialog.new-query.panel2.description")
+        }}</label>
+        <InputText v-model="description" />
+        <!-- <small
           v-if="
             (v$.description.$invalid && submitted) ||
             v$.description.$pending.$response
@@ -86,22 +83,13 @@
           >{{
             v$.description.required.$message.replace("Value", "Description")
           }}</small
-        >
+        > -->
       </div>
       <div class="field">
-        <label for="icon" :class="{ 'p-error': v$.icon.$invalid && submitted }">
-          {{ $t("components.dialog.projects.info.icon") }}*</label
+        <label for="icon">
+          {{ $t("components.dialog.projects.info.icon") }}</label
         >
-        <InputText
-          id="icon"
-          v-model="v$.icon.$model"
-          :class="{ 'p-invalid': v$.icon.$invalid && submitted }"
-        />
-        <small
-          v-if="(v$.icon.$invalid && submitted) || v$.icon.$pending.$response"
-          class="p-error"
-          >{{ v$.icon.required.$message.replace("Value", "Icon") }}</small
-        >
+        <InputText id="icon" v-model="icon" />
       </div>
 
       <div class="field">
@@ -292,8 +280,8 @@
         projectselected: { required },
         connectionselected: { required },
         name: { required },
-        description: { required },
-        icon: { required },
+        // description: { required },
+        // icon: { required },
         // tranformerselected: { required },
         // algorithmselected: { required },
       }
