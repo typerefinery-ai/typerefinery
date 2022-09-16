@@ -868,6 +868,30 @@
 					]
 				}
 			},
+			"il844pro9": {
+				"id": "il844pro9",
+				"config": {
+					"random": true,
+					"type": "string",
+					"data": "",
+					"restart": false
+				},
+				"x": 113,
+				"y": 353,
+				"component": "c99ly15194",
+				"connections": {},
+				"template": {
+					"icon": "fa fa-bullhorn",
+					"group": "Triggers",
+					"name": "Trigger",
+					"outputs": [
+						{
+							"id": "output",
+							"name": "Output"
+						}
+					]
+				}
+			},
 			"groups": [],
 			"paused": {}
 		},
@@ -875,10 +899,7 @@
 		"sources": {},
 		"origin": "http://localhost:8111",
 		"dtcreated": "2022-07-25T11:00:09.159Z",
-		"size": 44160,
-		"variables2": {},
-		"directory": "C:\\Projects\\typerefinery\\services\\totaljs-flow\\database",
-		"sandbox": false
+		"size": 44301
 	},
 	"fs07f001ef41d": {
 		"paused": false,
@@ -1377,17 +1398,17 @@
 			"c5aria8f8f": "<script total>\n\n\texports.name = 'Print JSON';\n\texports.group = 'Common';\n\texports.version = '1';\n\texports.icon = 'fa fa-print';\n\texports.author = 'Martin Smola';\n\texports.config = { repo: false, data: true };\n\texports.inputs = [{ id: 'input', name: 'Input' }];\n\n\texports.make = function(instance, config) {\n\t\tinstance.message = function($) {\n\n\t\t\tvar data = $.data;\n\n\t\t\tif (config.data !== false) {\n\t\t\t\tif (data instanceof Buffer)\n\t\t\t\t\tdata = data.toString('hex').substring(0, 200);\n\t\t\t}\n\n\t\t\tvar count = 0;\n\n\t\t\tfor (var key in config) {\n\t\t\t\tif (config[key])\n\t\t\t\t\tcount++;\n\t\t\t}\n\n\t\t\tvar output = count > 1 ? {} : null;\n\n\t\t\tif (config.repo) {\n\t\t\t\tif (output)\n\t\t\t\t\toutput.repo = $.repo;\n\t\t\t\telse\n\t\t\t\t\toutput = $.repository;\n\t\t\t}\n\n\t\t\tif (config.data) {\n\t\t\t\tif (output)\n\t\t\t\t\toutput.data = $.data;\n\t\t\t\telse\n\t\t\t\t\toutput = $.data;\n\t\t\t}\n\n\t\t\toutput && instance.status(output);\n\t\t\t$.destroy();\n\t\t};\n\n\t\tinstance.trigger = function() {\n\t\t\tinstance.status('');\n\t\t}\n\n\t};\n\n</script>\n\n<style>\n\t.CLASS footer > div { margin: 10px; }\n\t.CLASS pre { font-size: 10px; margin: 0; padding: 5px; background-color: #F0F0F0; border-radius: var(--radius); }\n\t.CLASS button { float: right; height: 20px; font-size: 11px; border: 1px solid #E0E0E0; border-radius: var(--radius); color: #000; background-color: transparent; margin: 0; padding: 0 5px; }\n\t.CLASS button:hover { background-color: #F8F8F8; }\n\t.CLASS button:active { background-color: #E0E0E0; }\n\t.CLASS .ui-objecttree { background-color: #f0f0f0; padding: 4px; }\n\n\t.ui-dark .CLASS pre { background-color: #404040; tab-size: 2; }\n\t.ui-dark .CLASS button { border-color: #404040; color: #FFF; }\n\t.ui-dark .CLASS button:hover { background-color: #303030; }\n\t.ui-dark .CLASS button:active { background-color: #404040; }\n</style>\n\n<readme>\nThe component prints incoming data in a JSON format.\n</readme>\n\n<settings>\n\t<div class=\"padding\">\n\t\t<div data---=\"input__?.repo__type:checkbox\">Shows repository</div>\n\t\t<div data---=\"input__?.data__type:checkbox\">Shows data</div>\n\t</div>\n</settings>\n\n<script>\n\tFUNC.printjson_click = function(type, data) { // type = path/data\n\t\tnavigator.clipboard.writeText(type === 'path' ? data : STRINGIFY(data)).catch(e => console.error(e));\n\t};\n\n\t$('body').on('click', '.ui-objecttree .fa-copy, .ui-objecttree .fa-link', function(){\n\t\tvar el = $(this);\n\t\tvar iscopy = el.hclass('fa-copy');\n\t\tel.tclass(iscopy ? 'fa-copy' : 'fa-link').tclass('fa-check');\n\t\tsetTimeout(function(){\n\t\t\tel.tclass('fa-check').tclass(iscopy ? 'fa-copy' : 'fa-link');\n\t\t}, 2000);\n\t});\n</script>\n\n<body>\n\t<header>\n\t\t<button class=\"exec\" data-exec=\"FUNC.trigger\">Clear</button>\n\t\t<i class=\"ICON\"></i>NAME\n\t</header>\n\t<footer>\n\t\t<div data---=\"objecttree__!STATUS__exec:FUNC.printjson_click\" class=\"selectable\"></div>\n\t</footer>\n</body>",
 			"run": "<script total>\n    exports.name = 'WebCola Viz';\n    exports.group = 'TypeRefinery';\n    exports.version = '1';\n    exports.icon = 'fa fa-code';\n    exports.author = 'Total.js';\n    exports.config = { code: '// instance {FlowStreamInstance};\\n// $ {FlowStreamMessage};\\n// vars {Object};\\n// repo {Object};\\n// data {String/Number/Boolean/Date/Buffer/Object};\\n// $.send(\\'output\\', data); // or simply send(data); which uses the first output\\n// $.destroy();\\n// $.throw(err);\\n\\n// IMPORTANT: If you do not perform re-send, you need to destroy this message via $.destroy() method\\n// IMPORTANT: methods $.send(), $.destroy() and $.throw() can be executed only once\\n\\n// $.send(\\'output\\', data);\\n$.destroy();' };\n    exports.inputs = [{ id: 'graph_data', name: 'DATA' },{ id: 'theme', name: 'Theme' }];\n    exports.outputs = [{ id: 'output', name: 'Output' }];\n    exports.meta = { settingswidth: 1200 };\n\n    exports.make = function(instance, config) {\n        var fn;\n        var values = {};\n\n\t\tinstance.message = function($) {\n            const endpointData = { endpoint: config.endpoint }\n            values[$.input] = $.data\n\n\t\t\tif (values.graph_data && values.theme) {\n\t\t\t\t\tvar input_data = {\n\t\t\t\t\t\ttheme: values.theme,\n\t\t\t\t\t\tgraph_data: values.graph_data\n\t\t\t\t\t};\n\t\t\t\t\tconst codeWithData = config.code.replace('GRAPH_DATA', JSON.stringify(input_data.graph_data))\n\t\t\t\t\tconst code = codeWithData.replace('THEME', JSON.stringify(input_data.theme))\n\t\t\t\t\t const payload = {\n\t\t\t\t\t\t \"code\": code,\n\t\t\t\t\t\t \"dependecies\": [\"https://d3js.org/d3.v4.js\", \"https://cdn.jsdelivr.net/npm/webcola@3.4.0/WebCola/cola.js\"],\n\t\t\t\t\t\t  \"returnoutput\": \"script\"\n\t\t\t\t\t };\n                     let options = {\n\t\t\t\t\t\t\tmethod: 'POST',\n\t\t\t\t\t\t\theaders: {\n\t\t\t\t\t\t\t\t'Content-Type':\n\t\t\t\t\t\t\t\t\t'application/json;charset=utf-8'\n\t\t\t\t\t\t\t},\n            \t\t\t\tbody: JSON.stringify(payload)\n       \t\t\t\t   }\n        \t\t\tlet fetchRes = fetch(endpointData.endpoint,options);\n        \t\t\tfetchRes.then(res => res.json()).then(d => { $.send('output', {\n\t\t\t\t\t\tpath: d[\"output.url\"],\n\t\t\t\t\t\tstepId: instance.id,\n\t\t\t\t\t\tstepName: instance.module.name,\n\t\t\t\t\t\tflowId: instance.main.id\n\t\t\t\t\t}) }).catch(err => { $.send('output', err) })\n\n\t\t\t\tvalues.theme = null\n\t\t\t}\n        };\n        instance.configure = function() {\n            instance.outputs = [];\n            for (let i = 1; i <= config.outputs; i++)\n                instance.outputs.push({ id: 'output' + (i === 1 ? '' : i), name: 'Output #' + i });\n            instance.save();\n\n            try {\n                if (config.code) {\n                    instance.status(1);\n                    fn = new Function('value', 'instance', '$', 'message', 'require', 'send', 'repo', 'vars', 'data', config.code);\n                } else {\n                    instance.status(0);\n                    fn = null;\n                }\n            } catch (e) {\n                fn = null;\n                instance.throw('Code: ' + e.message);\n            }\n        };\n\n        instance.close = function() {\n            fn = null;\n        };\n\n        instance.configure();\n    };\n</script>\n\n<readme>\n    This component executes a custom JavaScript code as it is.\n\n\n    To send data to the default output use `send(somedata);`\n    To send data to specific output when number of outputs > 1 use `$.send('outputX', somedata)` where `X` is output index, see example bellow:\n    - first output--> `send(somedata)` or `$.send('output', somedata)`\n    - second output --> `$.send('output2', somedata)`\n    - ...\n    - 5th output --> `$.send('output5', somedata)`\n    - etc.\n</readme>\n\n<settings>\n    <div class=\"padding\">\n        <div data---=\"input__?.endpoint__required:1\" class=\"m\">Endpont</div>\n        <div class=\"ui-input-label\">Code:</div>\n        <div data---=\"codemirror__?.code__type:javascript;minheight:300;parent:auto;margin:60;tabs:true;trim:true\" class=\"m\"></div>\n    </div>\n</settings>\n\n<body>\n    <header>\n        <i class=\"ICON\"></i>NAME\n    </header>\n</body>",
 			"c418t8a6b8": "<script total>\n\texports.name = 'Run (node & edges)';\n    exports.icon = 'fa fa-code';\n    exports.author = 'RG';\n    exports.group = 'TypeRefinery';\n    exports.version = '1';\n    exports.config = { algorithm: '',endpoint:'' };\n    exports.inputs = [{ id: 'connection', name: 'Connection' }, { id: 'query', name: 'TQL Query' }];\n    exports.outputs = [{ id: 'output', name: 'Output' }];\n    exports.meta = { settingswidth: 1200 };\n\n    exports.make = function(instance, config) {\n        var fn;\n        var values = {};\n        instance.message = function($) {\n            const endpointData = {\n                 endpoint: config.endpoint,\n            }\n            values[$.input] = $.data;\n            if (values.connection && values.query && config.algorithm) {\n                var payload = {\n                    dbhost: values.connection.dbhost,\n                    dbport: values.connection.dbport,\n                    dbdatabase: values.connection.dbdatabase,\n                    dbquery: values.query.dbquery,\n                    algorithm: config.algorithm,\n                    algorithmrequirements: 'argparse\\nloguru',\n                    returnoutput: 'output'\n                };\n                let options = {\n            \t\tmethod: 'POST',\n            \t\theaders: {\n                \t\t'Content-Type':\n                    \t'application/json;charset=utf-8'\n            \t},\n            \tbody: JSON.stringify(payload)\n        }\n        let fetchRes = fetch(endpointData.endpoint,options);\n        fetchRes.then(res =>\n            res.json()).then(d => { $.send('output', d) }).catch(err => { $.send('output', err) })\n                values.query = null;\n            } else {\n                // IMPORTANT: we must destroy the current message becase we don't need to send it next\n                $.destroy();\n            }\n        };\n        instance.close = function() {\n            fn = null;\n        };\n    };\n</script>\n<readme>\n    Lorem ipsum dolor sit amet consectetur adipisicing, elit. Laudantium, in.\n</readme>\n<settings>\n    <div class=\"padding\">\n        <div data---=\"input__?.endpoint__required:1\" class=\"m\">Endpont</div>\n        <div class=\"ui-input-label\">Algorithm:</div>\n        <div data---=\"codemirror__?.algorithm__type:python;minheight:300;parent:auto;margin:60;tabs:true;trim:true\" class=\"m\"></div>\n    </div>\n</settings>\n<body>\n    <header>\n        <i class=\"ICON\"></i>NAME\n    </header>\n</body>",
-			"pubsrcfyn2ecf44Xsvg_insert": "<script total>\n\n\texports.name = 'TMS Example';\n\texports.icon = 'fas fa-broadcast-tower';\n\texports.config = {};\n\texports.outputs = [{ id: 'publish', name: 'Output' }];\n\texports.group = 'Publishers';\n\texports.type = 'pub';\n\texports.schemaid = ['srcfyn2ecf44', 'svg_insert'];\n\n\texports.make = function(instance) {\n\t\tinstance.process = function(msg, client) {\n\t\t\tinstance.send('publish', msg, client);\n\t\t};\n\t};\n\n</script>\n\n<style>\n\t.f-pubsrcfyn2ecf44Xsvg_insert .url { font-size: 11px; }\n</style>\n\n<readme>\n# svg_insert\n- URL address: <http://127.0.0.1:8112>\n- Channel: __publish__\n- JSON schema `svg_insert.json`\n- Version: 24\n\n```json\n{\n  \"$id\": \"https://schemas.totaljs.com/Svg.json\",\n  \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"stepId\": {\n      \"type\": \"string\"\n    },\n    \"flowId\": {\n      \"type\": \"string\"\n    },\n    \"stepName\": {\n      \"type\": \"string\"\n    },\n    \"path\": {\n      \"type\": \"string\"\n    },\n    \"id\": {\n      \"type\": \"string\"\n    },\n    \"dtcreated\": {\n      \"type\": \"date\"\n    },\n    \"dtupdated\": {\n      \"type\": \"date\"\n    }\n  }\n}\n```\n</readme>\n\n<body>\n\t<header>\n\t\t<div><i class=\"fas fa-broadcast-tower mr5\"></i><span>TMS Example / <b>svg_insert</b></span></div>\n\t\t<div class=\"url\"></div>\n\t</header>\n</body>",
-			"subsrcfyn2ecf44Xsvg_insert": "<script total>\n\n\texports.name = 'TMS Example';\n\texports.icon = 'fas fa-satellite-dish';\n\texports.group = 'Subscribers';\n\texports.config = {};\n\texports.inputs = [{ id: 'subscribe', name: 'Input' }];\n\texports.type = 'sub';\n\texports.schemaid = ['srcfyn2ecf44', 'svg_insert'];\n\n\texports.make = function(instance) {\n\t\tinstance.message = function($) {\n\t\t\tvar socket = instance.main.sockets['srcfyn2ecf44'];\n\t\t\tif (socket && socket.subscribers && socket.subscribers['svg_insert']) {\n\n\t\t\t\tvar data = $.data;\n\n\t\t\t\t/*\n\t\t\t\t\tvar err = new ErrorBuilder();\n\t\t\t\t\tdata = framework_jsonschema.transform(schema, err, data, true);\n\n\t\t\t\t\tif (err.is) {\n\t\t\t\t\t\t$.destroy();\n\t\t\t\t\t\treturn;\n\t\t\t\t\t}\n\n\t\t\t\t*/\n\n\t\t\t\tsocket.send({ type: 'subscribe', id: 'svg_insert', data: data });\n\t\t\t}\n\t\t\t$.destroy();\n\t\t};\n\t};\n\n</script>\n\n<style>\n\t.f-subsrcfyn2ecf44Xsvg_insert .url { font-size: 11px; }\n</style>\n\n<readme>\n# svg_insert\n- URL address: <http://127.0.0.1:8112>\n- Channel: __subscribe__\n- JSON schema `svg_insert.json`\n- Version: 24\n\n```json\n{\n  \"id\": \"svg_insert\",\n  \"schema\": {\n    \"$id\": \"https://schemas.totaljs.com/Svg.json\",\n    \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n    \"type\": \"object\",\n    \"properties\": {\n      \"stepId\": {\n        \"type\": \"string\"\n      },\n      \"flowId\": {\n        \"type\": \"string\"\n      },\n      \"stepName\": {\n        \"type\": \"string\"\n      },\n      \"path\": {\n        \"type\": \"string\"\n      },\n      \"id\": {\n        \"type\": \"string\"\n      },\n      \"dtcreated\": {\n        \"type\": \"date\"\n      },\n      \"dtupdated\": {\n        \"type\": \"date\"\n      }\n    }\n  }\n}\n```\n</readme>\n\n<body>\n\t<header>\n\t\t<div><i class=\"fas fa-satellite-dish mr5\"></i><span>TMS Example / <b>svg_insert</b></span></div>\n\t\t<div class=\"url\"></div>\n\t</header>\n</body>",
-			"calsrcfyn2ecf44Xsvg_query": "<script total>\n\n\texports.name = 'TMS Example';\n\texports.icon = 'fa fa-plug';\n\texports.config = { timeout: 60000 };\n\texports.inputs = [{ id: 'input', name: 'Input' }];\n\texports.outputs = [{ id: 'output', name: 'Output' }, { id: 'error', name: 'Error' }];\n\texports.group = 'Calls';\n\texports.type = 'call';\n\texports.schemaid = ['srcfyn2ecf44', 'svg_query'];\n\n\texports.make = function(instance, config) {\n\n\t\tinstance.message = function($, client) {\n\t\t\tvar socket = instance.main.sockets['srcfyn2ecf44'];\n\t\t\tif (socket && socket.calls && socket.calls['svg_query']) {\n\n\t\t\t\tvar data = $.data;\n\n\t\t\t\t/*\n\t\t\t\t\tvar err = new ErrorBuilder();\n\t\t\t\t\tdata = framework_jsonschema.transform(schema, err, data, true);\n\n\t\t\t\t\tif (err.is) {\n\t\t\t\t\t\t$.send('error', err.toString());\n\t\t\t\t\t\treturn;\n\t\t\t\t\t}\n\n\t\t\t\t*/\n\n\t\t\t\tvar callback = function(err, response) {\n\t\t\t\t\tif (err)\n\t\t\t\t\t\t$.send('error', err);\n\t\t\t\t\telse\n\t\t\t\t\t\t$.send('output', response);\n\t\t\t\t};\n\n\t\t\t\tvar callbackid = (socket.callbackindexer++) + '';\n\n\t\t\t\tif (socket.callbackindexer > 999999999)\n\t\t\t\t\tsocket.callbackindexer = 0;\n\n\t\t\t\tsocket.callbacks[callbackid] = { callback: callback, id: setTimeout(socket.callbacktimeout, config.timeout, callbackid) };\n\t\t\t\tsocket.send({ type: 'call', id: 'svg_query', data: data, callbackid: callbackid });\n\n\t\t\t} else\n\t\t\t\t$.destroy();\n\t\t};\n\t};\n\n</script>\n\n<style>\n\t.f-calsrcfyn2ecf44Xsvg_query .url { font-size: 11px; }\n</style>\n\n<readme>\n# svg_query\n- URL address: <http://127.0.0.1:8112>\n- Channel: __call__\n- JSON schema `svg_query.json`\n- Version: 24\n\n```json\n{\n  \"$id\": \"https://schemas.totaljs.com/Svg.json\",\n  \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"stepId\": {\n      \"type\": \"string\"\n    },\n    \"flowId\": {\n      \"type\": \"string\"\n    },\n    \"stepName\": {\n      \"type\": \"string\"\n    },\n    \"path\": {\n      \"type\": \"string\"\n    },\n    \"id\": {\n      \"type\": \"string\"\n    },\n    \"dtcreated\": {\n      \"type\": \"date\"\n    },\n    \"dtupdated\": {\n      \"type\": \"date\"\n    }\n  }\n}\n```\n</readme>\n\n<body>\n\t<header>\n\t\t<div><i class=\"fa fa-plug mr5\"></i><span>TMS Example / <b>svg_query</b></span></div>\n\t\t<div class=\"url\"></div>\n\t</header>\n</body>"
+			"pubsrcfyn2ecf44Xsvg_insert": "<script total>\n\n\texports.name = 'TMS Example';\n\texports.icon = 'fas fa-broadcast-tower';\n\texports.config = {};\n\texports.outputs = [{ id: 'publish', name: 'Output' }];\n\texports.group = 'Publishers';\n\texports.type = 'pub';\n\texports.schemaid = ['srcfyn2ecf44', 'svg_insert'];\n\n\texports.make = function(instance) {\n\t\tinstance.process = function(msg, client) {\n\t\t\tinstance.send('publish', msg, client);\n\t\t};\n\t};\n\n</script>\n\n<style>\n\t.f-pubsrcfyn2ecf44Xsvg_insert .url { font-size: 11px; }\n</style>\n\n<readme>\n# svg_insert\n- URL address: <http://127.0.0.1:8112>\n- Channel: __publish__\n- JSON schema `svg_insert.json`\n- Version: 24\n\n```json\n{\n  \"$id\": \"https://schemas.totaljs.com/Svg.json\",\n  \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"stepId\": {\n      \"type\": \"string\",\n      \"$$ID\": \"stepId\",\n      \"$$REQUIRED\": false\n    },\n    \"flowId\": {\n      \"type\": \"string\",\n      \"$$ID\": \"flowId\",\n      \"$$REQUIRED\": false\n    },\n    \"stepName\": {\n      \"type\": \"string\",\n      \"$$ID\": \"stepName\",\n      \"$$REQUIRED\": false\n    },\n    \"path\": {\n      \"type\": \"string\",\n      \"$$ID\": \"path\",\n      \"$$REQUIRED\": false\n    },\n    \"id\": {\n      \"type\": \"string\",\n      \"$$ID\": \"id\",\n      \"$$REQUIRED\": false\n    },\n    \"dtcreated\": {\n      \"type\": \"date\",\n      \"$$ID\": \"dtcreated\",\n      \"$$REQUIRED\": false\n    },\n    \"dtupdated\": {\n      \"type\": \"date\",\n      \"$$ID\": \"dtupdated\",\n      \"$$REQUIRED\": false\n    }\n  }\n}\n```\n</readme>\n\n<body>\n\t<header>\n\t\t<div><i class=\"fas fa-broadcast-tower mr5\"></i><span>TMS Example / <b>svg_insert</b></span></div>\n\t\t<div class=\"url\"></div>\n\t</header>\n</body>",
+			"subsrcfyn2ecf44Xsvg_insert": "<script total>\n\n\texports.name = 'TMS Example';\n\texports.icon = 'fas fa-satellite-dish';\n\texports.group = 'Subscribers';\n\texports.config = {};\n\texports.inputs = [{ id: 'subscribe', name: 'Input' }];\n\texports.type = 'sub';\n\texports.schemaid = ['srcfyn2ecf44', 'svg_insert'];\n\n\texports.make = function(instance) {\n\t\tinstance.message = function($) {\n\t\t\tvar socket = instance.main.sockets['srcfyn2ecf44'];\n\t\t\tif (socket && socket.subscribers && socket.subscribers['svg_insert']) {\n\n\t\t\t\tvar data = $.data;\n\n\t\t\t\t/*\n\t\t\t\t\tvar err = new ErrorBuilder();\n\t\t\t\t\tdata = framework_jsonschema.transform(schema, err, data, true);\n\n\t\t\t\t\tif (err.is) {\n\t\t\t\t\t\t$.destroy();\n\t\t\t\t\t\treturn;\n\t\t\t\t\t}\n\n\t\t\t\t*/\n\n\t\t\t\tsocket.send({ type: 'subscribe', id: 'svg_insert', data: data });\n\t\t\t}\n\t\t\t$.destroy();\n\t\t};\n\t};\n\n</script>\n\n<style>\n\t.f-subsrcfyn2ecf44Xsvg_insert .url { font-size: 11px; }\n</style>\n\n<readme>\n# svg_insert\n- URL address: <http://127.0.0.1:8112>\n- Channel: __subscribe__\n- JSON schema `svg_insert.json`\n- Version: 24\n\n```json\n{\n  \"id\": \"svg_insert\",\n  \"schema\": {\n    \"$id\": \"https://schemas.totaljs.com/Svg.json\",\n    \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n    \"type\": \"object\",\n    \"properties\": {\n      \"stepId\": {\n        \"type\": \"string\",\n        \"$$ID\": \"stepId\",\n        \"$$REQUIRED\": false\n      },\n      \"flowId\": {\n        \"type\": \"string\",\n        \"$$ID\": \"flowId\",\n        \"$$REQUIRED\": false\n      },\n      \"stepName\": {\n        \"type\": \"string\",\n        \"$$ID\": \"stepName\",\n        \"$$REQUIRED\": false\n      },\n      \"path\": {\n        \"type\": \"string\",\n        \"$$ID\": \"path\",\n        \"$$REQUIRED\": false\n      },\n      \"id\": {\n        \"type\": \"string\",\n        \"$$ID\": \"id\",\n        \"$$REQUIRED\": false\n      },\n      \"dtcreated\": {\n        \"type\": \"date\",\n        \"$$ID\": \"dtcreated\",\n        \"$$REQUIRED\": false\n      },\n      \"dtupdated\": {\n        \"type\": \"date\",\n        \"$$ID\": \"dtupdated\",\n        \"$$REQUIRED\": false\n      }\n    }\n  }\n}\n```\n</readme>\n\n<body>\n\t<header>\n\t\t<div><i class=\"fas fa-satellite-dish mr5\"></i><span>TMS Example / <b>svg_insert</b></span></div>\n\t\t<div class=\"url\"></div>\n\t</header>\n</body>",
+			"calsrcfyn2ecf44Xsvg_query": "<script total>\n\n\texports.name = 'TMS Example';\n\texports.icon = 'fa fa-plug';\n\texports.config = { timeout: 60000 };\n\texports.inputs = [{ id: 'input', name: 'Input' }];\n\texports.outputs = [{ id: 'output', name: 'Output' }, { id: 'error', name: 'Error' }];\n\texports.group = 'Calls';\n\texports.type = 'call';\n\texports.schemaid = ['srcfyn2ecf44', 'svg_query'];\n\n\texports.make = function(instance, config) {\n\n\t\tinstance.message = function($, client) {\n\t\t\tvar socket = instance.main.sockets['srcfyn2ecf44'];\n\t\t\tif (socket && socket.calls && socket.calls['svg_query']) {\n\n\t\t\t\tvar data = $.data;\n\n\t\t\t\t/*\n\t\t\t\t\tvar err = new ErrorBuilder();\n\t\t\t\t\tdata = framework_jsonschema.transform(schema, err, data, true);\n\n\t\t\t\t\tif (err.is) {\n\t\t\t\t\t\t$.send('error', err.toString());\n\t\t\t\t\t\treturn;\n\t\t\t\t\t}\n\n\t\t\t\t*/\n\n\t\t\t\tvar callback = function(err, response) {\n\t\t\t\t\tif (err)\n\t\t\t\t\t\t$.send('error', err);\n\t\t\t\t\telse\n\t\t\t\t\t\t$.send('output', response);\n\t\t\t\t};\n\n\t\t\t\tvar callbackid = (socket.callbackindexer++) + '';\n\n\t\t\t\tif (socket.callbackindexer > 999999999)\n\t\t\t\t\tsocket.callbackindexer = 0;\n\n\t\t\t\tsocket.callbacks[callbackid] = { callback: callback, id: setTimeout(socket.callbacktimeout, config.timeout, callbackid) };\n\t\t\t\tsocket.send({ type: 'call', id: 'svg_query', data: data, callbackid: callbackid });\n\n\t\t\t} else\n\t\t\t\t$.destroy();\n\t\t};\n\t};\n\n</script>\n\n<style>\n\t.f-calsrcfyn2ecf44Xsvg_query .url { font-size: 11px; }\n</style>\n\n<readme>\n# svg_query\n- URL address: <http://127.0.0.1:8112>\n- Channel: __call__\n- JSON schema `svg_query.json`\n- Version: 24\n\n```json\n{\n  \"$id\": \"https://schemas.totaljs.com/Svg.json\",\n  \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"stepId\": {\n      \"type\": \"string\",\n      \"$$ID\": \"stepId\",\n      \"$$REQUIRED\": false\n    },\n    \"flowId\": {\n      \"type\": \"string\",\n      \"$$ID\": \"flowId\",\n      \"$$REQUIRED\": false\n    },\n    \"stepName\": {\n      \"type\": \"string\",\n      \"$$ID\": \"stepName\",\n      \"$$REQUIRED\": false\n    },\n    \"path\": {\n      \"type\": \"string\",\n      \"$$ID\": \"path\",\n      \"$$REQUIRED\": false\n    },\n    \"id\": {\n      \"type\": \"string\",\n      \"$$ID\": \"id\",\n      \"$$REQUIRED\": false\n    },\n    \"dtcreated\": {\n      \"type\": \"date\",\n      \"$$ID\": \"dtcreated\",\n      \"$$REQUIRED\": false\n    },\n    \"dtupdated\": {\n      \"type\": \"date\",\n      \"$$ID\": \"dtupdated\",\n      \"$$REQUIRED\": false\n    }\n  }\n}\n```\n</readme>\n\n<body>\n\t<header>\n\t\t<div><i class=\"fa fa-plug mr5\"></i><span>TMS Example / <b>svg_query</b></span></div>\n\t\t<div class=\"url\"></div>\n\t</header>\n</body>"
 		},
 		"design": {
 			"il6n4y08m": {
 				"id": "il6n4y08m",
 				"config": {
-					"host": "localhost",
+					"database": "typerefinery",
 					"port": "1729",
-					"database": "typerefinery"
+					"host": "localhost"
 				},
 				"x": 157,
 				"y": 81,
@@ -1557,8 +1578,8 @@
 				"id": "il7fy1rnx",
 				"config": {
 					"code": "var colors = [\n  {\n    name: \"Greys\",\n    colors: [\n      \"#f0f0f0\",\n      \"#d9d9d9\",\n      \"#bdbdbd\",\n      \"#969696\",\n      \"#737373\",\n      \"#525252\",\n      \"#252525\",\n      \"#000000\",\n    ],\n  },\n  {\n    name: \"Reds\",\n    colors: [\n      \"#fee0d2\",\n      \"#fcbba1\",\n      \"#fc9272\",\n      \"#fb6a4a\",\n      \"#ef3b2c\",\n      \"#cb181d\",\n      \"#a50f15\",\n      \"#67000d\",\n    ],\n  },\n  {\n    name: \"Oranges\",\n    colors: [\n      \"#fee6ce\",\n      \"#fdd0a2\",\n      \"#fdae6b\",\n      \"#fd8d3c\",\n      \"#f16913\",\n      \"#d94801\",\n      \"#a63603\",\n      \"#7f2704\",\n    ],\n  },\n  {\n    name: \"Greens\",\n    colors: [\n      \"#e5f5e0\",\n      \"#c7e9c0\",\n      \"#a1d99b\",\n      \"#74c476\",\n      \"#41ab5d\",\n      \"#238b45\",\n      \"#006d2c\",\n      \"#00441b\",\n    ],\n  },\n  {\n    name: \"Blues\",\n    colors: [\n      \"#deebf7\",\n      \"#c6dbef\",\n      \"#9ecae1\",\n      \"#6baed6\",\n      \"#4292c6\",\n      \"#2171b5\",\n      \"#08519c\",\n      \"#08306b\",\n    ],\n  },\n  {\n    name: \"Purples\",\n    colors: [\n      \"#efedf5\",\n      \"#dadaeb\",\n      \"#bcbddc\",\n      \"#9e9ac8\",\n      \"#807dba\",\n      \"#6a51a3\",\n      \"#54278f\",\n      \"#3f007d\",\n    ],\n  },\n  {\n    name: \"Orange-Red\",\n    colors: [\n      \"#fee8c8\",\n      \"#fdd49e\",\n      \"#fdbb84\",\n      \"#fc8d59\",\n      \"#ef6548\",\n      \"#d7301f\",\n      \"#b30000\",\n      \"#7f0000\",\n    ],\n  },\n  {\n    name: \"Red-Purples\",\n    colors: [\n      \"#fde0dd\",\n      \"#fcc5c0\",\n      \"#fa9fb5\",\n      \"#f768a1\",\n      \"#dd3497\",\n      \"#ae017e\",\n      \"#7a0177\",\n      \"#49006a\",\n    ],\n  },\n  {\n    name: \"Blue-Green\",\n    colors: [\n      \"#e5f5f9\",\n      \"#ccece6\",\n      \"#99d8c9\",\n      \"#66c2a4\",\n      \"#41ae76\",\n      \"#238b45\",\n      \"#006d2c\",\n      \"#00441b\",\n    ],\n  },\n  {\n    name: \"Yellows\",\n    colors: [\n      \"#fffee5\",\n      \"#fffcbd\",\n      \"#fff98b\",\n      \"#fff533\",\n      \"#eedf00\",\n      \"#dad000\",\n      \"#c0b700\",\n      \"#b0a800\",\n    ],\n  },\n];\n\nvar theme = THEME;\n\nvar svg = d3.select(\"svg\")\n  .attr(\"width\", 900)\n  .attr(\"height\", 500)\n  .call(\n    d3.zoom().on(\"zoom\", function () {\n      svg.attr(\"transform\", d3.event.transform);\n    })\n  )\n  .append(\"g\");\n\nconst height = 500;\nconst width = 600;\n\n// setup the theme color\n\nconst textPadding = 8;\nconst corner = 5;\nconst grp_corner = 8;\nconst pad = 5;\nvar ent_colour = \"#03396c\";\nvar ent_t_colour = \"white\";\nvar att_colour = \"#ff4d00\";\nvar att_t_colour = \"white\";\nvar shad_colour = \"#ff4d00\";\nvar shad_t_colour = \"white\";\nvar rel_colour = \"#007777\";\nvar rel_t_colour = \"black\";\n\nlet colours = colors;\n// load the colours from the theme\nent_colour = colors.find((colour) => colour.name == theme.entity.colorlist)[\n  \"colors\"\n][theme.entity.cindex];\nent_t_colour = colors.find((colour) => colour.name == theme.entity.tcolorlist)[\n  \"colors\"\n][theme.entity.tindex];\natt_colour = colors.find((colour) => colour.name == theme.attribute.colorlist)[\n  \"colors\"\n][theme.attribute.cindex];\natt_t_colour = colors.find(\n  (colour) => colour.name == theme.attribute.tcolorlist\n)[\"colors\"][theme.attribute.tindex];\nshad_colour = colors.find((colour) => colour.name == theme.shadow.colorlist)[\n  \"colors\"\n][theme.shadow.cindex];\nshad_t_colour = colors.find((colour) => colour.name == theme.shadow.tcolorlist)[\n  \"colors\"\n][theme.shadow.tindex];\nrel_colour = colors.find((colour) => colour.name == theme.relation.colorlist)[\n  \"colors\"\n][theme.relation.cindex];\nrel_t_colour = colors.find(\n  (colour) => colour.name == theme.relation.tcolorlist\n)[\"colors\"][theme.relation.tindex];\n\nvar cola = cola.d3adaptor(d3).size([width, height]);\n\n// graph.json\nvar Graph_Data = GRAPH_DATA;\n\ndata = Graph_Data.basic;\ncola\n  .nodes(data.nodes)\n  .links(data.links)\n  .groups(data.groups)\n  .linkDistance(100)\n  .avoidOverlaps(true)\n  .handleDisconnected(false)\n  .start(30);\n\nvar group = svg\n  .selectAll(\".group\")\n  .data(data.groups)\n  .enter()\n  .append(\"rect\")\n  .attr(\"rx\", grp_corner)\n  .attr(\"ry\", grp_corner)\n  .attr(\"class\", \"group\")\n  .style(\"fill\", function (d, i) {\n    return colours.find(\n      (colour) => colour.name == d.colour_list\n    )[\"colors\"][d.level];\n  })\n  .attr(\"stroke-width\", 1)\n  .attr(\"stroke\", function (d, i) {\n    return colours.find((colour) => colour.name == d.colour_list)[\"colors\"][7];\n  })\n  .call(cola.drag);\n\ngroup.append(\"title\").text(function (d) {\n  return d.label;\n});\n\nvar link = svg\n  .selectAll(\".link\")\n  .data(data.links)\n  .enter()\n  .append(\"line\")\n  .attr(\"class\", \"link\")\n  .style(\"stroke-width\", \"1px\")\n  .attr(\"stroke\", \"black\");\n\nvar node = svg\n  .selectAll(\".node\")\n  .data(data.nodes)\n  .enter()\n  .append(\"rect\")\n  .attr(\"class\", \"node\")\n  .attr(\"class\", (d) => d.type)\n  .attr(\"class\", (d) => d.G_name)\n  .attr(\"id\", (d) => d.G_id);\n\nvar label = svg\n  .selectAll(\".label\")\n  .data(data.nodes)\n  .enter()\n  .append(\"text\")\n  .attr(\"class\", \"label\")\n  .text((d) =>\n    d.type == \"attribute\" ? d.G_name + \": \" + d.value : d.G_name + \": \" + d.G_id\n  )\n  .attr(\"id\", (d) => \"heading-\" + d.G_id)\n  .style(\"font-size\", 10)\n  .style(\"text-anchor\", \"middle\")\n  .style(\"color\", (d) => text_colour(d))\n  .style(\"fill\", (d) => text_colour(d))\n  .style(\"pointer-events\", \"none\")\n  .call(cola.drag);\n\n// setup heading colours for attribute, entity and relation\nfunction text_colour(d) {\n  let colour = \"black\";\n  switch (d.type) {\n    case \"attribute\":\n      if (d.dtype == \"actual\") {\n        colour = att_t_colour;\n      } else {\n        colour = shad_t_colour;\n      }\n      break;\n    case \"entity\":\n      colour = ent_t_colour;\n      break;\n    case \"relation\":\n      colour = rel_t_colour;\n      break;\n    default:\n      colour = \"black\";\n      break;\n  }\n  return colour;\n}\n\nnode\n  .attr(\"width\", (d) => nodeWidth(d))\n  .attr(\"height\", (d) => d.height)\n  .attr(\"rx\", (d) => d.corner)\n  .attr(\"ry\", (d) => d.corner)\n  .attr(\"x\", (d) => d.x)\n  .attr(\"y\", (d) => d.y)\n  .attr(\"class\", (d) => d.G_name)\n  .style(\"fill\", (d) => d.colour)\n  .on(\"click\", function (d) {\n    d.fixed = true;\n  })\n  .call(cola.drag);\n\n// function to set dimensions and colours for shapes\nfunction nodeWidth(d) {\n  let headingid = \"#heading-\" + d.G_id;\n  let headingbbox = d3.select(headingid).node().getBBox();\n\n  d.width = d3.max([5, headingbbox.width]) + textPadding * 2;\n  d.height = headingbbox.height + textPadding * 2;\n\n  // attributes and entities rounded rectangle, relation is circle\n  switch (d.type) {\n    case \"attribute\":\n      d.corner = corner;\n      d.colour = att_colour;\n      d.x = headingbbox.x - textPadding;\n      d.y = headingbbox.y - textPadding;\n      if (d.dtype === \"shadow\") {\n        d.colour = shad_colour;\n      } else {\n        d.colour = att_colour;\n      }\n      break;\n\n    case \"entity\":\n      d.corner = corner;\n      d.colour = ent_colour;\n      d.x = headingbbox.x - textPadding;\n      d.y = headingbbox.y - textPadding;\n      break;\n\n    case \"relation\":\n      d.width = 16;\n      d.height = 16;\n      d.corner = 8;\n      d.colour = rel_colour;\n      d.x = headingbbox.x + headingbbox.width / 2 - d.width / 2;\n      d.y = headingbbox.y + d.height / 2;\n      break;\n\n    default:\n      break;\n  }\n  return d.width;\n}\n\ncola.on(\"tick\", function () {\n  link\n    .attr(\"x1\", function (d) {\n      return d.source.x;\n    })\n    .attr(\"y1\", function (d) {\n      return d.source.y;\n    })\n    .attr(\"x2\", function (d) {\n      return d.target.x;\n    })\n    .attr(\"y2\", function (d) {\n      return d.target.y;\n    });\n\n  node\n    .attr(\"x\", function (d) {\n      return d.x - d.width / 2;\n    })\n    .attr(\"y\", function (d) {\n      return d.y - d.height / 2;\n    });\n\n  group\n    .attr(\"x\", function (d) {\n      return d.bounds.x - pad;\n    })\n    .attr(\"y\", function (d) {\n      return d.bounds.y - pad;\n    })\n    .attr(\"width\", function (d) {\n      return d.bounds.width() + 2 * pad;\n    })\n    .attr(\"height\", function (d) {\n      return d.bounds.height() + 2 * pad;\n    });\n\n  label\n    .attr(\"x\", function (d) {\n      return d.x;\n    })\n    .attr(\"y\", function (d) {\n      var h = this.getBBox().height;\n      return d.y + h / 4;\n    });\n});",
-					"outputs": 1,
-					"endpoint": "http:127.0.0.1:8000/createSvg"
+					"endpoint": "http:127.0.0.1:8000/createSvg",
+					"outputs": 1
 				},
 				"x": 747,
 				"y": 103,
@@ -1779,6 +1800,30 @@
 						}
 					]
 				}
+			},
+			"il844onaf": {
+				"id": "il844onaf",
+				"config": {
+					"random": true,
+					"type": "string",
+					"data": "",
+					"restart": false
+				},
+				"x": 85,
+				"y": 378,
+				"component": "cyejp563cd",
+				"connections": {},
+				"template": {
+					"icon": "fa fa-bullhorn",
+					"group": "Triggers",
+					"name": "Trigger",
+					"outputs": [
+						{
+							"id": "output",
+							"name": "Output"
+						}
+					]
+				}
 			}
 		},
 		"variables": {},
@@ -1799,25 +1844,39 @@
 								"type": "object",
 								"properties": {
 									"stepId": {
-										"type": "string"
+										"type": "string",
+										"$$ID": "stepId",
+										"$$REQUIRED": false
 									},
 									"flowId": {
-										"type": "string"
+										"type": "string",
+										"$$ID": "flowId",
+										"$$REQUIRED": false
 									},
 									"stepName": {
-										"type": "string"
+										"type": "string",
+										"$$ID": "stepName",
+										"$$REQUIRED": false
 									},
 									"path": {
-										"type": "string"
+										"type": "string",
+										"$$ID": "path",
+										"$$REQUIRED": false
 									},
 									"id": {
-										"type": "string"
+										"type": "string",
+										"$$ID": "id",
+										"$$REQUIRED": false
 									},
 									"dtcreated": {
-										"type": "date"
+										"type": "date",
+										"$$ID": "dtcreated",
+										"$$REQUIRED": false
 									},
 									"dtupdated": {
-										"type": "date"
+										"type": "date",
+										"$$ID": "dtupdated",
+										"$$REQUIRED": false
 									}
 								}
 							}
@@ -1832,25 +1891,39 @@
 								"type": "object",
 								"properties": {
 									"stepId": {
-										"type": "string"
+										"type": "string",
+										"$$ID": "stepId",
+										"$$REQUIRED": false
 									},
 									"flowId": {
-										"type": "string"
+										"type": "string",
+										"$$ID": "flowId",
+										"$$REQUIRED": false
 									},
 									"stepName": {
-										"type": "string"
+										"type": "string",
+										"$$ID": "stepName",
+										"$$REQUIRED": false
 									},
 									"path": {
-										"type": "string"
+										"type": "string",
+										"$$ID": "path",
+										"$$REQUIRED": false
 									},
 									"id": {
-										"type": "string"
+										"type": "string",
+										"$$ID": "id",
+										"$$REQUIRED": false
 									},
 									"dtcreated": {
-										"type": "date"
+										"type": "date",
+										"$$ID": "dtcreated",
+										"$$REQUIRED": false
 									},
 									"dtupdated": {
-										"type": "date"
+										"type": "date",
+										"$$ID": "dtupdated",
+										"$$REQUIRED": false
 									}
 								}
 							}
@@ -1868,32 +1941,46 @@
 								"type": "object",
 								"properties": {
 									"stepId": {
-										"type": "string"
+										"type": "string",
+										"$$ID": "stepId",
+										"$$REQUIRED": false
 									},
 									"flowId": {
-										"type": "string"
+										"type": "string",
+										"$$ID": "flowId",
+										"$$REQUIRED": false
 									},
 									"stepName": {
-										"type": "string"
+										"type": "string",
+										"$$ID": "stepName",
+										"$$REQUIRED": false
 									},
 									"path": {
-										"type": "string"
+										"type": "string",
+										"$$ID": "path",
+										"$$REQUIRED": false
 									},
 									"id": {
-										"type": "string"
+										"type": "string",
+										"$$ID": "id",
+										"$$REQUIRED": false
 									},
 									"dtcreated": {
-										"type": "date"
+										"type": "date",
+										"$$ID": "dtcreated",
+										"$$REQUIRED": false
 									},
 									"dtupdated": {
-										"type": "date"
+										"type": "date",
+										"$$ID": "dtupdated",
+										"$$REQUIRED": false
 									}
 								}
 							}
 						}
 					]
 				},
-				"checksum": "32520603481",
+				"checksum": "35444233651",
 				"restart": false,
 				"error": 0,
 				"init": true,
@@ -1903,7 +1990,7 @@
 		},
 		"origin": "http://localhost:8111",
 		"dtcreated": "2022-08-10T04:16:32.454Z",
-		"size": 56785
+		"size": 59071
 	},
 	"ft0tj001bu41d": {
 		"paused": false,
@@ -2572,7 +2659,10 @@
 		"proxypath": "",
 		"origin": "http://localhost:8111",
 		"dtcreated": "2022-09-15T07:18:08.620Z",
-		"size": 454
+		"size": 573,
+		"variables2": {},
+		"directory": "C:\\Projects\\typerefinery\\services\\totaljs-flow\\database",
+		"sandbox": false
 	},
 	"ftjqz001ce41d": {
 		"id": "ftjqz001ce41d",
@@ -2637,7 +2727,10 @@
 		"proxypath": "",
 		"origin": "http://localhost:8111",
 		"dtcreated": "2022-09-15T08:05:50.232Z",
-		"size": 452
+		"size": 571,
+		"variables2": {},
+		"directory": "C:\\Projects\\typerefinery\\services\\totaljs-flow\\database",
+		"sandbox": false
 	},
 	"ftjtl001ce41d": {
 		"paused": false,
@@ -2658,7 +2751,10 @@
 		"proxypath": "",
 		"origin": "http://localhost:8111",
 		"dtcreated": "2022-09-15T09:32:50.910Z",
-		"size": 462
+		"size": 581,
+		"variables2": {},
+		"directory": "C:\\Projects\\typerefinery\\services\\totaljs-flow\\database",
+		"sandbox": false
 	},
 	"ftju4001ce41d": {
 		"id": "ftju4001ce41d",
@@ -2878,6 +2974,30 @@
 		"variables2": {},
 		"directory": "C:\\Projects\\typerefinery\\services\\totaljs-flow\\database",
 		"sandbox": false,
-		"size": 514
+		"size": 525
+	},
+	"ftks1001hi41d": {
+		"paused": false,
+		"id": "ftks1001hi41d",
+		"reference": "wbei",
+		"author": "typerefinery",
+		"group": "typerefinery",
+		"icon": "fa fa-satellite",
+		"color": "#61C83B",
+		"version": "1.0",
+		"readme": "Typerefinery flow",
+		"url": "https://localhost",
+		"name": "Workflow",
+		"components": {},
+		"design": {},
+		"variables": {},
+		"sources": {},
+		"proxypath": "",
+		"origin": "http://localhost:8111",
+		"dtcreated": "2022-09-16T06:13:01.325Z",
+		"size": 575,
+		"variables2": {},
+		"directory": "C:\\Projects\\typerefinery\\services\\totaljs-flow\\database",
+		"sandbox": false
 	}
 }

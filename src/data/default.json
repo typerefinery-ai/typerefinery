@@ -1,35 +1,4 @@
 {
-  "algorithms": {
-    "type": "algorithms",
-    "label": "Algorithms",
-    "icon": "",
-    "list": [
-      {
-        "type": "algorithm",
-        "id": "algorithm1g",
-        "label": "Algorithm 1",
-        "icon": "algorithm",
-        "scope": "global",
-        "description": "",
-        "dependencies": "",
-        "code": "algorithm 1",
-        "error": "",
-        "logs": [""]
-      },
-      {
-        "type": "algorithm",
-        "id": "algorithm2g",
-        "label": "Algorithm 2",
-        "icon": "algorithm",
-        "scope": "global",
-        "description": "",
-        "dependencies": "",
-        "code": "algorithm 2",
-        "error": "",
-        "logs": [""]
-      }
-    ]
-  },
   "appData": {
     "treeNodeClicked": false,
     "splitNodeClicked": false,
@@ -136,30 +105,6 @@
                 "port": "1729",
                 "host": "localhost",
                 "database": "typerefinery"
-              },
-              "transformer": {
-                "type": "transformer",
-                "id": "transformer1g",
-                "label": "Transformer 1",
-                "icon": "transformer",
-                "scope": "global",
-                "description": "",
-                "dependencies": ["d3"],
-                "code": "var svg = d3.select(Wrapper).append(\"svg\"),\n\t\t\t\twidth = +svg.attr(\"width\") || 960,\n\t\t\t\theight = +svg.attr(\"height\") || 500\n\t\t\t  svg.attr(\"width\", width).attr(\"height\", height)\n\t\t\t  var color = d3.scaleOrdinal(d3.schemeCategory20)\n\t\t\t  var simulation = d3\n\t\t\t\t.forceSimulation()\n\t\t\t\t.force(\n\t\t\t\t  \"link\",\n\t\t\t\t  d3.forceLink().id(function (d) {\n\t\t\t\t\treturn d.label\n\t\t\t\t  })\n\t\t\t\t)\n\t\t\t\t.force(\"charge\", d3.forceManyBody())\n\t\t\t\t.force(\"center\", d3.forceCenter(width / 2, height / 2))\n\t\t\t  d3.json(\n\t\t\t\t\"src/components/Transformer/D3/miserables.json\",\n\t\t\t\tfunction (error, graph) {\n\t\t\t\t  if (error) throw error\n\t\t\t\t  var link = svg\n\t\t\t\t\t.append(\"g\")\n\t\t\t\t\t.attr(\"class\", \"links\")\n\t\t\t\t\t.selectAll(\"line\")\n\t\t\t\t\t.data(graph.links)\n\t\t\t\t\t.enter()\n\t\t\t\t\t.append(\"line\")\n\t\t\t\t\t.attr(\"stroke-width\", function (d) {\n\t\t\t\t\t  return Math.sqrt(d.value)\n\t\t\t\t\t})\n\t\t\t\t\t.attr(\"stroke\", \"#999\")\n\t\t\t\t  var node = svg\n\t\t\t\t\t.append(\"g\")\n\t\t\t\t\t.attr(\"class\", \"nodes\")\n\t\t\t\t\t.selectAll(\"circle\")\n\t\t\t\t\t.data(graph.nodes)\n\t\t\t\t\t.enter()\n\t\t\t\t\t.append(\"circle\")\n\t\t\t\t\t.attr(\"r\", 5)\n\t\t\t\t\t.attr(\"fill\", function (d) {\n\t\t\t\t\t  return color(d.group)\n\t\t\t\t\t})\n\t\t\t\t\t.call(\n\t\t\t\t\t  d3\n\t\t\t\t\t\t.drag()\n\t\t\t\t\t\t.on(\"start\", dragstarted)\n\t\t\t\t\t\t.on(\"drag\", dragged)\n\t\t\t\t\t\t.on(\"end\", dragended)\n\t\t\t\t\t)\n\t\t\t\t  node.append(\"title\").text(function (d) {\n\t\t\t\t\treturn d.label\n\t\t\t\t  })\n\t\t\t\t  node.on(\"click\", (e) => {\n\t\t\t\t\tself.nodeData = {\n\t\t\t\t\t  label: e.label,\n\t\t\t\t\t  index: e.index,\n\t\t\t\t\t}\n\t\t\t\t  })\n\t\t\t\t  simulation.nodes(graph.nodes).on(\"tick\", ticked)\n\t\t\t\t  simulation.force(\"link\").links(graph.links)\n\t\t\t\t  function ticked() {\n\t\t\t\t\tlink\n\t\t\t\t\t  .attr(\"x1\", function (d) {\n\t\t\t\t\t\treturn d.source.x\n\t\t\t\t\t  })\n\t\t\t\t\t  .attr(\"y1\", function (d) {\n\t\t\t\t\t\treturn d.source.y\n\t\t\t\t\t  })\n\t\t\t\t\t  .attr(\"x2\", function (d) {\n\t\t\t\t\t\treturn d.target.x\n\t\t\t\t\t  })\n\t\t\t\t\t  .attr(\"y2\", function (d) {\n\t\t\t\t\t\treturn d.target.y\n\t\t\t\t\t  })\n\t\t\t\t\tnode\n\t\t\t\t\t  .attr(\"cx\", function (d) {\n\t\t\t\t\t\treturn d.x\n\t\t\t\t\t  })\n\t\t\t\t\t  .attr(\"cy\", function (d) {\n\t\t\t\t\t\treturn d.y\n\t\t\t\t\t  })\n\t\t\t\t  }\n\t\t\t\t}\n\t\t\t  )\n\t\t\t  function dragstarted(d) {\n\t\t\t\tif (!d3.event.active) simulation.alphaTarget(0.3).restart()\n\t\t\t\td.fx = d.x\n\t\t\t\td.fy = d.y\n\t\t\t  }\n\t\t\t  function dragged(d) {\n\t\t\t\td.fx = d3.event.x\n\t\t\t\td.fy = d3.event.y\n\t\t\t  }\n\t\t\t  function dragended(d) {\n\t\t\t\tif (!d3.event.active) simulation.alphaTarget(0)\n\t\t\t\td.fx = null\n\t\t\t\td.fy = null\n\t\t\t  }",
-                "error": "",
-                "logs": [""]
-              },
-              "algorithm": {
-                "type": "algorithm",
-                "id": "algorithm1",
-                "label": "Algorithm 1",
-                "icon": "algorithm",
-                "scope": "local",
-                "description": "",
-                "dependencies": "",
-                "code": "from typedb.client import *\nfrom loguru import logger as Logger\nfrom posixpath import basename\nimport json\nimport copy\nimport os\nimport sys\nimport argparse\nfrom datetime import datetime\ngquery = \"match $a isa log, has logName 'L1'; \"\ngquery += \"$b isa event, has eventName $c;\"\ngquery += \" $d (owner: $a, item: $b) isa trace, \"\ngquery += \" has traceId $t, has index $f; offset 0; limit 10;\"#  get; \"\ngroup_raw = [{\n    \"leaves\": [\n                    0\n                ],\n                \"colour_list\": \"Greys\",\n                \"level\": 7,\n                \"label\": \"hidden\"\n}]\n# function to collect all of the data out of the iterator\n# with read transaction object to use asRemote mode\ndef collect_answers(answer_iterator, r_tx, logger: Logger):\n    logger.info(f'into collect answers, iterator -> {answer_iterator}')\n    res = []\n    layers = []\n    layer = []\n    for answer in answer_iterator:\n        dict_answer = answer.map()\n        #logger.info(f'dict answer is {dict_answer}')\n        for key, thing in dict_answer.items():\n            logger.info(f'key, things is {key}, {thing}')\n            # pull entity data\n            if thing.is_entity():\n                ent = {}\n                ent['type'] = 'entity'\n                ent['symbol'] = key\n                ent['G_id'] = thing.get_iid()\n                ent['G_name'] = thing.get_type().get_label().name()\n                logger.info((f'entity name is {ent[\"G_name\"]}'))\n                logger.info((f'thing value is {thing}'))\n                att_obj = thing.as_remote(r_tx).get_has()\n                att = []\n                for a in att_obj:\n                    att.append(a.get_iid())\n                ent['has'] = att\n                res.append(ent)\n                layer.append(ent)\n                logger.info(f'ent -> {ent}')\n            # pull attribute data\n            elif thing.is_attribute():\n                att = {}\n                att['type'] = 'attribute'\n                att['symbol'] = key\n                att['G_id'] = thing.get_iid()\n                att['G_name'] = thing.get_type().get_label().name()\n                att['value'] = thing.get_value()\n                att['datatype'] = thing.get_type().get_value_type().name\n                att_obj = thing.as_remote(r_tx).get_has()\n                attrib = []\n                for a in att_obj:\n                    attrib.append(a.get_iid())\n                att['has'] = attrib\n                res.append(att)\n                layer.append(att)\n                logger.info(f'att -> {att}')\n            # pull relation data\n            elif thing.is_relation():\n                rel = {}\n                rel['type'] = 'relation'\n                rel['symbol'] = key\n                rel['G_id'] = thing.get_iid()\n                rel['G_name'] = thing.get_type().get_label().name()\n                att_obj = thing.as_remote(r_tx).get_has()\n                att = []\n                for a in att_obj:\n                    att.append(a.get_iid())\n                rel['has'] = att\n                links = thing.as_remote(r_tx).get_players_by_role_type()\n                logger.info(f' links are -> {links}')\n                edges = {}\n                for edge_key, edge_thing in links.items():\n                    logger.info(f' edge key is -> {edge_key}')\n                    logger.info(f' edge_thing is -> {list(edge_thing)}')\n                    edges[edge_key.get_label().name()] = [e.get_iid() for e in list(edge_thing)]\n                rel['edges'] = edges\n                res.append(rel)\n                layer.append(rel)\n                logger.info(f'rel -> {rel}')\n            # else log out error condition\n            else:\n                logger.info(f'Error key is {key}, thing is {thing}')\n        layers.append(layer)\n    return res\n# function to filter the links, so that there are none pointing to data not included\ndef filter_links(reduced_at, reduced_en, re):\n    #first build list of all node id's\n    att_list = [e['G_id'] for e in reduced_at]\n    ent_list = [e['G_id'] for e in reduced_en]\n    rel_list = [e['G_id'] for e in re]\n    node_list = att_list + ent_list + rel_list\n    #check each input list to delete those not in node_list\n    for item in reduced_en:\n        for link in item['has']:\n            if link not in node_list:\n                item['has'].remove(link)\n    for item in re:\n        for link in item['has']:\n            if link not in node_list:\n                item['has'].remove(link)\n    return reduced_at, reduced_en, re\n# function to convert the list of results into nodes and edges\ndef convert_res_to_graph(res, logger: Logger):\n    edges = []\n    nodes = []\n    en = [e for e in res if e['type'] == 'entity']\n    at = [e for e in res if e['type'] == 'attribute']\n    re = [e for e in res if e['type'] == 'relation']\n    # remove duplicates from attributes\n    reduced_at = [v for i,v in enumerate(at) if v not in at[i+1:] ]\n    reduced_en = [v for i,v in enumerate(en) if v not in en[i+1:] ]\n    # find number of types\n    G_types = {}\n    G_types['entity'] = list(set([v['G_name'] for v in reduced_en]))\n    G_types['attribute'] = list(set([v['G_name'] for v in reduced_at]))\n    G_types['relation'] = list(set([v['G_name'] for v in re]))\n    #filter out has links due to variables given thing, or attributes not expressed in the original query\n    reduced_at, reduced_en, re = filter_links(reduced_at, reduced_en, re)\n    # build edges list for attributes\n    for e in reduced_en:\n        own = e['has']\n        source = e['G_id']\n        name = 'has'\n        for o in own:\n            edge = {}\n            edge['G_target'] = o\n            edge['role'] = name\n            edge['G_source'] = source\n            edges.append(edge)\n    for a in reduced_at:\n        own = a['has']\n        source = a['G_id']\n        name = 'has'\n        for o in own:\n            edge = {}\n            edge['G_target'] = o\n            edge['role'] = name\n            edge['G_source'] = source\n            edges.append(edge)\n    for r in re:\n        own = r['has']\n        source = r['G_id']\n        name = 'has'\n        for o in own:\n            edge = {}\n            edge['G_target'] = o\n            edge['role'] = name\n            edge['G_source'] = source\n            edges.append(edge)\n    # add edges from relations\n    for r in re:\n        source = r['G_id']\n        edge_dict = r['edges']\n        for k, e in edge_dict.items():\n            edge = {}\n            edge['G_target'] = e[0]\n            edge['role'] = k\n            edge['G_source'] = source\n            edges.append(edge)\n    # add all nodes together\n    nodes = reduced_en + reduced_at + re\n    for node in nodes:\n        node['dtype'] = 'actual'\n    return nodes, edges, G_types\ndef get_node_id(nodes, G_id):\n    for index, element in enumerate(nodes):\n        if element['G_id'] == G_id:\n            return index;\ndef convert_res_to_cola(nodes, edges, G_types, logger: Logger):\n    # convert edges to id\n    for edge in edges:\n        edge['target'] = get_node_id(nodes, edge['G_target'])\n        edge['source'] = get_node_id(nodes, edge['G_source'])\n    for index, element in enumerate(nodes):\n        element['id'] = index\n    # find actual attributes in edges\n    att_list = []\n    for index, node in enumerate(nodes):\n        if node['type'] == 'attribute':\n            att_list.append(index)\n    for edge in edges:\n        edge['is_act_Attr'] = False\n        for att in att_list:\n            if edge['target'] == att or edge['source'] == att:\n                edge['is_act_Attr'] = True\n                break\n    temp_edges = copy.deepcopy(edges)\n    for t_edge in temp_edges:\n        target_node = nodes[t_edge['target']]\n        t_edge['target_name'] = target_node['G_name']\n        source_node = nodes[t_edge['source']]\n        t_edge['source_name'] = source_node['G_name']\n        if t_edge['role'] == 'has' or source_node['type'] == 'relation':\n            t_edge['direction'] = 'down'\n        else:\n            t_edge['direction'] = 'up'\n        t_edge.pop('target')\n        t_edge.pop('source')\n        t_edge.pop('G_target')\n        t_edge.pop('G_source')\n        t_edge.pop('is_act_Attr')\n    myUniqueSet = [dict(s) for s in set(frozenset(myObject.items()) for myObject in temp_edges)]\n    logger.info(f\"myUniqueSet:, {myUniqueSet}\")\n    G_types['schema'] = myUniqueSet\n    logger.info('==========================================================================================')\n    logger.info('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')\n    logger.info(f'g-types is -> {G_types}')\n    logger.info('==========================================================================================')\n    logger.info('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')\n    logger.info(f'nodes is ->  {nodes}')\n    logger.info('==========================================================================================')\n    logger.info('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')\n    logger.info(f'edges is -> {edges}')\n    logger.info('==========================================================================================')\n    logger.info('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')\n    colaGraph = {}\n    basic = {}\n    basic['nodes'] = nodes\n    basic['links'] = edges\n    basic['G_types'] = G_types\n    basic['groups'] = []\n    basic['constraints'] = []\n    colaGraph['basic'] = basic\n    colaGraph['grouped'] = {}\n    return colaGraph\n@Logger.catch\ndef get_data(dbhost, dbport, dbdatabase, dbquery, logger: Logger):\n    typeDBConnect = f'{dbhost}:{dbport}'\n    with TypeDB.core_client(typeDBConnect) as client:\n        with client.session(dbdatabase, SessionType.DATA) as session:\n            with session.transaction(TransactionType.READ) as read_transaction:\n                answer_iterator = read_transaction.query().match(dbquery)\n                res = collect_answers(answer_iterator, read_transaction, logger)\n                nodes, edges, G_types = convert_res_to_graph(res, logger)\n                colaGraph = convert_res_to_cola(nodes, edges, G_types, logger)\n    ## save file for reference\n    # with open(\"g_to_webcola.json\", \"w\") as outfile:\n    #     json.dump(colaGraph, outfile)\n    return colaGraph\n@Logger.catch\ndef main(dbhost, dbport, dbdatabase, dbquery, outputfile, logger: Logger):\n  # setup logger for execution\n  colaGraph = get_data(dbhost, dbport, dbdatabase, dbquery, logger)\n  basic = colaGraph['basic']\n  with open(outputfile, \"w\") as outfile:\n      json.dump(colaGraph, outfile)\n  logger.info('================ Schema ==================')\n  logger.info(f\"{basic['G_types']}\")\n",
-                "error": "",
-                "logs": [""]
               }
             }
           ]
@@ -359,66 +304,6 @@
               }
             ]
           }
-        },
-        "transformers": {
-          "type": "tranformers",
-          "icon": "",
-          "list": [
-            {
-              "type": "transformer",
-              "id": "transformer1",
-              "label": "Transformer 1",
-              "icon": "transformer",
-              "scope": "local",
-              "description": "",
-              "dependencies": ["d3", "webcola"],
-              "code": "var colors = [\n  {\n    \"name\": \"Greys\",\n    \"colors\": [\n      \"#f0f0f0\",\n      \"#d9d9d9\",\n      \"#bdbdbd\",\n      \"#969696\",\n      \"#737373\",\n      \"#525252\",\n      \"#252525\",\n      \"#000000\"\n    ]\n  },\n  {\n    \"name\": \"Reds\",\n    \"colors\": [\n      \"#fee0d2\",\n      \"#fcbba1\",\n      \"#fc9272\",\n      \"#fb6a4a\",\n      \"#ef3b2c\",\n      \"#cb181d\",\n      \"#a50f15\",\n      \"#67000d\"\n    ]\n  },\n  {\n    \"name\": \"Oranges\",\n    \"colors\": [\n      \"#fee6ce\",\n      \"#fdd0a2\",\n      \"#fdae6b\",\n      \"#fd8d3c\",\n      \"#f16913\",\n      \"#d94801\",\n      \"#a63603\",\n      \"#7f2704\"\n    ]\n  },\n  {\n    \"name\": \"Greens\",\n    \"colors\": [\n      \"#e5f5e0\",\n      \"#c7e9c0\",\n      \"#a1d99b\",\n      \"#74c476\",\n      \"#41ab5d\",\n      \"#238b45\",\n      \"#006d2c\",\n      \"#00441b\"\n    ]\n  },\n  {\n    \"name\": \"Blues\",\n    \"colors\": [\n      \"#deebf7\",\n      \"#c6dbef\",\n      \"#9ecae1\",\n      \"#6baed6\",\n      \"#4292c6\",\n      \"#2171b5\",\n      \"#08519c\",\n      \"#08306b\"\n    ]\n  },\n  {\n    \"name\": \"Purples\",\n    \"colors\": [\n      \"#efedf5\",\n      \"#dadaeb\",\n      \"#bcbddc\",\n      \"#9e9ac8\",\n      \"#807dba\",\n      \"#6a51a3\",\n      \"#54278f\",\n      \"#3f007d\"\n    ]\n  },\n  {\n    \"name\": \"Orange-Red\",\n    \"colors\": [\n      \"#fee8c8\",\n      \"#fdd49e\",\n      \"#fdbb84\",\n      \"#fc8d59\",\n      \"#ef6548\",\n      \"#d7301f\",\n      \"#b30000\",\n      \"#7f0000\"\n    ]\n  },\n  {\n    \"name\": \"Red-Purples\",\n    \"colors\": [\n      \"#fde0dd\",\n      \"#fcc5c0\",\n      \"#fa9fb5\",\n      \"#f768a1\",\n      \"#dd3497\",\n      \"#ae017e\",\n      \"#7a0177\",\n      \"#49006a\"\n    ]\n  },\n  {\n    \"name\": \"Blue-Green\",\n    \"colors\": [\n      \"#e5f5f9\",\n      \"#ccece6\",\n      \"#99d8c9\",\n      \"#66c2a4\",\n      \"#41ae76\",\n      \"#238b45\",\n      \"#006d2c\",\n      \"#00441b\"\n    ]\n  },\n  {\n    \"name\": \"Yellows\",\n    \"colors\": [\n      \"#fffee5\",\n      \"#fffcbd\",\n      \"#fff98b\",\n      \"#fff533\",\n      \"#eedf00\",\n      \"#dad000\",\n      \"#c0b700\",\n      \"#b0a800\"\n    ]\n  }\n]\n\nvar theme = {\n        attribute: {\n          colorlist: \"Oranges\",\n          cindex: 7,\n          tcolorlist: \"Greys\",\n          tindex: 0,\n        },\n        entity: {\n          colorlist: \"Blues\",\n          cindex: 7,\n          tcolorlist: \"Greys\",\n          tindex: 0,\n        },\n        relation: {\n          colorlist: \"Blue-Green\",\n          cindex: 6,\n          tcolorlist: \"Greys\",\n          tindex: 7,\n        },\n        shadow: {\n          colorlist: \"Oranges\",\n          cindex: 2,\n          tcolorlist: \"Greys\",\n          tindex: 7,\n        },\n      }\n\n      var svg = d3\n        .select(Wrapper)\n        .append(\"svg\")\n        .attr(\"width\", 900)\n        .attr(\"height\", 500)\n        .call(\n          d3.zoom().on(\"zoom\", function () {\n            svg.attr(\"transform\", d3.event.transform)\n          })\n        )\n        .append(\"g\")\n\n      const height = 500\n      const width = +d3.select(Wrapper).attr(\"width\")\n\n      // setup the theme color\n\n      const textPadding = 8\n      const corner = 5\n      const grp_corner = 8\n      const pad = 5\n      var ent_colour = \"#03396c\"\n      var ent_t_colour = \"white\"\n      var att_colour = \"#ff4d00\"\n      var att_t_colour = \"white\"\n      var shad_colour = \"#ff4d00\"\n      var shad_t_colour = \"white\"\n      var rel_colour = \"#007777\"\n      var rel_t_colour = \"black\"\n\n        let colours = colors\n        // load the colours from the theme\n        ent_colour = colors.find(\n          (colour) => colour.name == theme.entity.colorlist\n        )[\"colors\"][theme.entity.cindex]\n        ent_t_colour = colors.find(\n          (colour) => colour.name == theme.entity.tcolorlist\n        )[\"colors\"][theme.entity.tindex]\n        att_colour = colors.find(\n          (colour) => colour.name == theme.attribute.colorlist\n        )[\"colors\"][theme.attribute.cindex]\n        att_t_colour = colors.find(\n          (colour) => colour.name == theme.attribute.tcolorlist\n        )[\"colors\"][theme.attribute.tindex]\n        shad_colour = colors.find(\n          (colour) => colour.name == theme.shadow.colorlist\n        )[\"colors\"][theme.shadow.cindex]\n        shad_t_colour = colors.find(\n          (colour) => colour.name == theme.shadow.tcolorlist\n        )[\"colors\"][theme.shadow.tindex]\n        rel_colour = colors.find(\n          (colour) => colour.name == theme.relation.colorlist\n        )[\"colors\"][theme.relation.cindex]\n        rel_t_colour = colors.find(\n          (colour) => colour.name == theme.relation.tcolorlist\n        )[\"colors\"][theme.relation.tindex]\n\n      var cola = webcola.d3adaptor(d3).size([width, height])\n\n      // graph.json\n      log(Graph_Data)\n        data = Graph_Data.basic\n        cola\n          .nodes(data.nodes)\n          .links(data.links)\n          .groups(data.groups)\n          .linkDistance(100)\n          .avoidOverlaps(true)\n          .handleDisconnected(false)\n          .start(30)\n\n        var group = svg\n          .selectAll(\".group\")\n          .data(data.groups)\n          .enter()\n          .append(\"rect\")\n          .attr(\"rx\", grp_corner)\n          .attr(\"ry\", grp_corner)\n          .attr(\"class\", \"group\")\n          .style(\"fill\", function (d, i) {\n            return colours.find(\n              (colour) => colour.name == d.colour_list\n            )[\"colors\"][d.level]\n          })\n          .attr(\"stroke-width\", 1)\n          .attr(\"stroke\", function (d, i) {\n            return colours.find(\n              (colour) => colour.name == d.colour_list\n            )[\"colors\"][7]\n          })\n          .call(cola.drag)\n\n        group.append(\"title\").text(function (d) {\n          return d.label\n        })\n\n        var link = svg\n          .selectAll(\".link\")\n          .data(data.links)\n          .enter()\n          .append(\"line\")\n          .attr(\"class\", \"link\")\n          .style(\"stroke-width\", \"1px\")\n          .attr(\"stroke\", \"black\")\n\n        var node = svg\n          .selectAll(\".node\")\n          .data(data.nodes)\n          .enter()\n          .append(\"rect\")\n          .attr(\"class\", \"node\")\n          .attr(\"class\", (d) => d.type)\n          .attr(\"class\", (d) => d.G_name)\n          .attr(\"id\", (d) => d.G_id)\n\n        var label = svg\n          .selectAll(\".label\")\n          .data(data.nodes)\n          .enter()\n          .append(\"text\")\n          .attr(\"class\", \"label\")\n          .text((d) =>\n            d.type == \"attribute\"\n              ? d.G_name + \": \" + d.value\n              : d.G_name + \": \" + d.G_id\n          )\n          .attr(\"id\", (d) => \"heading-\" + d.G_id)\n          .style(\"font-size\", 10)\n          .style(\"text-anchor\", \"middle\")\n          .style(\"color\", (d) => text_colour(d))\n          .style(\"fill\", (d) => text_colour(d))\n          .style(\"pointer-events\", \"none\")\n          .call(cola.drag)\n\n        // setup heading colours for attribute, entity and relation\n        function text_colour(d) {\n          let colour = \"black\"\n          switch (d.type) {\n            case \"attribute\":\n              if (d.dtype == \"actual\") {\n                colour = att_t_colour\n              } else {\n                colour = shad_t_colour\n              }\n              break\n            case \"entity\":\n              colour = ent_t_colour\n              break\n            case \"relation\":\n              colour = rel_t_colour\n              break\n            default:\n              colour = \"black\"\n              break\n          }\n          return colour\n        }\n\n        node\n          .attr(\"width\", (d) => nodeWidth(d))\n          .attr(\"height\", (d) => d.height)\n          .attr(\"rx\", (d) => d.corner)\n          .attr(\"ry\", (d) => d.corner)\n          .attr(\"x\", (d) => d.x)\n          .attr(\"y\", (d) => d.y)\n          .attr(\"class\", (d) => d.G_name)\n          .style(\"fill\", (d) => d.colour)\n          .on(\"click\", function (d) {\n            d.fixed = true\n          })\n          .call(cola.drag)\n\n        // function to set dimensions and colours for shapes\n        function nodeWidth(d) {\n          let headingid = \"#heading-\" + d.G_id\n          let headingbbox = d3.select(headingid).node().getBBox()\n\n          d.width = d3.max([5, headingbbox.width]) + textPadding * 2\n          d.height = headingbbox.height + textPadding * 2\n\n          // attributes and entities rounded rectangle, relation is circle\n          switch (d.type) {\n            case \"attribute\":\n              d.corner = corner\n              d.colour = att_colour\n              d.x = headingbbox.x - textPadding\n              d.y = headingbbox.y - textPadding\n              if (d.dtype === \"shadow\") {\n                d.colour = shad_colour\n              } else {\n                d.colour = att_colour\n              }\n              break\n\n            case \"entity\":\n              d.corner = corner\n              d.colour = ent_colour\n              d.x = headingbbox.x - textPadding\n              d.y = headingbbox.y - textPadding\n              break\n\n            case \"relation\":\n              d.width = 16\n              d.height = 16\n              d.corner = 8\n              d.colour = rel_colour\n              d.x = headingbbox.x + headingbbox.width / 2 - d.width / 2\n              d.y = headingbbox.y + d.height / 2\n              break\n\n            default:\n              break\n          }\n          return d.width\n        }\n\n        cola.on(\"tick\", function () {\n          link\n            .attr(\"x1\", function (d) {\n              return d.source.x\n            })\n            .attr(\"y1\", function (d) {\n              return d.source.y\n            })\n            .attr(\"x2\", function (d) {\n              return d.target.x\n            })\n            .attr(\"y2\", function (d) {\n              return d.target.y\n            })\n\n          node\n            .attr(\"x\", function (d) {\n              return d.x - d.width / 2\n            })\n            .attr(\"y\", function (d) {\n              return d.y - d.height / 2\n            })\n\n          group\n            .attr(\"x\", function (d) {\n              return d.bounds.x - pad\n            })\n            .attr(\"y\", function (d) {\n              return d.bounds.y - pad\n            })\n            .attr(\"width\", function (d) {\n              return d.bounds.width() + 2 * pad\n            })\n            .attr(\"height\", function (d) {\n              return d.bounds.height() + 2 * pad\n            })\n\n          label\n            .attr(\"x\", function (d) {\n              return d.x\n            })\n            .attr(\"y\", function (d) {\n              var h = this.getBBox().height\n              return d.y + h / 4\n            })\n        })\n  ",
-              "error": "",
-              "logs": [""]
-            },
-            {
-              "type": "transformer",
-              "id": "transformer2",
-              "label": "Transformer 2",
-              "icon": "transformer",
-              "scope": "local",
-              "description": "",
-              "dependencies": [],
-              "code": "",
-              "error": "",
-              "logs": [""]
-            }
-          ]
-        },
-        "algorithms": {
-          "type": "algorithms",
-          "icon": "",
-          "list": [
-            {
-              "type": "algorithm",
-              "id": "algorithm1",
-              "label": "Algorithm 1",
-              "icon": "algorithm",
-              "scope": "local",
-              "description": "",
-              "dependencies": "",
-              "code": "",
-              "error": "",
-              "logs": [""]
-            },
-            {
-              "type": "algorithm",
-              "id": "algorithm2",
-              "label": "Algorithm 2",
-              "icon": "algorithm",
-              "scope": "local",
-              "description": "",
-              "dependencies": "",
-              "code": "",
-              "error": "",
-              "logs": [""]
-            }
-          ]
         }
       }
     ]
@@ -491,37 +376,6 @@
         "id": "maps",
         "label": "Maps",
         "enabled": false
-      }
-    ]
-  },
-  "transformers": {
-    "type": "tranformers",
-    "label": "Tranformers",
-    "icon": "",
-    "list": [
-      {
-        "type": "transformer",
-        "id": "transformer1g",
-        "label": "Transformer 1",
-        "icon": "transformer",
-        "scope": "global",
-        "description": "",
-        "dependencies": ["d3"],
-        "code": "var svg = d3.select(Wrapper).append(\"svg\"),\n\t\t\t\twidth = +svg.attr(\"width\") || 960,\n\t\t\t\theight = +svg.attr(\"height\") || 500\n\t\t\t  svg.attr(\"width\", width).attr(\"height\", height)\n\t\t\t  var color = d3.scaleOrdinal(d3.schemeCategory20)\n\t\t\t  var simulation = d3\n\t\t\t\t.forceSimulation()\n\t\t\t\t.force(\n\t\t\t\t  \"link\",\n\t\t\t\t  d3.forceLink().id(function (d) {\n\t\t\t\t\treturn d.label\n\t\t\t\t  })\n\t\t\t\t)\n\t\t\t\t.force(\"charge\", d3.forceManyBody())\n\t\t\t\t.force(\"center\", d3.forceCenter(width / 2, height / 2))\n\t\t\t  d3.json(\n\t\t\t\t\"src/components/Transformer/D3/miserables.json\",\n\t\t\t\tfunction (error, graph) {\n\t\t\t\t  if (error) throw error\n\t\t\t\t  var link = svg\n\t\t\t\t\t.append(\"g\")\n\t\t\t\t\t.attr(\"class\", \"links\")\n\t\t\t\t\t.selectAll(\"line\")\n\t\t\t\t\t.data(graph.links)\n\t\t\t\t\t.enter()\n\t\t\t\t\t.append(\"line\")\n\t\t\t\t\t.attr(\"stroke-width\", function (d) {\n\t\t\t\t\t  return Math.sqrt(d.value)\n\t\t\t\t\t})\n\t\t\t\t\t.attr(\"stroke\", \"#999\")\n\t\t\t\t  var node = svg\n\t\t\t\t\t.append(\"g\")\n\t\t\t\t\t.attr(\"class\", \"nodes\")\n\t\t\t\t\t.selectAll(\"circle\")\n\t\t\t\t\t.data(graph.nodes)\n\t\t\t\t\t.enter()\n\t\t\t\t\t.append(\"circle\")\n\t\t\t\t\t.attr(\"r\", 5)\n\t\t\t\t\t.attr(\"fill\", function (d) {\n\t\t\t\t\t  return color(d.group)\n\t\t\t\t\t})\n\t\t\t\t\t.call(\n\t\t\t\t\t  d3\n\t\t\t\t\t\t.drag()\n\t\t\t\t\t\t.on(\"start\", dragstarted)\n\t\t\t\t\t\t.on(\"drag\", dragged)\n\t\t\t\t\t\t.on(\"end\", dragended)\n\t\t\t\t\t)\n\t\t\t\t  node.append(\"title\").text(function (d) {\n\t\t\t\t\treturn d.label\n\t\t\t\t  })\n\t\t\t\t  node.on(\"click\", (e) => {\n\t\t\t\t\tself.nodeData = {\n\t\t\t\t\t  label: e.label,\n\t\t\t\t\t  index: e.index,\n\t\t\t\t\t}\n\t\t\t\t  })\n\t\t\t\t  simulation.nodes(graph.nodes).on(\"tick\", ticked)\n\t\t\t\t  simulation.force(\"link\").links(graph.links)\n\t\t\t\t  function ticked() {\n\t\t\t\t\tlink\n\t\t\t\t\t  .attr(\"x1\", function (d) {\n\t\t\t\t\t\treturn d.source.x\n\t\t\t\t\t  })\n\t\t\t\t\t  .attr(\"y1\", function (d) {\n\t\t\t\t\t\treturn d.source.y\n\t\t\t\t\t  })\n\t\t\t\t\t  .attr(\"x2\", function (d) {\n\t\t\t\t\t\treturn d.target.x\n\t\t\t\t\t  })\n\t\t\t\t\t  .attr(\"y2\", function (d) {\n\t\t\t\t\t\treturn d.target.y\n\t\t\t\t\t  })\n\t\t\t\t\tnode\n\t\t\t\t\t  .attr(\"cx\", function (d) {\n\t\t\t\t\t\treturn d.x\n\t\t\t\t\t  })\n\t\t\t\t\t  .attr(\"cy\", function (d) {\n\t\t\t\t\t\treturn d.y\n\t\t\t\t\t  })\n\t\t\t\t  }\n\t\t\t\t}\n\t\t\t  )\n\t\t\t  function dragstarted(d) {\n\t\t\t\tif (!d3.event.active) simulation.alphaTarget(0.3).restart()\n\t\t\t\td.fx = d.x\n\t\t\t\td.fy = d.y\n\t\t\t  }\n\t\t\t  function dragged(d) {\n\t\t\t\td.fx = d3.event.x\n\t\t\t\td.fy = d3.event.y\n\t\t\t  }\n\t\t\t  function dragended(d) {\n\t\t\t\tif (!d3.event.active) simulation.alphaTarget(0)\n\t\t\t\td.fx = null\n\t\t\t\td.fy = null\n\t\t\t  }",
-        "error": "",
-        "logs": [""]
-      },
-      {
-        "type": "transformer",
-        "id": "transformer2g",
-        "label": "Transformer 2",
-        "icon": "transformer",
-        "scope": "global",
-        "description": "",
-        "dependencies": [],
-        "code": "",
-        "error": "",
-        "logs": [""]
       }
     ]
   }
