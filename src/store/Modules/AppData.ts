@@ -122,7 +122,7 @@ export default class AppData extends VuexModule {
     this.data.resizingFlow = value
   }
 
-  //sidebar
+  // Sidebar
   @Mutation
   toggleSidebarPanel() {
     this.data.sidebarVisible = !this.data.sidebarVisible

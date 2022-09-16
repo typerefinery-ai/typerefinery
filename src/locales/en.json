@@ -90,7 +90,8 @@
           "description": "Description",
           "icon": "Icon",
           "cancel": "Cancel",
-          "save": "Save"
+          "save": "Save",
+          "flowName": "Workflow Name"
         }
       },
       "connections": {
