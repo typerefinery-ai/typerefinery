@@ -1,0 +1,166 @@
+{
+  "type": "themes",
+  "icon": "",
+  "list": [
+    {
+      "type": "theme",
+      "id": "theme",
+      "label": "Theme",
+      "icon": "theme",
+      "scope": "local",
+      "description": "",
+      "data": {
+        "webcola_flatly": {
+          "attribute": {
+            "colour": "#7f2704",
+            "tcolour": "white",
+            "label_name": true,
+            "label_value": true,
+            "corner": 5,
+            "split_line": false,
+            "tsize": "10px"
+          },
+          "entity": {
+            "colour": "#08306b",
+            "tcolour": "white",
+            "label_name": true,
+            "label_iid": true,
+            "iid_shorten": true,
+            "corner": 5,
+            "split_line": false,
+            "tsize": "10px"
+          },
+          "relation": {
+            "colour": "#006d2c",
+            "tcolour": "black",
+            "label_name": true,
+            "label_iid": false,
+            "label_offset": 0,
+            "radius": 10,
+            "tsize": "10px",
+            "iid_shorten": true,
+            "split_line": false
+          },
+          "shadow": { "colour": "#fdae6b", "tcolour": "black" },
+          "edges": {
+            "colour": "black",
+            "stroke": "1px",
+            "arrow": true,
+            "acolour": "black",
+            "labels": true,
+            "split_line": true,
+            "tsize": "10px"
+          },
+          "tooltip": {
+            "fill": "lightgray",
+            "stroke": "1px",
+            "scolour": "black",
+            "corner": 5,
+            "tcolour": "black",
+            "tsize": "10px",
+            "padding": "10px"
+          },
+          "d3sim": { "linkdistance": 150, "charge": -200 },
+          "super": {
+            "radius": 25,
+            "label_name": true,
+            "label_iid": false,
+            "iid_shorten": true,
+            "split_line": true,
+            "tsize": "10px"
+          },
+          "tt_description": {
+            "title": true,
+            "name": true,
+            "role": true,
+            "value": true,
+            "boldtitle": true,
+            "subtitle": true,
+            "type": true,
+            "g_G_name": true,
+            "g_role": true,
+            "v_G_name": true,
+            "v_Value": true,
+            "where": true,
+            "number": true
+          }
+        },
+        "webcola_darkly": {
+          "attribute": {
+            "colour": "#7f2704",
+            "tcolour": "white",
+            "label_name": true,
+            "label_value": true,
+            "corner": 5,
+            "split_line": true,
+            "tsize": "10px"
+          },
+          "entity": {
+            "colour": "#08306b",
+            "tcolour": "white",
+            "label_name": true,
+            "label_iid": true,
+            "iid_shorten": true,
+            "corner": 5,
+            "split_line": true,
+            "tsize": "10px"
+          },
+          "relation": {
+            "colour": "#006d2c",
+            "tcolour": "black",
+            "label_name": true,
+            "label_iid": true,
+            "label_offset": 0,
+            "radius": 5,
+            "iid_shorten": true,
+            "split_line": true,
+            "tsize": "10px"
+          },
+          "shadow": { "colour": "#fdae6b", "tcolour": "black" },
+          "edges": {
+            "colour": "black",
+            "stroke": "1px",
+            "arrow": true,
+            "acolour": "black",
+            "labels": true,
+            "split_line": true,
+            "tsize": "10px"
+          },
+          "tooltip": {
+            "fill": "white",
+            "stroke": "1px",
+            "scolour": "black",
+            "corner": 5,
+            "tcolour": "black",
+            "tsize": "11px",
+            "padding": "10px"
+          },
+          "d3sim": { "linkdistance": 150, "charge": -200 },
+          "super": {
+            "radius": 25,
+            "label_name": true,
+            "label_iid": true,
+            "iid_shorten": true,
+            "split_line": true,
+            "tsize": "10px"
+          },
+          "tt_description": {
+            "title": true,
+            "name": true,
+            "role": true,
+            "value": true,
+            "boldtitle": true,
+            "subtitle": true,
+            "type": true,
+            "g_G_name": true,
+            "g_role": true,
+            "v_G_name": true,
+            "v_Value": true,
+            "where": true,
+            "number": true
+          }
+        }
+      }
+    }
+  ]
+}

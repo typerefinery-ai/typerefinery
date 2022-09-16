@@ -232,6 +232,7 @@
   import Projects from "@/store/Modules/Projects"
   import Settings from "@/store/Modules/Settings"
   import Connections from "@/store/Modules/Connections"
+  import axios from "axios"
   // import Algorithms from "@/store/Modules/Algorithms"
   // import Transformers from "@/store/Modules/Transformers"
   const settingsModule = getModule(Settings)
@@ -430,15 +431,16 @@
       //   }
       //   this.algorithmdata = algorithmcode
       // },
-      handlequerystore(isFormValid) {
+      async handlequerystore(isFormValid) {
         const projectIdx = projectsModule.getProjects.findIndex(
           (el) => el.id == this.projectselected
         )
+        const id = getRandomId()
         const data = {
           projectIdx: projectIdx,
           data: {
             label: this.name,
-            id: getRandomId(),
+            id,
             description: this.description,
             connection: this.connectiondata,
             icon: this.icon,
@@ -451,11 +453,35 @@
             // database: "",
           },
         }
-        this.submitted = true
+        // stop here if form is invalid
         if (!isFormValid) {
           return
         }
-        projectsModule.addNewQuery(data)
+
+        try {
+          const payload = {
+            queryid: id,
+            label: this.name,
+            type: "query",
+            projectid: this.projectselected,
+            connectionid: this.connectiondata.id,
+            icon: this.icon,
+            query: this.query,
+            description: this.description,
+            scope: "local",
+            data: "",
+          }
+          const response = await axios.post(
+            "http://localhost:8000/datastore/query",
+            payload
+          )
+          console.log(response)
+          this.submitted = true
+          projectsModule.addNewQuery(data)
+        } catch (err) {
+          console.log(err)
+        }
+
         this.$emit("close")
       },
     },

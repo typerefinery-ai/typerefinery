@@ -154,6 +154,7 @@
   import { required } from "@vuelidate/validators"
   import { useVuelidate } from "@vuelidate/core"
   import { getRandomId } from "@/utils"
+  import axios from "axios"
   import Dialog from "primevue/dialog"
   import Dropdown from "primevue/dropdown"
   import InputText from "primevue/inputtext"
@@ -323,10 +324,11 @@
       },
 
       // new dialog
-      handleconnectionstore(isFormValid) {
+      async handleconnectionstore(isFormValid) {
         const projectIndex = projectsModule.getProjects.findIndex(
           (el) => el.id == this.selected
         )
+        const id = getRandomId()
         const data = {
           projectIdx: projectIndex,
           data: {
@@ -337,7 +339,7 @@
             icon: this.icon,
             description: this.description,
             type: "connection",
-            id: getRandomId(),
+            id,
             scope: projectIndex == -1 ? "global" : "local",
           },
         }
@@ -346,11 +348,33 @@
         if (!isFormValid) {
           return
         }
-        if (projectIndex == -1) {
-          connectionsModule.addGlobalConnection(data.data)
-        } else {
-          projectsModule.addLocalConnection(data)
+        try {
+          const payload = {
+            connectionid: id,
+            projectid: this.selected,
+            scope: projectIndex == -1 ? "global" : "local",
+            label: this.name,
+            host: this.host,
+            port: this.port,
+            database: this.database,
+            icon: this.icon,
+            description: this.description,
+            type: "connection",
+          }
+          const response = await axios.post(
+            "http://localhost:8000/datastore/connection",
+            payload
+          )
+          console.log(response)
+          if (projectIndex == -1) {
+            connectionsModule.addGlobalConnection(data.data)
+          } else {
+            projectsModule.addLocalConnection(data)
+          }
+        } catch (err) {
+          console.log(err)
         }
+
         this.$emit("close")
       },
     },

@@ -336,7 +336,7 @@
           "list": [
             {
               "type": "wiring",
-              "id": "wiring",
+              "id": "fsfkt001xx41d",
               "label": "Log_ForceGraph",
               "icon": "Log_ForceGraph",
               "scope": "local",

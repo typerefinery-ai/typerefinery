@@ -84,6 +84,9 @@
       sidebarVisible() {
         return appDataModule.data.sidebarVisible
       },
+      sidebarVisible() {
+        return appDataModule.data.sidebarVisible
+      },
     },
     watch: {
       nodeSelected() {
@@ -91,6 +94,15 @@
       },
       splitNodeSelected() {
         this.updateSplitTabs()
+      },
+      sidebarVisible(visible) {
+        if (visible) {
+          this.pane1Size = 25
+          this.panesSize = 75
+        } else {
+          this.pane1Size = 0
+          this.panesSize = 45
+        }
       },
       sidebarVisible(visible) {
         if (visible) {
@@ -123,12 +135,13 @@
         this.panes.pop()
       },
       handleSplitterClick(e) {
-        //console.log("clicked")
+        console.log("clicked")
         if (e.index !== 1) return
         const pane = this.$refs.sidebarPane
         !this.sidebarVisible
           ? (pane.style.width = "25%")
           : (pane.style.width = 0)
+        appDataModule.toggleSidebarPanel()
         appDataModule.toggleSidebarPanel()
       },
       updateTabs() {
