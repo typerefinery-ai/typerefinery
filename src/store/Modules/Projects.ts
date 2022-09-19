@@ -17,7 +17,13 @@ export default class Projects extends VuexModule {
   get getProjects() {
     return this.data.list
   }
+  get getProjectLabel() {
+    return (projectIdx) => {
+      const project = this.data.list.findIndex((el) => el.id == projectIdx)
 
+      return this.data.list[project].label
+    }
+  }
   get getQueries() {
     return (projectIdx) => {
       return this.data.list[projectIdx].queries.list
@@ -117,6 +123,16 @@ export default class Projects extends VuexModule {
   addNewQuery(queryData) {
     const { projectIdx, data } = queryData
     this.data.list[projectIdx].queries.list.push(data)
+  }
+
+  @Mutation
+  updateProject(data) {
+    const { field, value, id } = data
+    const projects = JSON.parse(JSON.stringify(this.data.list)) // console.log('store',projects)
+    const projectIdx = this.data.list.findIndex((el) => el.id == id)
+    console.log("store", projectIdx)
+    projects[projectIdx][field] = value
+    this.data.list = projects
   }
 
   @Mutation
