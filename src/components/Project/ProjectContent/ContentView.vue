@@ -2,7 +2,6 @@
   <div class="content-area">
     <div class="tabs-wrapper">
       <TabView
-        v-if="displayHomePage"
         class="tab-view-wrapper"
         :class="{ draggable: focus }"
         :active-index="activeIndex"
@@ -26,7 +25,6 @@
           />
         </TabPanel>
       </TabView>
-      <DisplayHome v-else />
 
       <div
         v-show="!contentToolsVisible && !focus"
@@ -56,7 +54,6 @@
   import Projects from "@/store/Modules/Projects"
   import Connections from "@/store/Modules/Connections"
   import AppData from "@/store/Modules/AppData"
-  import DisplayHome from "../ContentTab/Tabs/DisplayHomePage.vue"
   const settingsModule = getModule(Settings)
   const projectsModule = getModule(Projects)
   const connectionsModule = getModule(Connections)
@@ -76,7 +73,6 @@
       MenuBar,
       TabView,
       TabPanel,
-      DisplayHome,
     },
 
     props: {
@@ -90,7 +86,6 @@
       return {
         contentToolsVisible: true,
         activeIndex: 0,
-        displayHomePage: false,
       }
     },
 
@@ -136,7 +131,6 @@
         const index = this.allTabs.findIndex((el) => el.id == newVal)
         if ((this.activeIndex !== index) & (index !== -1))
           this.activeIndex = index
-        this.displayHomePage = true
       },
     },
 
@@ -179,7 +173,6 @@
           appDataModule.toggleTreeNode()
         }
         projectsModule.updateSelectedNode({ key: tab.key })
-        this.displayHomePage = false
       },
     },
   }

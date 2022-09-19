@@ -466,9 +466,9 @@
 		},
 		"origin": "http://localhost:8111",
 		"dtcreated": "2022-07-20T16:54:57.401Z",
-		"size": 78348,
+		"size": 78398,
 		"variables2": {},
-		"directory": "./database",
+		"directory": "C:\\Projects\\typerefinery\\services\\totaljs-flow\\database",
 		"sandbox": false
 	},
 	"fry40001ha41d": {
@@ -868,6 +868,30 @@
 					]
 				}
 			},
+			"il844pro9": {
+				"id": "il844pro9",
+				"config": {
+					"random": true,
+					"type": "string",
+					"data": "",
+					"restart": false
+				},
+				"x": 113,
+				"y": 353,
+				"component": "c99ly15194",
+				"connections": {},
+				"template": {
+					"icon": "fa fa-bullhorn",
+					"group": "Triggers",
+					"name": "Trigger",
+					"outputs": [
+						{
+							"id": "output",
+							"name": "Output"
+						}
+					]
+				}
+			},
 			"groups": [],
 			"paused": {}
 		},
@@ -875,10 +899,7 @@
 		"sources": {},
 		"origin": "http://localhost:8111",
 		"dtcreated": "2022-07-25T11:00:09.159Z",
-		"size": 44110,
-		"variables2": {},
-		"directory": "./database",
-		"sandbox": false
+		"size": 44301
 	},
 	"fs07f001ef41d": {
 		"paused": false,
@@ -1350,9 +1371,9 @@
 		"sources": {},
 		"origin": "http://localhost:8111",
 		"dtcreated": "2022-07-27T08:15:26.472Z",
-		"size": 110872,
+		"size": 110922,
 		"variables2": {},
-		"directory": "./database",
+		"directory": "C:\\Projects\\typerefinery\\services\\totaljs-flow\\database",
 		"sandbox": false
 	},
 	"fsfkt001xx41d": {
@@ -1377,9 +1398,9 @@
 			"c5aria8f8f": "<script total>\n\n\texports.name = 'Print JSON';\n\texports.group = 'Common';\n\texports.version = '1';\n\texports.icon = 'fa fa-print';\n\texports.author = 'Martin Smola';\n\texports.config = { repo: false, data: true };\n\texports.inputs = [{ id: 'input', name: 'Input' }];\n\n\texports.make = function(instance, config) {\n\t\tinstance.message = function($) {\n\n\t\t\tvar data = $.data;\n\n\t\t\tif (config.data !== false) {\n\t\t\t\tif (data instanceof Buffer)\n\t\t\t\t\tdata = data.toString('hex').substring(0, 200);\n\t\t\t}\n\n\t\t\tvar count = 0;\n\n\t\t\tfor (var key in config) {\n\t\t\t\tif (config[key])\n\t\t\t\t\tcount++;\n\t\t\t}\n\n\t\t\tvar output = count > 1 ? {} : null;\n\n\t\t\tif (config.repo) {\n\t\t\t\tif (output)\n\t\t\t\t\toutput.repo = $.repo;\n\t\t\t\telse\n\t\t\t\t\toutput = $.repository;\n\t\t\t}\n\n\t\t\tif (config.data) {\n\t\t\t\tif (output)\n\t\t\t\t\toutput.data = $.data;\n\t\t\t\telse\n\t\t\t\t\toutput = $.data;\n\t\t\t}\n\n\t\t\toutput && instance.status(output);\n\t\t\t$.destroy();\n\t\t};\n\n\t\tinstance.trigger = function() {\n\t\t\tinstance.status('');\n\t\t}\n\n\t};\n\n</script>\n\n<style>\n\t.CLASS footer > div { margin: 10px; }\n\t.CLASS pre { font-size: 10px; margin: 0; padding: 5px; background-color: #F0F0F0; border-radius: var(--radius); }\n\t.CLASS button { float: right; height: 20px; font-size: 11px; border: 1px solid #E0E0E0; border-radius: var(--radius); color: #000; background-color: transparent; margin: 0; padding: 0 5px; }\n\t.CLASS button:hover { background-color: #F8F8F8; }\n\t.CLASS button:active { background-color: #E0E0E0; }\n\t.CLASS .ui-objecttree { background-color: #f0f0f0; padding: 4px; }\n\n\t.ui-dark .CLASS pre { background-color: #404040; tab-size: 2; }\n\t.ui-dark .CLASS button { border-color: #404040; color: #FFF; }\n\t.ui-dark .CLASS button:hover { background-color: #303030; }\n\t.ui-dark .CLASS button:active { background-color: #404040; }\n</style>\n\n<readme>\nThe component prints incoming data in a JSON format.\n</readme>\n\n<settings>\n\t<div class=\"padding\">\n\t\t<div data---=\"input__?.repo__type:checkbox\">Shows repository</div>\n\t\t<div data---=\"input__?.data__type:checkbox\">Shows data</div>\n\t</div>\n</settings>\n\n<script>\n\tFUNC.printjson_click = function(type, data) { // type = path/data\n\t\tnavigator.clipboard.writeText(type === 'path' ? data : STRINGIFY(data)).catch(e => console.error(e));\n\t};\n\n\t$('body').on('click', '.ui-objecttree .fa-copy, .ui-objecttree .fa-link', function(){\n\t\tvar el = $(this);\n\t\tvar iscopy = el.hclass('fa-copy');\n\t\tel.tclass(iscopy ? 'fa-copy' : 'fa-link').tclass('fa-check');\n\t\tsetTimeout(function(){\n\t\t\tel.tclass('fa-check').tclass(iscopy ? 'fa-copy' : 'fa-link');\n\t\t}, 2000);\n\t});\n</script>\n\n<body>\n\t<header>\n\t\t<button class=\"exec\" data-exec=\"FUNC.trigger\">Clear</button>\n\t\t<i class=\"ICON\"></i>NAME\n\t</header>\n\t<footer>\n\t\t<div data---=\"objecttree__!STATUS__exec:FUNC.printjson_click\" class=\"selectable\"></div>\n\t</footer>\n</body>",
 			"run": "<script total>\n    exports.name = 'WebCola Viz';\n    exports.group = 'TypeRefinery';\n    exports.version = '1';\n    exports.icon = 'fa fa-code';\n    exports.author = 'Total.js';\n    exports.config = { code: '// instance {FlowStreamInstance};\\n// $ {FlowStreamMessage};\\n// vars {Object};\\n// repo {Object};\\n// data {String/Number/Boolean/Date/Buffer/Object};\\n// $.send(\\'output\\', data); // or simply send(data); which uses the first output\\n// $.destroy();\\n// $.throw(err);\\n\\n// IMPORTANT: If you do not perform re-send, you need to destroy this message via $.destroy() method\\n// IMPORTANT: methods $.send(), $.destroy() and $.throw() can be executed only once\\n\\n// $.send(\\'output\\', data);\\n$.destroy();' };\n    exports.inputs = [{ id: 'graph_data', name: 'DATA' },{ id: 'theme', name: 'Theme' }];\n    exports.outputs = [{ id: 'output', name: 'Output' }];\n    exports.meta = { settingswidth: 1200 };\n\n    exports.make = function(instance, config) {\n        var fn;\n        var values = {};\n\n\t\tinstance.message = function($) {\n            const endpointData = { endpoint: config.endpoint }\n            values[$.input] = $.data\n\n\t\t\tif (values.graph_data && values.theme) {\n\t\t\t\t\tvar input_data = {\n\t\t\t\t\t\ttheme: values.theme,\n\t\t\t\t\t\tgraph_data: values.graph_data\n\t\t\t\t\t};\n\t\t\t\t\tconst codeWithData = config.code.replace('GRAPH_DATA', JSON.stringify(input_data.graph_data))\n\t\t\t\t\tconst code = codeWithData.replace('THEME', JSON.stringify(input_data.theme))\n\t\t\t\t\t const payload = {\n\t\t\t\t\t\t \"code\": code,\n\t\t\t\t\t\t \"dependecies\": [\"https://d3js.org/d3.v4.js\", \"https://cdn.jsdelivr.net/npm/webcola@3.4.0/WebCola/cola.js\"],\n\t\t\t\t\t\t  \"returnoutput\": \"script\"\n\t\t\t\t\t };\n                     let options = {\n\t\t\t\t\t\t\tmethod: 'POST',\n\t\t\t\t\t\t\theaders: {\n\t\t\t\t\t\t\t\t'Content-Type':\n\t\t\t\t\t\t\t\t\t'application/json;charset=utf-8'\n\t\t\t\t\t\t\t},\n            \t\t\t\tbody: JSON.stringify(payload)\n       \t\t\t\t   }\n        \t\t\tlet fetchRes = fetch(endpointData.endpoint,options);\n        \t\t\tfetchRes.then(res => res.json()).then(d => { $.send('output', {\n\t\t\t\t\t\tpath: d[\"output.url\"],\n\t\t\t\t\t\tstepId: instance.id,\n\t\t\t\t\t\tstepName: instance.module.name,\n\t\t\t\t\t\tflowId: instance.main.id\n\t\t\t\t\t}) }).catch(err => { $.send('output', err) })\n\n\t\t\t\tvalues.theme = null\n\t\t\t}\n        };\n        instance.configure = function() {\n            instance.outputs = [];\n            for (let i = 1; i <= config.outputs; i++)\n                instance.outputs.push({ id: 'output' + (i === 1 ? '' : i), name: 'Output #' + i });\n            instance.save();\n\n            try {\n                if (config.code) {\n                    instance.status(1);\n                    fn = new Function('value', 'instance', '$', 'message', 'require', 'send', 'repo', 'vars', 'data', config.code);\n                } else {\n                    instance.status(0);\n                    fn = null;\n                }\n            } catch (e) {\n                fn = null;\n                instance.throw('Code: ' + e.message);\n            }\n        };\n\n        instance.close = function() {\n            fn = null;\n        };\n\n        instance.configure();\n    };\n</script>\n\n<readme>\n    This component executes a custom JavaScript code as it is.\n\n\n    To send data to the default output use `send(somedata);`\n    To send data to specific output when number of outputs > 1 use `$.send('outputX', somedata)` where `X` is output index, see example bellow:\n    - first output--> `send(somedata)` or `$.send('output', somedata)`\n    - second output --> `$.send('output2', somedata)`\n    - ...\n    - 5th output --> `$.send('output5', somedata)`\n    - etc.\n</readme>\n\n<settings>\n    <div class=\"padding\">\n        <div data---=\"input__?.endpoint__required:1\" class=\"m\">Endpont</div>\n        <div class=\"ui-input-label\">Code:</div>\n        <div data---=\"codemirror__?.code__type:javascript;minheight:300;parent:auto;margin:60;tabs:true;trim:true\" class=\"m\"></div>\n    </div>\n</settings>\n\n<body>\n    <header>\n        <i class=\"ICON\"></i>NAME\n    </header>\n</body>",
 			"c418t8a6b8": "<script total>\n\texports.name = 'Run (node & edges)';\n    exports.icon = 'fa fa-code';\n    exports.author = 'RG';\n    exports.group = 'TypeRefinery';\n    exports.version = '1';\n    exports.config = { algorithm: '',endpoint:'' };\n    exports.inputs = [{ id: 'connection', name: 'Connection' }, { id: 'query', name: 'TQL Query' }];\n    exports.outputs = [{ id: 'output', name: 'Output' }];\n    exports.meta = { settingswidth: 1200 };\n\n    exports.make = function(instance, config) {\n        var fn;\n        var values = {};\n        instance.message = function($) {\n            const endpointData = {\n                 endpoint: config.endpoint,\n            }\n            values[$.input] = $.data;\n            if (values.connection && values.query && config.algorithm) {\n                var payload = {\n                    dbhost: values.connection.dbhost,\n                    dbport: values.connection.dbport,\n                    dbdatabase: values.connection.dbdatabase,\n                    dbquery: values.query.dbquery,\n                    algorithm: config.algorithm,\n                    algorithmrequirements: 'argparse\\nloguru',\n                    returnoutput: 'output'\n                };\n                let options = {\n            \t\tmethod: 'POST',\n            \t\theaders: {\n                \t\t'Content-Type':\n                    \t'application/json;charset=utf-8'\n            \t},\n            \tbody: JSON.stringify(payload)\n        }\n        let fetchRes = fetch(endpointData.endpoint,options);\n        fetchRes.then(res =>\n            res.json()).then(d => { $.send('output', d) }).catch(err => { $.send('output', err) })\n                values.query = null;\n            } else {\n                // IMPORTANT: we must destroy the current message becase we don't need to send it next\n                $.destroy();\n            }\n        };\n        instance.close = function() {\n            fn = null;\n        };\n    };\n</script>\n<readme>\n    Lorem ipsum dolor sit amet consectetur adipisicing, elit. Laudantium, in.\n</readme>\n<settings>\n    <div class=\"padding\">\n        <div data---=\"input__?.endpoint__required:1\" class=\"m\">Endpont</div>\n        <div class=\"ui-input-label\">Algorithm:</div>\n        <div data---=\"codemirror__?.algorithm__type:python;minheight:300;parent:auto;margin:60;tabs:true;trim:true\" class=\"m\"></div>\n    </div>\n</settings>\n<body>\n    <header>\n        <i class=\"ICON\"></i>NAME\n    </header>\n</body>",
-			"pubsrcfyn2ecf44Xsvg_insert": "<script total>\n\n\texports.name = 'TMS Example';\n\texports.icon = 'fas fa-broadcast-tower';\n\texports.config = {};\n\texports.outputs = [{ id: 'publish', name: 'Output' }];\n\texports.group = 'Publishers';\n\texports.type = 'pub';\n\texports.schemaid = ['srcfyn2ecf44', 'svg_insert'];\n\n\texports.make = function(instance) {\n\t\tinstance.process = function(msg, client) {\n\t\t\tinstance.send('publish', msg, client);\n\t\t};\n\t};\n\n</script>\n\n<style>\n\t.f-pubsrcfyn2ecf44Xsvg_insert .url { font-size: 11px; }\n</style>\n\n<readme>\n# svg_insert\n- URL address: <http://127.0.0.1:8112>\n- Channel: __publish__\n- JSON schema `svg_insert.json`\n- Version: 24\n\n```json\n{\n  \"$id\": \"https://schemas.totaljs.com/Svg.json\",\n  \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"stepId\": {\n      \"type\": \"string\"\n    },\n    \"flowId\": {\n      \"type\": \"string\"\n    },\n    \"stepName\": {\n      \"type\": \"string\"\n    },\n    \"path\": {\n      \"type\": \"string\"\n    },\n    \"id\": {\n      \"type\": \"string\"\n    },\n    \"dtcreated\": {\n      \"type\": \"date\"\n    },\n    \"dtupdated\": {\n      \"type\": \"date\"\n    }\n  }\n}\n```\n</readme>\n\n<body>\n\t<header>\n\t\t<div><i class=\"fas fa-broadcast-tower mr5\"></i><span>TMS Example / <b>svg_insert</b></span></div>\n\t\t<div class=\"url\"></div>\n\t</header>\n</body>",
-			"subsrcfyn2ecf44Xsvg_insert": "<script total>\n\n\texports.name = 'TMS Example';\n\texports.icon = 'fas fa-satellite-dish';\n\texports.group = 'Subscribers';\n\texports.config = {};\n\texports.inputs = [{ id: 'subscribe', name: 'Input' }];\n\texports.type = 'sub';\n\texports.schemaid = ['srcfyn2ecf44', 'svg_insert'];\n\n\texports.make = function(instance) {\n\t\tinstance.message = function($) {\n\t\t\tvar socket = instance.main.sockets['srcfyn2ecf44'];\n\t\t\tif (socket && socket.subscribers && socket.subscribers['svg_insert']) {\n\n\t\t\t\tvar data = $.data;\n\n\t\t\t\t/*\n\t\t\t\t\tvar err = new ErrorBuilder();\n\t\t\t\t\tdata = framework_jsonschema.transform(schema, err, data, true);\n\n\t\t\t\t\tif (err.is) {\n\t\t\t\t\t\t$.destroy();\n\t\t\t\t\t\treturn;\n\t\t\t\t\t}\n\n\t\t\t\t*/\n\n\t\t\t\tsocket.send({ type: 'subscribe', id: 'svg_insert', data: data });\n\t\t\t}\n\t\t\t$.destroy();\n\t\t};\n\t};\n\n</script>\n\n<style>\n\t.f-subsrcfyn2ecf44Xsvg_insert .url { font-size: 11px; }\n</style>\n\n<readme>\n# svg_insert\n- URL address: <http://127.0.0.1:8112>\n- Channel: __subscribe__\n- JSON schema `svg_insert.json`\n- Version: 24\n\n```json\n{\n  \"id\": \"svg_insert\",\n  \"schema\": {\n    \"$id\": \"https://schemas.totaljs.com/Svg.json\",\n    \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n    \"type\": \"object\",\n    \"properties\": {\n      \"stepId\": {\n        \"type\": \"string\"\n      },\n      \"flowId\": {\n        \"type\": \"string\"\n      },\n      \"stepName\": {\n        \"type\": \"string\"\n      },\n      \"path\": {\n        \"type\": \"string\"\n      },\n      \"id\": {\n        \"type\": \"string\"\n      },\n      \"dtcreated\": {\n        \"type\": \"date\"\n      },\n      \"dtupdated\": {\n        \"type\": \"date\"\n      }\n    }\n  }\n}\n```\n</readme>\n\n<body>\n\t<header>\n\t\t<div><i class=\"fas fa-satellite-dish mr5\"></i><span>TMS Example / <b>svg_insert</b></span></div>\n\t\t<div class=\"url\"></div>\n\t</header>\n</body>",
-			"calsrcfyn2ecf44Xsvg_query": "<script total>\n\n\texports.name = 'TMS Example';\n\texports.icon = 'fa fa-plug';\n\texports.config = { timeout: 60000 };\n\texports.inputs = [{ id: 'input', name: 'Input' }];\n\texports.outputs = [{ id: 'output', name: 'Output' }, { id: 'error', name: 'Error' }];\n\texports.group = 'Calls';\n\texports.type = 'call';\n\texports.schemaid = ['srcfyn2ecf44', 'svg_query'];\n\n\texports.make = function(instance, config) {\n\n\t\tinstance.message = function($, client) {\n\t\t\tvar socket = instance.main.sockets['srcfyn2ecf44'];\n\t\t\tif (socket && socket.calls && socket.calls['svg_query']) {\n\n\t\t\t\tvar data = $.data;\n\n\t\t\t\t/*\n\t\t\t\t\tvar err = new ErrorBuilder();\n\t\t\t\t\tdata = framework_jsonschema.transform(schema, err, data, true);\n\n\t\t\t\t\tif (err.is) {\n\t\t\t\t\t\t$.send('error', err.toString());\n\t\t\t\t\t\treturn;\n\t\t\t\t\t}\n\n\t\t\t\t*/\n\n\t\t\t\tvar callback = function(err, response) {\n\t\t\t\t\tif (err)\n\t\t\t\t\t\t$.send('error', err);\n\t\t\t\t\telse\n\t\t\t\t\t\t$.send('output', response);\n\t\t\t\t};\n\n\t\t\t\tvar callbackid = (socket.callbackindexer++) + '';\n\n\t\t\t\tif (socket.callbackindexer > 999999999)\n\t\t\t\t\tsocket.callbackindexer = 0;\n\n\t\t\t\tsocket.callbacks[callbackid] = { callback: callback, id: setTimeout(socket.callbacktimeout, config.timeout, callbackid) };\n\t\t\t\tsocket.send({ type: 'call', id: 'svg_query', data: data, callbackid: callbackid });\n\n\t\t\t} else\n\t\t\t\t$.destroy();\n\t\t};\n\t};\n\n</script>\n\n<style>\n\t.f-calsrcfyn2ecf44Xsvg_query .url { font-size: 11px; }\n</style>\n\n<readme>\n# svg_query\n- URL address: <http://127.0.0.1:8112>\n- Channel: __call__\n- JSON schema `svg_query.json`\n- Version: 24\n\n```json\n{\n  \"$id\": \"https://schemas.totaljs.com/Svg.json\",\n  \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"stepId\": {\n      \"type\": \"string\"\n    },\n    \"flowId\": {\n      \"type\": \"string\"\n    },\n    \"stepName\": {\n      \"type\": \"string\"\n    },\n    \"path\": {\n      \"type\": \"string\"\n    },\n    \"id\": {\n      \"type\": \"string\"\n    },\n    \"dtcreated\": {\n      \"type\": \"date\"\n    },\n    \"dtupdated\": {\n      \"type\": \"date\"\n    }\n  }\n}\n```\n</readme>\n\n<body>\n\t<header>\n\t\t<div><i class=\"fa fa-plug mr5\"></i><span>TMS Example / <b>svg_query</b></span></div>\n\t\t<div class=\"url\"></div>\n\t</header>\n</body>"
+			"pubsrcfyn2ecf44Xsvg_insert": "<script total>\n\n\texports.name = 'TMS Example';\n\texports.icon = 'fas fa-broadcast-tower';\n\texports.config = {};\n\texports.outputs = [{ id: 'publish', name: 'Output' }];\n\texports.group = 'Publishers';\n\texports.type = 'pub';\n\texports.schemaid = ['srcfyn2ecf44', 'svg_insert'];\n\n\texports.make = function(instance) {\n\t\tinstance.process = function(msg, client) {\n\t\t\tinstance.send('publish', msg, client);\n\t\t};\n\t};\n\n</script>\n\n<style>\n\t.f-pubsrcfyn2ecf44Xsvg_insert .url { font-size: 11px; }\n</style>\n\n<readme>\n# svg_insert\n- URL address: <http://127.0.0.1:8112>\n- Channel: __publish__\n- JSON schema `svg_insert.json`\n- Version: 24\n\n```json\n{\n  \"$id\": \"https://schemas.totaljs.com/Svg.json\",\n  \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"stepId\": {\n      \"type\": \"string\",\n      \"$$ID\": \"stepId\",\n      \"$$REQUIRED\": false\n    },\n    \"flowId\": {\n      \"type\": \"string\",\n      \"$$ID\": \"flowId\",\n      \"$$REQUIRED\": false\n    },\n    \"stepName\": {\n      \"type\": \"string\",\n      \"$$ID\": \"stepName\",\n      \"$$REQUIRED\": false\n    },\n    \"path\": {\n      \"type\": \"string\",\n      \"$$ID\": \"path\",\n      \"$$REQUIRED\": false\n    },\n    \"id\": {\n      \"type\": \"string\",\n      \"$$ID\": \"id\",\n      \"$$REQUIRED\": false\n    },\n    \"dtcreated\": {\n      \"type\": \"date\",\n      \"$$ID\": \"dtcreated\",\n      \"$$REQUIRED\": false\n    },\n    \"dtupdated\": {\n      \"type\": \"date\",\n      \"$$ID\": \"dtupdated\",\n      \"$$REQUIRED\": false\n    }\n  }\n}\n```\n</readme>\n\n<body>\n\t<header>\n\t\t<div><i class=\"fas fa-broadcast-tower mr5\"></i><span>TMS Example / <b>svg_insert</b></span></div>\n\t\t<div class=\"url\"></div>\n\t</header>\n</body>",
+			"subsrcfyn2ecf44Xsvg_insert": "<script total>\n\n\texports.name = 'TMS Example';\n\texports.icon = 'fas fa-satellite-dish';\n\texports.group = 'Subscribers';\n\texports.config = {};\n\texports.inputs = [{ id: 'subscribe', name: 'Input' }];\n\texports.type = 'sub';\n\texports.schemaid = ['srcfyn2ecf44', 'svg_insert'];\n\n\texports.make = function(instance) {\n\t\tinstance.message = function($) {\n\t\t\tvar socket = instance.main.sockets['srcfyn2ecf44'];\n\t\t\tif (socket && socket.subscribers && socket.subscribers['svg_insert']) {\n\n\t\t\t\tvar data = $.data;\n\n\t\t\t\t/*\n\t\t\t\t\tvar err = new ErrorBuilder();\n\t\t\t\t\tdata = framework_jsonschema.transform(schema, err, data, true);\n\n\t\t\t\t\tif (err.is) {\n\t\t\t\t\t\t$.destroy();\n\t\t\t\t\t\treturn;\n\t\t\t\t\t}\n\n\t\t\t\t*/\n\n\t\t\t\tsocket.send({ type: 'subscribe', id: 'svg_insert', data: data });\n\t\t\t}\n\t\t\t$.destroy();\n\t\t};\n\t};\n\n</script>\n\n<style>\n\t.f-subsrcfyn2ecf44Xsvg_insert .url { font-size: 11px; }\n</style>\n\n<readme>\n# svg_insert\n- URL address: <http://127.0.0.1:8112>\n- Channel: __subscribe__\n- JSON schema `svg_insert.json`\n- Version: 24\n\n```json\n{\n  \"id\": \"svg_insert\",\n  \"schema\": {\n    \"$id\": \"https://schemas.totaljs.com/Svg.json\",\n    \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n    \"type\": \"object\",\n    \"properties\": {\n      \"stepId\": {\n        \"type\": \"string\",\n        \"$$ID\": \"stepId\",\n        \"$$REQUIRED\": false\n      },\n      \"flowId\": {\n        \"type\": \"string\",\n        \"$$ID\": \"flowId\",\n        \"$$REQUIRED\": false\n      },\n      \"stepName\": {\n        \"type\": \"string\",\n        \"$$ID\": \"stepName\",\n        \"$$REQUIRED\": false\n      },\n      \"path\": {\n        \"type\": \"string\",\n        \"$$ID\": \"path\",\n        \"$$REQUIRED\": false\n      },\n      \"id\": {\n        \"type\": \"string\",\n        \"$$ID\": \"id\",\n        \"$$REQUIRED\": false\n      },\n      \"dtcreated\": {\n        \"type\": \"date\",\n        \"$$ID\": \"dtcreated\",\n        \"$$REQUIRED\": false\n      },\n      \"dtupdated\": {\n        \"type\": \"date\",\n        \"$$ID\": \"dtupdated\",\n        \"$$REQUIRED\": false\n      }\n    }\n  }\n}\n```\n</readme>\n\n<body>\n\t<header>\n\t\t<div><i class=\"fas fa-satellite-dish mr5\"></i><span>TMS Example / <b>svg_insert</b></span></div>\n\t\t<div class=\"url\"></div>\n\t</header>\n</body>",
+			"calsrcfyn2ecf44Xsvg_query": "<script total>\n\n\texports.name = 'TMS Example';\n\texports.icon = 'fa fa-plug';\n\texports.config = { timeout: 60000 };\n\texports.inputs = [{ id: 'input', name: 'Input' }];\n\texports.outputs = [{ id: 'output', name: 'Output' }, { id: 'error', name: 'Error' }];\n\texports.group = 'Calls';\n\texports.type = 'call';\n\texports.schemaid = ['srcfyn2ecf44', 'svg_query'];\n\n\texports.make = function(instance, config) {\n\n\t\tinstance.message = function($, client) {\n\t\t\tvar socket = instance.main.sockets['srcfyn2ecf44'];\n\t\t\tif (socket && socket.calls && socket.calls['svg_query']) {\n\n\t\t\t\tvar data = $.data;\n\n\t\t\t\t/*\n\t\t\t\t\tvar err = new ErrorBuilder();\n\t\t\t\t\tdata = framework_jsonschema.transform(schema, err, data, true);\n\n\t\t\t\t\tif (err.is) {\n\t\t\t\t\t\t$.send('error', err.toString());\n\t\t\t\t\t\treturn;\n\t\t\t\t\t}\n\n\t\t\t\t*/\n\n\t\t\t\tvar callback = function(err, response) {\n\t\t\t\t\tif (err)\n\t\t\t\t\t\t$.send('error', err);\n\t\t\t\t\telse\n\t\t\t\t\t\t$.send('output', response);\n\t\t\t\t};\n\n\t\t\t\tvar callbackid = (socket.callbackindexer++) + '';\n\n\t\t\t\tif (socket.callbackindexer > 999999999)\n\t\t\t\t\tsocket.callbackindexer = 0;\n\n\t\t\t\tsocket.callbacks[callbackid] = { callback: callback, id: setTimeout(socket.callbacktimeout, config.timeout, callbackid) };\n\t\t\t\tsocket.send({ type: 'call', id: 'svg_query', data: data, callbackid: callbackid });\n\n\t\t\t} else\n\t\t\t\t$.destroy();\n\t\t};\n\t};\n\n</script>\n\n<style>\n\t.f-calsrcfyn2ecf44Xsvg_query .url { font-size: 11px; }\n</style>\n\n<readme>\n# svg_query\n- URL address: <http://127.0.0.1:8112>\n- Channel: __call__\n- JSON schema `svg_query.json`\n- Version: 24\n\n```json\n{\n  \"$id\": \"https://schemas.totaljs.com/Svg.json\",\n  \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"stepId\": {\n      \"type\": \"string\",\n      \"$$ID\": \"stepId\",\n      \"$$REQUIRED\": false\n    },\n    \"flowId\": {\n      \"type\": \"string\",\n      \"$$ID\": \"flowId\",\n      \"$$REQUIRED\": false\n    },\n    \"stepName\": {\n      \"type\": \"string\",\n      \"$$ID\": \"stepName\",\n      \"$$REQUIRED\": false\n    },\n    \"path\": {\n      \"type\": \"string\",\n      \"$$ID\": \"path\",\n      \"$$REQUIRED\": false\n    },\n    \"id\": {\n      \"type\": \"string\",\n      \"$$ID\": \"id\",\n      \"$$REQUIRED\": false\n    },\n    \"dtcreated\": {\n      \"type\": \"date\",\n      \"$$ID\": \"dtcreated\",\n      \"$$REQUIRED\": false\n    },\n    \"dtupdated\": {\n      \"type\": \"date\",\n      \"$$ID\": \"dtupdated\",\n      \"$$REQUIRED\": false\n    }\n  }\n}\n```\n</readme>\n\n<body>\n\t<header>\n\t\t<div><i class=\"fa fa-plug mr5\"></i><span>TMS Example / <b>svg_query</b></span></div>\n\t\t<div class=\"url\"></div>\n\t</header>\n</body>"
 		},
 		"design": {
 			"il6n4y08m": {
@@ -1390,7 +1411,7 @@
 					"host": "localhost"
 				},
 				"x": 157,
-				"y": 82,
+				"y": 81,
 				"component": "cp4jz5dbcd",
 				"connections": {
 					"output": [
@@ -1779,6 +1800,30 @@
 						}
 					]
 				}
+			},
+			"il844onaf": {
+				"id": "il844onaf",
+				"config": {
+					"random": true,
+					"type": "string",
+					"data": "",
+					"restart": false
+				},
+				"x": 85,
+				"y": 378,
+				"component": "cyejp563cd",
+				"connections": {},
+				"template": {
+					"icon": "fa fa-bullhorn",
+					"group": "Triggers",
+					"name": "Trigger",
+					"outputs": [
+						{
+							"id": "output",
+							"name": "Output"
+						}
+					]
+				}
 			}
 		},
 		"variables": {},
@@ -1799,25 +1844,39 @@
 								"type": "object",
 								"properties": {
 									"stepId": {
-										"type": "string"
+										"type": "string",
+										"$$ID": "stepId",
+										"$$REQUIRED": false
 									},
 									"flowId": {
-										"type": "string"
+										"type": "string",
+										"$$ID": "flowId",
+										"$$REQUIRED": false
 									},
 									"stepName": {
-										"type": "string"
+										"type": "string",
+										"$$ID": "stepName",
+										"$$REQUIRED": false
 									},
 									"path": {
-										"type": "string"
+										"type": "string",
+										"$$ID": "path",
+										"$$REQUIRED": false
 									},
 									"id": {
-										"type": "string"
+										"type": "string",
+										"$$ID": "id",
+										"$$REQUIRED": false
 									},
 									"dtcreated": {
-										"type": "date"
+										"type": "date",
+										"$$ID": "dtcreated",
+										"$$REQUIRED": false
 									},
 									"dtupdated": {
-										"type": "date"
+										"type": "date",
+										"$$ID": "dtupdated",
+										"$$REQUIRED": false
 									}
 								}
 							}
@@ -1882,32 +1941,46 @@
 								"type": "object",
 								"properties": {
 									"stepId": {
-										"type": "string"
+										"type": "string",
+										"$$ID": "stepId",
+										"$$REQUIRED": false
 									},
 									"flowId": {
-										"type": "string"
+										"type": "string",
+										"$$ID": "flowId",
+										"$$REQUIRED": false
 									},
 									"stepName": {
-										"type": "string"
+										"type": "string",
+										"$$ID": "stepName",
+										"$$REQUIRED": false
 									},
 									"path": {
-										"type": "string"
+										"type": "string",
+										"$$ID": "path",
+										"$$REQUIRED": false
 									},
 									"id": {
-										"type": "string"
+										"type": "string",
+										"$$ID": "id",
+										"$$REQUIRED": false
 									},
 									"dtcreated": {
-										"type": "date"
+										"type": "date",
+										"$$ID": "dtcreated",
+										"$$REQUIRED": false
 									},
 									"dtupdated": {
-										"type": "date"
+										"type": "date",
+										"$$ID": "dtupdated",
+										"$$REQUIRED": false
 									}
 								}
 							}
 						}
 					]
 				},
-				"checksum": "32520603481",
+				"checksum": "35444233651",
 				"restart": false,
 				"error": 0,
 				"init": true,
@@ -1917,7 +1990,7 @@
 		},
 		"origin": "http://localhost:8111",
 		"dtcreated": "2022-08-10T04:16:32.454Z",
-		"size": 57019
+		"size": 59071
 	},
 	"ft0tj001bu41d": {
 		"paused": false,
@@ -2518,9 +2591,413 @@
 		},
 		"origin": "http://localhost:8111",
 		"dtcreated": "2022-08-29T07:06:40.762Z",
-		"size": 79730,
+		"size": 79780,
 		"variables2": {},
-		"directory": "./database",
+		"directory": "C:\\Projects\\typerefinery\\services\\totaljs-flow\\database",
+		"sandbox": false
+	},
+	"ftjpt001ce41d": {
+		"id": "ftjpt001ce41d",
+		"name": "dsvrfe",
+		"author": "typerefinery",
+		"version": "1.0",
+		"icon": "fa fa-satellite",
+		"reference": "dsvrfe",
+		"group": "typerefinery",
+		"url": "https://localhost",
+		"color": "#61C83B",
+		"readme": "Typerefinery flow",
+		"proxypath": "",
+		"design": {},
+		"components": {},
+		"variables": {},
+		"sources": {},
+		"dtcreated": "2022-09-15T07:16:49.713Z",
+		"variables2": {},
+		"directory": "C:\\Projects\\typerefinery\\services\\totaljs-flow\\database",
+		"sandbox": false,
+		"size": 527
+	},
+	"ftjpu001ce41d": {
+		"id": "ftjpu001ce41d",
+		"name": "ixibwwc",
+		"author": "typerefinery",
+		"version": "1.0",
+		"icon": "fa fa-satellite",
+		"reference": "ixibwwc",
+		"group": "typerefinery",
+		"url": "https://localhost",
+		"color": "#61C83B",
+		"readme": "Typerefinery flow",
+		"proxypath": "",
+		"design": {},
+		"components": {},
+		"variables": {},
+		"sources": {},
+		"dtcreated": "2022-09-15T07:17:49.836Z",
+		"variables2": {},
+		"directory": "C:\\Projects\\typerefinery\\services\\totaljs-flow\\database",
+		"sandbox": false,
+		"size": 529
+	},
+	"ftjpu002ce40d": {
+		"paused": false,
+		"id": "ftjpu002ce40d",
+		"reference": "urgzn",
+		"author": "typerefinery",
+		"group": "typerefinery",
+		"icon": "fa fa-satellite",
+		"color": "#61C83B",
+		"version": "1.0",
+		"readme": "Typerefinery flow",
+		"url": "https://localhost",
+		"name": "urgzn",
+		"components": {},
+		"design": {},
+		"variables": {},
+		"sources": {},
+		"proxypath": "",
+		"origin": "http://localhost:8111",
+		"dtcreated": "2022-09-15T07:18:08.620Z",
+		"size": 573,
+		"variables2": {},
+		"directory": "C:\\Projects\\typerefinery\\services\\totaljs-flow\\database",
+		"sandbox": false
+	},
+	"ftjqz001ce41d": {
+		"id": "ftjqz001ce41d",
+		"name": "My Flow",
+		"author": "typerefinery",
+		"version": "1.0",
+		"icon": "fa fa-satellite",
+		"reference": "kmxkcmmd",
+		"group": "typerefinery",
+		"url": "https://localhost",
+		"color": "#61C83B",
+		"readme": "Typerefinery flow",
+		"proxypath": "",
+		"design": {},
+		"components": {},
+		"variables": {},
+		"sources": {},
+		"dtcreated": "2022-09-15T07:58:50.191Z",
+		"variables2": {},
+		"directory": "C:\\Projects\\typerefinery\\services\\totaljs-flow\\database",
+		"sandbox": false,
+		"size": 530
+	},
+	"ftjr1001ce41d": {
+		"id": "ftjr1001ce41d",
+		"name": "My flow",
+		"author": "typerefinery",
+		"version": "1.0",
+		"icon": "fa fa-satellite",
+		"reference": "upeaukd",
+		"group": "typerefinery",
+		"url": "https://localhost",
+		"color": "#61C83B",
+		"readme": "Typerefinery flow",
+		"proxypath": "",
+		"design": {},
+		"components": {},
+		"variables": {},
+		"sources": {},
+		"dtcreated": "2022-09-15T08:00:50.210Z",
+		"variables2": {},
+		"directory": "C:\\Projects\\typerefinery\\services\\totaljs-flow\\database",
+		"sandbox": false,
+		"size": 529
+	},
+	"ftjr6001ce41d": {
+		"paused": false,
+		"id": "ftjr6001ce41d",
+		"reference": "ftqn",
+		"author": "typerefinery",
+		"group": "typerefinery",
+		"icon": "fa fa-satellite",
+		"color": "#61C83B",
+		"version": "1.0",
+		"readme": "Typerefinery flow",
+		"url": "https://localhost",
+		"name": "asdf",
+		"components": {},
+		"design": {},
+		"variables": {},
+		"sources": {},
+		"proxypath": "",
+		"origin": "http://localhost:8111",
+		"dtcreated": "2022-09-15T08:05:50.232Z",
+		"size": 571,
+		"variables2": {},
+		"directory": "C:\\Projects\\typerefinery\\services\\totaljs-flow\\database",
+		"sandbox": false
+	},
+	"ftjtl001ce41d": {
+		"paused": false,
+		"id": "ftjtl001ce41d",
+		"reference": "jpwlucv",
+		"author": "typerefinery",
+		"group": "typerefinery",
+		"icon": "fa fa-satellite",
+		"color": "#61C83B",
+		"version": "1.0",
+		"readme": "Typerefinery flow",
+		"url": "https://localhost",
+		"name": "My Workflow",
+		"components": {},
+		"design": {},
+		"variables": {},
+		"sources": {},
+		"proxypath": "",
+		"origin": "http://localhost:8111",
+		"dtcreated": "2022-09-15T09:32:50.910Z",
+		"size": 581,
+		"variables2": {},
+		"directory": "C:\\Projects\\typerefinery\\services\\totaljs-flow\\database",
+		"sandbox": false
+	},
+	"ftju4001ce41d": {
+		"id": "ftju4001ce41d",
+		"name": "asdf",
+		"author": "typerefinery",
+		"version": "1.0",
+		"icon": "fa fa-satellite",
+		"reference": "pikdxu",
+		"group": "typerefinery",
+		"url": "https://localhost",
+		"color": "#61C83B",
+		"readme": "Typerefinery flow",
+		"proxypath": "",
+		"design": {},
+		"components": {},
+		"variables": {},
+		"sources": {},
+		"dtcreated": "2022-09-15T09:51:51.027Z",
+		"variables2": {},
+		"directory": "C:\\Projects\\typerefinery\\services\\totaljs-flow\\database",
+		"sandbox": false,
+		"size": 525
+	},
+	"ftju9001ce41d": {
+		"id": "ftju9001ce41d",
+		"name": "dsf",
+		"author": "typerefinery",
+		"version": "1.0",
+		"icon": "fa fa-satellite",
+		"reference": "addyg",
+		"group": "typerefinery",
+		"url": "https://localhost",
+		"color": "#61C83B",
+		"readme": "Typerefinery flow",
+		"proxypath": "",
+		"design": {},
+		"components": {},
+		"variables": {},
+		"sources": {},
+		"dtcreated": "2022-09-15T09:56:51.063Z",
+		"variables2": {},
+		"directory": "C:\\Projects\\typerefinery\\services\\totaljs-flow\\database",
+		"sandbox": false,
+		"size": 523
+	},
+	"ftju9002ce40d": {
+		"id": "ftju9002ce40d",
+		"name": "hgf",
+		"author": "typerefinery",
+		"version": "1.0",
+		"icon": "fa fa-satellite",
+		"reference": "imcyol",
+		"group": "typerefinery",
+		"url": "https://localhost",
+		"color": "#61C83B",
+		"readme": "Typerefinery flow",
+		"proxypath": "",
+		"design": {},
+		"components": {},
+		"variables": {},
+		"sources": {},
+		"dtcreated": "2022-09-15T09:57:02.913Z",
+		"variables2": {},
+		"directory": "C:\\Projects\\typerefinery\\services\\totaljs-flow\\database",
+		"sandbox": false,
+		"size": 524
+	},
+	"ftjv3001ce41d": {
+		"id": "ftjv3001ce41d",
+		"name": "erw",
+		"author": "typerefinery",
+		"version": "1.0",
+		"icon": "fa fa-satellite",
+		"reference": "izbmhcg",
+		"group": "typerefinery",
+		"url": "https://localhost",
+		"color": "#61C83B",
+		"readme": "Typerefinery flow",
+		"proxypath": "",
+		"design": {},
+		"components": {},
+		"variables": {},
+		"sources": {},
+		"dtcreated": "2022-09-15T10:26:51.286Z",
+		"variables2": {},
+		"directory": "C:\\Projects\\typerefinery\\services\\totaljs-flow\\database",
+		"sandbox": false,
+		"size": 525
+	},
+	"ftjv4001ce41d": {
+		"id": "ftjv4001ce41d",
+		"name": "asfd",
+		"author": "typerefinery",
+		"version": "1.0",
+		"icon": "fa fa-satellite",
+		"reference": "zdarmhr",
+		"group": "typerefinery",
+		"url": "https://localhost",
+		"color": "#61C83B",
+		"readme": "Typerefinery flow",
+		"proxypath": "",
+		"design": {},
+		"components": {},
+		"variables": {},
+		"sources": {},
+		"dtcreated": "2022-09-15T10:27:51.300Z",
+		"variables2": {},
+		"directory": "C:\\Projects\\typerefinery\\services\\totaljs-flow\\database",
+		"sandbox": false,
+		"size": 526
+	},
+	"ftjv4002ce40d": {
+		"id": "ftjv4002ce40d",
+		"name": "vasd",
+		"author": "typerefinery",
+		"version": "1.0",
+		"icon": "fa fa-satellite",
+		"reference": "qgqjkwz",
+		"group": "typerefinery",
+		"url": "https://localhost",
+		"color": "#61C83B",
+		"readme": "Typerefinery flow",
+		"proxypath": "",
+		"design": {},
+		"components": {},
+		"variables": {},
+		"sources": {},
+		"dtcreated": "2022-09-15T10:28:12.019Z",
+		"variables2": {},
+		"directory": "C:\\Projects\\typerefinery\\services\\totaljs-flow\\database",
+		"sandbox": false,
+		"size": 526
+	},
+	"ftjv9001ce41d": {
+		"id": "ftjv9001ce41d",
+		"name": "asdf",
+		"author": "typerefinery",
+		"version": "1.0",
+		"icon": "fa fa-satellite",
+		"reference": "rofr",
+		"group": "typerefinery",
+		"url": "https://localhost",
+		"color": "#61C83B",
+		"readme": "Typerefinery flow",
+		"proxypath": "",
+		"design": {},
+		"components": {},
+		"variables": {},
+		"sources": {},
+		"dtcreated": "2022-09-15T10:32:51.346Z",
+		"variables2": {},
+		"directory": "C:\\Projects\\typerefinery\\services\\totaljs-flow\\database",
+		"sandbox": false,
+		"size": 523
+	},
+	"ftjvh001ce41d": {
+		"id": "ftjvh001ce41d",
+		"name": "asfd",
+		"author": "typerefinery",
+		"version": "1.0",
+		"icon": "fa fa-satellite",
+		"reference": "aqrzohi",
+		"group": "typerefinery",
+		"url": "https://localhost",
+		"color": "#61C83B",
+		"readme": "Typerefinery flow",
+		"proxypath": "",
+		"design": {},
+		"components": {},
+		"variables": {},
+		"sources": {},
+		"dtcreated": "2022-09-15T10:40:51.422Z",
+		"variables2": {},
+		"directory": "C:\\Projects\\typerefinery\\services\\totaljs-flow\\database",
+		"sandbox": false,
+		"size": 526
+	},
+	"ftjvi001ce41d": {
+		"id": "ftjvi001ce41d",
+		"name": "asdf",
+		"author": "typerefinery",
+		"version": "1.0",
+		"icon": "fa fa-satellite",
+		"reference": "xvxovyv",
+		"group": "typerefinery",
+		"url": "https://localhost",
+		"color": "#61C83B",
+		"readme": "Typerefinery flow",
+		"proxypath": "",
+		"design": {},
+		"components": {},
+		"variables": {},
+		"sources": {},
+		"dtcreated": "2022-09-15T10:41:51.437Z",
+		"variables2": {},
+		"directory": "C:\\Projects\\typerefinery\\services\\totaljs-flow\\database",
+		"sandbox": false,
+		"size": 526
+	},
+	"ftjvl001ce41d": {
+		"id": "ftjvl001ce41d",
+		"name": "sdaff",
+		"author": "typerefinery",
+		"version": "1.0",
+		"icon": "fa fa-satellite",
+		"reference": "uxlat",
+		"group": "typerefinery",
+		"url": "https://localhost",
+		"color": "#61C83B",
+		"readme": "Typerefinery flow",
+		"proxypath": "",
+		"design": {},
+		"components": {},
+		"variables": {},
+		"sources": {},
+		"dtcreated": "2022-09-15T10:44:51.474Z",
+		"variables2": {},
+		"directory": "C:\\Projects\\typerefinery\\services\\totaljs-flow\\database",
+		"sandbox": false,
+		"size": 525
+	},
+	"ftks1001hi41d": {
+		"paused": false,
+		"id": "ftks1001hi41d",
+		"reference": "wbei",
+		"author": "typerefinery",
+		"group": "typerefinery",
+		"icon": "fa fa-satellite",
+		"color": "#61C83B",
+		"version": "1.0",
+		"readme": "Typerefinery flow",
+		"url": "https://localhost",
+		"name": "Workflow",
+		"components": {},
+		"design": {},
+		"variables": {},
+		"sources": {},
+		"proxypath": "",
+		"origin": "http://localhost:8111",
+		"dtcreated": "2022-09-16T06:13:01.325Z",
+		"size": 575,
+		"variables2": {},
+		"directory": "C:\\Projects\\typerefinery\\services\\totaljs-flow\\database",
 		"sandbox": false
 	}
 }

@@ -9,6 +9,7 @@
       <span class="p-dialog-title">
         {{ $t("components.dialog.projects.header") }}</span
       >
+      <p v-if="showError" :style="{ color: '#f44336' }">{{ error }}</p>
       <div class="p-dialog-header-icons">
         <button
           class="p-dialog-header-icon p-dialog-header-close p-link"
@@ -39,42 +40,115 @@
         >
       </div>
       <div class="field">
-        <label
-          for="description"
-          :class="{ 'p-error': v$.description.$invalid && submitted }"
+        <label for="description">
+          {{ $t("components.dialog.projects.info.description") }}</label
         >
-          {{ $t("components.dialog.projects.info.description") + "*" }}</label
+        <InputText id="description" v-model="description" />
+      </div>
+      <div class="field">
+        <label for="icon">
+          {{ $t("components.dialog.projects.info.icon") }}</label
+        >
+        <InputText id="icon" v-model="icon" />
+      </div>
+      <div class="field">
+        <label
+          for="flowName"
+          :class="{ 'p-error': v$.flowName.$invalid && submitted }"
+        >
+          {{ $t("components.dialog.projects.info.flowName") + "*" }}</label
         >
         <InputText
-          id="description"
-          v-model="v$.description.$model"
-          :class="{ 'p-invalid': v$.description.$invalid && submitted }"
+          id="flowName"
+          v-model="v$.flowName.$model"
+          :class="{ 'p-invalid': v$.flowName.$invalid && submitted }"
         />
         <small
           v-if="
-            (v$.description.$invalid && submitted) ||
-            v$.description.$pending.$response
+            (v$.flowName.$invalid && submitted) ||
+            v$.flowName.$pending.$response
           "
           class="p-error"
           >{{
-            v$.description.required.$message.replace("Value", "Description")
+            v$.flowName.required.$message.replace("Value", "Flow Id")
           }}</small
         >
       </div>
+    </Panel>
+    <Panel header="Connections" class="mt-3">
       <div class="field">
-        <label for="icon" :class="{ 'p-error': v$.icon.$invalid && submitted }">
-          {{ $t("components.dialog.projects.info.icon") + "*" }}</label
+        <label for="host" :class="{ 'p-error': v$.host.$invalid && submitted }">
+          {{ $t("components.dialog.connections.info.host") + "*" }}</label
         >
         <InputText
-          id="icon"
-          v-model="v$.icon.$model"
-          :class="{ 'p-invalid': v$.icon.$invalid && submitted }"
+          id="host"
+          v-model="v$.host.$model"
+          :class="{ 'p-invalid': v$.host.$invalid && submitted }"
         />
         <small
-          v-if="(v$.icon.$invalid && submitted) || v$.icon.$pending.$response"
+          v-if="(v$.host.$invalid && submitted) || v$.host.$pending.$response"
           class="p-error"
-          >{{ v$.icon.required.$message.replace("Value", "Icon") }}</small
+          >{{ v$.host.required.$message.replace("Value", "Host") }}</small
         >
+      </div>
+      <div class="field">
+        <label for="port" :class="{ 'p-error': v$.port.$invalid && submitted }">
+          {{ $t("components.dialog.connections.info.port") + "*" }}</label
+        >
+        <InputText
+          id="port"
+          v-model="v$.port.$model"
+          :class="{ 'p-invalid': v$.port.$invalid && submitted }"
+        />
+        <small
+          v-if="(v$.port.$invalid && submitted) || v$.port.$pending.$response"
+          class="p-error"
+          >{{ v$.port.required.$message.replace("Value", "Port") }}</small
+        >
+      </div>
+      <div class="field">
+        <label
+          for="database"
+          :class="{ 'p-error': v$.database.$invalid && submitted }"
+        >
+          {{ $t("components.dialog.connections.info.database") + "*" }}</label
+        >
+        <InputText
+          id="database"
+          v-model="v$.database.$model"
+          :class="{ 'p-invalid': v$.database.$invalid && submitted }"
+        />
+        <small
+          v-if="
+            (v$.database.$invalid && submitted) ||
+            v$.database.$pending.$response
+          "
+          class="p-error"
+          >{{
+            v$.database.required.$message.replace("Value", "Database")
+          }}</small
+        >
+      </div>
+    </Panel>
+    <Panel
+      :header="$t(`components.dialog.new-query.panel2.query`)"
+      class="mt-3"
+    >
+      <div class="field">
+        <!--  <InputText
+          id="query"
+          v-model="v$.query.$model"
+          :class="{ 'p-invalid': v$.query.$invalid && submitted }"
+        /> -->
+        <codemirror
+          v-model="query"
+          placeholder="Code goes here..."
+          :style="{ height: '20vh' }"
+          :autofocus="true"
+          :indent-with-tab="true"
+          :tab-size="2"
+          :extensions="extensions"
+        />
       </div>
     </Panel>
     <template #footer>
@@ -86,7 +160,8 @@
       />
       <Button
         :label="$t(`components.dialog.projects.info.save`)"
-        icon="pi pi-check"
+        :icon="`pi ${loading ? 'pi-spin pi-spinner' : 'pi-check'}`"
+        :style="{ 'pointer-events': loading ? 'none' : 'auto' }"
         autofocus
         @click="handleProjectstore(!v$.$invalid)"
       />
@@ -99,13 +174,19 @@
   import { required } from "@vuelidate/validators"
   import { useVuelidate } from "@vuelidate/core"
   import { getRandomId } from "@/utils"
+  import { Codemirror } from "vue-codemirror"
+  import { oneDark } from "@codemirror/theme-one-dark"
+  import { javascript } from "@codemirror/lang-javascript"
   import axios from "axios"
   import Dialog from "primevue/dialog"
   import Panel from "primevue/panel"
   import InputText from "primevue/inputtext"
   import Button from "primevue/button"
   import Projects from "@/store/Modules/Projects"
+  import Settings from "@/store/Modules/Settings"
+  const settingsModule = getModule(Settings)
   const projectsModule = getModule(Projects)
+  import themesData from "@/data/theme.json"
 
   export default {
     name: "NewProject",
@@ -114,6 +195,7 @@
       Panel,
       InputText,
       Button,
+      Codemirror,
     },
     props: {
       projectdialog: { type: Boolean, default: false },
@@ -127,107 +209,180 @@
         expanded: "",
         description: "",
         icon: "",
+        database: "",
+        port: "",
+        host: "",
+        query: "",
+        flowName: "",
         display: true,
         submitted: false,
         displayModal: true,
+        loading: false,
+        showError: false,
+        error: "Something went wrong!",
       }
     },
     // setup: () => ({ v$: useVuelidate() }),
     validations() {
       return {
         name: { required },
-        description: { required },
-        icon: { required },
+        host: { required },
+        port: { required },
+        database: { required },
+        flowName: { required },
       }
+    },
+    computed: {
+      extensions() {
+        return settingsModule.data.theme === "dark"
+          ? [javascript(), oneDark]
+          : [javascript()]
+      },
     },
     methods: {
       closeDialog() {
         this.$emit("close")
       },
       async handleProjectstore(isFormValid) {
-        const data = {
-          type: "project",
-          id: getRandomId(),
-          label: this.name,
-          description: this.description,
-          icon: this.icon,
-          connections: {
-            type: "connections",
-            icon: "",
-            list: [],
-          },
-          queries: {
-            type: "queries",
-            icon: "",
-            list: [],
-          },
-          themes: {
-            type: "themes",
-            icon: "",
-            list: [],
-          },
-          wirings: {
-            type: "themes",
-            icon: "",
-            list: [],
-            outputs: {
-              type: "outputs",
-              icon: "",
-              list: [],
-            },
-          },
-          // transformers: {
-          //   type: "tranformers",
-          //   icon: "",
-          //   expanded: false,
-          //   list: [],
-          // },
-          // algorithms: {
-          //   type: "algorithms",
-          //   icon: "",
-          //   expanded: false,
-          //   list: [],
-          // },
-        }
+        const projectId = getRandomId()
         this.submitted = true
-
         // stop here if form is invalid
-
         if (!isFormValid) {
           return
         }
-        await this.createInitialData(data.id)
-        projectsModule.addNewProject(data)
-        this.$emit("close")
+        this.loading = true
+        await this.createInitialData(projectId)
       },
+
       async createInitialData(id) {
         try {
-          const payload = {
-            schema: "streams_save",
-            data: {
-              icon: "fas fa-microchip",
-              url: "https://",
-              name: id,
-            },
+          // create project, connection & query
+          const project = {
+            projectid: id,
+            name: this.name,
+            description: this.description,
+            icon: this.icon,
+            data: "",
           }
-          const { data } = axios.post("http://localhost:8111/api/", payload, {
-            headers: { "Access-Control-Allow-Origin": "http://localhost:3000" },
-          })
-          console.log(data, "create")
-          if (data.success) {
-            const { data } = axios.post(
-              "http://localhost:8111/api/",
-              {
-                schema: "streams",
-              },
-              {
-                headers: { "Access-Control-Allow-Origin": "*" },
-              }
-            )
-            console.log(data, "all")
+          const connection = {
+            connectionid: "connection1",
+            projectid: id,
+            label: "Connection 1",
+            icon: "Connection 1",
+            type: "connection",
+            scope: "local",
+            description: "",
+            port: this.port,
+            host: this.host,
+            database: this.database,
           }
+          const query = {
+            queryid: "query1",
+            projectid: id,
+            connectionid: "connection1",
+            scope: "local",
+            icon: "query",
+            label: "Query 1",
+            description: "",
+            type: "query",
+            query: this.query,
+            data: "",
+          }
+          const baseURL = "http://localhost:8000/datastore/"
+          await axios.all([
+            axios.post(`${baseURL}project`, project),
+            axios.post(`${baseURL}connection`, connection),
+            axios.post(`${baseURL}query`, query),
+          ])
+          await this.createFlow(id)
         } catch (err) {
           console.log(err)
+          this.loading = false
+          this.showError = true
+        }
+      },
+
+      async createFlow(id) {
+        try {
+          const payload = {
+            icon: "fa fa-satellite",
+            url: "https://localhost",
+            name: this.flowName,
+            group: "typerefinery",
+            reference: id,
+            version: "1.0",
+            author: "typerefinery",
+            color: "#61C83B",
+            readme: "Typerefinery flow",
+          }
+          const url = "http://localhost:8000/flow/create"
+          const { data } = await axios.post(url, payload)
+
+          const connection = {
+            type: "connection",
+            id: "connection1",
+            label: "Connection 1",
+            icon: "Connection 1",
+            scope: "local",
+            description: "",
+            port: this.port,
+            host: this.host,
+            database: this.database,
+          }
+          const projectData = {
+            type: "project",
+            id: id,
+            label: this.name,
+            description: this.description,
+            icon: this.icon,
+            connections: {
+              type: "connections",
+              icon: "",
+              list: [connection],
+            },
+            queries: {
+              type: "queries",
+              icon: "",
+              list: [
+                {
+                  type: "query",
+                  id: "query1",
+                  label: "Query 1",
+                  icon: "Query 1",
+                  description: "",
+                  query: this.query,
+                  connection,
+                },
+              ],
+            },
+            themes: themesData,
+            wirings: {
+              type: "wirings",
+              icon: "",
+              list: [
+                {
+                  type: "wiring",
+                  id: data.id,
+                  label: this.flowName,
+                  icon: "Log_ForceGraph",
+                  description: "",
+                },
+              ],
+              outputs: {
+                type: "outputs",
+                icon: "",
+                list: [],
+              },
+            },
+          }
+          projectsModule.addNewProject(projectData)
+          this.$emit("close")
+          this.loading = false
+          this.showError = false
+        } catch (err) {
+          console.log(err)
+          this.loading = false
+          this.showError = true
         }
       },
     },

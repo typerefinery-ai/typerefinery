@@ -99,7 +99,8 @@
           "description": "विवरण",
           "icon": "आइकन",
           "cancel": "रद्द करना",
-          "save": "सेव करे"
+          "save": "सेव करे",
+          "flowName": "कार्यप्रवाह नाम"
         }
       },
       "connections": {
