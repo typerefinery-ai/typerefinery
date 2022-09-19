@@ -51,7 +51,7 @@
         >
         <InputText id="icon" v-model="icon" />
       </div>
-      <div class="field">
+      <!-- <div class="field">
         <label
           for="flowName"
           :class="{ 'p-error': v$.flowName.$invalid && submitted }"
@@ -73,15 +73,15 @@
             v$.flowName.required.$message.replace("Value", "Flow Id")
           }}</small
         >
-      </div>
+      </div> -->
     </Panel>
     <Panel header="Connections" class="mt-3">
       <div class="field">
-        <label for="host" :class="{ 'p-error': v$.host.$invalid && submitted }">
-          {{ $t("components.dialog.connections.info.host") + "*" }}</label
+        <label for="uri" :class="{ 'p-error': v$.host.$invalid && submitted }">
+          {{ $t("components.dialog.connections.info.uri") + "*" }}</label
         >
         <InputText
-          id="host"
+          id="uri"
           v-model="v$.host.$model"
           :class="{ 'p-invalid': v$.host.$invalid && submitted }"
         />
@@ -173,7 +173,7 @@
   import { getModule } from "vuex-module-decorators"
   import { required } from "@vuelidate/validators"
   import { useVuelidate } from "@vuelidate/core"
-  import { getRandomId } from "@/utils"
+  import { nanoid } from "nanoid"
   import { Codemirror } from "vue-codemirror"
   import { oneDark } from "@codemirror/theme-one-dark"
   import { javascript } from "@codemirror/lang-javascript"
@@ -205,15 +205,15 @@
     data() {
       return {
         type: "",
-        name: "",
+        name: "Project",
         expanded: "",
         description: "",
         icon: "",
-        database: "",
-        port: "",
-        host: "",
-        query: "",
-        flowName: "",
+        database: "typerefinery",
+        port: "1729",
+        host: "localhost",
+        query: "match\n   $a isa thing;",
+        // flowName: "",
         display: true,
         submitted: false,
         displayModal: true,
@@ -229,7 +229,7 @@
         host: { required },
         port: { required },
         database: { required },
-        flowName: { required },
+        // flowName: { required },
       }
     },
     computed: {
@@ -244,31 +244,56 @@
         this.$emit("close")
       },
       async handleProjectstore(isFormValid) {
-        const projectId = getRandomId()
+        const projectId = nanoid(14)
         this.submitted = true
         // stop here if form is invalid
         if (!isFormValid) {
           return
         }
         this.loading = true
-        await this.createInitialData(projectId)
+        await this.createFlow(projectId)
       },
 
-      async createInitialData(id) {
+      async createFlow(projectId) {
+        try {
+          const payload = {
+            icon: "fa fa-satellite",
+            url: "https://localhost",
+            name: "Workflow",
+            group: "typerefinery",
+            reference: projectId,
+            version: "1.0",
+            author: "typerefinery",
+            color: "#61C83B",
+            readme: "Typerefinery flow",
+          }
+          const url = "http://localhost:8000/flow/create"
+          const { data } = await axios.post(url, payload)
+
+          this.createInitialData(projectId, data.id)
+        } catch (err) {
+          console.log(err)
+          this.loading = false
+          this.showError = true
+        }
+      },
+
+      async createInitialData(projectid, flowid) {
         try {
           // create project, connection & query
           const project = {
-            projectid: id,
+            projectid,
             name: this.name,
             description: this.description,
             icon: this.icon,
             data: "",
+            flowid,
           }
           const connection = {
-            connectionid: "connection1",
-            projectid: id,
-            label: "Connection 1",
-            icon: "Connection 1",
+            connectionid: projectid + "_con",
+            projectid,
+            label: "Connection",
+            icon: "Connection",
             type: "connection",
             scope: "local",
             description: "",
@@ -277,12 +302,12 @@
             database: this.database,
           }
           const query = {
-            queryid: "query1",
-            projectid: id,
-            connectionid: "connection1",
+            queryid: projectid + "_query",
+            projectid,
+            connectionid: projectid + "_con",
             scope: "local",
             icon: "query",
-            label: "Query 1",
+            label: "Query",
             description: "",
             type: "query",
             query: this.query,
@@ -294,7 +319,7 @@
             axios.post(`${baseURL}connection`, connection),
             axios.post(`${baseURL}query`, query),
           ])
-          await this.createFlow(id)
+          await this.createData(projectid, flowid)
         } catch (err) {
           console.log(err)
           this.loading = false
@@ -302,88 +327,68 @@
         }
       },
 
-      async createFlow(id) {
-        try {
-          const payload = {
-            icon: "fa fa-satellite",
-            url: "https://localhost",
-            name: this.flowName,
-            group: "typerefinery",
-            reference: id,
-            version: "1.0",
-            author: "typerefinery",
-            color: "#61C83B",
-            readme: "Typerefinery flow",
-          }
-          const url = "http://localhost:8000/flow/create"
-          const { data } = await axios.post(url, payload)
-
-          const connection = {
-            type: "connection",
-            id: "connection1",
-            label: "Connection 1",
-            icon: "Connection 1",
-            scope: "local",
-            description: "",
-            port: this.port,
-            host: this.host,
-            database: this.database,
-          }
-          const projectData = {
-            type: "project",
-            id: id,
-            label: this.name,
-            description: this.description,
-            icon: this.icon,
-            connections: {
-              type: "connections",
-              icon: "",
-              list: [connection],
-            },
-            queries: {
-              type: "queries",
-              icon: "",
-              list: [
-                {
-                  type: "query",
-                  id: "query1",
-                  label: "Query 1",
-                  icon: "Query 1",
-                  description: "",
-                  query: this.query,
-                  connection,
-                },
-              ],
-            },
-            themes: themesData,
-            wirings: {
-              type: "wirings",
-              icon: "",
-              list: [
-                {
-                  type: "wiring",
-                  id: data.id,
-                  label: this.flowName,
-                  icon: "Log_ForceGraph",
-                  description: "",
-                },
-              ],
-              outputs: {
-                type: "outputs",
-                icon: "",
-                list: [],
-              },
-            },
-          }
-          projectsModule.addNewProject(projectData)
-          this.$emit("close")
-          this.loading = false
-          this.showError = false
-        } catch (err) {
-          console.log(err)
-          this.loading = false
-          this.showError = true
+      createData(projectid, flowid) {
+        const connection = {
+          type: "connection",
+          id: projectid + "_con",
+          label: "Connection",
+          icon: "Connection",
+          scope: "local",
+          description: "",
+          port: this.port,
+          host: this.host,
+          database: this.database,
         }
+        const projectData = {
+          type: "project",
+          id: projectid,
+          label: this.name,
+          description: this.description,
+          icon: this.icon,
+          connections: {
+            type: "connections",
+            icon: "",
+            list: [connection],
+          },
+          queries: {
+            type: "queries",
+            icon: "",
+            list: [
+              {
+                type: "query",
+                id: projectid + "_query",
+                label: "Query",
+                icon: "Query",
+                description: "",
+                query: this.query,
+                connectionid: projectid + "_con",
+              },
+            ],
+          },
+          themes: themesData,
+          wirings: {
+            type: "wirings",
+            icon: "",
+            list: [
+              {
+                type: "wiring",
+                id: "fsfkt001xx41d",
+                label: "Workflow",
+                icon: "workflow",
+                description: "",
+              },
+            ],
+            outputs: {
+              type: "outputs",
+              icon: "",
+              list: [],
+            },
+          },
+        }
+        projectsModule.addNewProject(projectData)
+        this.$emit("close")
+        this.loading = false
+        this.showError = false
       },
     },
   }

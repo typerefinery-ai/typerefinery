@@ -10,6 +10,7 @@ class Project(SQLModel, table=True):
     description: str
     icon: Optional[str] = Field(default=None, index=True)
     data: str
+    flowid: str
 
 class ProjectUtils():
 
@@ -34,6 +35,7 @@ class ProjectUtils():
         project.description = project.description
         project.icon = project.icon
         project.data = project.data
+        project.flowid = project.flowid
         session.add(project)
         session.commit()
         session.refresh(project)

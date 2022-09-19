@@ -17,7 +17,9 @@
   import CodeEditor from "@/components/CodeEditor/MonacoEditor"
   import Settings from "@/components/Settings/Settings.vue"
   import SettingsStore from "@/store/Modules/Settings"
+  import ProjectsStore from "@/store/Modules/Projects"
   const settingsModule = getModule(SettingsStore)
+  const projectsModule = getModule(ProjectsStore)
 
   export default {
     name: "Home",
@@ -26,6 +28,9 @@
       settingsDialogVisible() {
         return settingsModule.data.settingsDialogVisible
       },
+    },
+    mounted() {
+      projectsModule.fetStoreData()
     },
   }
 </script>
