@@ -71,7 +71,16 @@
       "algorithm": "Algorithm",
       "data": "Data",
       "graph": "Graph",
-      "transform": "Transform"
+      "transform": "Transform",
+      "project": {
+        "header": "Project Details",
+
+        "name": "Name",
+
+        "description": "Description",
+
+        "icon": "Icon"
+      }
     },
     "graph": {
       "properties": "Properties",
