@@ -112,7 +112,7 @@
           "select": "Select project",
           "connection-info": "Connections Info",
           "name": "Name",
-          "host": "Host",
+          "uri": "Uri",
           "port": "Port",
           "database": "Database Name",
           "description": "Description",

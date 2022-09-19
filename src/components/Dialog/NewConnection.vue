@@ -72,7 +72,7 @@
       </div>
       <div class="field">
         <label for="host" :class="{ 'p-error': v$.host.$invalid && submitted }">
-          {{ $t("components.dialog.connections.info.host") + "*" }}</label
+          {{ $t("components.dialog.connections.info.uri") + "*" }}</label
         >
         <InputText
           id="host"
@@ -154,6 +154,7 @@
   import { required } from "@vuelidate/validators"
   import { useVuelidate } from "@vuelidate/core"
   import { getRandomId } from "@/utils"
+  import { nanoid } from "nanoid"
   import axios from "axios"
   import Dialog from "primevue/dialog"
   import Dropdown from "primevue/dropdown"
@@ -328,7 +329,7 @@
         const projectIndex = projectsModule.getProjects.findIndex(
           (el) => el.id == this.selected
         )
-        const id = getRandomId()
+        const id = nanoid(14)
         const data = {
           projectIdx: projectIndex,
           data: {
@@ -361,11 +362,10 @@
             description: this.description,
             type: "connection",
           }
-          const response = await axios.post(
+          await axios.post(
             "http://localhost:8000/datastore/connection",
             payload
           )
-          console.log(response)
           if (projectIndex == -1) {
             connectionsModule.addGlobalConnection(data.data)
           } else {

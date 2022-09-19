@@ -107,10 +107,13 @@
 
       connection() {
         const { projectIdx, queryIdx } = this.tab
-        const connection = projectsModule.getQuery(
+        const connectionid = projectsModule.getQuery(
           projectIdx,
           queryIdx
-        ).connection
+        ).connectionid
+        const connection = projectsModule
+          .getLocalConnections(projectIdx)
+          .find((el) => el.id === connectionid)
         return {
           key: connection.id,
           label: connection.label,

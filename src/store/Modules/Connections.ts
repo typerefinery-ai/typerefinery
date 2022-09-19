@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Module, VuexModule, Mutation } from "vuex-module-decorators"
 import store from "../index"
-import sampleData from "@/data/default.json"
+// import sampleData from "@/data/default.json"
 
 @Module({
   name: "Connections",
@@ -9,7 +10,7 @@ import sampleData from "@/data/default.json"
   preserveState: localStorage.getItem("connections") !== null,
 })
 export default class Connections extends VuexModule {
-  data = sampleData.connections
+  data: any = { list: [] }
 
   get getGlobalConnections() {
     return this.data.list

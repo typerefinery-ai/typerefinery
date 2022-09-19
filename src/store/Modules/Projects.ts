@@ -2,7 +2,7 @@
 import { Module, VuexModule, Mutation, Action } from "vuex-module-decorators"
 import axios from "axios"
 import store from "../index"
-import sampleData from "@/data/default.json"
+import themes from "@/data/theme.json"
 
 @Module({
   name: "Projects",
@@ -11,7 +11,13 @@ import sampleData from "@/data/default.json"
   preserveState: localStorage.getItem("projects") !== null,
 })
 export default class Projects extends VuexModule {
-  data = sampleData.projects
+  data: any = {
+    label: "Projects",
+    icon: "",
+    selectedNode: {},
+    expandedNodes: {},
+    list: [],
+  }
 
   /**** Getters ****/
   get getProjects() {
@@ -92,6 +98,11 @@ export default class Projects extends VuexModule {
   // }
 
   /**** Mutations ****/
+  @Mutation
+  addInitialProjects(projects) {
+    this.data.list = projects
+  }
+
   @Mutation
   addNewProject(project) {
     this.data.list.push(project)
@@ -270,4 +281,61 @@ export default class Projects extends VuexModule {
   //     return { data: error, type: "error" }
   //   }
   // }
+
+  @Action
+  async fetStoreData() {
+    const responses = await axios.all([
+      axios.get("http://localhost:8000/datastore/project"),
+      axios.get("http://localhost:8000/datastore/connection"),
+      axios.get("http://localhost:8000/datastore/query"),
+    ])
+    const [projects, connections, queries] = responses.map((el) => el.data)
+    console.log({ projects, connections, queries })
+    const data = projects.map((p) => {
+      return {
+        type: "project",
+        id: p.projectid,
+        label: p.name,
+        description: p.description,
+        icon: p.icon,
+        connections: {
+          type: "connections",
+          icon: "",
+          list: connections
+            .filter((c) => c.projectid === p.projectid)
+            .map((c) => ({ ...c, id: c.connectionid })),
+        },
+        queries: {
+          type: "queries",
+          icon: "",
+          list: queries
+            .filter((q) => q.projectid === p.projectid)
+            .map((q) => ({ ...q, id: q.queryid })),
+        },
+        themes: themes,
+        wirings: {
+          type: "wirings",
+          icon: "",
+          list: [
+            {
+              type: "wiring",
+              id: p.flowid,
+              label: "Workflow",
+              icon: "Workflow",
+              scope: "local",
+              description: "",
+              data: [],
+            },
+          ],
+          outputs: {
+            type: "outputs",
+            icon: "",
+            list: [],
+          },
+        },
+      }
+    })
+    console.log(data)
+    if (data.length) this.context.commit("addInitialProjects", data)
+  }
 }

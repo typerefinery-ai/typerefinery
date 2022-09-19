@@ -223,7 +223,8 @@
   import { javascript } from "@codemirror/lang-javascript"
   import { oneDark } from "@codemirror/theme-one-dark"
   import { getModule } from "vuex-module-decorators"
-  import { getRandomId } from "@/utils"
+  // import { getRandomId } from "@/utils"
+  import { nanoid } from "nanoid"
   import Dialog from "primevue/dialog"
   import Dropdown from "primevue/dropdown"
   import InputText from "primevue/inputtext"
@@ -435,14 +436,14 @@
         const projectIdx = projectsModule.getProjects.findIndex(
           (el) => el.id == this.projectselected
         )
-        const id = getRandomId()
+        const id = nanoid(14)
         const data = {
           projectIdx: projectIdx,
           data: {
             label: this.name,
             id,
             description: this.description,
-            connection: this.connectiondata,
+            connectionid: this.connectiondata.id,
             icon: this.icon,
             query: this.query,
             type: "query",
@@ -471,11 +472,7 @@
             scope: "local",
             data: "",
           }
-          const response = await axios.post(
-            "http://localhost:8000/datastore/query",
-            payload
-          )
-          console.log(response)
+          await axios.post("http://localhost:8000/datastore/query", payload)
           this.submitted = true
           projectsModule.addNewQuery(data)
         } catch (err) {

@@ -8,7 +8,7 @@
         <div class="col-12 p-fluid">
           <div class="field">
             <label for="host"
-              >{{ $t("components.dialog.connections.info.host")
+              >{{ $t("components.dialog.connections.info.uri")
               }}<span class="asterisk">*</span></label
             >
             <InputText

@@ -192,7 +192,7 @@
         const connections = {
           key: 1,
           type: "connections",
-          label: "Connections",
+          label: "Global Connections",
           icon: "pi pi-fw pi-book",
           children: connectionsModule.data.list.map((connection, idx) => ({
             key: `1-${idx}`,
