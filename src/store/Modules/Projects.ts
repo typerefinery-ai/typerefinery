@@ -138,10 +138,10 @@ export default class Projects extends VuexModule {
 
   @Mutation
   updateProject(data) {
+    console.count("update project called")
     const { field, value, id } = data
     const projects = JSON.parse(JSON.stringify(this.data.list)) // console.log('store',projects)
     const projectIdx = this.data.list.findIndex((el) => el.id == id)
-    console.log("store", projectIdx)
     projects[projectIdx][field] = value
     this.data.list = projects
   }
@@ -283,7 +283,7 @@ export default class Projects extends VuexModule {
   // }
 
   @Action
-  async fetStoreData() {
+  async getStoreData() {
     const responses = await axios.all([
       axios.get("http://localhost:8000/datastore/project"),
       axios.get("http://localhost:8000/datastore/connection"),
@@ -337,5 +337,31 @@ export default class Projects extends VuexModule {
     })
     console.log(data)
     if (data.length) this.context.commit("addInitialProjects", data)
+  }
+
+  // Project
+  @Action
+  async setProjectData(data) {
+    const projects = this.context.getters["getProjects"]
+    const project = projects.find((el) => el.id === data.id)
+
+    const payload = {
+      projectid: project.id,
+      icon: project.icon,
+      description: project.description,
+      data: "",
+      flowid: project.wirings.list[0].id,
+      name: data.field === "label" ? data.value : project.label,
+      [data.field]: data.value,
+    }
+    try {
+      await axios.put(
+        `http://localhost:8000/datastore/project/${data.id}`,
+        payload
+      )
+      this.context.commit("updateProject", data)
+    } catch (err) {
+      console.log(err)
+    }
   }
 }
