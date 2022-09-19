@@ -5,22 +5,10 @@ import Home from "@/views/Home.vue"
 import Workflow from "@/views/Workflow.vue"
 import Chat from "@/components/Chat/index.vue"
 import Maps from "@/components/Maps/index.vue"
-import Login from "@/components/Auth/Login.vue"
-import SignUp from "@/components/Auth/SignUp.vue"
 
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
   routes: [
-    {
-      path: "/sign-up",
-      name: "SignUp",
-      component: SignUp,
-    },
-    {
-      path: "/",
-      name: "Login",
-      component: Login,
-    },
     {
       path: "/home/:id",
       name: "home",
@@ -38,6 +26,10 @@ const router = createRouter({
       path: "/workflow",
       name: "workflow",
       component: Workflow,
+    },
+    {
+      path: "/",
+      redirect: "/home/project",
     },
   ],
 })

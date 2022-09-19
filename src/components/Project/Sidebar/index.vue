@@ -12,11 +12,7 @@
         <tune-icon v-tooltip="$t(`tooltips.settings`)" :size="25" />
       </div>
       <div class="sidebar-fixed-items hover:text-primary">
-        <logout-icon
-          v-tooltip="$t(`tooltips.logout`)"
-          :size="25"
-          @click="logout"
-        />
+        <logout-icon v-tooltip="$t(`tooltips.logout`)" :size="25" />
       </div>
     </div>
     <div id="sidebar-draggable" class="sidebar-draggable">
@@ -237,10 +233,7 @@
       openSettings() {
         settingsModule.openSettingsDialog("general")
       },
-      logout() {
-        localStorage.clear()
-        this.$router.push({ name: "Login" })
-      },
+
       handleNodes(data) {
         if (data.type === "query") {
           this.openQuery(data)

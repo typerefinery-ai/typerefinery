@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Module, VuexModule, Mutation } from "vuex-module-decorators"
 import store from "../index"
-//import sampleData from "@/data/default.json"
+// import sampleData from "@/data/default.json"
 
 @Module({
   name: "Algorithms",

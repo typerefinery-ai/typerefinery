@@ -5,10 +5,6 @@ describe("Projecty Tab", () => {
     cy.visit("/")
   })
 
-  it("login as default user", () => {
-    cy.get(".login").should("be.visible").find(".submit-button").click()
-  })
-
   it("Has Sub Menu Buttons.", () => {
     cy.get(".p-menuitem-link[href='#/home/project']").click()
     cy.get(".main-submenu")
