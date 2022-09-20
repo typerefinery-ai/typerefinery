@@ -56,9 +56,7 @@
   import InputText from "primevue/inputtext"
   import Fieldset from "primevue/fieldset"
   import Projects from "@/store/Modules/Projects"
-  import AppData from "@/store/Modules/AppData"
   const projectsModule = getModule(Projects)
-  const appDataModule = getModule(AppData)
   export default {
     name: "ProjectContent",
     components: {
@@ -73,33 +71,26 @@
         name: "",
         icon: "",
         description: "",
+        debounce: null,
       }
     },
     computed: {
       project() {
-        console.log("tab-project", this.tab)
         const { id } = this.tab
-        const selectedNodes = appDataModule.data.selectedTreeNodes.list
         const projectIdx = projectsModule.getProjects.findIndex(
           (el) => el.id == id
         )
-        console.log(projectIdx)
         const projectdata = projectsModule.getProjects[projectIdx]
-        console.log("project-jjj", projectdata)
         return projectdata
       },
     },
-    mounted() {
-      const { parentIdx: projectIdx } = this.tab
-      console.log("tab1", this.tab)
-      const selectedNodes = appDataModule.data.selectedTreeNodes.list
-      console.log(selectedNodes)
-    },
     methods: {
-      handleInput({ target: { value } }, field) {
-        console.log("project-tab", this.tab)
-        const payload = { field, value, ...this.tab }
-        projectsModule.updateProject(payload)
+      async handleInput({ target: { value } }, field) {
+        clearTimeout(this.debounce)
+        this.debounce = setTimeout(async () => {
+          const payload = { field, value, ...this.tab }
+          await projectsModule.setProjectData(payload)
+        }, 600)
       },
     },
   }

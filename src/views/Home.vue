@@ -30,7 +30,7 @@
       },
     },
     mounted() {
-      projectsModule.fetStoreData()
+      projectsModule.getStoreData()
     },
   }
 </script>
