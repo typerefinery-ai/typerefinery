@@ -140,8 +140,10 @@
   // import Dropdown from "primevue/dropdown"
   import Projects from "@/store/Modules/Projects"
   import Connections from "@/store/Modules/Connections"
-  const projectsModule = getModule(Projects)
+
   const connectionsModule = getModule(Connections)
+  const projectsModule = getModule(Projects)
+  // const connectionsModule = getModule(Projects)
   export default {
     name: "ConnectionContent",
     components: { InputText, Fieldset },
@@ -159,6 +161,7 @@
         label: "Connection 1",
         icon: "",
         description: "",
+        debounce: null,
       }
     },
     validations() {
@@ -169,43 +172,13 @@
         label: { required },
       }
     },
-    mounted() {
-      this.setInitialData()
-    },
     methods: {
-      setInitialData() {
-        const { parentIdx: projectIdx, key } = this.tab
-        const connectionIdx = key.split("-").pop()
-        let connection
-
-        if (projectIdx != null || projectIdx != undefined) {
-          // local
-          const project = projectsModule.getProjects[projectIdx]
-          connection = project.connections.list[connectionIdx]
-        } else {
-          // global
-          connection = connectionsModule.data.list[connectionIdx]
-        }
-
-        const { host, port, database, label, icon, description } = connection
-        this.v$.host.$model = host
-        this.v$.port.$model = port
-        this.v$.database.$model = database
-        this.v$.label.$model = label
-        this.icon = icon
-        this.description = description
-      },
-      handleInput({ target: { value } }, key) {
-        const { parentIdx: projectIdx, key: id } = this.tab
-        const connectionIdx = id.split("-").pop()
-        if (projectIdx != null || projectIdx != undefined) {
-          const payload = { key, value, projectIdx, connectionIdx }
-          projectsModule.updateConnection(payload)
-        } else {
-          // global
-          const payload = { key, value, connectionIdx }
-          connectionsModule.updateGlobalConnection(payload)
-        }
+      async handleInput({ target: { value } }, field) {
+        clearTimeout(this.debounce)
+        this.debounce = setTimeout(async () => {
+          const payload = { field, value, ...this.tab }
+          await projectsModule.setConnectionData(payload)
+        }, 600)
       },
     },
   }
