@@ -18,7 +18,6 @@ export default class Projects extends VuexModule {
     expandedNodes: {},
     list: [],
   }
-
   /**** Getters ****/
   get getProjects() {
     return this.data.list
@@ -152,6 +151,52 @@ export default class Projects extends VuexModule {
     const projects = JSON.parse(JSON.stringify(this.data.list))
     projects[projectIdx].queries.list[queryIdx][field] = value
     this.data.list = projects
+  }
+  @Mutation
+  updateTheme(themedata) {
+    const { code, parentIdx, selectedtheme } = themedata
+    const parseddata = JSON.parse(code)
+    const projects = JSON.parse(JSON.stringify(this.data.list))
+    projects[parentIdx].themes.list[0].data[selectedtheme.key] = parseddata
+    this.data.list = projects
+  }
+  // get getTheme() {
+  //   return (projectIdx) => {
+  //     return this.data.list[projectIdx].themes.list[0]
+  //   }
+  // }
+  @Action
+  async setThemeData(themeData) {
+    const themeDataParsed = JSON.parse(themeData)
+    const { code, parentIdx, selectedtheme } = themeDataParsed
+    const themesGetters = this.context.getters["getTheme"]
+    const themes = themesGetters(parentIdx)
+    console.log("apitheme", themes.data)
+    const payload = {
+      projectid: themeDataParsed.parent,
+      scope: "string",
+      label: selectedtheme.label,
+      type: "string",
+      data: "string",
+      icon: "string",
+      themeid: selectedtheme.label,
+      description: "string",
+      theme: code,
+    }
+    try {
+      // console.log("paayload", payload)
+      await axios.put(
+        `http://localhost:8000/datastore/theme/${selectedtheme.label}`,
+        payload
+      )
+      const output = {
+        ...themeDataParsed,
+        projectIdx: themeDataParsed.parentIdx,
+      }
+      this.context.commit("updateTheme", output)
+    } catch (err) {
+      console.log(err)
+    }
   }
 
   @Mutation

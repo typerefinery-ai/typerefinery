@@ -139,9 +139,9 @@ async def create_theme(body: ThemeModel):
   return ThemeUtils.create_theme(theme=body, engine=engine)
 
 @Logger.catch
-@router.put("/datastore/theme")
-async def update_theme(body: ThemeModel):
-  return ThemeUtils.update_theme(theme=body, engine=engine)
+@router.put("/datastore/theme/{themeid}")
+async def update_theme(themeid: str, body: ThemeModel):
+  return ThemeUtils.update_theme(themeid=themeid, theme=body, engine=engine)
 
 @Logger.catch
 @router.get("/datastore/theme")

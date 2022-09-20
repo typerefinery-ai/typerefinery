@@ -30,8 +30,8 @@ class ThemeUtils():
 
   def update_theme(self, themeid: str, theme: Theme, engine: any):
     with Session(engine) as session:
-      results = self.read_theme(themeid=themeid, engine=engine)
-      atheme = results.one()
+      atheme = self.read_theme(themeid=themeid, engine=engine)
+      # atheme = results.one()
       if atheme:
         atheme.projectid = theme.projectid
         atheme.scope = theme.scope
