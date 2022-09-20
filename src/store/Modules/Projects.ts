@@ -364,4 +364,38 @@ export default class Projects extends VuexModule {
       console.log(err)
     }
   }
+
+  // Connection
+  @Action
+  async setConnectionData(data) {
+    console.log("hi", data)
+    const connectionsGetters = this.context.getters["getLocalConnections"]
+    const connections = connectionsGetters(data.parentIdx)
+
+    const connectionIdx = connections.findIndex((el) => el.id === data.id)
+    const connection = connections[connectionIdx]
+
+    const payload = {
+      projectid: data.parent,
+      connectionid: connection.id,
+      icon: connection.icon,
+      description: connection.description,
+      type: "",
+      host: connection.host,
+      port: connection.port,
+      label: connection.label,
+      scope: "",
+      database: connection.database,
+    }
+    try {
+      await axios.put(
+        `http://localhost:8000/datastore/connection/${data.id}`,
+        payload
+      )
+      data = { ...data, connectionIdx, projectIdx: data.parentIdx }
+      this.context.commit("updateConnection", data)
+    } catch (err) {
+      console.log(err)
+    }
+  }
 }
