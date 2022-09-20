@@ -167,6 +167,7 @@ export default class Projects extends VuexModule {
   // }
   @Action
   async setThemeData(themeData) {
+    console.log("data", themeData)
     const themeDataParsed = JSON.parse(themeData)
     const { code, parentIdx, selectedtheme } = themeDataParsed
     const themesGetters = this.context.getters["getTheme"]
