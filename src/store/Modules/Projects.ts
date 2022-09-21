@@ -166,13 +166,11 @@ export default class Projects extends VuexModule {
   //   }
   // }
   @Action
-  async setThemeData(themeData) {
-    console.log("data", themeData)
+  async setThemeData(themeData: string) {
     const themeDataParsed = JSON.parse(themeData)
     const { code, parentIdx, selectedtheme } = themeDataParsed
-    const themesGetters = this.context.getters["getTheme"]
-    const themes = themesGetters(parentIdx)
-    console.log("apitheme", themes.data)
+    // const themesGetters = this.context.getters["getTheme"]
+    // const themes = themesGetters(parentIdx)
     const payload = {
       projectid: themeDataParsed.parent,
       scope: "string",
@@ -185,7 +183,6 @@ export default class Projects extends VuexModule {
       theme: code,
     }
     try {
-      // console.log("paayload", payload)
       await axios.put(
         `http://localhost:8000/datastore/theme/${selectedtheme.label}`,
         payload

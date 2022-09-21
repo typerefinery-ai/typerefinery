@@ -38,11 +38,9 @@
   import { oneDark } from "@codemirror/theme-one-dark"
   import Settings from "@/store/Modules/Settings"
   import Projects from "@/store/Modules/Projects"
-  // import Themes from "@/store/Modules/Themes"
   import axios from "axios"
   const settingsModule = getModule(Settings)
   const projectsModule = getModule(Projects)
-  // const themeModule = getModule(Themes)
   export default {
     name: "ThemeContent",
     components: {
@@ -85,19 +83,15 @@
     },
     methods: {
       handleInputCode(editor) {
-        // console.log("project-tab", this.tab)
-        // console.log(editor.target)
         const payload = {
           selectedtheme: this.selectedTheme,
           code: editor,
           ...this.tab,
         }
-        console.log("theme1", payload)
         // projectsModule.updateTheme(JSON.stringify(payload))
         projectsModule.setThemeData(JSON.stringify(payload))
       },
       handleTheme({ value }) {
-        // console.log(themeModule.getThemes)
         this.selectedTheme = value
       },
     },
