@@ -81,3 +81,20 @@ async def flow_create(request: Request, response: Response, body: FlowSchema):
         return return_object
 
     return Response(content=json.dumps(service_reponse.json()), media_type="application/json", status_code=service_reponse.status_code)
+
+class CreateSample(BaseModel):
+  name: str | None = Field(
+      default="", title="name of flow"
+  )
+  override: bool | None = Field(
+      default="", title="override existing"
+  )
+
+@Logger.catch
+@router.post("/flow/createsample")
+async def flow_createsample(request: Request, response: Response, body: CreateSample):
+    test = {
+      "status": "success",
+    }
+    #TODO: finish implementation
+    return Response(content=json.dumps(test), media_type="application/json", status_code=200)
