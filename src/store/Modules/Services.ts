@@ -12,40 +12,14 @@ import sampleData from "@/data/default.json"
 export default class Services extends VuexModule {
   data = sampleData.services
 
-  // services = [
-  //   {
-  //     id: "fastapi",
-  //     name: "API",
-  //     description: "Fast API",
-  //     enabled: false,
-  //     status: "-1",
-  //     logoutput: "...",
-  //     icon: "pi pi-cog",
-  //     servicetype: 10,
-  //     actions: {
-  //       stop: {
-  //         name: "stop",
-  //         path: "...",
-  //         commanline: "...",
-  //       },
-  //       start: {
-  //         name: "start",
-  //         path: "...",
-  //         commanline: "...",
-  //       },
-  //     },
-  //   },
-  //   {
-  //     id: "typedb",
-  //     name: "DB",
-  //     description: "Database",
-  //     enabled: false,
-  //     status: "30",
-  //     logoutput: "...",
-  //     icon: "pi pi-database",
-  //     servicetype: 10,
-  //   },
-  // ]
+  @Action({ rawError: true })
+  async restartService(serviceid: string) {
+    // @ts-expect-error ts-migrate(2339) FIXME: Property 'ipc' does not exist on type 'Window & typeof globalThis'
+    const { ipc } = window
+    if (ipc && ipc.restartService) {
+      await ipc.restartService(serviceid)
+    }
+  }
 
   @Action({ rawError: true })
   async getServices() {
