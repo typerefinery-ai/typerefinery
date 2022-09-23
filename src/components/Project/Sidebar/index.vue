@@ -37,6 +37,11 @@
               >{{ slotProps.node.label }}
             </b>
             <i id="label_icon" class="pi pi-circle-fill"></i>
+            <i
+              id="delete_node"
+              class="pi pi-trash"
+              @click="deleteNode(slotProps.node)"
+            ></i>
           </span>
           <span v-else role="treeitem">{{ slotProps.node.label }}</span>
         </template>
@@ -311,6 +316,19 @@
       },
       toggleSidebar() {
         appDataModule.toggleSidebarPanel()
+      },
+      deleteNode(node) {
+        if (this.selectedNode.type == "project") {
+          const payload = {
+            key: node.key,
+            id: node.id,
+            ...this.tab,
+          }
+          appDataModule.removeSelectedTreeNodes(node.id)
+          appDataModule.toggleTreeNode()
+          projectsModule.updateSelectedNode({ key: node.key })
+          projectsModule.deleteProjectData(payload)
+        }
       },
     },
   }
