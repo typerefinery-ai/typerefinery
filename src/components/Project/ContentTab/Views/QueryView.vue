@@ -79,11 +79,12 @@
     methods: {
       handleInput({ target: { value } }, field) {
         const payload = { field, value, ...this.tab }
-        projectsModule.updateQuery(payload)
+        projectsModule.setQueryData(payload)
+        // projectsModule.updateQuery(payload)
       },
       handleQuery(code) {
         const payload = { field: "query", value: code, ...this.tab }
-        projectsModule.updateQuery(payload)
+        projectsModule.setQueryData(payload)
       },
       setEditorHeight() {
         if (this.view !== "Q") return

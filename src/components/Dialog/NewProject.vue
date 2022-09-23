@@ -283,11 +283,11 @@
           // create project, connection & query
           const project = {
             projectid,
-            name: this.name,
+            label: this.name,
             description: this.description,
             icon: this.icon,
             data: "",
-            flowid,
+            flowid: "fsfkt001xx41d", // TODO: make it dynamic
           }
           const connection = {
             connectionid: projectid + "_con",
@@ -372,7 +372,7 @@
             list: [
               {
                 type: "wiring",
-                id: "fsfkt001xx41d",
+                id: "fsfkt001xx41d", // TODO: make it dynamic
                 label: "Workflow",
                 icon: "workflow",
                 description: "",

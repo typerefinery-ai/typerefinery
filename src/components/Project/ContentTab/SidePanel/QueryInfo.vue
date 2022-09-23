@@ -159,7 +159,7 @@
     methods: {
       handleInput({ target: { value } }, field) {
         const payload = { field, value, ...this.tab }
-        projectsModule.updateQuery(payload)
+        projectsModule.setQueryData(payload)
       },
 
       // handleTransformer({ value }) {
@@ -188,8 +188,12 @@
             (el) => el.id == value.key
           )
         }
-        const payload = { field: "connection", value: connection, ...this.tab }
-        projectsModule.updateQuery(payload)
+        const payload = {
+          field: "connectionid",
+          value: connection.id,
+          ...this.tab,
+        }
+        projectsModule.setQueryData(payload)
       },
     },
   }
