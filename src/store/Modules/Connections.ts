@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Module, VuexModule, Mutation } from "vuex-module-decorators"
+import axios from "axios"
+import { Module, VuexModule, Mutation, Action } from "vuex-module-decorators"
 import store from "../index"
 // import sampleData from "@/data/default.json"
 
@@ -17,6 +18,11 @@ export default class Connections extends VuexModule {
   }
 
   @Mutation
+  addGlobalConnections(connections) {
+    this.data.list = connections
+  }
+
+  @Mutation
   addGlobalConnection(connection) {
     this.data.list.push(connection)
   }
@@ -31,9 +37,53 @@ export default class Connections extends VuexModule {
 
   @Mutation
   updateGlobalConnection(connectionData) {
-    const { connectionIdx, key, value } = connectionData
+    console.log(connectionData)
+    const { connectionIdx, field, value } = connectionData
     const connections = JSON.parse(JSON.stringify(this.data))
-    connections.list[connectionIdx][key] = value
+    connections.list[connectionIdx][field] = value
     this.data = connections
+  }
+
+  @Action
+  async getInitialConnections() {
+    try {
+      const res = await axios.get("http://localhost:8000/datastore/connection")
+      const data = res.data
+        .filter((el) => el.scope === "global")
+        .map((el) => ({ ...el, id: el.connectionid }))
+      this.context.commit("addGlobalConnections", data)
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  @Action
+  async setGlobalConnection(data) {
+    console.log(data)
+    const connections = this.context.getters["getGlobalConnections"]
+    const connection = connections[data.connectionIdx]
+
+    const payload = {
+      projectid: null,
+      connectionid: connection.id,
+      icon: connection.icon,
+      description: connection.description,
+      type: connection.type,
+      host: connection.host,
+      port: connection.port,
+      label: connection.label,
+      scope: "global",
+      database: connection.database,
+      [data.field]: data.value,
+    }
+    try {
+      await axios.put(
+        `http://localhost:8000/datastore/connection/${data.id}`,
+        payload
+      )
+      this.context.commit("updateGlobalConnection", data)
+    } catch (err) {
+      console.log(err)
+    }
   }
 }

@@ -6,7 +6,7 @@ from typing import Optional
 @strawberry.type
 class Project(SQLModel, table=True):
     projectid: str = Field(default=None, primary_key=True)
-    name: str = Field(index=True)
+    label: str = Field(index=True)
     description: str
     icon: Optional[str] = Field(default=None, index=True)
     data: str
@@ -25,24 +25,22 @@ class ProjectUtils():
       projects = session.exec(select(Project)).all()
       return projects
 
-  def update_project(self, project: Project, engine: any):
+  def update_project(self, projectid: str, project: Project, engine: any):
     with Session(engine) as session:
-      statement = select(Project).where(Project.projectid == project.projectid)
-      results = session.exec(statement)
-      project = results.one()
-      if project:
-        project.name = project.name
-        project.description = project.description
-        project.icon = project.icon
-        project.data = project.data
-        project.flowid = project.flowid
-        session.add(project)
+      aproject = self.read_project(projectid=projectid, engine=engine)
+      if aproject:
+        aproject.label = project.label
+        aproject.description = project.description
+        aproject.icon = project.icon
+        aproject.data = project.data
+        aproject.flowid = project.flowid
+        session.add(aproject)
         session.commit()
-        session.refresh(project)
+        session.refresh(aproject)
 
-        return project
+        return aproject
 
-      return project
+      return aproject
 
   def delete_project(self, projectid: str, engine: any):
     with Session(engine) as session:

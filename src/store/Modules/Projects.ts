@@ -138,9 +138,8 @@ export default class Projects extends VuexModule {
 
   @Mutation
   updateProject(data) {
-    console.count("update project called")
     const { field, value, id } = data
-    const projects = JSON.parse(JSON.stringify(this.data.list)) // console.log('store',projects)
+    const projects = JSON.parse(JSON.stringify(this.data.list))
     const projectIdx = this.data.list.findIndex((el) => el.id == id)
     projects[projectIdx][field] = value
     this.data.list = projects
@@ -156,9 +155,9 @@ export default class Projects extends VuexModule {
 
   @Mutation
   updateConnection(data) {
-    const { projectIdx, connectionIdx, key, value } = data
+    const { projectIdx, connectionIdx, field, value } = data
     const projects = JSON.parse(JSON.stringify(this.data.list))
-    projects[projectIdx].connections.list[connectionIdx][key] = value
+    projects[projectIdx].connections.list[connectionIdx][field] = value
     this.data.list = projects
   }
 
@@ -290,12 +289,11 @@ export default class Projects extends VuexModule {
       axios.get("http://localhost:8000/datastore/query"),
     ])
     const [projects, connections, queries] = responses.map((el) => el.data)
-    console.log({ projects, connections, queries })
     const data = projects.map((p) => {
       return {
         type: "project",
         id: p.projectid,
-        label: p.name,
+        label: p.label,
         description: p.description,
         icon: p.icon,
         connections: {
@@ -319,7 +317,7 @@ export default class Projects extends VuexModule {
           list: [
             {
               type: "wiring",
-              id: p.flowid,
+              id: "fsfkt001xx41d", // TODO: make it dynamic
               label: "Workflow",
               icon: "Workflow",
               scope: "local",
@@ -335,7 +333,6 @@ export default class Projects extends VuexModule {
         },
       }
     })
-    console.log(data)
     if (data.length) this.context.commit("addInitialProjects", data)
   }
 
@@ -351,7 +348,7 @@ export default class Projects extends VuexModule {
       description: project.description,
       data: "",
       flowid: project.wirings.list[0].id,
-      name: data.field === "label" ? data.value : project.label,
+      label: project.label,
       [data.field]: data.value,
     }
     try {
@@ -368,32 +365,58 @@ export default class Projects extends VuexModule {
   // Connection
   @Action
   async setConnectionData(data) {
-    console.log("hi", data)
-    const connectionsGetters = this.context.getters["getLocalConnections"]
-    const connections = connectionsGetters(data.parentIdx)
-
-    const connectionIdx = connections.findIndex((el) => el.id === data.id)
-    const connection = connections[connectionIdx]
+    const connectionsGetter = this.context.getters["getLocalConnections"]
+    const connections = connectionsGetter(data.parentIdx)
+    const connection = connections[data.connectionIdx]
 
     const payload = {
       projectid: data.parent,
       connectionid: connection.id,
       icon: connection.icon,
       description: connection.description,
-      type: "",
+      type: connection.type,
       host: connection.host,
       port: connection.port,
       label: connection.label,
-      scope: "",
+      scope: connection.scope,
       database: connection.database,
+      [data.field]: data.value,
     }
     try {
       await axios.put(
         `http://localhost:8000/datastore/connection/${data.id}`,
         payload
       )
-      data = { ...data, connectionIdx, projectIdx: data.parentIdx }
+      data = { ...data, projectIdx: data.parentIdx }
       this.context.commit("updateConnection", data)
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  @Action
+  async setQueryData(data) {
+    const queries = this.context.getters["getQueries"]
+    const query = queries(data.parentIdx).find((el) => el.id === data.id)
+    const payload = {
+      queryid: query.id,
+      scope: query.scope,
+      label: query.label,
+      type: query.type,
+      data: query.data,
+      icon: query.icon,
+      projectid: query.projectid,
+      connectionid: query.connectionid,
+      description: query.description,
+      query: query.query,
+      [data.field]: data.value,
+    }
+    try {
+      await axios.put(
+        `http://localhost:8000/datastore/query/${data.id}`,
+        payload
+      )
+      this.context.commit("updateQuery", data)
     } catch (err) {
       console.log(err)
     }

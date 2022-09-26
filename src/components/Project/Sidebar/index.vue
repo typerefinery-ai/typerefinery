@@ -170,19 +170,19 @@
                     type: "outputs",
                     parentIdx: projectIdx,
                     icon: "pi pi-fw pi-server",
-                    children: Object.keys(flowMessageModule.data).map(
-                      (objkey, oIdx) => {
+                    children: flowMessageModule.data.list
+                      .filter((el) => el.projectId === project.id)
+                      .map((o, oIdx) => {
                         return {
                           key: `0-${projectIdx}-0-${projectIdx}-3-1-${oIdx}`,
-                          id: objkey,
+                          id: o.stepId,
                           type: "output",
                           label: "Output_Viz " + ++oIdx,
                           icon: "pi pi-fw pi-file",
                           parent: project.id,
                           parentIdx: projectIdx,
                         }
-                      }
-                    ),
+                      }),
                   },
                 ],
               },

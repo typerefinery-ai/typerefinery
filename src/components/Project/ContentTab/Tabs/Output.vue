@@ -53,7 +53,7 @@
     },
     computed: {
       path() {
-        const svg = flowModule.data[this.tab.id]
+        const svg = flowModule.data.list.find((el) => el.stepId === this.tab.id)
         if (svg) {
           let path = `http://localhost:8000${svg.path}`
           return path

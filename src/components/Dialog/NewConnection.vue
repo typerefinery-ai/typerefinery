@@ -131,15 +131,14 @@
         class="p-button-text"
         @click="connectioncloseDialog"
       />
-      <Button
+      <!-- <Button
         v-if="selectedEditNode"
         :label="$t(`components.dialog.new-transformer.footer.update`)"
         icon="pi pi-check"
         autofocus
         @click="handleEditedConnectionStore(!v$.$invalid)"
-      />
+      /> -->
       <Button
-        v-else
         :label="$t(`components.dialog.new-transformer.footer.save`)"
         icon="pi pi-check"
         autofocus
@@ -153,7 +152,6 @@
   import { getModule } from "vuex-module-decorators"
   import { required } from "@vuelidate/validators"
   import { useVuelidate } from "@vuelidate/core"
-  import { getRandomId } from "@/utils"
   import { nanoid } from "nanoid"
   import axios from "axios"
   import Dialog from "primevue/dialog"
@@ -277,52 +275,52 @@
         this.$emit("close")
       },
       //update dialog
-      handleEditedConnectionStore(isFormValid) {
-        let data
-        if (this.lengthData.length == 1) {
-          data = {
-            connectionIdx: this.connectionsIndex,
-            data: {
-              ...connectionsModule.getGlobalConnections[this.connectionsIndex],
-              label: this.v$.name.$model,
-              icon: this.v$.icon.$model,
-              host: this.v$.host.$model,
-              port: this.v$.port.$model,
-              database: this.v$.database.$model,
-              description: this.v$.description.$model,
-              type: "connection",
-              scope: "local",
-            },
-          }
-          connectionsModule.editGlobalConnection(data)
-        } else {
-          data = {
-            connectionIdx: this.connectionsIndex,
-            projectIdx: this.projectsIndex,
-            data: {
-              ...projectsModule.getProjects[this.projectsIndex].connections
-                .list[this.connectionsIndex],
-              label: this.v$.name.$model,
-              host: this.v$.host.$model,
-              port: this.v$.port.$model,
-              database: this.v$.database.$model,
-              icon: this.v$.icon.$model,
-              description: this.v$.description.$model,
-              type: "connection",
-              scope: "global",
-            },
-          }
-          projectsModule.editLocalConnection(data)
-        }
-        this.updateData = data
-        this.submitted = true
-        // stop here if form is invalid
-        if (!isFormValid) {
-          return
-        }
+      // handleEditedConnectionStore(isFormValid) {
+      //   let data
+      //   if (this.lengthData.length == 1) {
+      //     data = {
+      //       connectionIdx: this.connectionsIndex,
+      //       data: {
+      //         ...connectionsModule.getGlobalConnections[this.connectionsIndex],
+      //         label: this.v$.name.$model,
+      //         icon: this.v$.icon.$model,
+      //         host: this.v$.host.$model,
+      //         port: this.v$.port.$model,
+      //         database: this.v$.database.$model,
+      //         description: this.v$.description.$model,
+      //         type: "connection",
+      //         scope: "local",
+      //       },
+      //     }
+      //     connectionsModule.editGlobalConnection(data)
+      //   } else {
+      //     data = {
+      //       connectionIdx: this.connectionsIndex,
+      //       projectIdx: this.projectsIndex,
+      //       data: {
+      //         ...projectsModule.getProjects[this.projectsIndex].connections
+      //           .list[this.connectionsIndex],
+      //         label: this.v$.name.$model,
+      //         host: this.v$.host.$model,
+      //         port: this.v$.port.$model,
+      //         database: this.v$.database.$model,
+      //         icon: this.v$.icon.$model,
+      //         description: this.v$.description.$model,
+      //         type: "connection",
+      //         scope: "global",
+      //       },
+      //     }
+      //     projectsModule.editLocalConnection(data)
+      //   }
+      //   this.updateData = data
+      //   this.submitted = true
+      //   // stop here if form is invalid
+      //   if (!isFormValid) {
+      //     return
+      //   }
 
-        this.connectioncloseDialog()
-      },
+      //   this.connectioncloseDialog()
+      // },
 
       // new dialog
       async handleconnectionstore(isFormValid) {

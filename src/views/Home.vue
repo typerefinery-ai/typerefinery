@@ -18,8 +18,10 @@
   import Settings from "@/components/Settings/Settings.vue"
   import SettingsStore from "@/store/Modules/Settings"
   import ProjectsStore from "@/store/Modules/Projects"
+  import ConnectionsStore from "@/store/Modules/Connections"
   const settingsModule = getModule(SettingsStore)
   const projectsModule = getModule(ProjectsStore)
+  const connectionsModule = getModule(ConnectionsStore)
 
   export default {
     name: "Home",
@@ -31,6 +33,7 @@
     },
     mounted() {
       projectsModule.getStoreData()
+      connectionsModule.getInitialConnections()
     },
   }
 </script>
