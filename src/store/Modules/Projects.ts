@@ -175,6 +175,13 @@ export default class Projects extends VuexModule {
     this.data.list = projects
   }
 
+  @Mutation
+  deleteProject(data) {
+    const projects = JSON.parse(JSON.stringify(this.data.list))
+    const projectIdx = this.data.list.findIndex((el) => el.id == data.id)
+    this.data.list.splice(projectIdx, 1)
+  }
+
   // @Mutation
   // addLocalTransformer(transformerData) {
   //   const { projectIdx, data } = transformerData
@@ -417,6 +424,42 @@ export default class Projects extends VuexModule {
         payload
       )
       this.context.commit("updateQuery", data)
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  //delete Project
+  @Action
+  async deleteProjectData(data) {
+    const projects = this.context.getters["getProjects"]
+    const project = projects.find((el) => el.id === data.id)
+
+    const payload = {
+      projectid: project.id,
+      icon: project.icon,
+      description: project.description,
+      data: "",
+      flowid: project.wirings.list[0].id,
+      name: data.field === "label" ? data.value : project.label,
+      [data.field]: data.value,
+    }
+    try {
+      await axios.all([
+        axios.delete(
+          `http://localhost:8000/datastore/project/${data.id}`,
+          payload
+        ),
+        // axios.delete(
+        //   `http://localhost:8000/datastore/connection/${data.id}`,
+        //   payload
+        // ),
+        // axios.delete(
+        //   `http://localhost:8000/datastore/query/${data.id}`,
+        //   payload
+        // ),
+      ]),
+        this.context.commit("deleteProject", data)
     } catch (err) {
       console.log(err)
     }
