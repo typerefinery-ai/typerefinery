@@ -34,7 +34,7 @@
         @change="handleTransformer($event)"
       />
     </div> -->
-    <div class="field">
+    <!-- <div class="field">
       <label>{{ $t(`components.tabquery.connection`) }}</label>
       <Dropdown
         :model-value="connection"
@@ -45,7 +45,7 @@
         :placeholder="$t(`components.tabquery.select`)"
         @change="handleConnection"
       />
-    </div>
+    </div> -->
     <!-- <div class="field">
       <label for="database">{{ $t(`components.tabquery.db`) }}</label>
       <InputText
@@ -70,7 +70,11 @@
   // const transformersModule = getModule(Transformers)
   export default {
     name: "QueryInfo",
-    components: { InputText, Dropdown, Textarea },
+    components: {
+      InputText,
+      //  Dropdown,
+      Textarea,
+    },
     props: {
       tab: { type: Object, required: true },
     },

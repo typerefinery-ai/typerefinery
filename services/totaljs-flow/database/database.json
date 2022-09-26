@@ -25,17 +25,17 @@
 			"pubsrcfyn2ecf44Xsvg_insert": "<script total>\n\n\texports.name = 'TMS Example';\n\texports.icon = 'fas fa-broadcast-tower';\n\texports.config = {};\n\texports.outputs = [{ id: 'publish', name: 'Output' }];\n\texports.group = 'Publishers';\n\texports.type = 'pub';\n\texports.schemaid = ['srcfyn2ecf44', 'svg_insert'];\n\n\texports.make = function(instance) {\n\t\tinstance.process = function(msg, client) {\n\t\t\tinstance.send('publish', msg, client);\n\t\t};\n\t};\n\n</script>\n\n<style>\n\t.f-pubsrcfyn2ecf44Xsvg_insert .url { font-size: 11px; }\n</style>\n\n<readme>\n# svg_insert\n- URL address: <http://127.0.0.1:8112>\n- Channel: __publish__\n- JSON schema `svg_insert.json`\n- Version: 24\n\n```json\n{\n  \"$id\": \"https://schemas.totaljs.com/Svg.json\",\n  \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"stepId\": {\n      \"type\": \"string\"\n    },\n    \"flowId\": {\n      \"type\": \"string\"\n    },\n    \"stepName\": {\n      \"type\": \"string\"\n    },\n    \"path\": {\n      \"type\": \"string\"\n    },\n    \"projectId\": {\n      \"type\": \"string\"\n    },\n    \"id\": {\n      \"type\": \"string\"\n    },\n    \"dtcreated\": {\n      \"type\": \"date\"\n    },\n    \"dtupdated\": {\n      \"type\": \"date\"\n    }\n  }\n}\n```\n</readme>\n\n<body>\n\t<header>\n\t\t<div><i class=\"fas fa-broadcast-tower mr5\"></i><span>TMS Example / <b>svg_insert</b></span></div>\n\t\t<div class=\"url\"></div>\n\t</header>\n</body>",
 			"subsrcfyn2ecf44Xsvg_insert": "<script total>\n\n\texports.name = 'TMS Example';\n\texports.icon = 'fas fa-satellite-dish';\n\texports.group = 'Subscribers';\n\texports.config = {};\n\texports.inputs = [{ id: 'subscribe', name: 'Input' }];\n\texports.type = 'sub';\n\texports.schemaid = ['srcfyn2ecf44', 'svg_insert'];\n\n\texports.make = function(instance) {\n\t\tinstance.message = function($) {\n\t\t\tvar socket = instance.main.sockets['srcfyn2ecf44'];\n\t\t\tif (socket && socket.subscribers && socket.subscribers['svg_insert']) {\n\n\t\t\t\tvar data = $.data;\n\n\t\t\t\t/*\n\t\t\t\t\tvar err = new ErrorBuilder();\n\t\t\t\t\tdata = framework_jsonschema.transform(schema, err, data, true);\n\n\t\t\t\t\tif (err.is) {\n\t\t\t\t\t\t$.destroy();\n\t\t\t\t\t\treturn;\n\t\t\t\t\t}\n\n\t\t\t\t*/\n\n\t\t\t\tsocket.send({ type: 'subscribe', id: 'svg_insert', data: data });\n\t\t\t}\n\t\t\t$.destroy();\n\t\t};\n\t};\n\n</script>\n\n<style>\n\t.f-subsrcfyn2ecf44Xsvg_insert .url { font-size: 11px; }\n</style>\n\n<readme>\n# svg_insert\n- URL address: <http://127.0.0.1:8112>\n- Channel: __subscribe__\n- JSON schema `svg_insert.json`\n- Version: 24\n\n```json\n{\n  \"id\": \"svg_insert\",\n  \"schema\": {\n    \"$id\": \"https://schemas.totaljs.com/Svg.json\",\n    \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n    \"type\": \"object\",\n    \"properties\": {\n      \"stepId\": {\n        \"type\": \"string\"\n      },\n      \"flowId\": {\n        \"type\": \"string\"\n      },\n      \"stepName\": {\n        \"type\": \"string\"\n      },\n      \"path\": {\n        \"type\": \"string\"\n      },\n      \"projectId\": {\n        \"type\": \"string\"\n      },\n      \"id\": {\n        \"type\": \"string\"\n      },\n      \"dtcreated\": {\n        \"type\": \"date\"\n      },\n      \"dtupdated\": {\n        \"type\": \"date\"\n      }\n    }\n  }\n}\n```\n</readme>\n\n<body>\n\t<header>\n\t\t<div><i class=\"fas fa-satellite-dish mr5\"></i><span>TMS Example / <b>svg_insert</b></span></div>\n\t\t<div class=\"url\"></div>\n\t</header>\n</body>",
 			"calsrcfyn2ecf44Xsvg_query": "<script total>\n\n\texports.name = 'TMS Example';\n\texports.icon = 'fa fa-plug';\n\texports.config = { timeout: 60000 };\n\texports.inputs = [{ id: 'input', name: 'Input' }];\n\texports.outputs = [{ id: 'output', name: 'Output' }, { id: 'error', name: 'Error' }];\n\texports.group = 'Calls';\n\texports.type = 'call';\n\texports.schemaid = ['srcfyn2ecf44', 'svg_query'];\n\n\texports.make = function(instance, config) {\n\n\t\tinstance.message = function($, client) {\n\t\t\tvar socket = instance.main.sockets['srcfyn2ecf44'];\n\t\t\tif (socket && socket.calls && socket.calls['svg_query']) {\n\n\t\t\t\tvar data = $.data;\n\n\t\t\t\t/*\n\t\t\t\t\tvar err = new ErrorBuilder();\n\t\t\t\t\tdata = framework_jsonschema.transform(schema, err, data, true);\n\n\t\t\t\t\tif (err.is) {\n\t\t\t\t\t\t$.send('error', err.toString());\n\t\t\t\t\t\treturn;\n\t\t\t\t\t}\n\n\t\t\t\t*/\n\n\t\t\t\tvar callback = function(err, response) {\n\t\t\t\t\tif (err)\n\t\t\t\t\t\t$.send('error', err);\n\t\t\t\t\telse\n\t\t\t\t\t\t$.send('output', response);\n\t\t\t\t};\n\n\t\t\t\tvar callbackid = (socket.callbackindexer++) + '';\n\n\t\t\t\tif (socket.callbackindexer > 999999999)\n\t\t\t\t\tsocket.callbackindexer = 0;\n\n\t\t\t\tsocket.callbacks[callbackid] = { callback: callback, id: setTimeout(socket.callbacktimeout, config.timeout, callbackid) };\n\t\t\t\tsocket.send({ type: 'call', id: 'svg_query', data: data, callbackid: callbackid });\n\n\t\t\t} else\n\t\t\t\t$.destroy();\n\t\t};\n\t};\n\n</script>\n\n<style>\n\t.f-calsrcfyn2ecf44Xsvg_query .url { font-size: 11px; }\n</style>\n\n<readme>\n# svg_query\n- URL address: <http://127.0.0.1:8112>\n- Channel: __call__\n- JSON schema `svg_query.json`\n- Version: 24\n\n```json\n{\n  \"$id\": \"https://schemas.totaljs.com/Svg.json\",\n  \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"stepId\": {\n      \"type\": \"string\"\n    },\n    \"flowId\": {\n      \"type\": \"string\"\n    },\n    \"stepName\": {\n      \"type\": \"string\"\n    },\n    \"path\": {\n      \"type\": \"string\"\n    },\n    \"projectId\": {\n      \"type\": \"string\"\n    },\n    \"id\": {\n      \"type\": \"string\"\n    },\n    \"dtcreated\": {\n      \"type\": \"date\"\n    },\n    \"dtupdated\": {\n      \"type\": \"date\"\n    }\n  }\n}\n```\n</readme>\n\n<body>\n\t<header>\n\t\t<div><i class=\"fa fa-plug mr5\"></i><span>TMS Example / <b>svg_query</b></span></div>\n\t\t<div class=\"url\"></div>\n\t</header>\n</body>",
-			"cq5161fa3c": "<script total>\n    exports.name = 'QuerySelect';\n    exports.icon = 'fa fa-code';\n    exports.author = 'Total Avengers';\n    exports.group = 'TypeRefinery';\n    exports.version = '1';\n    exports.config = {query: ''};\n    exports.inputs = [{ id: 'input', name: 'Input' }];\n    exports.outputs = [{ id: 'output', name: 'Output' }];\n    exports.meta = { settingswidth: 1200 };\n    exports.make = function(instance, config) {\n        instance.message = async function($) {\n\t\t\tconst endpoint = 'http://127.0.0.1:8000/datastore/query';\n\t\t\tvar output;\n\t\t\tconst res = await fetch(endpoint);\n\t\t\tconst res_data = await res.json();\n\t\t\toutput = res_data.map(el => ({id: el.query, name: el.label }));\n\t\t\tinstance.send('output', config.query);\n\n\t\t\tinstance.call = async function(data, answer) {\n            \tanswer(output);\n        \t};\n        };\n\n\t\tinstance.configure = function() {\n\t\t};\n\n\t\tinstance.close = function() {\n\t\t};\n\n\t\tinstance.configure();\n    };\n</script>\n<readme>\n</readme>\n<script>\n    // yourdatabase is the name of your component in lower-case\n    ON('configure_queryselect', function(data) {\n        data.call(function(response) {\n            SET('%queryList', response);\n        });\n    });\n</script>\n<settings>\n    <div class=\"padding\">\n        <div data---=\"input__?.query__dirsource:%queryList;dirraw:1;placeholder:Choose a query;dirempty:No query\" class=\"m\"><b>Query</b></div>\n    </div>\n</settings>\n<body>\n    <header>\n        <i class=\"ICON\"></i>NAME\n    </header>\n</body>",
+			"cq5161fa3c": "<script total>\n    exports.name = 'Datastore Query';\n    exports.icon = 'fa fa-code';\n    exports.author = 'Total Avengers';\n    exports.group = 'TypeRefinery';\n    exports.version = '1';\n    exports.config = {queryid: ''};\n    exports.inputs = [{ id: 'input', name: 'Input' }];\n    exports.outputs = [{ id: 'output', name: 'Output' }];\n    exports.meta = { settingswidth: 1200 };\n    exports.make = function(instance, config) {\n        instance.message = async function($) {\n\t\t\tconst endpoint = 'http://127.0.0.1:8000/datastore/query';\n\t\t\tvar output;\n\t\t\tconst res = await fetch(endpoint);\n\t\t\tconst res_data = await res.json();\n\t\t\toutput = res_data.map(el => ({id: el.queryid, name: `${el.label} (${el.queryid},${el.query.substr(12)})`})); // dropdown data\n\t\t\tconst query = res_data.find(el => el.queryid === config.queryid)\n\t\t\tconsole.log(['query', query]);\n\t\t\tinstance.send('output', query.query);\n\n\t\t\tinstance.call = async function(data, answer) {\n            \tanswer(output);\n        \t};\n        };\n\n\t\tinstance.configure = function(el) {\n\t\t\tconsole.log(el);\n\t\t};\n\n\t\tinstance.close = function() {\n\t\t};\n\n\t\tinstance.configure();\n    };\n</script>\n<readme>\n</readme>\n<script>\n    // yourdatabase is the name of your component in lower-case\n    ON('configure_datastorequery', function(data) {\n        data.call(function(response) {\n\t\t\tconsole.log('on', response);\n            SET('%queryidList', response);\n        });\n    });\n</script>\n<settings>\n    <div class=\"padding\">\n        <div data---=\"input__?.queryid__dirsource:%queryidList;dirraw:1;placeholder:Choose a query;dirempty:No query\" class=\"m\"><b>Query</b></div>\n    </div>\n</settings>\n<body>\n    <header>\n        <i class=\"ICON\"></i>NAME\n    </header>\n</body>",
 			"c1ucx34982": "<script total>\n    exports.name = 'ThemeSelect';\n    exports.icon = 'fa fa-code';\n    exports.author = 'Total Avengers';\n    exports.group = 'TypeRefinery';\n    exports.version = '1';\n    exports.config = {theme: ''};\n    exports.inputs = [{ id: 'input', name: 'Input' }];\n    exports.outputs = [{ id: 'output', name: 'Output' }];\n    exports.meta = { settingswidth: 1200 };\n    exports.make = function(instance, config) {\n        instance.message = async function($) {\n\t\t\tconst endpoint = 'http://127.0.0.1:8000/datastore/theme';\n\t\t\tvar output;\n\t\t\tconst res = await fetch(endpoint);\n\t\t\tconst res_data = await res.json();\n\t\t\toutput = res_data.map(el => ({id: el.code, name: el.label }));\n\t\t\tinstance.send('output', config.theme);\n\n\t\t\tinstance.call = async function(data, answer) {\n            \tanswer(output);\n        \t};\n        };\n\n\t\tinstance.configure = function() {\n\t\t};\n\n\t\tinstance.close = function() {\n\t\t};\n\n\t\tinstance.configure();\n    };\n</script>\n<readme>\n</readme>\n<script>\n    // yourdatabase is the name of your component in lower-case\n    ON('configure_themeselect', function(data) {\n        data.call(function(response) {\n            SET('%themeList', response);\n        });\n    });\n</script>\n<settings>\n    <div class=\"padding\">\n        <div data---=\"input__?.theme__dirsource:%themeList;dirraw:1;placeholder:Choose a theme;dirempty:No theme\" class=\"m\"><b>Theme</b></div>\n    </div>\n</settings>\n<body>\n    <header>\n        <i class=\"ICON\"></i>NAME\n    </header>\n</body>",
-			"cbj43f380a": "<script total>\n    exports.name = 'ConnectionSelect';\n    exports.icon = 'fa fa-code';\n    exports.author = 'Total Avengers';\n    exports.group = 'TypeRefinery';\n    exports.version = '1';\n    exports.config = {connection:' '};\n    exports.inputs = [{ id: 'input', name: 'Input' }];\n    exports.outputs = [{ id: 'output', name: 'Output' }];\n    exports.meta = { settingswidth: 1200 };\n exports.make = function(instance, config) {\n        instance.message = async function($) {\n            const endpoint = 'http://127.0.0.1:8000/datastore/connection';\n            var output;\n            const res = await fetch(endpoint);\n            const res_data = await res.json();\n            output = res_data.map(el => ({id: {port:el.port,host:el.host,database:el.database}, name: el.label, }));\n            instance.send('output', config.connection);\n            instance.call = async function(data, answer) {\n                answer(output);\n            };\n        };\n        instance.configure = function() {\n        };\n        instance.close = function() {\n        };\n        instance.configure();\n    };\n</script>\n<readme>\n</readme>\n<script>\n    ON('configure_connectionselect', function(data) {\n        data.call(function(response) {\n            SET('%connectiondataList', response);\n        });\n    });\n</script>\n<settings>\n    <div class=\"padding\">\n        <div data---=\"input__?.connection__dirsource:%connectiondataList;dirraw:1;placeholder:Choose a connection;dirempty:No connection\" class=\"m\"><b>Connection</b></div>\n    </div>\n</settings>\n<body>\n    <header>\n        <i class=\"ICON\"></i>NAME\n    </header>\n</body>"
+			"cbj43f380a": "<script total>\n    exports.name = 'Datastore Connection';\n    exports.icon = 'fa fa-code';\n    exports.author = 'Total Avengers';\n    exports.group = 'TypeRefinery';\n    exports.version = '1';\n    exports.config = {connectionid:''};\n    exports.inputs = [{ id: 'input', name: 'Input' }];\n    exports.outputs = [{ id: 'output', name: 'Output' }];\n    exports.meta = { settingswidth: 1200 };\n exports.make = function(instance, config) {\n        instance.message = async function($) {\n            const endpoint = 'http://127.0.0.1:8000/datastore/connection';\n            var output;\n            const res = await fetch(endpoint);\n            const res_data = await res.json();\n\t\t\tconsole.log({res_data})\n            output = res_data.map(el => ({id: el.connectionid, name: el.connectionid }));\n\t\t\tconsole.log({output})\n\t\t\tconsole.log(['conid', config.connectionid])\n            const connection = res_data.find(el => el.connectionid === config.connectionid)\n\t\t\tconsole.log(['connection find', connection])\n\t\t\tinstance.send('output', {\n\t\t\t\thost: connection.host,\n\t\t\t\tport: connection.port,\n\t\t\t\tdatabase: connection.database,\n\t\t\t});\n            instance.call = async function(data, answer) {\n                answer(output);\n            };\n        };\n        instance.configure = function() {\n        };\n        instance.close = function() {\n        };\n        instance.configure();\n    };\n</script>\n<readme>\n</readme>\n<script>\n\t// yourdatabase is the name of your component in lower-case\n    ON('configure_datastoreconnection', function(data) {\n        data.call(function(response) {\n\t\t\tconsole.log(response);\n            SET('%connectionidList', response);\n        });\n    });\n</script>\n<settings>\n    <div class=\"padding\">\n        <div data---=\"input__?.connectionid__dirsource:%connectionidList;dirraw:1;placeholder:Choose a connection;dirempty:No connection\" class=\"m\"><b>Connection</b></div>\n    </div>\n</settings>\n<body>\n    <header>\n        <i class=\"ICON\"></i>NAME\n    </header>\n</body>"
 		},
 		"design": {
 			"il6n4y08m": {
 				"id": "il6n4y08m",
 				"config": {
-					"host": "localhost",
+					"database": "typerefinery",
 					"port": "1729",
-					"database": "typerefinery"
+					"host": "localhost"
 				},
 				"x": 189,
 				"y": 64,
@@ -104,7 +104,7 @@
 				"id": "il6n52nb8",
 				"config": {
 					"outputs": 1,
-					"code": "const theme = {\n  attribute: {\n    colorlist: \"Oranges\",\n    cindex: 7,\n    tcolorlist: \"Greys\",\n    tindex: 0,\n  },\n  entity: {\n    colorlist: \"Blue-Green\",\n    cindex: 7,\n    tcolorlist: \"Greys\",\n    tindex: 0,\n  },\n  relation: {\n    colorlist: \"Blue-Green\",\n    cindex: 6,\n    tcolorlist: \"Greys\",\n    tindex: 7,\n  },\n  shadow: {\n    colorlist: \"Yellows\",\n    cindex: 2,\n    tcolorlist: \"Greys\",\n    tindex: 7,\n  },\n};\n\n$.send('output', theme);"
+					"code": "const theme = {\n  attribute: {\n    colorlist: \"Blues\",\n    cindex: 7,\n    tcolorlist: \"Greys\",\n    tindex: 0,\n  },\n  entity: {\n    colorlist: \"Blue-Green\",\n    cindex: 7,\n    tcolorlist: \"Greys\",\n    tindex: 0,\n  },\n  relation: {\n    colorlist: \"Blue-Green\",\n    cindex: 6,\n    tcolorlist: \"Greys\",\n    tindex: 7,\n  },\n  shadow: {\n    colorlist: \"Yellows\",\n    cindex: 2,\n    tcolorlist: \"Greys\",\n    tindex: 7,\n  },\n};\n\n$.send('output', theme);"
 				},
 				"x": 510,
 				"y": 43,
@@ -205,8 +205,8 @@
 				"id": "il7fy1rnx",
 				"config": {
 					"code": "var colors = [\n  {\n    name: \"Greys\",\n    colors: [\n      \"#f0f0f0\",\n      \"#d9d9d9\",\n      \"#bdbdbd\",\n      \"#969696\",\n      \"#737373\",\n      \"#525252\",\n      \"#252525\",\n      \"#000000\",\n    ],\n  },\n  {\n    name: \"Reds\",\n    colors: [\n      \"#fee0d2\",\n      \"#fcbba1\",\n      \"#fc9272\",\n      \"#fb6a4a\",\n      \"#ef3b2c\",\n      \"#cb181d\",\n      \"#a50f15\",\n      \"#67000d\",\n    ],\n  },\n  {\n    name: \"Oranges\",\n    colors: [\n      \"#fee6ce\",\n      \"#fdd0a2\",\n      \"#fdae6b\",\n      \"#fd8d3c\",\n      \"#f16913\",\n      \"#d94801\",\n      \"#a63603\",\n      \"#7f2704\",\n    ],\n  },\n  {\n    name: \"Greens\",\n    colors: [\n      \"#e5f5e0\",\n      \"#c7e9c0\",\n      \"#a1d99b\",\n      \"#74c476\",\n      \"#41ab5d\",\n      \"#238b45\",\n      \"#006d2c\",\n      \"#00441b\",\n    ],\n  },\n  {\n    name: \"Blues\",\n    colors: [\n      \"#deebf7\",\n      \"#c6dbef\",\n      \"#9ecae1\",\n      \"#6baed6\",\n      \"#4292c6\",\n      \"#2171b5\",\n      \"#08519c\",\n      \"#08306b\",\n    ],\n  },\n  {\n    name: \"Purples\",\n    colors: [\n      \"#efedf5\",\n      \"#dadaeb\",\n      \"#bcbddc\",\n      \"#9e9ac8\",\n      \"#807dba\",\n      \"#6a51a3\",\n      \"#54278f\",\n      \"#3f007d\",\n    ],\n  },\n  {\n    name: \"Orange-Red\",\n    colors: [\n      \"#fee8c8\",\n      \"#fdd49e\",\n      \"#fdbb84\",\n      \"#fc8d59\",\n      \"#ef6548\",\n      \"#d7301f\",\n      \"#b30000\",\n      \"#7f0000\",\n    ],\n  },\n  {\n    name: \"Red-Purples\",\n    colors: [\n      \"#fde0dd\",\n      \"#fcc5c0\",\n      \"#fa9fb5\",\n      \"#f768a1\",\n      \"#dd3497\",\n      \"#ae017e\",\n      \"#7a0177\",\n      \"#49006a\",\n    ],\n  },\n  {\n    name: \"Blue-Green\",\n    colors: [\n      \"#e5f5f9\",\n      \"#ccece6\",\n      \"#99d8c9\",\n      \"#66c2a4\",\n      \"#41ae76\",\n      \"#238b45\",\n      \"#006d2c\",\n      \"#00441b\",\n    ],\n  },\n  {\n    name: \"Yellows\",\n    colors: [\n      \"#fffee5\",\n      \"#fffcbd\",\n      \"#fff98b\",\n      \"#fff533\",\n      \"#eedf00\",\n      \"#dad000\",\n      \"#c0b700\",\n      \"#b0a800\",\n    ],\n  },\n];\n\nvar theme = THEME;\n\nvar svg = d3.select(\"svg\")\n  .attr(\"width\", 900)\n  .attr(\"height\", 500)\n  .call(\n    d3.zoom().on(\"zoom\", function () {\n      svg.attr(\"transform\", d3.event.transform);\n    })\n  )\n  .append(\"g\");\n\nconst height = 500;\nconst width = 600;\n\n// setup the theme color\n\nconst textPadding = 8;\nconst corner = 5;\nconst grp_corner = 8;\nconst pad = 5;\nvar ent_colour = \"#03396c\";\nvar ent_t_colour = \"white\";\nvar att_colour = \"#ff4d00\";\nvar att_t_colour = \"white\";\nvar shad_colour = \"#ff4d00\";\nvar shad_t_colour = \"white\";\nvar rel_colour = \"#007777\";\nvar rel_t_colour = \"black\";\n\nlet colours = colors;\n// load the colours from the theme\nent_colour = colors.find((colour) => colour.name == theme.entity.colorlist)[\n  \"colors\"\n][theme.entity.cindex];\nent_t_colour = colors.find((colour) => colour.name == theme.entity.tcolorlist)[\n  \"colors\"\n][theme.entity.tindex];\natt_colour = colors.find((colour) => colour.name == theme.attribute.colorlist)[\n  \"colors\"\n][theme.attribute.cindex];\natt_t_colour = colors.find(\n  (colour) => colour.name == theme.attribute.tcolorlist\n)[\"colors\"][theme.attribute.tindex];\nshad_colour = colors.find((colour) => colour.name == theme.shadow.colorlist)[\n  \"colors\"\n][theme.shadow.cindex];\nshad_t_colour = colors.find((colour) => colour.name == theme.shadow.tcolorlist)[\n  \"colors\"\n][theme.shadow.tindex];\nrel_colour = colors.find((colour) => colour.name == theme.relation.colorlist)[\n  \"colors\"\n][theme.relation.cindex];\nrel_t_colour = colors.find(\n  (colour) => colour.name == theme.relation.tcolorlist\n)[\"colors\"][theme.relation.tindex];\n\nvar cola = cola.d3adaptor(d3).size([width, height]);\n\n// graph.json\nvar Graph_Data = GRAPH_DATA;\n\ndata = Graph_Data.basic;\ncola\n  .nodes(data.nodes)\n  .links(data.links)\n  .groups(data.groups)\n  .linkDistance(100)\n  .avoidOverlaps(true)\n  .handleDisconnected(false)\n  .start(30);\n\nvar group = svg\n  .selectAll(\".group\")\n  .data(data.groups)\n  .enter()\n  .append(\"rect\")\n  .attr(\"rx\", grp_corner)\n  .attr(\"ry\", grp_corner)\n  .attr(\"class\", \"group\")\n  .style(\"fill\", function (d, i) {\n    return colours.find(\n      (colour) => colour.name == d.colour_list\n    )[\"colors\"][d.level];\n  })\n  .attr(\"stroke-width\", 1)\n  .attr(\"stroke\", function (d, i) {\n    return colours.find((colour) => colour.name == d.colour_list)[\"colors\"][7];\n  })\n  .call(cola.drag);\n\ngroup.append(\"title\").text(function (d) {\n  return d.label;\n});\n\nvar link = svg\n  .selectAll(\".link\")\n  .data(data.links)\n  .enter()\n  .append(\"line\")\n  .attr(\"class\", \"link\")\n  .style(\"stroke-width\", \"1px\")\n  .attr(\"stroke\", \"black\");\n\nvar node = svg\n  .selectAll(\".node\")\n  .data(data.nodes)\n  .enter()\n  .append(\"rect\")\n  .attr(\"class\", \"node\")\n  .attr(\"class\", (d) => d.type)\n  .attr(\"class\", (d) => d.G_name)\n  .attr(\"id\", (d) => d.G_id);\n\nvar label = svg\n  .selectAll(\".label\")\n  .data(data.nodes)\n  .enter()\n  .append(\"text\")\n  .attr(\"class\", \"label\")\n  .text((d) =>\n    d.type == \"attribute\" ? d.G_name + \": \" + d.value : d.G_name + \": \" + d.G_id\n  )\n  .attr(\"id\", (d) => \"heading-\" + d.G_id)\n  .style(\"font-size\", 10)\n  .style(\"text-anchor\", \"middle\")\n  .style(\"color\", (d) => text_colour(d))\n  .style(\"fill\", (d) => text_colour(d))\n  .style(\"pointer-events\", \"none\")\n  .call(cola.drag);\n\n// setup heading colours for attribute, entity and relation\nfunction text_colour(d) {\n  let colour = \"black\";\n  switch (d.type) {\n    case \"attribute\":\n      if (d.dtype == \"actual\") {\n        colour = att_t_colour;\n      } else {\n        colour = shad_t_colour;\n      }\n      break;\n    case \"entity\":\n      colour = ent_t_colour;\n      break;\n    case \"relation\":\n      colour = rel_t_colour;\n      break;\n    default:\n      colour = \"black\";\n      break;\n  }\n  return colour;\n}\n\nnode\n  .attr(\"width\", (d) => nodeWidth(d))\n  .attr(\"height\", (d) => d.height)\n  .attr(\"rx\", (d) => d.corner)\n  .attr(\"ry\", (d) => d.corner)\n  .attr(\"x\", (d) => d.x)\n  .attr(\"y\", (d) => d.y)\n  .attr(\"class\", (d) => d.G_name)\n  .style(\"fill\", (d) => d.colour)\n  .on(\"click\", function (d) {\n    d.fixed = true;\n  })\n  .call(cola.drag);\n\n// function to set dimensions and colours for shapes\nfunction nodeWidth(d) {\n  let headingid = \"#heading-\" + d.G_id;\n  let headingbbox = d3.select(headingid).node().getBBox();\n\n  d.width = d3.max([5, headingbbox.width]) + textPadding * 2;\n  d.height = headingbbox.height + textPadding * 2;\n\n  // attributes and entities rounded rectangle, relation is circle\n  switch (d.type) {\n    case \"attribute\":\n      d.corner = corner;\n      d.colour = att_colour;\n      d.x = headingbbox.x - textPadding;\n      d.y = headingbbox.y - textPadding;\n      if (d.dtype === \"shadow\") {\n        d.colour = shad_colour;\n      } else {\n        d.colour = att_colour;\n      }\n      break;\n\n    case \"entity\":\n      d.corner = corner;\n      d.colour = ent_colour;\n      d.x = headingbbox.x - textPadding;\n      d.y = headingbbox.y - textPadding;\n      break;\n\n    case \"relation\":\n      d.width = 16;\n      d.height = 16;\n      d.corner = 8;\n      d.colour = rel_colour;\n      d.x = headingbbox.x + headingbbox.width / 2 - d.width / 2;\n      d.y = headingbbox.y + d.height / 2;\n      break;\n\n    default:\n      break;\n  }\n  return d.width;\n}\n\ncola.on(\"tick\", function () {\n  link\n    .attr(\"x1\", function (d) {\n      return d.source.x;\n    })\n    .attr(\"y1\", function (d) {\n      return d.source.y;\n    })\n    .attr(\"x2\", function (d) {\n      return d.target.x;\n    })\n    .attr(\"y2\", function (d) {\n      return d.target.y;\n    });\n\n  node\n    .attr(\"x\", function (d) {\n      return d.x - d.width / 2;\n    })\n    .attr(\"y\", function (d) {\n      return d.y - d.height / 2;\n    });\n\n  group\n    .attr(\"x\", function (d) {\n      return d.bounds.x - pad;\n    })\n    .attr(\"y\", function (d) {\n      return d.bounds.y - pad;\n    })\n    .attr(\"width\", function (d) {\n      return d.bounds.width() + 2 * pad;\n    })\n    .attr(\"height\", function (d) {\n      return d.bounds.height() + 2 * pad;\n    });\n\n  label\n    .attr(\"x\", function (d) {\n      return d.x;\n    })\n    .attr(\"y\", function (d) {\n      var h = this.getBBox().height;\n      return d.y + h / 4;\n    });\n});",
-					"endpoint": "http:127.0.0.1:8000/createSvg",
-					"outputs": 1
+					"outputs": 1,
+					"endpoint": "http:127.0.0.1:8000/createSvg"
 				},
 				"x": 749,
 				"y": 101,
@@ -431,11 +431,12 @@
 			"il89vqa01": {
 				"id": "il89vqa01",
 				"config": {
-					"query": "match\n   $a isa thing;",
+					"queryid": "rFv4ytNkRy4yI5_query",
+					"query": "YOsdjfk",
 					"port": "a"
 				},
 				"x": 271,
-				"y": 513,
+				"y": 504,
 				"component": "cq5161fa3c",
 				"connections": {
 					"output": [
@@ -448,7 +449,7 @@
 				"template": {
 					"icon": "fa fa-code",
 					"group": "TypeRefinery",
-					"name": "QuerySelect",
+					"name": "Datastore Query",
 					"inputs": [
 						{
 							"id": "input",
@@ -554,14 +555,15 @@
 			"il8b5bmjw": {
 				"id": "il8b5bmjw",
 				"config": {
+					"connectionid": "xRH-veJ4E1Pf5r_con",
 					"connection": {
 						"port": "1729",
-						"host": "localhost",
+						"host": "bak",
 						"database": "typerefinery"
 					}
 				},
 				"x": 271,
-				"y": 709,
+				"y": 707,
 				"component": "cbj43f380a",
 				"connections": {
 					"output": [
@@ -574,7 +576,7 @@
 				"template": {
 					"icon": "fa fa-code",
 					"group": "TypeRefinery",
-					"name": "ConnectionSelect",
+					"name": "Datastore Connection",
 					"inputs": [
 						{
 							"id": "input",
@@ -595,8 +597,8 @@
 					"repo": false,
 					"data": true
 				},
-				"x": 531,
-				"y": 608,
+				"x": 518,
+				"y": 722,
 				"component": "c5aria8f8f",
 				"connections": {},
 				"template": {
@@ -666,44 +668,28 @@
 								"type": "object",
 								"properties": {
 									"stepId": {
-										"type": "string",
-										"$$ID": "stepId",
-										"$$REQUIRED": false
+										"type": "string"
 									},
 									"flowId": {
-										"type": "string",
-										"$$ID": "flowId",
-										"$$REQUIRED": false
+										"type": "string"
 									},
 									"stepName": {
-										"type": "string",
-										"$$ID": "stepName",
-										"$$REQUIRED": false
+										"type": "string"
 									},
 									"path": {
-										"type": "string",
-										"$$ID": "path",
-										"$$REQUIRED": false
+										"type": "string"
 									},
 									"projectId": {
-										"type": "string",
-										"$$ID": "projectId",
-										"$$REQUIRED": false
+										"type": "string"
 									},
 									"id": {
-										"type": "string",
-										"$$ID": "id",
-										"$$REQUIRED": false
+										"type": "string"
 									},
 									"dtcreated": {
-										"type": "date",
-										"$$ID": "dtcreated",
-										"$$REQUIRED": false
+										"type": "date"
 									},
 									"dtupdated": {
-										"type": "date",
-										"$$ID": "dtupdated",
-										"$$REQUIRED": false
+										"type": "date"
 									}
 								}
 							}
@@ -759,235 +745,9 @@
 		},
 		"origin": "http://localhost:8111",
 		"dtcreated": "2022-08-10T04:16:32.454Z",
-		"size": 64644,
+		"size": 65079,
 		"variables2": {},
 		"directory": "./database",
 		"sandbox": false
-	},
-	"ftqir001xp41d": {
-		"id": "ftqir001xp41d",
-		"name": "Workflow",
-		"author": "typerefinery",
-		"version": "1.0",
-		"icon": "fa fa-satellite",
-		"reference": "4PS3XKTZjWSc2X",
-		"group": "typerefinery",
-		"url": "https://localhost",
-		"color": "#61C83B",
-		"readme": "Typerefinery flow",
-		"proxypath": "",
-		"design": {},
-		"components": {},
-		"variables": {},
-		"sources": {},
-		"dtcreated": "2022-09-21T10:14:39.795Z",
-		"variables2": {},
-		"directory": "./database",
-		"sandbox": false,
-		"size": 487
-	},
-	"ftqir002xp40d": {
-		"id": "ftqir002xp40d",
-		"name": "Workflow",
-		"author": "typerefinery",
-		"version": "1.0",
-		"icon": "fa fa-satellite",
-		"reference": "8C5K8NyUvGpOby",
-		"group": "typerefinery",
-		"url": "https://localhost",
-		"color": "#61C83B",
-		"readme": "Typerefinery flow",
-		"proxypath": "",
-		"design": {},
-		"components": {},
-		"variables": {},
-		"sources": {},
-		"dtcreated": "2022-09-21T10:15:20.536Z",
-		"variables2": {},
-		"directory": "./database",
-		"sandbox": false,
-		"size": 487
-	},
-	"ftqit001xp41d": {
-		"paused": false,
-		"id": "ftqit001xp41d",
-		"reference": "PeqUm9NLdshh8T",
-		"author": "typerefinery",
-		"group": "typerefinery",
-		"icon": "fa fa-satellite",
-		"color": "#61C83B",
-		"version": "1.0",
-		"readme": "Typerefinery flow",
-		"url": "https://localhost",
-		"name": "Workflow",
-		"components": {},
-		"design": {},
-		"variables": {},
-		"sources": {},
-		"proxypath": "",
-		"origin": "http://localhost:8111",
-		"dtcreated": "2022-09-21T10:16:39.809Z",
-		"size": 535,
-		"variables2": {},
-		"directory": "./database",
-		"sandbox": false
-	},
-	"ftrda001tr41d": {
-		"id": "ftrda001tr41d",
-		"name": "Workflow",
-		"author": "typerefinery",
-		"version": "1.0",
-		"icon": "fa fa-satellite",
-		"reference": "mv4HhCBb9LFxL8",
-		"group": "typerefinery",
-		"url": "https://localhost",
-		"color": "#61C83B",
-		"readme": "Typerefinery flow",
-		"proxypath": "",
-		"design": {},
-		"components": {},
-		"variables": {},
-		"sources": {},
-		"dtcreated": "2022-09-22T04:33:43.505Z",
-		"variables2": {},
-		"directory": "./database",
-		"sandbox": false,
-		"size": 487
-	},
-	"ftrh9001np41d": {
-		"id": "ftrh9001np41d",
-		"name": "Workflow",
-		"author": "typerefinery",
-		"version": "1.0",
-		"icon": "fa fa-satellite",
-		"reference": "qRgPva77kfAgLk",
-		"group": "typerefinery",
-		"url": "https://localhost",
-		"color": "#61C83B",
-		"readme": "Typerefinery flow",
-		"proxypath": "",
-		"design": {},
-		"components": {},
-		"variables": {},
-		"sources": {},
-		"dtcreated": "2022-09-22T06:56:43.572Z",
-		"variables2": {},
-		"directory": "./database",
-		"sandbox": false,
-		"size": 487
-	},
-	"ftrm2001nr41d": {
-		"paused": false,
-		"id": "ftrm2001nr41d",
-		"reference": "msBO9QZ8apTUzZ",
-		"author": "typerefinery",
-		"group": "typerefinery",
-		"icon": "fa fa-satellite",
-		"color": "#61C83B",
-		"version": "1.0",
-		"readme": "Typerefinery flow",
-		"url": "https://localhost",
-		"name": "Workflow",
-		"components": {
-			"civg4abc36": "<script total>\r\n\r\n\texports.name = 'Connection';\r\n\texports.icon = 'fa fa-code';\r\n\texports.author = 'Team_Typerefienry';\r\n\texports.group = 'TypeRefinery';\r\n\texports.version = '1';\r\n\texports.config = {};\r\n\texports.inputs = [{ id: 'input', name: 'Input' }];\r\n\texports.outputs = [{ id: 'output', name: 'Output' }];\r\n    exports.meta = { settingswidth: 1200 };\r\n\r\n\texports.make = function(instance, config) {\r\n\t\tconst { TypeDB, SessionType } = require(\"typedb-client\");\r\n\r\n\t\tinstance.message = function($) {\r\n\t\t\tvar data = {\r\n\t\t\t\tdbport: config.port,\r\n\t\t\t\tdbhost: config.host,\r\n\t\t\t\tdbdatabase: config.database\r\n\t\t\t};\r\n\t\t\tinstance.send('output', data);\r\n\t\t};\r\n\r\n\t\tinstance.call = async function(data, answer) {\r\n\t\t\tconst client = TypeDB.coreClient(\"localhost:1729\");\r\n  \t\t\tlet databases = await client.databases.all();\r\n\t\t\tconst output = databases.map(el => ({id: el._name, name: el._name}))\r\n            answer(output);\r\n        };\r\n\r\n\t\tinstance.configure = function() {\r\n\t\t};\r\n\r\n\t\tinstance.close = function() {\r\n\t\t};\r\n\r\n\t\tinstance.configure();\r\n\r\n\t};\r\n\r\n</script>\r\n\r\n<readme>\r\n\r\n</readme>\r\n<script>\r\n    // yourdatabase is the name of your component in lower-case\r\n    ON('configure_connection', function(data) {\r\n        // Global exports.call\r\n        // data.call(function(response) {\r\n//             SET('%yourdatabase', response);\r\n//         }, true);\r\n\r\n        // Private instance.call (from the existing instance)\r\n        data.call(function(response) {\r\n            SET('%yourdatabase', response);\r\n        });\r\n    });\r\n</script>\r\n<settings>\r\n\t<div class=\"padding\">\r\n\t\t<div data---=\"input__?.host__required:1\" class=\"m\">Host</div>\r\n\t\t<div data---=\"input__?.port__required:1\" class=\"m\">Port</div>\r\n\t\t<div data---=\"input__?.database__dirsource:%yourdatabase;dirraw:1;placeholder:Choose a database;dirempty:No database\" class=\"m\"><b>Database</b></div>\r\n\t</div>\r\n</settings>\r\n\r\n<body>\r\n\t<header>\r\n\t\t<i class=\"ICON\"></i>NAME\r\n\t</header>\r\n</body>"
-		},
-		"design": {
-			"il8cvix6u": {
-				"id": "il8cvix6u",
-				"config": {},
-				"x": 236,
-				"y": 138,
-				"component": "civg4abc36",
-				"connections": {},
-				"template": {
-					"icon": "fa fa-code",
-					"group": "TypeRefinery",
-					"name": "Connection",
-					"inputs": [
-						{
-							"id": "input",
-							"name": "Input"
-						}
-					],
-					"outputs": [
-						{
-							"id": "output",
-							"name": "Output"
-						}
-					]
-				}
-			}
-		},
-		"variables": {},
-		"sources": {},
-		"proxypath": "",
-		"origin": "http://localhost:8111",
-		"dtcreated": "2022-09-22T09:50:01.754Z",
-		"size": 2923
-	},
-	"ftrm2002nr40d": {
-		"paused": false,
-		"id": "ftrm2002nr40d",
-		"reference": "VqLwp7Z3bxQ0rL",
-		"author": "typerefinery",
-		"group": "typerefinery",
-		"icon": "fa fa-satellite",
-		"color": "#61C83B",
-		"version": "1.0",
-		"readme": "Typerefinery flow",
-		"url": "https://localhost",
-		"name": "Workflow",
-		"components": {},
-		"design": {},
-		"variables": {},
-		"sources": {},
-		"proxypath": "",
-		"origin": "http://localhost:8111",
-		"dtcreated": "2022-09-22T09:50:18.749Z",
-		"size": 466
-	},
-	"ftrm4001nr41d": {
-		"id": "ftrm4001nr41d",
-		"name": "Workflow",
-		"author": "typerefinery",
-		"version": "1.0",
-		"icon": "fa fa-satellite",
-		"reference": "rFv4ytNkRy4yI5",
-		"group": "typerefinery",
-		"url": "https://localhost",
-		"color": "#61C83B",
-		"readme": "Typerefinery flow",
-		"proxypath": "",
-		"design": {},
-		"components": {},
-		"variables": {},
-		"sources": {},
-		"dtcreated": "2022-09-22T09:52:01.778Z",
-		"variables2": {},
-		"directory": "./database",
-		"sandbox": false,
-		"size": 487
-	},
-	"ftrs5001nr41d": {
-		"id": "ftrs5001nr41d",
-		"name": "Workflow",
-		"author": "typerefinery",
-		"version": "1.0",
-		"icon": "fa fa-satellite",
-		"reference": "xRH-veJ4E1Pf5r",
-		"group": "typerefinery",
-		"url": "https://localhost",
-		"color": "#61C83B",
-		"readme": "Typerefinery flow",
-		"proxypath": "",
-		"design": {},
-		"components": {},
-		"variables": {},
-		"sources": {},
-		"dtcreated": "2022-09-22T13:29:03.655Z",
-		"variables2": {},
-		"directory": "./database",
-		"sandbox": false,
-		"size": 476
 	}
 }
