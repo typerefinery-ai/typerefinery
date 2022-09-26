@@ -154,9 +154,9 @@ async def read_theme(themeid: str):
   return ThemeUtils.read_theme(themeid=themeid, engine=engine)
 
 @Logger.catch
-@router.delete("/datastore/theme")
-async def delete_theme(body: ThemeModel):
-  return ThemeUtils.delete_theme(theme=body, engine=engine)
+@router.delete("/datastore/theme/{themeid}")
+async def delete_theme(themeid: str):
+  return ThemeUtils.delete_theme(themeid=themeid, engine=engine)
 
 
 ## FLOW

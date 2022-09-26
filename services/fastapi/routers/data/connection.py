@@ -55,7 +55,6 @@ class ConnectionUtils():
     with Session(engine) as session:
       aconnection = self.read_connection(connectionid=connectionid, engine=engine)
       if aconnection:
-        aconnection = results.one()
         session.delete(aconnection)
         session.commit()
         return aconnection

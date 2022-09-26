@@ -52,9 +52,8 @@ class QueryUtils():
 
   def delete_query(self, queryid: str, engine: any):
     with Session(engine) as session:
-      results = self.read_query(queryid=queryid, engine=engine)
-      if results:
-        aquery = results.one()
+      aquery = self.read_query(queryid=queryid, engine=engine)
+      if aquery:
         session.delete(aquery)
         session.commit()
         return aquery

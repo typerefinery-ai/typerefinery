@@ -30,8 +30,7 @@ class ThemeUtils():
 
   def update_theme(self, themeid: str, theme: Theme, engine: any):
     with Session(engine) as session:
-      results = self.read_theme(themeid=themeid, engine=engine)
-      atheme = results.one()
+      atheme = self.read_theme(themeid=themeid, engine=engine)
       if atheme:
         atheme.projectid = theme.projectid
         atheme.scope = theme.scope
@@ -51,9 +50,8 @@ class ThemeUtils():
 
   def delete_theme(self, themeid: str,engine: any):
     with Session(engine) as session:
-      results = self.read_theme(themeid=themeid, engine=engine)
-      if results:
-        atheme = results.one()
+      atheme = self.read_theme(themeid=themeid, engine=engine)
+      if atheme:
         session.delete(atheme)
         session.commit()
         return atheme
