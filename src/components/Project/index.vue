@@ -12,24 +12,29 @@
       <menu-bar :menu-bar-visible="mainMenuVisible" @toggle="toggleMainMenu" />
     </div>
     <project-content :focus="focusMode" />
+
+    <sample-data-popup v-if="samplePopupOpen" />
   </div>
 </template>
 
 <script>
   import ProjectContent from "./ProjectContent"
+  import { getModule } from "vuex-module-decorators"
+  import Projects from "@/store/Modules/Projects"
   import MainMenu from "@/components/Menu/MainMenu.vue"
   import MenuBar from "@/components/Menu/MenuBar.vue"
   import Settings from "@/store/Modules/Settings"
+  import sampleDataPopup from "@/components/Dialog/sampleDataPopup.vue"
   import FlowMessage from "@/store/Modules/FlowMessage"
+  const projectsModule = getModule(Projects)
   import AppData from "@/store/Modules/AppData"
-  import { getModule } from "vuex-module-decorators"
   import * as websocket from "websocket"
   const settingsModule = getModule(Settings)
   const flowModule = getModule(FlowMessage)
   const appDataModule = getModule(AppData)
   export default {
     name: "Project",
-    components: { ProjectContent, MenuBar, MainMenu },
+    components: { ProjectContent, MenuBar, MainMenu, sampleDataPopup },
 
     data() {
       return {
@@ -41,12 +46,22 @@
       focusMode() {
         return settingsModule.data.focus
       },
+      samplePopupOpen() {
+       
+        if (projectsModule.getProjects.length) {
+          return false
+        } else {
+          return true
+        }
+      },
     },
     mounted() {
       this.initTMS()
     },
     methods: {
       toggleMainMenu() {
+        
+
         this.mainMenuVisible = !this.mainMenuVisible
       },
       initTMS() {
