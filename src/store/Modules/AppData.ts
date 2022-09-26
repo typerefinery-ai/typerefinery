@@ -29,10 +29,12 @@ export default class AppData extends VuexModule {
   setSelectedTreeNodes(node: { id: string }) {
     const data = JSON.parse(JSON.stringify(this.data))
     const nodes = data.selectedTreeNodes
-    nodes.list.push(node.id)
-    nodes[node.id] = node
-    nodes.activeNode = node.id
-    this.data.selectedTreeNodes = nodes
+    if (!nodes.list.includes(node.id)) {
+      nodes.list.push(node.id)
+      nodes[node.id] = node
+      nodes.activeNode = node.id
+      this.data.selectedTreeNodes = nodes
+    }
   }
 
   @Mutation
@@ -47,9 +49,11 @@ export default class AppData extends VuexModule {
   setSelectedSplitNodes(node: { id: string }) {
     const data = JSON.parse(JSON.stringify(this.data))
     const nodes = data.selectedSplitNodes
-    nodes.list.push(node.id)
-    nodes[node.id] = node
-    this.data.selectedSplitNodes = nodes
+    if (!nodes.list.includes(node.id)) {
+      nodes.list.push(node.id)
+      nodes[node.id] = node
+      this.data.selectedSplitNodes = nodes
+    }
   }
 
   @Mutation

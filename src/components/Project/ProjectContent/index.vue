@@ -135,7 +135,6 @@
         this.panes.pop()
       },
       handleSplitterClick(e) {
-        console.log("clicked")
         if (e.index !== 1) return
         const pane = this.$refs.sidebarPane
         !this.sidebarVisible

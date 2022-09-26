@@ -171,15 +171,58 @@
         label: { required },
       }
     },
+    mounted() {
+      this.setInitialData()
+    },
     methods: {
+      setInitialData() {
+        const { parentIdx: projectIdx, key } = this.tab
+        const connectionIdx = key.split("-").pop()
+        let connection
+        if (projectIdx != null || projectIdx != undefined) {
+          // local
+          const connections = projectsModule.getLocalConnections(projectIdx)
+          connection = connections[connectionIdx]
+          // const project = projectsModule.getProjects[projectIdx]
+          // connection = project.connections.list[connectionIdx]
+        } else {
+          // global
+          connection = connectionsModule.data.list[connectionIdx]
+        }
+        const { host, port, database, label, icon, description } = connection
+        this.v$.host.$model = host
+        this.v$.port.$model = port
+        this.v$.database.$model = database
+        this.v$.label.$model = label
+        this.icon = icon
+        this.description = description
+      },
+
       async handleInput({ target: { value } }, field) {
         clearTimeout(this.debounce)
         this.debounce = setTimeout(async () => {
-          const payload = { field, value, ...this.tab }
-          await projectsModule.setConnectionData(payload)
-        }, 600)
+          const { parentIdx: projectIdx, key: id } = this.tab
+          const connectionIdx = id.split("-").pop()
+          if (projectIdx != null || projectIdx != undefined) {
+            const payload = { field, value, connectionIdx, ...this.tab }
+            await projectsModule.setConnectionData(payload)
+          } else {
+            // global
+            const payload = { field, value, connectionIdx, ...this.tab }
+            await connectionsModule.setGlobalConnection(payload)
+          }
+        }, 500)
       },
     },
+    // methods: {
+    //   async handleInput({ target: { value } }, field) {
+    //     clearTimeout(this.debounce)
+    //     this.debounce = setTimeout(async () => {
+    //       const payload = { field, value, ...this.tab }
+    //       await projectsModule.setConnectionData(payload)
+    //     }, 600)
+    //   },
+    // },
   }
 </script>
 

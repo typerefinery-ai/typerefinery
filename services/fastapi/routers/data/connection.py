@@ -53,8 +53,8 @@ class ConnectionUtils():
 
   def delete_connection(self, connectionid: str, engine: any):
     with Session(engine) as session:
-      results = self.read_connection(connectionid=connectionid, engine=engine)
-      if results:
+      aconnection = self.read_connection(connectionid=connectionid, engine=engine)
+      if aconnection:
         aconnection = results.one()
         session.delete(aconnection)
         session.commit()
