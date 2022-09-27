@@ -27,7 +27,7 @@ export default class Projects extends VuexModule {
     return (projectIdx) => {
       const project = this.data.list.findIndex((el) => el.id == projectIdx)
 
-      return this.data.list[project]
+      return this.data.list[project].label
     }
   }
   get getQueries() {

@@ -248,7 +248,6 @@
         const projectIndex = projectsModule.getProjects.findIndex(
           (el) => el.id == this.selected
         )
-        const projectID = projectsModule.getProjectLabel(projectIndex)
         const id = nanoid(14)
         const data = {
           projectIdx: projectIndex,
