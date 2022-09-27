@@ -160,18 +160,11 @@
           "select": "Select project",
           "theme-info": "Theme Info",
           "name": "Name",
-          "uri": "Uri",
-          "port": "Port",
-          "database": "Database Name",
           "description": "Description",
           "icon": "Icon",
           "submit": "Submit",
-          "connection-detail": "Connection Details",
-          "database-detail": "Database Details",
-          "enter-connection-description": "Enter Connection Description",
-          "label": "Label"
-        },
-        "updated-header": "Update Connection"
+          "code": "code"
+        }
       },
       "new-transformer": {
         "header": "New Transformer ",

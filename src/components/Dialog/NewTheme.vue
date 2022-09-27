@@ -51,19 +51,19 @@
       </div>
       <div class="field">
         <label for="description">
-          {{ $t("components.dialog.projects.info.description") }}</label
+          {{ $t("components.dialog.new-theme.info.description") }}</label
         >
         <InputText id="description" v-model="description" />
       </div>
       <div class="field">
         <label for="icon">
-          {{ $t("components.dialog.projects.info.icon") }}</label
+          {{ $t("components.dialog.new-theme.info.icon") }}</label
         >
         <InputText id="icon" v-model="icon" />
       </div>
       <div class="field">
         <label for="query">{{
-          $t("components.dialog.new-query.panel2.query")
+          $t("components.dialog.new-theme.info.code")
         }}</label>
         <codemirror
           v-model="themecode"

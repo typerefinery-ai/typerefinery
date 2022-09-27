@@ -11,6 +11,7 @@
     "project": {
       "new-project": "नया काम",
       "new-query": "नया क्वेरी",
+      "new-theme": "नया थीम",
       "new-connection": "नया कनेक्शन",
       "new-transformer": "नया ट्रांसफार्मर",
       "new-algorithm": "नया एल्गोरिथम",
@@ -148,6 +149,21 @@
         "footer": {
           "cancel": "रद्द करना",
           "save": "सेव करे"
+        }
+      },
+      "new-theme": {
+        "header": "नई थीम ",
+        "info": {
+          "panelheader": "परियोजनाओं जानकारी",
+          "panel2header": "थीम जानकारी",
+          "project": "परियोजनाओं",
+          "select": "चयन करें परियोजनाओं",
+          "theme-info": "थीम जानकारी",
+          "name": "नाम",
+          "description": "विवरण",
+          "icon": "आइकन",
+          "submit": "प्रस्तुत",
+          "code": "कोड"
         }
       },
       "new-transformer": {
