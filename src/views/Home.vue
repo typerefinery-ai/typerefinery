@@ -19,9 +19,11 @@
   import SettingsStore from "@/store/Modules/Settings"
   import ProjectsStore from "@/store/Modules/Projects"
   import ConnectionsStore from "@/store/Modules/Connections"
+  import Themes from "@/store/Modules/Theme"
   const settingsModule = getModule(SettingsStore)
   const projectsModule = getModule(ProjectsStore)
   const connectionsModule = getModule(ConnectionsStore)
+  const themesModule = getModule(Themes)
 
   export default {
     name: "Home",
@@ -34,6 +36,7 @@
     mounted() {
       projectsModule.getStoreData()
       connectionsModule.getInitialConnections()
+      themesModule.getInitialThemes()
     },
   }
 </script>

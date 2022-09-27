@@ -1,28 +1,16 @@
 <template>
   <div class="theme-container">
     <div class="field">
-      <label for="label">{{ $t(`components.theme.theme`) }}</label>
-      <div class="field">
-        <Dropdown
-          :model-value="selectedTheme"
-          :options="themes"
-          option-label="label"
-          placeholder="Select a theme"
-          @change="handleTheme"
-        />
-      </div>
-    </div>
-    <div class="field">
       <div id="query_view_cm" class="shadow-3">
         <codemirror
-          :model-value="theme"
+          :model-value="code"
           placeholder="Add your theme here.."
           :style="{ height: '400px' }"
           :autofocus="true"
           :indent-with-tab="true"
           :tab-size="2"
           :extensions="extensions"
-          :disabled="true"
+          @change="handleInputCode($event, 'theme')"
         />
       </div>
     </div>
@@ -37,12 +25,15 @@
   import { oneDark } from "@codemirror/theme-one-dark"
   import Settings from "@/store/Modules/Settings"
   import Projects from "@/store/Modules/Projects"
+  import Themes from "@/store/Modules/Theme"
+  import axios from "axios"
   const settingsModule = getModule(Settings)
   const projectsModule = getModule(Projects)
+  const themesModule = getModule(Themes)
   export default {
     name: "ThemeContent",
     components: {
-      Dropdown,
+      // Dropdown,
       Codemirror,
     },
     props: {
@@ -50,7 +41,8 @@
     },
     data() {
       return {
-        selectedTheme: { label: "webcola_flatly", key: "webcola_flatly" },
+        code: "",
+        debounce: null,
       }
     },
     computed: {
@@ -59,29 +51,42 @@
           ? [javascript(), oneDark]
           : [javascript()]
       },
-      themes() {
-        const { parentIdx: projectIdx } = this.tab
-        const themes = projectsModule.getProjects[projectIdx].themes
-        const output = []
-        for (let theme in themes.list[0].data) {
-          output.push({ label: theme, key: theme })
-        }
-        return output
-      },
-      theme() {
-        const { parentIdx: projectIdx } = this.tab
-        const themes = projectsModule.getProjects[projectIdx].themes
-        const output = JSON.stringify(
-          themes.list[0].data[this.selectedTheme.key],
-          null,
-          "\t"
-        )
-        return output
-      },
+    },
+    mounted() {
+      this.setInitialData()
     },
     methods: {
-      handleTheme({ value }) {
-        this.selectedTheme = value
+      setInitialData() {
+        const { parentIdx: projectIdx, key } = this.tab
+        const themeIdx = key.split("-").pop()
+        let themeData
+        if (projectIdx != null || projectIdx != undefined) {
+          // local
+          const themes = projectsModule.getLocalThemes(projectIdx)
+          themeData = themes[themeIdx]
+          // const project = projectsModule.getProjects[projectIdx]
+          // connection = project.connections.list[connectionIdx]
+        } else {
+          // global
+          themeData = themesModule.data.list[themeIdx]
+        }
+        const { theme } = themeData
+        this.code = theme
+      },
+      async handleInputCode(value, field) {
+        clearTimeout(this.debounce)
+        this.debounce = setTimeout(async () => {
+          const { parentIdx: projectIdx, key: id } = this.tab
+          const themeIdx = id.split("-").pop()
+          if (projectIdx != null || projectIdx != undefined) {
+            const payload = { field, value, themeIdx, ...this.tab }
+            await projectsModule.setThemeData(payload)
+          } else {
+            // global
+            const payload = { field, value, themeIdx, ...this.tab }
+            await themesModule.setGlobalTheme(payload)
+          }
+        }, 500)
       },
     },
   }

@@ -27,7 +27,7 @@ export default class Projects extends VuexModule {
     return (projectIdx) => {
       const project = this.data.list.findIndex((el) => el.id == projectIdx)
 
-      return this.data.list[project].label
+      return this.data.list[project]
     }
   }
   get getQueries() {
@@ -45,6 +45,11 @@ export default class Projects extends VuexModule {
   get getLocalConnections() {
     return (projectIdx) => {
       return this.data.list[projectIdx].connections.list
+    }
+  }
+  get getLocalThemes() {
+    return (projectIdx) => {
+      return this.data.list[projectIdx].themes.list
     }
   }
 
@@ -160,11 +165,33 @@ export default class Projects extends VuexModule {
     projects[projectIdx].connections.list[connectionIdx][field] = value
     this.data.list = projects
   }
+  @Mutation
+  updateTheme(data) {
+    const { projectIdx, themeIdx, field, value } = data
+    const projects = JSON.parse(JSON.stringify(this.data.list))
+    projects[projectIdx].themes.list[themeIdx][field] = value
+    this.data.list = projects
+  }
+  // @Mutation
+  // updateTheme(themedata) {
+  //   const { code, parentIdx, id } = themedata
+  //   console.log("mutation data", themedata)
+  //   const parseddata = JSON.parse(code)
+  //   const projects = JSON.parse(JSON.stringify(this.data.list))
+  //   projects[parentIdx].themes.list[id] = parseddata
+  //   console.log("id", projects[parentIdx].themes.list[id])
+  //   this.data.list = projects
+  // }
 
   @Mutation
   addLocalConnection(connectionData) {
     const { projectIdx, data } = connectionData
     this.data.list[projectIdx].connections.list.push(data)
+  }
+  @Mutation
+  addLocalTheme(themeData) {
+    const { projectIdx, data } = themeData
+    this.data.list[projectIdx].themes.list.push(data)
   }
 
   @Mutation
@@ -294,8 +321,11 @@ export default class Projects extends VuexModule {
       axios.get("http://localhost:8000/datastore/project"),
       axios.get("http://localhost:8000/datastore/connection"),
       axios.get("http://localhost:8000/datastore/query"),
+      axios.get("http://localhost:8000/datastore/theme"),
     ])
-    const [projects, connections, queries] = responses.map((el) => el.data)
+    const [projects, connections, queries, themes] = responses.map(
+      (el) => el.data
+    )
     const data = projects.map((p) => {
       return {
         type: "project",
@@ -317,7 +347,13 @@ export default class Projects extends VuexModule {
             .filter((q) => q.projectid === p.projectid)
             .map((q) => ({ ...q, id: q.queryid })),
         },
-        themes: themes,
+        themes: {
+          type: "themes",
+          icon: "",
+          list: themes
+            .filter((t) => t.projectid === p.projectid)
+            .map((t) => ({ ...t, id: t.themeid })),
+        },
         wirings: {
           type: "wirings",
           icon: "",
@@ -368,7 +404,36 @@ export default class Projects extends VuexModule {
       console.log(err)
     }
   }
-
+  // Theme
+  @Action
+  async setThemeData(data) {
+    const themesGetter = this.context.getters["getLocalThemes"]
+    const themes = themesGetter(data.parentIdx)
+    const theme = themes[data.themeIdx]
+    const payload = {
+      id: theme.id,
+      projectid: theme.projectid,
+      scope: theme.scope,
+      label: theme.label,
+      type: theme.type,
+      data: theme.data,
+      icon: theme.icon,
+      themeid: theme.themeid,
+      description: theme.description,
+      theme: theme.theme,
+      [data.field]: data.value,
+    }
+    try {
+      await axios.put(
+        `http://localhost:8000/datastore/theme/${data.label}`,
+        payload
+      )
+      data = { ...data, projectIdx: data.parentIdx }
+      this.context.commit("updateTheme", data)
+    } catch (err) {
+      console.log(err)
+    }
+  }
   // Connection
   @Action
   async setConnectionData(data) {
