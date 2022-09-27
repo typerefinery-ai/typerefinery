@@ -204,8 +204,6 @@
       },
       themeclosemodal() {
         appDataModule.toggleThemeDialog()
-        console.log("computed", this.value)
-        console.log("store data theme", themesModule)
       },
       transformerclosemodal() {
         appDataModule.toggleTransformerDialog()

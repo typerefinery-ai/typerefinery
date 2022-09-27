@@ -210,7 +210,7 @@
           })),
         }
         const themes = {
-          key: 1,
+          key: 2,
           label: "Themes",
           type: "themes",
           icon: "pi pi-fw pi-server",
