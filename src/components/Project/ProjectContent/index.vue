@@ -104,15 +104,15 @@
           this.panesSize = 45
         }
       },
-      sidebarVisible(visible) {
-        if (visible) {
-          this.pane1Size = 25
-          this.panesSize = 75
-        } else {
-          this.pane1Size = 0
-          this.panesSize = 45
-        }
-      },
+      // sidebarVisible(visible) {
+      //   if (visible) {
+      //     this.pane1Size = 25
+      //     this.panesSize = 75
+      //   } else {
+      //     this.pane1Size = 0
+      //     this.panesSize = 45
+      //   }
+      // },
     },
     mounted() {
       this.updateTabs()

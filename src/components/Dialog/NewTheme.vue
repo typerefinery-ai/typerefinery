@@ -249,39 +249,42 @@
           (el) => el.id == this.selected
         )
         const projectID = projectsModule.getProjectLabel(projectIndex)
-        // const id = nanoid(14)
+        const id = nanoid(14)
         const data = {
           projectIdx: projectIndex,
           data: {
             label: this.name,
-            id: this.name,
+            id: id,
             projectid: this.selected,
             scope: projectIndex == -1 ? "global" : "local",
             type: "theme",
             data: "string",
             icon: this.icon,
-            themeid: this.name,
+            themeid: id,
             description: this.description,
             theme: this.themecode,
           },
         }
         try {
           const payload = {
+            id: id,
             label: this.name,
-            id: this.name,
             projectid: this.selected,
             scope: projectIndex == -1 ? "global" : "local",
             type: "theme",
             data: "string",
             icon: this.icon,
-            themeid: this.name,
+            themeid: id,
             description: this.description,
             theme: this.themecode,
           }
           await axios.post("http://localhost:8000/datastore/theme", payload)
           if (projectIndex == -1) {
+            console.log("data2", data.data)
             themesModule.addGlobalTheme(data.data)
+            console.log("data1", data.data)
           } else {
+            console.log("data", data.data)
             projectsModule.addLocalTheme(data)
           }
         } catch (err) {

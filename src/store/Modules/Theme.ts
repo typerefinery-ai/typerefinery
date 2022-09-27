@@ -21,7 +21,7 @@ export default class Connections extends VuexModule {
   }
   @Mutation
   addGlobalTheme(themeData: { data: any }) {
-    this.data.list.push(themeData.data)
+    this.data.list.push(themeData)
   }
   // @Action
   // async addNewThemeGlobal(themeData) {
@@ -91,14 +91,14 @@ export default class Connections extends VuexModule {
     const themes = this.context.getters["getGlobalThemes"]
     const theme = themes[data.themeIdx]
     const payload = {
-      id: theme.label,
+      id: theme.id,
       label: theme.label,
       projectid: null,
       scope: "global",
       type: "theme",
       data: "string",
       icon: theme.icon,
-      themeid: theme.label,
+      themeid: theme.id,
       description: theme.description,
       theme: theme.themecode,
       [data.field]: data.value,
