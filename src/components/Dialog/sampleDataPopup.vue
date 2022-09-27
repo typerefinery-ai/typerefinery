@@ -8,7 +8,7 @@
       :style="{ width: '350px' }"
     >
       <div class="confirmation-content">
-        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem" />
+        <i class="pi pi-exclamation-triangle mr-3 customDataicon" />
         <span>Click on proceed to load sample data.</span>
       </div>
 
@@ -197,6 +197,9 @@
 <style scoped lang="scss">
   p {
     margin: 0;
+  }
+  .customDataicon {
+    font-size: 2rem;
   }
 
   .confirmation-content {
