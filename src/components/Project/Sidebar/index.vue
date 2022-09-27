@@ -59,6 +59,8 @@
   // import Transformers from "@/store/Modules/Transformers"
   // import Algorithms from "@/store/Modules/Algorithms"
   import AppData from "@/store/Modules/AppData"
+  import Themes from "@/store/Modules/Theme"
+  const themesModule = getModule(Themes)
   const settingsModule = getModule(Settings)
   const projectsModule = getModule(Projects)
   const connectionsModule = getModule(Connections)
@@ -137,7 +139,7 @@
                 children: project.themes.list.map((theme, tIdx) => {
                   return {
                     key: `0-${projectIdx}-2-${tIdx}`,
-                    id: theme.id,
+                    id: theme.label,
                     type: theme.type,
                     label: theme.label,
                     icon: "pi pi-fw pi-file",
@@ -202,7 +204,22 @@
             icon: "pi pi-fw pi-file",
           })),
         }
-        return [projects, connections]
+        const themes = {
+          key: 1,
+          label: "Themes",
+          type: "themes",
+          icon: "pi pi-fw pi-server",
+          children: themesModule.data.list.map((theme, tIdx) => {
+            return {
+              key: `1-${tIdx}`,
+              id: theme.id,
+              type: theme.type,
+              label: theme.label,
+              icon: "pi pi-fw pi-file",
+            }
+          }),
+        }
+        return [projects, connections, themes]
       },
       expandedKeys() {
         return projectsModule.data.expandedNodes
