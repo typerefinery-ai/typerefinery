@@ -376,15 +376,16 @@ function addIpcEvents(window: BrowserWindow) {
     },
     restartService(serviceid: string): any {
       logger.log(`ipc restartService {serviceid}`)
-      let aservice = serviceManager.getService(serviceid)
+      const aservice = serviceManager.getService(serviceid)
       if (aservice) {
-        await aservice.stop()
-        await aservice.start()
+        aservice.stop()
+        aservice.start()
       } else {
         logger.log(`service {serviceid} not found`)
         return false
       }
       return true
+    },
   }
 
   Object.values(sharedAppIpc).forEach((method) => method.clean())

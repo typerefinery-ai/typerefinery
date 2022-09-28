@@ -362,6 +362,8 @@
                 description: "",
                 query: this.query,
                 connectionid: projectid + "_con",
+                data: "",
+                scope: "local",
               },
             ],
           },
