@@ -287,7 +287,7 @@
             description: this.description,
             icon: this.icon,
             data: "",
-            flowid: "fsfkt001xx41d", // TODO: make it dynamic
+            flowid: flowid,
           }
           const connection = {
             connectionid: projectid + "_con",
@@ -372,7 +372,7 @@
             list: [
               {
                 type: "wiring",
-                id: "fsfkt001xx41d", // TODO: make it dynamic
+                id: flowid,
                 label: "Workflow",
                 icon: "workflow",
                 description: "",
