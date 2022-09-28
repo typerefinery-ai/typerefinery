@@ -11,6 +11,7 @@
 
     "project": {
       "new-project": "New Project",
+      "new-theme": "New Theme",
       "new-query": "New Query",
       "new-connection": "New Connection",
       "new-transformer": "New Transformer",
@@ -148,6 +149,21 @@
         "footer": {
           "cancel": "Cancel",
           "save": "Save"
+        }
+      },
+      "new-theme": {
+        "header": "New Theme ",
+        "info": {
+          "panelheader": "Project Info",
+          "panel2header": "Theme Info",
+          "project": "Projects",
+          "select": "Select project",
+          "theme-info": "Theme Info",
+          "name": "Name",
+          "description": "Description",
+          "icon": "Icon",
+          "submit": "Submit",
+          "code": "code"
         }
       },
       "new-transformer": {

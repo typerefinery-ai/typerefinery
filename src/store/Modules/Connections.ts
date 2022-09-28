@@ -37,7 +37,6 @@ export default class Connections extends VuexModule {
 
   @Mutation
   updateGlobalConnection(connectionData) {
-    console.log(connectionData)
     const { connectionIdx, field, value } = connectionData
     const connections = JSON.parse(JSON.stringify(this.data))
     connections.list[connectionIdx][field] = value
@@ -59,7 +58,6 @@ export default class Connections extends VuexModule {
 
   @Action
   async setGlobalConnection(data) {
-    console.log(data)
     const connections = this.context.getters["getGlobalConnections"]
     const connection = connections[data.connectionIdx]
 

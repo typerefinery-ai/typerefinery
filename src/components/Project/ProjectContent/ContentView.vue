@@ -54,10 +54,12 @@
   import Projects from "@/store/Modules/Projects"
   import Connections from "@/store/Modules/Connections"
   import AppData from "@/store/Modules/AppData"
+  import Themes from "@/store/Modules/Theme"
   const settingsModule = getModule(Settings)
   const projectsModule = getModule(Projects)
   const connectionsModule = getModule(Connections)
   const appDataModule = getModule(AppData)
+  const themesModule = getModule(Themes)
 
   TabView.methods.onTabClick = function (event, i) {
     this.$emit("tab-click", {
@@ -98,6 +100,12 @@
               ? projectsModule.getQueries(el.projectIdx)[el.queryIdx].label
               : el.type === "project"
               ? projectsModule.getProjectLabel(el.id)
+              : el.type === "theme"
+              ? el.parent
+                ? projectsModule.getProjects[el.parentIdx].themes.list[
+                    el.key.split("-").pop()
+                  ].label
+                : themesModule.data.list[el.key.split("-").pop()].label
               : el.type === "connection"
               ? el.parent
                 ? projectsModule.getProjects[el.parentIdx].connections.list[

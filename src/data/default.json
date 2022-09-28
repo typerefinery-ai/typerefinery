@@ -13,6 +13,7 @@
     },
     "queryDialog": false,
     "connectionDialog": false,
+    "themeDialog": false,
     "transformerDialog": false,
     "algorithmDialog": false,
     "resizingFlow": false,

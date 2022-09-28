@@ -26,6 +26,11 @@ const Connections = new VuexPersistence({
   reducer: (state: any) => ({ Connections: state.Connections }),
 })
 
+const Themes = new VuexPersistence({
+  key: "themes",
+  storage: window.localStorage,
+  reducer: (state: any) => ({ Themes: state.Themes }),
+})
 const FlowMessage = new VuexPersistence({
   key: "flowMessage",
   storage: window.localStorage,
@@ -66,6 +71,7 @@ export default createStore({
     Projects.plugin,
     Services.plugin,
     Settings.plugin,
+    Themes.plugin,
     // Transformers.plugin,
   ],
 })
