@@ -124,6 +124,7 @@
           "enter-connection-description": "Enter Connection Description",
           "label": "Label"
         },
+        "panelheader": "Connection",
         "updated-header": "Update Connection"
       },
       "new-query": {
@@ -164,6 +165,9 @@
           "icon": "Icon",
           "submit": "Submit",
           "code": "code"
+        },
+        "panel2": {
+          "theme": "Theme"
         }
       },
       "new-transformer": {

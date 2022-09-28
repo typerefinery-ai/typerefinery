@@ -48,6 +48,7 @@
       return {
         displayBasic: true,
         loading: false,
+        themecode: `{\n    "attribute": {\n        "colour": "#7f2704",\n        "tcolour": "white",\n        "label_name": true,\n        "label_value": true,\n        "corner": 5,\n        "split_line": true,\n        "tsize": "10px"\n    },\n    "entity": {\n        "colour": "#08306b",\n        "tcolour": "white",\n        "label_name": true,\n        "label_iid": true,\n        "iid_shorten": true,\n        "corner": 5,\n        "split_line": true,\n        "tsize": "10px"\n    },\n    "relation": {\n        "colour": "#006d2c",\n        "tcolour": "black",\n        "label_name": true,\n        "label_iid": true,\n        "label_offset": 0,\n        "radius": 5,\n        "iid_shorten": true,\n        "split_line": true,\n        "tsize": "10px"\n    },\n    "shadow": {\n        "colour": "#fdae6b",\n        "tcolour": "black"\n    },\n    "edges": {\n        "colour": "black",\n        "stroke": "1px",\n        "arrow": true,\n        "acolour": "black",\n        "labels": true,\n        "split_line": true,\n        "tsize": "10px"\n    },\n    "tooltip": {\n        "fill": "white",\n        "stroke": "1px",\n        "scolour": "black",\n        "corner": 5,\n        "tcolour": "black",\n        "tsize": "11px",\n        "padding": "10px"\n    },\n    "d3sim": {\n        "linkdistance": 150,\n        "charge": -200\n    },\n    "super": {\n        "radius": 25,\n        "label_name": true,\n        "label_iid": true,\n        "iid_shorten": true,\n        "split_line": true,\n        "tsize": "10px"\n    },\n    "tt_description": {\n        "title": true,\n        "name": true,\n        "role": true,\n        "value": true,\n        "boldtitle": true,\n        "subtitle": true,\n        "type": true,\n        "g_G_name": true,\n        "g_role": true,\n        "v_G_name": true,\n        "v_Value": true,\n        "where": true,\n        "number": true\n    }\n}`,
       }
     },
     methods: {
@@ -118,11 +119,24 @@
               "match $a isa log, has logName 'L1';\n$b isa event, has eventName $c;\n$d (owner: $a, item: $b) isa trace,\nhas traceId $e, has index $f;\noffset 0; limit 10;",
             data: "",
           }
+          const theme = {
+            id: projectid + "_theme",
+            label: "Theme",
+            projectid: projectid,
+            scope: "local",
+            type: "theme",
+            data: "string",
+            icon: "",
+            themeid: projectid + "_theme",
+            description: "",
+            theme: JSON.parse(JSON.stringify(this.themecode)),
+          }
           const baseURL = "http://localhost:8000/datastore/"
           await axios.all([
             axios.post(`${baseURL}project`, project),
             axios.post(`${baseURL}connection`, connection),
             axios.post(`${baseURL}query`, query),
+            axios.post(`${baseURL}theme`, theme),
           ])
           await this.createData(projectid)
         } catch (err) {
@@ -141,6 +155,18 @@
           port: "7129",
           host: "localhost",
           database: "typerefinery",
+        }
+        const theme = {
+          label: "Theme",
+          id: projectid + "_theme",
+          projectid: projectid,
+          scope: "local",
+          type: "theme",
+          data: "string",
+          icon: "",
+          themeid: projectid + "_theme",
+          description: "",
+          theme: JSON.parse(JSON.stringify(this.themecode)),
         }
         const projectData = {
           type: "project",
@@ -168,7 +194,8 @@
               },
             ],
           },
-          themes: themesData,
+          // themes: themesData,
+          themes: { type: "themes", icon: "", list: [theme] },
           wirings: {
             type: "wirings",
             icon: "",

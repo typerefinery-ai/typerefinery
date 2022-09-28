@@ -425,7 +425,7 @@ export default class Projects extends VuexModule {
     }
     try {
       await axios.put(
-        `http://localhost:8000/datastore/theme/${data.label}`,
+        `http://localhost:8000/datastore/theme/${data.id}`,
         payload
       )
       data = { ...data, projectIdx: data.parentIdx }
