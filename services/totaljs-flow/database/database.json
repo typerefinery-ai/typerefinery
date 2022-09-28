@@ -13,159 +13,18 @@
 		"url": "https://localhost:8111/Typerefinery_Wiring",
 		"name": "Typerefinery_Wiring",
 		"components": {
-			"cp4jz5dbcd": "<script total>\n\n\texports.name = 'Connection';\n\texports.icon = 'fa fa-code';\n\texports.author = 'Total Avengers';\n\texports.group = 'TypeRefinery';\n\texports.version = '1';\n\texports.config = {};\n\texports.inputs = [{ id: 'input', name: 'Input' }];\n\texports.outputs = [{ id: 'output', name: 'Output' }];\n    exports.meta = { settingswidth: 1200 };\n\n\texports.make = function(instance, config) {\n\t\tconst { TypeDB, SessionType } = require(\"typedb-client\");\n\n\t\tinstance.message = function($) {\n\t\t\tvar data = {\n\t\t\t\tdbport: config.port,\n\t\t\t\tdbhost: config.host,\n\t\t\t\tdbdatabase: config.database\n\t\t\t};\n\t\t\tinstance.send('output', data);\n\t\t};\n\n\t\tinstance.call = async function(data, answer) {\n\t\t\tconst client = TypeDB.coreClient(\"localhost:1729\");\n  \t\t\tlet databases = await client.databases.all();\n\t\t\tconst output = databases.map(el => ({id: el._name, name: el._name}))\n\t\t\tconsole.log(output);\n            answer(output);\n        };\n\n\t\tinstance.configure = function() {\n\t\t};\n\n\t\tinstance.close = function() {\n\t\t};\n\n\t\tinstance.configure();\n\n\t};\n\n</script>\n\n<readme>\n\n</readme>\n<script>\n    // yourdatabase is the name of your component in lower-case\n    ON('configure_connection', function(data) {\n        // Global exports.call\n        // data.call(function(response) {\n//             SET('%yourdatabase', response);\n//         }, true);\n\n        // Private instance.call (from the existing instance)\n        data.call(function(response) {\n            SET('%yourdatabase', response);\n        });\n    });\n</script>\n<settings>\n\t<div class=\"padding\">\n\t\t<div data---=\"input__?.host__required:1\" class=\"m\">Host</div>\n\t\t<div data---=\"input__?.port__required:1\" class=\"m\">Port</div>\n\t\t<div data---=\"input__?.database__dirsource:%yourdatabase;dirraw:1;placeholder:Choose a database;dirempty:No database\" class=\"m\"><b>Database</b></div>\n\t</div>\n</settings>\n\n<body>\n\t<header>\n\t\t<i class=\"ICON\"></i>NAME\n\t</header>\n</body>",
-			"cprs59650b": "<script total>\n    exports.name = 'TQL Query';\n    exports.icon = 'fa fa-code';\n    exports.author = 'Total Avengers';\n    exports.group = 'TypeRefinery';\n    exports.version = '1';\n    exports.config = {};\n    exports.inputs = [{ id: 'input', name: 'Input' }];\n    exports.outputs = [{ id: 'output', name: 'Output' }];\n    exports.meta = { settingswidth: 1200 };\n    exports.make = function(instance, config) {\n        instance.message = function($) {\n            var data = {\n                ...$.data,\n                dbquery: config.query\n            };\n            instance.send('output', data);\n        };\n    };\n</script>\n<readme>\n</readme>\n<settings>\n    <div class=\"padding\">\n        <div class=\"ui-input-label\">Query:</div>\n        <div data---=\"codemirror__?.query__type:tql;minheight:300;parent:auto;margin:60;tabs:true;trim:true\" class=\"m\"></div>\n    </div>\n</settings>\n<body>\n    <header>\n        <i class=\"ICON\"></i>NAME\n    </header>\n</body>",
-			"csbozf107f": "<script total>\n\n\texports.name = 'Svg';\n\texports.icon = 'fa fa-code';\n\texports.author = 'Total Avengers';\n\texports.group = 'TypeRefinery';\n\texports.version = '1';\n\texports.config = {};\n\texports.inputs = [{ id: 'input', name: 'Input' }];\n\texports.outputs = [{ id: 'output', name: 'Output' }];\n\texports.meta = { settingswidth: 1200 };\n\n\t// exports.npm = ['npm_module_1', 'npm_module_2@version'];\n\n\texports.make = function(instance, config) {\n\n\t\t// instance.main.variables {Object}\n\t\t// instance.main.variables2 {Object}\n\t\t// instance.save();\n\t\t// instance.replace(str); // replaces {variable_name} for values from \"variables\" and \"variables2\"\n\n\t\tinstance.message = function($) {\n\t\t\tvar data = $.data;\n\t\t\t$.send('output', data);\n\t\t\t// or $.destroy();\n\t\t};\n\n\t\tinstance.configure = function() {\n\t\t\t// \"config\" is changed\n\t\t};\n\n\t\tinstance.close = function() {\n\t\t\t// this instance is closed\n\t\t};\n\n\t\tinstance.variables = function(variables) {\n\t\t\t// FlowStream variables are changed\n\t\t};\n\n\t\tinstance.variables2 = function(variables) {\n\t\t\t// Global variables are changed\n\t\t};\n\n\t\tinstance.configure();\n\n\t};\n\n</script>\n\n<readme>\nMarkdown readme\n\n```js\nvar total = 'Hello world!';\n```\n</readme>\n\n<settings>\n\t<div class=\"padding\">\n\t\tSETTINGS for this component (optional)\n\t</div>\n</settings>\n\n<style>\n\t.CLASS footer { padding: 10px; font-size: 12px; }\n</style>\n\n<script>\n\n\t// Client-side script\n\t// Optional, you can remove it\n\n\t// A custom helper for the component instances\n\t// The method below captures each instance of this component\n\tTOUCH(function(exports, reinit) {\n\n\t\tvar name = exports.name + ' --> ' + exports.id;\n\n\t\tconsole.log(name, 'initialized' + (reinit ? ' : UPDATE' : ''));\n\n\t\texports.settings = function(meta) {\n\t\t\t// Triggered when the user opens settings\n\t\t\tconsole.log(name, 'settings', meta);\n\t\t};\n\n\t\texports.configure = function(config, isinit) {\n\t\t\t// Triggered when the config is changed\n\t\t\tconsole.log(name, 'configure', config);\n\t\t};\n\n\t\texports.status = function(status, isinit) {\n\t\t\t// Triggered when the status is changed\n\t\t\tconsole.log(name, 'status', status);\n\t\t};\n\n\t\texports.note = function(note, isinit) {\n\t\t\t// Triggered when the note is changed\n\t\t\tconsole.log(name, 'note', note);\n\t\t};\n\n\t\texports.variables = function(variables) {\n\t\t\t// Triggered when the variables are changed\n\t\t\tconsole.log(name, 'variables', variables);\n\t\t};\n\n\t\texports.variables2 = function(variables) {\n\t\t\t// Triggered when the variables2 are changed\n\t\t\tconsole.log(name, 'variables2', variables);\n\t\t};\n\n\t\texports.close = function() {\n\t\t\t// Triggered when the instance is closing due to some reasons\n\t\t\tconsole.log(name, 'close');\n\t\t};\n\n\t});\n\n</script>\n\n<body>\n\t<header>\n\t\t<i class=\"ICON\"></i>NAME\n\t</header>\n</body>",
-			"cye905a0fe": "<script total>\n    exports.name = 'Theme';\n    exports.icon = 'fa fa-code';\n    exports.author = 'Total Avengers';\n    exports.group = 'TypeRefinery';\n    exports.version = '1';\n    exports.config = { outputs:1,code: ''}\n    exports.inputs = [{ id: 'input', name: 'Input' }];\n    exports.outputs = [{ id: 'output', name: 'Output' }];\n    exports.meta = { settingswidth: 1200 };\n    exports.make = function(instance, config) {\n        var fn;\n        instance.message = function($) {\n            if (fn) {\n                try {\n                    var send = data => $.send('output', data);\n                    fn($.data, instance, $, $, F.require, send, $.repo, $.vars, $.data);\n                } catch (e) {\n                    $.throw(e);\n                    $.destroy();\n                }\n            }\n        };\n        instance.configure = function() {\n            instance.outputs = [];\n            for (let i = 1; i <= config.outputs; i++)\n                instance.outputs.push({ id: 'output' + (i === 1 ? '' : i), name: 'Output #' + i });\n            instance.save();\n            try {\n                if (config.code) {\n                    instance.status(1);\n                    fn = new Function('value', 'instance', '$', 'message', 'require', 'send', 'repo', 'vars', 'data', config.code);\n                } else {\n                    instance.status(0);\n                    fn = null;\n                }\n            } catch (e) {\n                fn = null;\n                instance.throw('Code: ' + e.message);\n            }\n        };\n        instance.close = function() {\n            fn = null;\n        };\n        instance.configure();\n    };\n</script>\n<readme>\n    This component executes a custom JavaScript code as it is.\n    To send data to the default output use `send(somedata);`\n    To send data to specific output when number of outputs > 1 use `$.send('outputX', somedata)` where `X` is output index, see example bellow:\n    - first output--> `send(somedata)` or `$.send('output', somedata)`\n    - second output --> `$.send('output2', somedata)`\n    - ...\n    - 5th output --> `$.send('output5', somedata)`\n    - etc.\n</readme>\n<settings>\n    <div class=\"padding\">\n        <div class=\"ui-input-label\">Code:</div>\n        <div data---=\"codemirror__?.code__type:javascript;minheight:300;parent:auto;margin:60;tabs:true;trim:true\" class=\"m\"></div>\n    </div>\n</settings>\n<body>\n    <header>\n        <i class=\"ICON\"></i>NAME\n    </header>\n</body>",
-			"czdhyf4603": "<script total>\n\n\texports.name = 'Visualisation';\n\texports.icon = 'fa fa-code';\n\texports.author = 'Total Avengers';\n\texports.group = 'TypeRefinery';\n\texports.version = '1';\n\texports.config = {};\n\texports.inputs = [{ id: 'input', name: 'Input' }];\n\texports.outputs = [{ id: 'output', name: 'Output' }];\n\texports.meta = { settingswidth: 1200 };\n\n\t// exports.npm = ['npm_module_1', 'npm_module_2@version'];\n\n\texports.make = function(instance, config) {\n\n\t\t// instance.main.variables {Object}\n\t\t// instance.main.variables2 {Object}\n\t\t// instance.save();\n\t\t// instance.replace(str); // replaces {variable_name} for values from \"variables\" and \"variables2\"\n\n\t\tinstance.message = function($) {\n\t\t\tvar data = $.data;\n\t\t\t$.send('output', data);\n\t\t\t// or $.destroy();\n\t\t};\n\n\t\tinstance.configure = function() {\n\t\t\t// \"config\" is changed\n\t\t};\n\n\t\tinstance.close = function() {\n\t\t\t// this instance is closed\n\t\t};\n\n\t\tinstance.variables = function(variables) {\n\t\t\t// FlowStream variables are changed\n\t\t};\n\n\t\tinstance.variables2 = function(variables) {\n\t\t\t// Global variables are changed\n\t\t};\n\n\t\tinstance.configure();\n\n\t};\n\n</script>\n\n<readme>\nMarkdown readme\n\n```js\nvar total = 'Hello world!';\n```\n</readme>\n\n<settings>\n\t<div class=\"padding\">\n\t\tSETTINGS for this component (optional)\n\t</div>\n</settings>\n\n<style>\n\t.CLASS footer { padding: 10px; font-size: 12px; }\n</style>\n\n<script>\n\n\t// Client-side script\n\t// Optional, you can remove it\n\n\t// A custom helper for the component instances\n\t// The method below captures each instance of this component\n\tTOUCH(function(exports, reinit) {\n\n\t\tvar name = exports.name + ' --> ' + exports.id;\n\n\t\tconsole.log(name, 'initialized' + (reinit ? ' : UPDATE' : ''));\n\n\t\texports.settings = function(meta) {\n\t\t\t// Triggered when the user opens settings\n\t\t\tconsole.log(name, 'settings', meta);\n\t\t};\n\n\t\texports.configure = function(config, isinit) {\n\t\t\t// Triggered when the config is changed\n\t\t\tconsole.log(name, 'configure', config);\n\t\t};\n\n\t\texports.status = function(status, isinit) {\n\t\t\t// Triggered when the status is changed\n\t\t\tconsole.log(name, 'status', status);\n\t\t};\n\n\t\texports.note = function(note, isinit) {\n\t\t\t// Triggered when the note is changed\n\t\t\tconsole.log(name, 'note', note);\n\t\t};\n\n\t\texports.variables = function(variables) {\n\t\t\t// Triggered when the variables are changed\n\t\t\tconsole.log(name, 'variables', variables);\n\t\t};\n\n\t\texports.variables2 = function(variables) {\n\t\t\t// Triggered when the variables2 are changed\n\t\t\tconsole.log(name, 'variables2', variables);\n\t\t};\n\n\t\texports.close = function() {\n\t\t\t// Triggered when the instance is closing due to some reasons\n\t\t\tconsole.log(name, 'close');\n\t\t};\n\n\t});\n\n</script>\n\n<body>\n\t<header>\n\t\t<i class=\"ICON\"></i>NAME\n\t</header>\n</body>",
 			"cyejp563cd": "<script total>\n\n\texports.name = 'Trigger';\n\texports.group = 'Triggers';\n\texports.version = '3';\n\texports.icon = 'fa fa-bullhorn';\n\texports.author = 'Total.js';\n\texports.config = { random: true, type: 'string', data: '', restart: false };\n\texports.outputs = [{ id: 'output', name: 'Output' }];\n\n\texports.make = function(instance, config) {\n\n\t\tinstance.trigger = function() {\n\n\t\t\tvar val;\n\n\t\t\tswitch (config.type) {\n\t\t\t\tcase 'number':\n\t\t\t\t\tval = config.random ? U.random() : config.data.parseFloat();\n\t\t\t\t\tbreak;\n\t\t\t\tcase 'buffer':\n\t\t\t\t\ttry {\n\t\t\t\t\t\tval = config.random ? Buffer.from(U.random_string()) : Buffer.from(config.data, 'base64');\n\t\t\t\t\t} catch (e) {\n\t\t\t\t\t\tinstance.throw(e);\n\t\t\t\t\t}\n\t\t\t\t\tbreak;\n\t\t\t\tcase 'date':\n\t\t\t\t\tval = config.random ? NOW.add('-' + U.random(500, 10) + ' seconds') : config.data.parseDate();\n\t\t\t\t\tbreak;\n\t\t\t\tcase 'object':\n\t\t\t\t\ttry {\n\t\t\t\t\t\tval = config.random ? {} : (new Function('return ' + config.data))();\n\t\t\t\t\t} catch (e) {\n\t\t\t\t\t\tinstance.throw(e);\n\t\t\t\t\t}\n\t\t\t\t\tbreak;\n\t\t\t\tcase 'boolean':\n\t\t\t\t\tval = config.random ? U.random() % 2 === 0 : config.data === 'true' || config.data === 'on' || config.data === '1';\n\t\t\t\t\tbreak;\n\t\t\t\tdefault:\n\t\t\t\t\tval = config.random ? U.random_string(20) : config.data;\n\t\t\t\t\tbreak;\n\t\t\t}\n\n\t\t\tinstance.send('output', val);\n\t\t};\n\n\t\tconfig.restart && setTimeout(() => instance.trigger(), 5000);\n\t};\n\n</script>\n\n<style>\n\t.CLASS .padding { padding: 0 10px 10px; }\n\t.CLASS button { width: 100%; height: 24px; border: 1px solid #E0E0E0; border-radius: var(--radius); color: #000; background-color: #F0F0F0; margin: 0; }\n\t.CLASS button:hover { background-color: #F8F8F8; }\n\t.CLASS button:active { background-color: #E0E0E0; }\n\t.ui-dark .CLASS button { border-color: #404040; color: #FFF; background-color: #222; }\n\t.ui-dark .CLASS button:hover { background-color: #303030; }\n\t.ui-dark .CLASS button:active { background-color: #404040; }\n</style>\n\n<settings>\n\t<div class=\"padding\">\n\t\t<div data---=\"input__?.type__dirsource:string|String,number|Number,boolean|Boolean,date|Date,object|Object,buffer|Buffer as Base64;required:1\">Type</div>\n\t\t<div class=\"mt10 m\">\n\t\t\t<div data---=\"input__?.restart__type:checkbox\">Trigger 5s after initialization.</div>\n\t\t\t<div data---=\"input__?.random__type:checkbox\">Random data</div>\n\t\t</div>\n\t\t<div data-bind=\"?.random__hide\" class=\"hidden\">\n\t\t\t<hr />\n\t\t\t<div data---=\"input__?.data__required:1;height:250;type:multiline;maxlength:100000;monospace:1\">Data</div>\n\t\t</div>\n\t</div>\n</settings>\n\n<readme>\nThe component triggers data into the Flow.\n</readme>\n\n<body>\n\t<header>\n\t\t<i class=\"ICON\"></i>NAME\n\t</header>\n\t<div class=\"padding\">\n\t\t<button class=\"exec\" data-exec=\"FUNC.trigger\">Run</button>\n\t</div>\n</body>",
 			"c5aria8f8f": "<script total>\n\n\texports.name = 'Print JSON';\n\texports.group = 'Common';\n\texports.version = '1';\n\texports.icon = 'fa fa-print';\n\texports.author = 'Martin Smola';\n\texports.config = { repo: false, data: true };\n\texports.inputs = [{ id: 'input', name: 'Input' }];\n\n\texports.make = function(instance, config) {\n\t\tinstance.message = function($) {\n\n\t\t\tvar data = $.data;\n\n\t\t\tif (config.data !== false) {\n\t\t\t\tif (data instanceof Buffer)\n\t\t\t\t\tdata = data.toString('hex').substring(0, 200);\n\t\t\t}\n\n\t\t\tvar count = 0;\n\n\t\t\tfor (var key in config) {\n\t\t\t\tif (config[key])\n\t\t\t\t\tcount++;\n\t\t\t}\n\n\t\t\tvar output = count > 1 ? {} : null;\n\n\t\t\tif (config.repo) {\n\t\t\t\tif (output)\n\t\t\t\t\toutput.repo = $.repo;\n\t\t\t\telse\n\t\t\t\t\toutput = $.repository;\n\t\t\t}\n\n\t\t\tif (config.data) {\n\t\t\t\tif (output)\n\t\t\t\t\toutput.data = $.data;\n\t\t\t\telse\n\t\t\t\t\toutput = $.data;\n\t\t\t}\n\n\t\t\toutput && instance.status(output);\n\t\t\t$.destroy();\n\t\t};\n\n\t\tinstance.trigger = function() {\n\t\t\tinstance.status('');\n\t\t}\n\n\t};\n\n</script>\n\n<style>\n\t.CLASS footer > div { margin: 10px; }\n\t.CLASS pre { font-size: 10px; margin: 0; padding: 5px; background-color: #F0F0F0; border-radius: var(--radius); }\n\t.CLASS button { float: right; height: 20px; font-size: 11px; border: 1px solid #E0E0E0; border-radius: var(--radius); color: #000; background-color: transparent; margin: 0; padding: 0 5px; }\n\t.CLASS button:hover { background-color: #F8F8F8; }\n\t.CLASS button:active { background-color: #E0E0E0; }\n\t.CLASS .ui-objecttree { background-color: #f0f0f0; padding: 4px; }\n\n\t.ui-dark .CLASS pre { background-color: #404040; tab-size: 2; }\n\t.ui-dark .CLASS button { border-color: #404040; color: #FFF; }\n\t.ui-dark .CLASS button:hover { background-color: #303030; }\n\t.ui-dark .CLASS button:active { background-color: #404040; }\n</style>\n\n<readme>\nThe component prints incoming data in a JSON format.\n</readme>\n\n<settings>\n\t<div class=\"padding\">\n\t\t<div data---=\"input__?.repo__type:checkbox\">Shows repository</div>\n\t\t<div data---=\"input__?.data__type:checkbox\">Shows data</div>\n\t</div>\n</settings>\n\n<script>\n\tFUNC.printjson_click = function(type, data) { // type = path/data\n\t\tnavigator.clipboard.writeText(type === 'path' ? data : STRINGIFY(data)).catch(e => console.error(e));\n\t};\n\n\t$('body').on('click', '.ui-objecttree .fa-copy, .ui-objecttree .fa-link', function(){\n\t\tvar el = $(this);\n\t\tvar iscopy = el.hclass('fa-copy');\n\t\tel.tclass(iscopy ? 'fa-copy' : 'fa-link').tclass('fa-check');\n\t\tsetTimeout(function(){\n\t\t\tel.tclass('fa-check').tclass(iscopy ? 'fa-copy' : 'fa-link');\n\t\t}, 2000);\n\t});\n</script>\n\n<body>\n\t<header>\n\t\t<button class=\"exec\" data-exec=\"FUNC.trigger\">Clear</button>\n\t\t<i class=\"ICON\"></i>NAME\n\t</header>\n\t<footer>\n\t\t<div data---=\"objecttree__!STATUS__exec:FUNC.printjson_click\" class=\"selectable\"></div>\n\t</footer>\n</body>",
-			"run": "<script total>\n    exports.name = 'WebCola Viz';\n    exports.group = 'TypeRefinery';\n    exports.version = '1';\n    exports.icon = 'fa fa-code';\n    exports.author = 'Total.js';\n    exports.config = { code: '// instance {FlowStreamInstance};\\n// $ {FlowStreamMessage};\\n// vars {Object};\\n// repo {Object};\\n// data {String/Number/Boolean/Date/Buffer/Object};\\n// $.send(\\'output\\', data); // or simply send(data); which uses the first output\\n// $.destroy();\\n// $.throw(err);\\n\\n// IMPORTANT: If you do not perform re-send, you need to destroy this message via $.destroy() method\\n// IMPORTANT: methods $.send(), $.destroy() and $.throw() can be executed only once\\n\\n// $.send(\\'output\\', data);\\n$.destroy();' };\n    exports.inputs = [{ id: 'graph_data', name: 'DATA' },{ id: 'theme', name: 'Theme' }];\n    exports.outputs = [{ id: 'output', name: 'Output' }];\n    exports.meta = { settingswidth: 1200 };\n\n    exports.make = function(instance, config) {\n        var fn;\n        var values = {};\n\n\t\tinstance.message = function($) {\n            const endpointData = { endpoint: config.endpoint }\n            values[$.input] = $.data\n\n\t\t\tif (values.graph_data && values.theme) {\n\t\t\t\t\tvar project;\n\t\t\t\t\tvar input_data = {\n\t\t\t\t\t\ttheme: values.theme,\n\t\t\t\t\t\tgraph_data: values.graph_data\n\t\t\t\t\t};\n\t\t\t\t\tconst codeWithData = config.code.replace('GRAPH_DATA', JSON.stringify(input_data.graph_data))\n\t\t\t\t\tconst code = codeWithData.replace('THEME', JSON.stringify(input_data.theme))\n\t\t\t\t\t const payload = {\n\t\t\t\t\t\t \"code\": code,\n\t\t\t\t\t\t \"dependecies\": [\"https://d3js.org/d3.v4.js\", \"https://cdn.jsdelivr.net/npm/webcola@3.4.0/WebCola/cola.js\"],\n\t\t\t\t\t\t  \"returnoutput\": \"script\"\n\t\t\t\t\t };\n                     let options = {\n\t\t\t\t\t\t\tmethod: 'POST',\n\t\t\t\t\t\t\theaders: {\n\t\t\t\t\t\t\t\t'Content-Type':\n\t\t\t\t\t\t\t\t\t'application/json;charset=utf-8'\n\t\t\t\t\t\t\t},\n            \t\t\t\tbody: JSON.stringify(payload)\n       \t\t\t\t   }\n\t\t\t\t \tPromise.all([\n\t\t\t\t\t  fetch(\"http://127.0.0.1:8000/datastore/project\").then(value => value.json()),\n\t\t\t\t\t  fetch(endpointData.endpoint,options).then(value => value.json()),\n\t\t\t\t\t]).then(([projects, output]) => {\n\t\t\t\t\t\tconsole.log({projects,output})\n\t\t\t\t\t\tproject = projects.find(el => el.flowid == instance.main.id)\n\t\t\t\t\t\tconsole.log(project)\n\t\t\t\t\t\tconst res = {\n\t\t\t\t\t\tpath: output[\"output.url\"],\n\t\t\t\t\t\tstepId: instance.id,\n\t\t\t\t\t\tstepName: instance.module.name,\n\t\t\t\t\t\tflowId: instance.main.id,\n\t\t\t\t\t\tprojectId: project.projectid\n\t\t\t\t\t\t}\n\t\t\t\t\t\tconsole.log('ankit', res)\n\t\t\t\t\t\t$.send('output', res)\n\t\t\t\t\t}).catch((err) => {\n\t\t\t\t\t\t $.send('output', err)\n\t\t\t\t\t});\n\n\n\t\t\t\tvalues.theme = null\n\t\t\t}\n        };\n        instance.configure = function() {\n            instance.outputs = [];\n            for (let i = 1; i <= config.outputs; i++)\n                instance.outputs.push({ id: 'output' + (i === 1 ? '' : i), name: 'Output #' + i });\n            instance.save();\n\n            try {\n                if (config.code) {\n                    instance.status(1);\n                    fn = new Function('value', 'instance', '$', 'message', 'require', 'send', 'repo', 'vars', 'data', config.code);\n                } else {\n                    instance.status(0);\n                    fn = null;\n                }\n            } catch (e) {\n                fn = null;\n                instance.throw('Code: ' + e.message);\n            }\n        };\n\n        instance.close = function() {\n            fn = null;\n        };\n\n        instance.configure();\n    };\n</script>\n\n<readme>\n    This component executes a custom JavaScript code as it is.\n\n\n    To send data to the default output use `send(somedata);`\n    To send data to specific output when number of outputs > 1 use `$.send('outputX', somedata)` where `X` is output index, see example bellow:\n    - first output--> `send(somedata)` or `$.send('output', somedata)`\n    - second output --> `$.send('output2', somedata)`\n    - ...\n    - 5th output --> `$.send('output5', somedata)`\n    - etc.\n</readme>\n\n<settings>\n    <div class=\"padding\">\n        <div data---=\"input__?.endpoint__required:1\" class=\"m\">Endpont</div>\n        <div class=\"ui-input-label\">Code:</div>\n        <div data---=\"codemirror__?.code__type:javascript;minheight:300;parent:auto;margin:60;tabs:true;trim:true\" class=\"m\"></div>\n    </div>\n</settings>\n\n<body>\n    <header>\n        <i class=\"ICON\"></i>NAME\n    </header>\n</body>",
-			"c418t8a6b8": "<script total>\n\texports.name = 'Run (node & edges)';\n    exports.icon = 'fa fa-code';\n    exports.author = 'RG';\n    exports.group = 'TypeRefinery';\n    exports.version = '1';\n    exports.config = { algorithm: '',endpoint:'' };\n    exports.inputs = [{ id: 'connection', name: 'Connection' }, { id: 'query', name: 'TQL Query' }];\n    exports.outputs = [{ id: 'output', name: 'Output' }];\n    exports.meta = { settingswidth: 1200 };\n\n    exports.make = function(instance, config) {\n        var fn;\n        var values = {};\n        instance.message = function($) {\n            const endpointData = {\n                 endpoint: config.endpoint,\n            }\n            values[$.input] = $.data;\n            if (values.connection && values.query && config.algorithm) {\n                var payload = {\n                    dbhost: values.connection.dbhost,\n                    dbport: values.connection.dbport,\n                    dbdatabase: values.connection.dbdatabase,\n                    dbquery: values.query.dbquery,\n                    algorithm: config.algorithm,\n                    algorithmrequirements: 'argparse\\nloguru',\n                    returnoutput: 'output'\n                };\n                let options = {\n            \t\tmethod: 'POST',\n            \t\theaders: {\n                \t\t'Content-Type':\n                    \t'application/json;charset=utf-8'\n            \t},\n            \tbody: JSON.stringify(payload)\n        }\n        let fetchRes = fetch(endpointData.endpoint,options);\n        fetchRes.then(res =>\n            res.json()).then(d => { $.send('output', d) }).catch(err => { $.send('output', err) })\n                values.query = null;\n            } else {\n                // IMPORTANT: we must destroy the current message becase we don't need to send it next\n                $.destroy();\n            }\n        };\n        instance.close = function() {\n            fn = null;\n        };\n    };\n</script>\n<readme>\n    Lorem ipsum dolor sit amet consectetur adipisicing, elit. Laudantium, in.\n</readme>\n<settings>\n    <div class=\"padding\">\n        <div data---=\"input__?.endpoint__required:1\" class=\"m\">Endpont</div>\n        <div class=\"ui-input-label\">Algorithm:</div>\n        <div data---=\"codemirror__?.algorithm__type:python;minheight:300;parent:auto;margin:60;tabs:true;trim:true\" class=\"m\"></div>\n    </div>\n</settings>\n<body>\n    <header>\n        <i class=\"ICON\"></i>NAME\n    </header>\n</body>",
+			"run": "<script total>\n    exports.name = 'WebCola Viz';\n    exports.group = 'TypeRefinery';\n    exports.version = '1';\n    exports.icon = 'fa fa-code';\n    exports.author = 'Total.js';\n    exports.config = { code: '// instance {FlowStreamInstance};\\n// $ {FlowStreamMessage};\\n// vars {Object};\\n// repo {Object};\\n// data {String/Number/Boolean/Date/Buffer/Object};\\n// $.send(\\'output\\', data); // or simply send(data); which uses the first output\\n// $.destroy();\\n// $.throw(err);\\n\\n// IMPORTANT: If you do not perform re-send, you need to destroy this message via $.destroy() method\\n// IMPORTANT: methods $.send(), $.destroy() and $.throw() can be executed only once\\n\\n// $.send(\\'output\\', data);\\n$.destroy();' };\n    exports.inputs = [{ id: 'graph_data', name: 'DATA' },{ id: 'theme', name: 'Theme' }];\n    exports.outputs = [{ id: 'output', name: 'Output' }];\n    exports.meta = { settingswidth: 1200 };\n\n    exports.make = function(instance, config) {\n        var fn;\n        var values = {};\n\n\t\tinstance.message = function($) {\n            const endpointData = { endpoint: config.endpoint }\n            values[$.input] = $.data\n\n\t\t\tif (values.graph_data && values.theme) {\n\t\t\t\t\tvar project;\n\t\t\t\t\tvar input_data = {\n\t\t\t\t\t\ttheme: values.theme,\n\t\t\t\t\t\tgraph_data: values.graph_data\n\t\t\t\t\t};\n\t\t\t\t\tconst codeWithData = config.code.replace('GRAPH_DATA', JSON.stringify(input_data.graph_data))\n\t\t\t\t\tconst code = codeWithData.replace('THEME', JSON.stringify(input_data.theme))\n\t\t\t\t\tconsole.log({code})\n\t\t\t\t\t const payload = {\n\t\t\t\t\t\t \"code\": code,\n\t\t\t\t\t\t \"dependecies\": [\"https://d3js.org/d3.v4.js\", \"https://cdn.jsdelivr.net/npm/webcola@3.4.0/WebCola/cola.js\"],\n\t\t\t\t\t\t  \"returnoutput\": \"script\"\n\t\t\t\t\t };\n                     let options = {\n\t\t\t\t\t\t\tmethod: 'POST',\n\t\t\t\t\t\t\theaders: {\n\t\t\t\t\t\t\t\t'Content-Type':\n\t\t\t\t\t\t\t\t\t'application/json;charset=utf-8'\n\t\t\t\t\t\t\t},\n            \t\t\t\tbody: JSON.stringify(payload)\n       \t\t\t\t   }\n\t\t\t\t \tPromise.all([\n\t\t\t\t\t  fetch(\"http://127.0.0.1:8000/datastore/project\").then(value => value.json()),\n\t\t\t\t\t  fetch(endpointData.endpoint,options).then(value => value.json()),\n\t\t\t\t\t]).then(([projects, output]) => {\n\t\t\t\t\t\tconsole.log({projects,output})\n\t\t\t\t\t\tproject = projects.find(el => el.flowid == instance.main.id)\n\t\t\t\t\t\tconsole.log(project)\n\t\t\t\t\t\tconst res = {\n\t\t\t\t\t\tpath: output[\"output.url\"],\n\t\t\t\t\t\tstepId: instance.id,\n\t\t\t\t\t\tstepName: instance.module.name,\n\t\t\t\t\t\tflowId: instance.main.id,\n\t\t\t\t\t\tprojectId: project.projectid\n\t\t\t\t\t\t}\n\t\t\t\t\t\tconsole.log('ankit', res)\n\t\t\t\t\t\t$.send('output', res)\n\t\t\t\t\t}).catch((err) => {\n\t\t\t\t\t\t $.send('output', err)\n\t\t\t\t\t});\n\n\n\t\t\t\tvalues.theme = null\n\t\t\t}\n        };\n        instance.configure = function() {\n            instance.outputs = [];\n            for (let i = 1; i <= config.outputs; i++)\n                instance.outputs.push({ id: 'output' + (i === 1 ? '' : i), name: 'Output #' + i });\n            instance.save();\n\n            try {\n                if (config.code) {\n                    instance.status(1);\n                    fn = new Function('value', 'instance', '$', 'message', 'require', 'send', 'repo', 'vars', 'data', config.code);\n                } else {\n                    instance.status(0);\n                    fn = null;\n                }\n            } catch (e) {\n                fn = null;\n                instance.throw('Code: ' + e.message);\n            }\n        };\n\n        instance.close = function() {\n            fn = null;\n        };\n\n        instance.configure();\n    };\n</script>\n\n<readme>\n    This component executes a custom JavaScript code as it is.\n\n\n    To send data to the default output use `send(somedata);`\n    To send data to specific output when number of outputs > 1 use `$.send('outputX', somedata)` where `X` is output index, see example bellow:\n    - first output--> `send(somedata)` or `$.send('output', somedata)`\n    - second output --> `$.send('output2', somedata)`\n    - ...\n    - 5th output --> `$.send('output5', somedata)`\n    - etc.\n</readme>\n\n<settings>\n    <div class=\"padding\">\n        <div data---=\"input__?.endpoint__required:1\" class=\"m\">Endpont</div>\n        <div class=\"ui-input-label\">Code:</div>\n        <div data---=\"codemirror__?.code__type:javascript;minheight:300;parent:auto;margin:60;tabs:true;trim:true\" class=\"m\"></div>\n    </div>\n</settings>\n\n<body>\n    <header>\n        <i class=\"ICON\"></i>NAME\n    </header>\n</body>",
+			"c418t8a6b8": "<script total>\n\texports.name = 'Run (node & edges)';\n    exports.icon = 'fa fa-code';\n    exports.author = 'RG';\n    exports.group = 'TypeRefinery';\n    exports.version = '1';\n    exports.config = { algorithm: '',endpoint:'' };\n    exports.inputs = [{ id: 'connection', name: 'Connection' }, { id: 'query', name: 'TQL Query' }];\n    exports.outputs = [{ id: 'output', name: 'Output' }];\n    exports.meta = { settingswidth: 1200 };\n\n    exports.make = function(instance, config) {\n        var fn;\n        var values = {};\n        instance.message = function($) {\n            const endpointData = {\n                 endpoint: config.endpoint,\n            }\n            values[$.input] = $.data;\n            if (values.connection && values.query && config.algorithm) {\n\t\t\t\tconsole.log({values})\n                var payload = {\n                    dbhost: values.connection.dbhost,\n                    dbport: values.connection.dbport,\n                    dbdatabase: values.connection.dbdatabase,\n                    dbquery: values.query,\n                    algorithm: config.algorithm,\n                    algorithmrequirements: 'argparse\\nloguru',\n                    returnoutput: 'output'\n                };\n\t\t\t\tconsole.log({payload})\n                let options = {\n            \t\tmethod: 'POST',\n            \t\theaders: {\n                \t\t'Content-Type':\n                    \t'application/json;charset=utf-8'\n            \t},\n            \tbody: JSON.stringify(payload)\n        }\n        let fetchRes = fetch(endpointData.endpoint,options);\n        fetchRes.then(res =>\n            res.json()).then(d => { $.send('output', d) }).catch(err => { $.send('output', err) })\n                values.query = null;\n            } else {\n                // IMPORTANT: we must destroy the current message becase we don't need to send it next\n                $.destroy();\n            }\n        };\n        instance.close = function() {\n            fn = null;\n        };\n    };\n</script>\n<readme>\n    Lorem ipsum dolor sit amet consectetur adipisicing, elit. Laudantium, in.\n</readme>\n<settings>\n    <div class=\"padding\">\n        <div data---=\"input__?.endpoint__required:1\" class=\"m\">Endpont</div>\n        <div class=\"ui-input-label\">Algorithm:</div>\n        <div data---=\"codemirror__?.algorithm__type:python;minheight:300;parent:auto;margin:60;tabs:true;trim:true\" class=\"m\"></div>\n    </div>\n</settings>\n<body>\n    <header>\n        <i class=\"ICON\"></i>NAME\n    </header>\n</body>",
 			"pubsrcfyn2ecf44Xsvg_insert": "<script total>\n\n\texports.name = 'TMS Example';\n\texports.icon = 'fas fa-broadcast-tower';\n\texports.config = {};\n\texports.outputs = [{ id: 'publish', name: 'Output' }];\n\texports.group = 'Publishers';\n\texports.type = 'pub';\n\texports.schemaid = ['srcfyn2ecf44', 'svg_insert'];\n\n\texports.make = function(instance) {\n\t\tinstance.process = function(msg, client) {\n\t\t\tinstance.send('publish', msg, client);\n\t\t};\n\t};\n\n</script>\n\n<style>\n\t.f-pubsrcfyn2ecf44Xsvg_insert .url { font-size: 11px; }\n</style>\n\n<readme>\n# svg_insert\n- URL address: <http://127.0.0.1:8112>\n- Channel: __publish__\n- JSON schema `svg_insert.json`\n- Version: 24\n\n```json\n{\n  \"$id\": \"https://schemas.totaljs.com/Svg.json\",\n  \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"stepId\": {\n      \"type\": \"string\"\n    },\n    \"flowId\": {\n      \"type\": \"string\"\n    },\n    \"stepName\": {\n      \"type\": \"string\"\n    },\n    \"path\": {\n      \"type\": \"string\"\n    },\n    \"projectId\": {\n      \"type\": \"string\"\n    },\n    \"id\": {\n      \"type\": \"string\"\n    },\n    \"dtcreated\": {\n      \"type\": \"date\"\n    },\n    \"dtupdated\": {\n      \"type\": \"date\"\n    }\n  }\n}\n```\n</readme>\n\n<body>\n\t<header>\n\t\t<div><i class=\"fas fa-broadcast-tower mr5\"></i><span>TMS Example / <b>svg_insert</b></span></div>\n\t\t<div class=\"url\"></div>\n\t</header>\n</body>",
 			"subsrcfyn2ecf44Xsvg_insert": "<script total>\n\n\texports.name = 'TMS Example';\n\texports.icon = 'fas fa-satellite-dish';\n\texports.group = 'Subscribers';\n\texports.config = {};\n\texports.inputs = [{ id: 'subscribe', name: 'Input' }];\n\texports.type = 'sub';\n\texports.schemaid = ['srcfyn2ecf44', 'svg_insert'];\n\n\texports.make = function(instance) {\n\t\tinstance.message = function($) {\n\t\t\tvar socket = instance.main.sockets['srcfyn2ecf44'];\n\t\t\tif (socket && socket.subscribers && socket.subscribers['svg_insert']) {\n\n\t\t\t\tvar data = $.data;\n\n\t\t\t\t/*\n\t\t\t\t\tvar err = new ErrorBuilder();\n\t\t\t\t\tdata = framework_jsonschema.transform(schema, err, data, true);\n\n\t\t\t\t\tif (err.is) {\n\t\t\t\t\t\t$.destroy();\n\t\t\t\t\t\treturn;\n\t\t\t\t\t}\n\n\t\t\t\t*/\n\n\t\t\t\tsocket.send({ type: 'subscribe', id: 'svg_insert', data: data });\n\t\t\t}\n\t\t\t$.destroy();\n\t\t};\n\t};\n\n</script>\n\n<style>\n\t.f-subsrcfyn2ecf44Xsvg_insert .url { font-size: 11px; }\n</style>\n\n<readme>\n# svg_insert\n- URL address: <http://127.0.0.1:8112>\n- Channel: __subscribe__\n- JSON schema `svg_insert.json`\n- Version: 24\n\n```json\n{\n  \"id\": \"svg_insert\",\n  \"schema\": {\n    \"$id\": \"https://schemas.totaljs.com/Svg.json\",\n    \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n    \"type\": \"object\",\n    \"properties\": {\n      \"stepId\": {\n        \"type\": \"string\"\n      },\n      \"flowId\": {\n        \"type\": \"string\"\n      },\n      \"stepName\": {\n        \"type\": \"string\"\n      },\n      \"path\": {\n        \"type\": \"string\"\n      },\n      \"projectId\": {\n        \"type\": \"string\"\n      },\n      \"id\": {\n        \"type\": \"string\"\n      },\n      \"dtcreated\": {\n        \"type\": \"date\"\n      },\n      \"dtupdated\": {\n        \"type\": \"date\"\n      }\n    }\n  }\n}\n```\n</readme>\n\n<body>\n\t<header>\n\t\t<div><i class=\"fas fa-satellite-dish mr5\"></i><span>TMS Example / <b>svg_insert</b></span></div>\n\t\t<div class=\"url\"></div>\n\t</header>\n</body>",
 			"calsrcfyn2ecf44Xsvg_query": "<script total>\n\n\texports.name = 'TMS Example';\n\texports.icon = 'fa fa-plug';\n\texports.config = { timeout: 60000 };\n\texports.inputs = [{ id: 'input', name: 'Input' }];\n\texports.outputs = [{ id: 'output', name: 'Output' }, { id: 'error', name: 'Error' }];\n\texports.group = 'Calls';\n\texports.type = 'call';\n\texports.schemaid = ['srcfyn2ecf44', 'svg_query'];\n\n\texports.make = function(instance, config) {\n\n\t\tinstance.message = function($, client) {\n\t\t\tvar socket = instance.main.sockets['srcfyn2ecf44'];\n\t\t\tif (socket && socket.calls && socket.calls['svg_query']) {\n\n\t\t\t\tvar data = $.data;\n\n\t\t\t\t/*\n\t\t\t\t\tvar err = new ErrorBuilder();\n\t\t\t\t\tdata = framework_jsonschema.transform(schema, err, data, true);\n\n\t\t\t\t\tif (err.is) {\n\t\t\t\t\t\t$.send('error', err.toString());\n\t\t\t\t\t\treturn;\n\t\t\t\t\t}\n\n\t\t\t\t*/\n\n\t\t\t\tvar callback = function(err, response) {\n\t\t\t\t\tif (err)\n\t\t\t\t\t\t$.send('error', err);\n\t\t\t\t\telse\n\t\t\t\t\t\t$.send('output', response);\n\t\t\t\t};\n\n\t\t\t\tvar callbackid = (socket.callbackindexer++) + '';\n\n\t\t\t\tif (socket.callbackindexer > 999999999)\n\t\t\t\t\tsocket.callbackindexer = 0;\n\n\t\t\t\tsocket.callbacks[callbackid] = { callback: callback, id: setTimeout(socket.callbacktimeout, config.timeout, callbackid) };\n\t\t\t\tsocket.send({ type: 'call', id: 'svg_query', data: data, callbackid: callbackid });\n\n\t\t\t} else\n\t\t\t\t$.destroy();\n\t\t};\n\t};\n\n</script>\n\n<style>\n\t.f-calsrcfyn2ecf44Xsvg_query .url { font-size: 11px; }\n</style>\n\n<readme>\n# svg_query\n- URL address: <http://127.0.0.1:8112>\n- Channel: __call__\n- JSON schema `svg_query.json`\n- Version: 24\n\n```json\n{\n  \"$id\": \"https://schemas.totaljs.com/Svg.json\",\n  \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"stepId\": {\n      \"type\": \"string\"\n    },\n    \"flowId\": {\n      \"type\": \"string\"\n    },\n    \"stepName\": {\n      \"type\": \"string\"\n    },\n    \"path\": {\n      \"type\": \"string\"\n    },\n    \"projectId\": {\n      \"type\": \"string\"\n    },\n    \"id\": {\n      \"type\": \"string\"\n    },\n    \"dtcreated\": {\n      \"type\": \"date\"\n    },\n    \"dtupdated\": {\n      \"type\": \"date\"\n    }\n  }\n}\n```\n</readme>\n\n<body>\n\t<header>\n\t\t<div><i class=\"fa fa-plug mr5\"></i><span>TMS Example / <b>svg_query</b></span></div>\n\t\t<div class=\"url\"></div>\n\t</header>\n</body>",
-			"cq5161fa3c": "<script total>\n    exports.name = 'Datastore Query';\n    exports.icon = 'fa fa-code';\n    exports.author = 'Total Avengers';\n    exports.group = 'TypeRefinery';\n    exports.version = '1';\n    exports.config = {queryid: ''};\n    exports.inputs = [{ id: 'input', name: 'Input' }];\n    exports.outputs = [{ id: 'output', name: 'Output' }];\n    exports.meta = { settingswidth: 1200 };\n    exports.make = function(instance, config) {\n        instance.message = async function($) {\n\t\t\tconst endpoint = 'http://127.0.0.1:8000/datastore/query';\n\t\t\tvar output;\n\t\t\tconst res = await fetch(endpoint);\n\t\t\tconst res_data = await res.json();\n\t\t\toutput = res_data.map(el => ({id: el.queryid, name: `${el.label} (${el.queryid},${el.query.substr(12)})`})); // dropdown data\n\t\t\tconst query = res_data.find(el => el.queryid === config.queryid)\n\t\t\tconsole.log(['query', query]);\n\t\t\tinstance.send('output', query.query);\n\n\t\t\tinstance.call = async function(data, answer) {\n            \tanswer(output);\n        \t};\n        };\n\n\t\tinstance.configure = function(el) {\n\t\t\tconsole.log(el);\n\t\t};\n\n\t\tinstance.close = function() {\n\t\t};\n\n\t\tinstance.configure();\n    };\n</script>\n<readme>\n</readme>\n<script>\n    // yourdatabase is the name of your component in lower-case\n    ON('configure_datastorequery', function(data) {\n        data.call(function(response) {\n\t\t\tconsole.log('on', response);\n            SET('%queryidList', response);\n        });\n    });\n</script>\n<settings>\n    <div class=\"padding\">\n        <div data---=\"input__?.queryid__dirsource:%queryidList;dirraw:1;placeholder:Choose a query;dirempty:No query\" class=\"m\"><b>Query</b></div>\n    </div>\n</settings>\n<body>\n    <header>\n        <i class=\"ICON\"></i>NAME\n    </header>\n</body>",
-			"c1ucx34982": "<script total>\n    exports.name = 'ThemeSelect';\n    exports.icon = 'fa fa-code';\n    exports.author = 'Total Avengers';\n    exports.group = 'TypeRefinery';\n    exports.version = '1';\n    exports.config = {theme: ''};\n    exports.inputs = [{ id: 'input', name: 'Input' }];\n    exports.outputs = [{ id: 'output', name: 'Output' }];\n    exports.meta = { settingswidth: 1200 };\n    exports.make = function(instance, config) {\n        instance.message = async function($) {\n\t\t\tconst endpoint = 'http://127.0.0.1:8000/datastore/theme';\n\t\t\tvar output;\n\t\t\tconst res = await fetch(endpoint);\n\t\t\tconst res_data = await res.json();\n\t\t\toutput = res_data.map(el => ({id: el.code, name: el.label }));\n\t\t\tinstance.send('output', config.theme);\n\n\t\t\tinstance.call = async function(data, answer) {\n            \tanswer(output);\n        \t};\n        };\n\n\t\tinstance.configure = function() {\n\t\t};\n\n\t\tinstance.close = function() {\n\t\t};\n\n\t\tinstance.configure();\n    };\n</script>\n<readme>\n</readme>\n<script>\n    // yourdatabase is the name of your component in lower-case\n    ON('configure_themeselect', function(data) {\n        data.call(function(response) {\n            SET('%themeList', response);\n        });\n    });\n</script>\n<settings>\n    <div class=\"padding\">\n        <div data---=\"input__?.theme__dirsource:%themeList;dirraw:1;placeholder:Choose a theme;dirempty:No theme\" class=\"m\"><b>Theme</b></div>\n    </div>\n</settings>\n<body>\n    <header>\n        <i class=\"ICON\"></i>NAME\n    </header>\n</body>",
-			"cbj43f380a": "<script total>\n    exports.name = 'Datastore Connection';\n    exports.icon = 'fa fa-code';\n    exports.author = 'Total Avengers';\n    exports.group = 'TypeRefinery';\n    exports.version = '1';\n    exports.config = {connectionid:''};\n    exports.inputs = [{ id: 'input', name: 'Input' }];\n    exports.outputs = [{ id: 'output', name: 'Output' }];\n    exports.meta = { settingswidth: 1200 };\n exports.make = function(instance, config) {\n        instance.message = async function($) {\n            const endpoint = 'http://127.0.0.1:8000/datastore/connection';\n            var output;\n            const res = await fetch(endpoint);\n            const res_data = await res.json();\n\t\t\tconsole.log({res_data})\n            output = res_data.map(el => ({id: el.connectionid, name: el.connectionid }));\n\t\t\tconsole.log({output})\n\t\t\tconsole.log(['conid', config.connectionid])\n            const connection = res_data.find(el => el.connectionid === config.connectionid)\n\t\t\tconsole.log(['connection find', connection])\n\t\t\tinstance.send('output', {\n\t\t\t\thost: connection.host,\n\t\t\t\tport: connection.port,\n\t\t\t\tdatabase: connection.database,\n\t\t\t});\n            instance.call = async function(data, answer) {\n                answer(output);\n            };\n        };\n        instance.configure = function() {\n        };\n        instance.close = function() {\n        };\n        instance.configure();\n    };\n</script>\n<readme>\n</readme>\n<script>\n\t// yourdatabase is the name of your component in lower-case\n    ON('configure_datastoreconnection', function(data) {\n        data.call(function(response) {\n\t\t\tconsole.log(response);\n            SET('%connectionidList', response);\n        });\n    });\n</script>\n<settings>\n    <div class=\"padding\">\n        <div data---=\"input__?.connectionid__dirsource:%connectionidList;dirraw:1;placeholder:Choose a connection;dirempty:No connection\" class=\"m\"><b>Connection</b></div>\n    </div>\n</settings>\n<body>\n    <header>\n        <i class=\"ICON\"></i>NAME\n    </header>\n</body>"
+			"cq5161fa3c": "<script total>\n    exports.name = 'Datastore Query';\n    exports.icon = 'fa fa-code';\n    exports.author = 'Total Avengers';\n    exports.group = 'TypeRefinery';\n    exports.version = '1';\n    exports.config = {queryid: ''};\n    exports.inputs = [{ id: 'input', name: 'Input' }];\n    exports.outputs = [{ id: 'output', name: 'Output' }];\n    exports.meta = { settingswidth: 1200 };\n    exports.make = function(instance, config) {\n        instance.message = async function($) {\n\t\t\tconst endpoint = 'http://127.0.0.1:8000/datastore/query';\n\t\t\tvar output;\n\t\t\tconst res = await fetch(endpoint);\n\t\t\tconst res_data = await res.json();\n\t\t\toutput = res_data.map(el => ({id: el.queryid, name: `${el.label} (${el.queryid},${el.query.substr(12)})`})); // dropdown data\n\t\t\tconst query = res_data.find(el => el.queryid === config.queryid)\n\t\t\tif(query) instance.send('output', query.query);\n\t\t\tinstance.call = async function(data, answer) {\n            \tanswer(output);\n        \t};\n        };\n\n\t\tinstance.configure = function(el) {\n\t\t\tconsole.log(el);\n\t\t};\n\n\t\tinstance.close = function() {\n\t\t};\n\n\t\tinstance.configure();\n    };\n</script>\n<readme>\n</readme>\n<script>\n    // yourdatabase is the name of your component in lower-case\n    ON('configure_datastorequery', function(data) {\n        data.call(function(response) {\n\t\t\tconsole.log('on', response);\n            SET('%queryidList', response);\n        });\n    });\n</script>\n<settings>\n    <div class=\"padding\">\n        <div data---=\"input__?.queryid__dirsource:%queryidList;dirraw:1;placeholder:Choose a query;dirempty:No query\" class=\"m\"><b>Query</b></div>\n    </div>\n</settings>\n<body>\n    <header>\n        <i class=\"ICON\"></i>NAME\n    </header>\n</body>",
+			"c1ucx34982": "<script total>\n    exports.name = 'Datastore Theme';\n    exports.icon = 'fa fa-code';\n    exports.author = 'Total Avengers';\n    exports.group = 'TypeRefinery';\n    exports.version = '1';\n    exports.config = {themeid: ''};\n    exports.inputs = [{ id: 'input', name: 'Input' }];\n    exports.outputs = [{ id: 'output', name: 'Output' }];\n    exports.meta = { settingswidth: 1200 };\n    exports.make = function(instance, config) {\n        instance.message = async function($) {\n            const endpoint = 'http://127.0.0.1:8000/datastore/theme';\n            var output;\n            const res = await fetch(endpoint);\n            const res_data = await res.json();\n              output = res_data.map(el => ({id: el.themeid, name: `${el.label} (${el.themeid},${el.theme.substr(12)})`})); // dropdown data\n            const theme = res_data.find(el => el.themeid === config.themeid)\n\t\t\tif(theme) instance.send('output',JSON.parse(theme.theme));\n            instance.call = async function(data, answer) {\n                answer(output);\n            };\n        };\n        instance.configure = function(el) {\n        };\n        instance.close = function() {\n        };\n        instance.configure();\n    };\n</script>\n<readme>\n</readme>\n<script>\n    // yourdatabase is the name of your component in lower-case\n    ON('configure_datastoretheme', function(data) {\n        data.call(function(response) {\n            SET('%themeidList', response);\n        });\n    });\n</script>\n<settings>\n    <div class=\"padding\">\n        <div data---=\"input__?.themeid__dirsource:%themeidList;dirraw:1;placeholder:Choose a theme;dirempty:No theme\" class=\"m\"><b>Theme</b></div>\n    </div>\n</settings>\n<body>\n    <header>\n        <i class=\"ICON\"></i>NAME\n    </header>\n</body>",
+			"cbj43f380a": "<script total>\n    exports.name = 'Datastore Connection';\n    exports.icon = 'fa fa-code';\n    exports.author = 'Total Avengers';\n    exports.group = 'TypeRefinery';\n    exports.version = '1';\n    exports.config = {connectionid:''};\n    exports.inputs = [{ id: 'input', name: 'Input' }];\n    exports.outputs = [{ id: 'output', name: 'Output' }];\n    exports.meta = { settingswidth: 1200 };\n exports.make = function(instance, config) {\n        instance.message = async function($) {\n            const endpoint = 'http://127.0.0.1:8000/datastore/connection';\n            var output;\n            const res = await fetch(endpoint);\n            const res_data = await res.json();\n            output = res_data.map(el => ({id: el.connectionid, name: el.connectionid }));\n            const connection = res_data.find(el => el.connectionid === config.connectionid)\n\t\t\tif(connection) {\n\t\t\t\tinstance.send('output', {\n\t\t\t\tdbhost: connection.host,\n\t\t\t\tdbport: connection.port,\n\t\t\t\tdbdatabase: connection.database,\n\t\t\t});\n\t\t\t}\n            instance.call = async function(data, answer) {\n                answer(output);\n            };\n        };\n        instance.configure = function() {\n        };\n        instance.close = function() {\n        };\n        instance.configure();\n    };\n</script>\n<readme>\n</readme>\n<script>\n\t// yourdatabase is the name of your component in lower-case\n    ON('configure_datastoreconnection', function(data) {\n        data.call(function(response) {\n\t\t\tconsole.log(response);\n            SET('%connectionidList', response);\n        });\n    });\n</script>\n<settings>\n    <div class=\"padding\">\n        <div data---=\"input__?.connectionid__dirsource:%connectionidList;dirraw:1;placeholder:Choose a connection;dirempty:No connection\" class=\"m\"><b>Connection</b></div>\n    </div>\n</settings>\n<body>\n    <header>\n        <i class=\"ICON\"></i>NAME\n    </header>\n</body>"
 		},
 		"design": {
-			"il6n4y08m": {
-				"id": "il6n4y08m",
-				"config": {
-					"database": "typerefinery",
-					"port": "1729",
-					"host": "localhost"
-				},
-				"x": 189,
-				"y": 64,
-				"component": "cp4jz5dbcd",
-				"connections": {
-					"output": [
-						{
-							"id": "il7fy86wj",
-							"index": "connection"
-						}
-					]
-				},
-				"template": {
-					"icon": "fa fa-code",
-					"group": "TypeRefinery",
-					"name": "Connection",
-					"inputs": [
-						{
-							"id": "input",
-							"name": "Input"
-						}
-					],
-					"outputs": [
-						{
-							"id": "output",
-							"name": "Output"
-						}
-					]
-				}
-			},
-			"il6n4y35v": {
-				"id": "il6n4y35v",
-				"config": {
-					"query": "match $a isa log, has logName 'L1';\n$b isa event, has eventName $c;\n$d (owner: $a, item: $b) isa trace,\nhas traceId $e, has index $f;\n offset 0; limit 20;"
-				},
-				"x": 144,
-				"y": 265,
-				"component": "cprs59650b",
-				"connections": {
-					"output": [
-						{
-							"id": "il7fy86wj",
-							"index": "query"
-						}
-					]
-				},
-				"template": {
-					"icon": "fa fa-code",
-					"group": "TypeRefinery",
-					"name": "TQL Query",
-					"inputs": [
-						{
-							"id": "input",
-							"name": "Input"
-						}
-					],
-					"outputs": [
-						{
-							"id": "output",
-							"name": "Output"
-						}
-					]
-				}
-			},
-			"il6n52nb8": {
-				"id": "il6n52nb8",
-				"config": {
-					"outputs": 1,
-					"code": "const theme = {\n  attribute: {\n    colorlist: \"Blues\",\n    cindex: 7,\n    tcolorlist: \"Greys\",\n    tindex: 0,\n  },\n  entity: {\n    colorlist: \"Blue-Green\",\n    cindex: 7,\n    tcolorlist: \"Greys\",\n    tindex: 0,\n  },\n  relation: {\n    colorlist: \"Blue-Green\",\n    cindex: 6,\n    tcolorlist: \"Greys\",\n    tindex: 7,\n  },\n  shadow: {\n    colorlist: \"Yellows\",\n    cindex: 2,\n    tcolorlist: \"Greys\",\n    tindex: 7,\n  },\n};\n\n$.send('output', theme);"
-				},
-				"x": 510,
-				"y": 43,
-				"component": "cye905a0fe",
-				"connections": {
-					"output": [
-						{
-							"id": "il7fy1rnx",
-							"index": "theme"
-						}
-					]
-				},
-				"outputs": [
-					{
-						"id": "output",
-						"name": "Output #1"
-					}
-				],
-				"template": {
-					"icon": "fa fa-code",
-					"group": "TypeRefinery",
-					"name": "Theme",
-					"inputs": [
-						{
-							"id": "input",
-							"name": "Input"
-						}
-					],
-					"outputs": [
-						{
-							"id": "output",
-							"name": "Output"
-						}
-					]
-				}
-			},
-			"il6n52v1w": {
-				"id": "il6n52v1w",
-				"config": {},
-				"x": 159,
-				"y": 1204,
-				"component": "csbozf107f",
-				"connections": {},
-				"template": {
-					"icon": "fa fa-code",
-					"group": "TypeRefinery",
-					"name": "Svg",
-					"inputs": [
-						{
-							"id": "input",
-							"name": "Input"
-						}
-					],
-					"outputs": [
-						{
-							"id": "output",
-							"name": "Output"
-						}
-					]
-				}
-			},
 			"il7a4yk2e": {
 				"id": "il7a4yk2e",
 				"config": {
@@ -174,17 +33,17 @@
 					"data": "",
 					"restart": false
 				},
-				"x": -60,
-				"y": 152,
+				"x": 5,
+				"y": 153,
 				"component": "cyejp563cd",
 				"connections": {
 					"output": [
 						{
-							"id": "il6n4y08m",
+							"id": "il8juy675",
 							"index": "input"
 						},
 						{
-							"id": "il6n4y35v",
+							"id": "il8jvwewi",
 							"index": "input"
 						}
 					]
@@ -208,8 +67,8 @@
 					"outputs": 1,
 					"endpoint": "http:127.0.0.1:8000/createSvg"
 				},
-				"x": 749,
-				"y": 101,
+				"x": 769,
+				"y": 189,
 				"component": "run",
 				"connections": {
 					"output": [
@@ -257,8 +116,8 @@
 					"repo": false,
 					"data": true
 				},
-				"x": 339,
-				"y": 294,
+				"x": 387,
+				"y": 396,
 				"component": "c5aria8f8f",
 				"connections": {},
 				"template": {
@@ -280,8 +139,8 @@
 					"endpoint": "http://127.0.0.1:8000/algorithm",
 					"outputs": 1
 				},
-				"x": 339,
-				"y": 182,
+				"x": 391,
+				"y": 197,
 				"component": "c418t8a6b8",
 				"connections": {
 					"output": [
@@ -294,7 +153,7 @@
 							"index": "graph_data"
 						},
 						{
-							"id": "il6n52nb8",
+							"id": "il8jwacs1",
 							"index": "input"
 						}
 					]
@@ -333,8 +192,8 @@
 					"repo": false,
 					"data": true
 				},
-				"x": 835,
-				"y": 278,
+				"x": 772,
+				"y": 402,
 				"component": "c5aria8f8f",
 				"connections": {},
 				"template": {
@@ -352,8 +211,8 @@
 			"il7g1v8q2": {
 				"id": "il7g1v8q2",
 				"config": {},
-				"x": 1130,
-				"y": 72,
+				"x": 953,
+				"y": 234,
 				"component": "subsrcfyn2ecf44Xsvg_insert",
 				"connections": {},
 				"template": {
@@ -374,8 +233,8 @@
 				"config": {
 					"timeout": 60000
 				},
-				"x": 1141,
-				"y": 241,
+				"x": 1171,
+				"y": 167,
 				"component": "calsrcfyn2ecf44Xsvg_query",
 				"connections": {},
 				"template": {
@@ -404,8 +263,8 @@
 			"il7g2g96i": {
 				"id": "il7g2g96i",
 				"config": {},
-				"x": 1133,
-				"y": 145,
+				"x": 956,
+				"y": 166,
 				"component": "pubsrcfyn2ecf44Xsvg_insert",
 				"connections": {
 					"publish": [
@@ -428,148 +287,19 @@
 					]
 				}
 			},
-			"il89vqa01": {
-				"id": "il89vqa01",
+			"il8juy675": {
+				"id": "il8juy675",
 				"config": {
-					"queryid": "rFv4ytNkRy4yI5_query",
-					"query": "YOsdjfk",
-					"port": "a"
+					"connectionid": "Jqw8_-FlLO7Jfk_con"
 				},
-				"x": 271,
-				"y": 504,
-				"component": "cq5161fa3c",
-				"connections": {
-					"output": [
-						{
-							"id": "il89w0z2a",
-							"index": "input"
-						}
-					]
-				},
-				"template": {
-					"icon": "fa fa-code",
-					"group": "TypeRefinery",
-					"name": "Datastore Query",
-					"inputs": [
-						{
-							"id": "input",
-							"name": "Input"
-						}
-					],
-					"outputs": [
-						{
-							"id": "output",
-							"name": "Output"
-						}
-					]
-				}
-			},
-			"il89w0og4": {
-				"id": "il89w0og4",
-				"config": {
-					"random": true,
-					"type": "string",
-					"data": "",
-					"restart": false
-				},
-				"x": 59,
-				"y": 524,
-				"component": "cyejp563cd",
-				"connections": {
-					"output": [
-						{
-							"id": "il89vqa01",
-							"index": "input"
-						},
-						{
-							"id": "il8a81zjz",
-							"index": "input"
-						},
-						{
-							"id": "il8b5bmjw",
-							"index": "input"
-						}
-					]
-				},
-				"template": {
-					"icon": "fa fa-bullhorn",
-					"group": "Triggers",
-					"name": "Trigger",
-					"outputs": [
-						{
-							"id": "output",
-							"name": "Output"
-						}
-					]
-				}
-			},
-			"il89w0z2a": {
-				"id": "il89w0z2a",
-				"config": {
-					"repo": false,
-					"data": true
-				},
-				"x": 587,
-				"y": 487,
-				"component": "c5aria8f8f",
-				"connections": {},
-				"template": {
-					"icon": "fa fa-print",
-					"group": "Common",
-					"name": "Print JSON",
-					"inputs": [
-						{
-							"id": "input",
-							"name": "Input"
-						}
-					]
-				}
-			},
-			"il8a81zjz": {
-				"id": "il8a81zjz",
-				"config": {
-					"theme": ""
-				},
-				"x": 268,
-				"y": 611,
-				"component": "c1ucx34982",
-				"connections": {},
-				"template": {
-					"icon": "fa fa-code",
-					"group": "TypeRefinery",
-					"name": "ThemeSelect",
-					"inputs": [
-						{
-							"id": "input",
-							"name": "Input"
-						}
-					],
-					"outputs": [
-						{
-							"id": "output",
-							"name": "Output"
-						}
-					]
-				}
-			},
-			"il8b5bmjw": {
-				"id": "il8b5bmjw",
-				"config": {
-					"connectionid": "xRH-veJ4E1Pf5r_con",
-					"connection": {
-						"port": "1729",
-						"host": "bak",
-						"database": "typerefinery"
-					}
-				},
-				"x": 271,
-				"y": 707,
+				"x": 190,
+				"y": 131,
 				"component": "cbj43f380a",
 				"connections": {
 					"output": [
 						{
-							"id": "il8b5brr2",
-							"index": "input"
+							"id": "il7fy86wj",
+							"index": "connection"
 						}
 					]
 				},
@@ -591,24 +321,70 @@
 					]
 				}
 			},
-			"il8b5brr2": {
-				"id": "il8b5brr2",
+			"il8jvwewi": {
+				"id": "il8jvwewi",
 				"config": {
-					"repo": false,
-					"data": true
+					"queryid": "Jqw8_-FlLO7Jfk_query"
 				},
-				"x": 518,
-				"y": 722,
-				"component": "c5aria8f8f",
-				"connections": {},
+				"x": 191,
+				"y": 240,
+				"component": "cq5161fa3c",
+				"connections": {
+					"output": [
+						{
+							"id": "il7fy86wj",
+							"index": "query"
+						}
+					]
+				},
 				"template": {
-					"icon": "fa fa-print",
-					"group": "Common",
-					"name": "Print JSON",
+					"icon": "fa fa-code",
+					"group": "TypeRefinery",
+					"name": "Datastore Query",
 					"inputs": [
 						{
 							"id": "input",
 							"name": "Input"
+						}
+					],
+					"outputs": [
+						{
+							"id": "output",
+							"name": "Output"
+						}
+					]
+				}
+			},
+			"il8jwacs1": {
+				"id": "il8jwacs1",
+				"config": {
+					"themeid": "webcola_darkly_local"
+				},
+				"x": 578,
+				"y": 243,
+				"component": "c1ucx34982",
+				"connections": {
+					"output": [
+						{
+							"id": "il7fy1rnx",
+							"index": "theme"
+						}
+					]
+				},
+				"template": {
+					"icon": "fa fa-code",
+					"group": "TypeRefinery",
+					"name": "Datastore Theme",
+					"inputs": [
+						{
+							"id": "input",
+							"name": "Input"
+						}
+					],
+					"outputs": [
+						{
+							"id": "output",
+							"name": "Output"
 						}
 					]
 				}
@@ -668,28 +444,44 @@
 								"type": "object",
 								"properties": {
 									"stepId": {
-										"type": "string"
+										"type": "string",
+										"$$ID": "stepId",
+										"$$REQUIRED": false
 									},
 									"flowId": {
-										"type": "string"
+										"type": "string",
+										"$$ID": "flowId",
+										"$$REQUIRED": false
 									},
 									"stepName": {
-										"type": "string"
+										"type": "string",
+										"$$ID": "stepName",
+										"$$REQUIRED": false
 									},
 									"path": {
-										"type": "string"
+										"type": "string",
+										"$$ID": "path",
+										"$$REQUIRED": false
 									},
 									"projectId": {
-										"type": "string"
+										"type": "string",
+										"$$ID": "projectId",
+										"$$REQUIRED": false
 									},
 									"id": {
-										"type": "string"
+										"type": "string",
+										"$$ID": "id",
+										"$$REQUIRED": false
 									},
 									"dtcreated": {
-										"type": "date"
+										"type": "date",
+										"$$ID": "dtcreated",
+										"$$REQUIRED": false
 									},
 									"dtupdated": {
-										"type": "date"
+										"type": "date",
+										"$$ID": "dtupdated",
+										"$$REQUIRED": false
 									}
 								}
 							}
@@ -745,9 +537,116 @@
 		},
 		"origin": "http://localhost:8111",
 		"dtcreated": "2022-08-10T04:16:32.454Z",
-		"size": 65079,
+		"size": 50942
+	},
+	"ftx7e001gu41d": {
+		"id": "ftx7e001gu41d",
+		"name": "Workflow",
+		"author": "typerefinery",
+		"version": "1.0",
+		"icon": "fa fa-satellite",
+		"reference": "Jqw8_-FlLO7Jfk",
+		"group": "typerefinery",
+		"url": "https://localhost",
+		"color": "#61C83B",
+		"readme": "Typerefinery flow",
+		"proxypath": "",
+		"design": {},
+		"components": {},
+		"variables": {},
+		"sources": {},
+		"dtcreated": "2022-09-27T10:38:19.613Z",
 		"variables2": {},
 		"directory": "./database",
-		"sandbox": false
+		"sandbox": false,
+		"size": 487
+	},
+	"ftx7n001gu41d": {
+		"id": "ftx7n001gu41d",
+		"name": "Workflow",
+		"author": "typerefinery",
+		"version": "1.0",
+		"icon": "fa fa-satellite",
+		"reference": "dSbwZdHUNWD4a_",
+		"group": "typerefinery",
+		"url": "https://localhost",
+		"color": "#61C83B",
+		"readme": "Typerefinery flow",
+		"proxypath": "",
+		"design": {},
+		"components": {},
+		"variables": {},
+		"sources": {},
+		"dtcreated": "2022-09-27T10:47:19.674Z",
+		"variables2": {},
+		"directory": "./database",
+		"sandbox": false,
+		"size": 487
+	},
+	"ftx7q001gu41d": {
+		"id": "ftx7q001gu41d",
+		"name": "Workflow",
+		"author": "typerefinery",
+		"version": "1.0",
+		"icon": "fa fa-satellite",
+		"reference": "huvWPbjoubkCiE",
+		"group": "typerefinery",
+		"url": "https://localhost",
+		"color": "#61C83B",
+		"readme": "Typerefinery flow",
+		"proxypath": "",
+		"design": {},
+		"components": {},
+		"variables": {},
+		"sources": {},
+		"dtcreated": "2022-09-27T10:50:19.710Z",
+		"variables2": {},
+		"directory": "./database",
+		"sandbox": false,
+		"size": 487
+	},
+	"ftx8p001gu41d": {
+		"id": "ftx8p001gu41d",
+		"name": "Workflow",
+		"author": "typerefinery",
+		"version": "1.0",
+		"icon": "fa fa-satellite",
+		"reference": "MjFduVlThUFZRK",
+		"group": "typerefinery",
+		"url": "https://localhost",
+		"color": "#61C83B",
+		"readme": "Typerefinery flow",
+		"proxypath": "",
+		"design": {},
+		"components": {},
+		"variables": {},
+		"sources": {},
+		"dtcreated": "2022-09-27T11:25:20.088Z",
+		"variables2": {},
+		"directory": "./database",
+		"sandbox": false,
+		"size": 487
+	},
+	"ftx8q001gu41d": {
+		"id": "ftx8q001gu41d",
+		"name": "Workflow",
+		"author": "typerefinery",
+		"version": "1.0",
+		"icon": "fa fa-satellite",
+		"reference": "wlO79JljVGwhrw",
+		"group": "typerefinery",
+		"url": "https://localhost",
+		"color": "#61C83B",
+		"readme": "Typerefinery flow",
+		"proxypath": "",
+		"design": {},
+		"components": {},
+		"variables": {},
+		"sources": {},
+		"dtcreated": "2022-09-27T11:26:20.093Z",
+		"variables2": {},
+		"directory": "./database",
+		"sandbox": false,
+		"size": 476
 	}
 }

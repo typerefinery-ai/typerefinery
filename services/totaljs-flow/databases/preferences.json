@@ -1,14 +1,1 @@
-{
-  "name": "Total.js Flow v10",
-  "env": "dev",
-  "components": "https://innovolve-ai.github.io/flowcomponents/db.json",
-  "token": "95u1ecyv36biz1cdl82k17nju6z4zk",
-  "user": {
-    "id": "tayn001fa41d",
-    "login": "typerefinery",
-    "password": "0c8cecda08d5956802f6aeef085a74ad3160727f5fa77f05c64ba87f8b713160"
-  },
-  "components2": "",
-  "darkmode": false,
-  "backup": false
-}
+{"name":"Total.js Flow v10","env":"dev","components":"https://innovolve-ai.github.io/flowcomponents/db.json","token":"95u1ecyv36biz1cdl82k17nju6z4zk","user":{"id":"tayn001fa41d","login":"typerefinery","password":"0c8cecda08d5956802f6aeef085a74ad3160727f5fa77f05c64ba87f8b713160"},"components2":"","darkmode":false,"backup":false}
