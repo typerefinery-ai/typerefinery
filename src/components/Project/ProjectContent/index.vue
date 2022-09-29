@@ -84,9 +84,6 @@
       sidebarVisible() {
         return appDataModule.data.sidebarVisible
       },
-      sidebarVisible() {
-        return appDataModule.data.sidebarVisible
-      },
     },
     watch: {
       nodeSelected() {

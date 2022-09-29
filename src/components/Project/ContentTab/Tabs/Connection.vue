@@ -176,17 +176,22 @@
     },
     methods: {
       setInitialData() {
-        const { parentIdx: projectIdx, key } = this.tab
-        const connectionIdx = key.split("-").pop()
+        const { parent, id } = this.tab
+        const projects = projectsModule.getProjects
+        const projectIdx = projects.findIndex((el) => el.id === parent)
+        // const connectionIdx = key.split("-").pop()
         let connection
         if (projectIdx != null || projectIdx != undefined) {
           // local
           const connections = projectsModule.getLocalConnections(projectIdx)
+          const connectionIdx = connections.findIndex((el) => el.id === id)
           connection = connections[connectionIdx]
           // const project = projectsModule.getProjects[projectIdx]
           // connection = project.connections.list[connectionIdx]
         } else {
           // global
+          const connections = connectionsModule.getGlobalConnections
+          const connectionIdx = connections.findIndex((el) => el.id === id)
           connection = connectionsModule.data.list[connectionIdx]
         }
         const { host, port, database, label, icon, description } = connection
@@ -201,13 +206,19 @@
       async handleInput({ target: { value } }, field) {
         clearTimeout(this.debounce)
         this.debounce = setTimeout(async () => {
-          const { parentIdx: projectIdx, key: id } = this.tab
-          const connectionIdx = id.split("-").pop()
+          const { parent, id } = this.tab
+          const projects = projectsModule.getProjects
+          const projectIdx = projects.findIndex((el) => el.id === parent)
+
           if (projectIdx != null || projectIdx != undefined) {
+            const connections = projectsModule.getLocalConnections(projectIdx)
+            const connectionIdx = connections.findIndex((el) => el.id === id)
             const payload = { field, value, connectionIdx, ...this.tab }
             await projectsModule.setConnectionData(payload)
           } else {
             // global
+            const connections = connectionsModule.getGlobalConnections
+            const connectionIdx = connections.findIndex((el) => el.id === id)
             const payload = { field, value, connectionIdx, ...this.tab }
             await connectionsModule.setGlobalConnection(payload)
           }

@@ -80,17 +80,27 @@
     },
     computed: {
       description() {
-        const { projectIdx, queryIdx } = this.tab
+        const { parent, id } = this.tab
+        const projects = projectsModule.getProjects
+        const projectIdx = projects.findIndex((el) => el.id === parent)
+        const queries = projectsModule.getQueries(projectIdx)
+        const queryIdx = queries.findIndex((el) => el.id === id)
         return projectsModule.getQuery(projectIdx, queryIdx).description
       },
 
       icon() {
-        const { projectIdx, queryIdx } = this.tab
+        const { parent, id } = this.tab
+        const projects = projectsModule.getProjects
+        const projectIdx = projects.findIndex((el) => el.id === parent)
+        const queries = projectsModule.getQueries(projectIdx)
+        const queryIdx = queries.findIndex((el) => el.id === id)
         return projectsModule.getQuery(projectIdx, queryIdx).icon
       },
 
       connections() {
-        const { projectIdx } = this.tab
+        const { parent } = this.tab
+        const projects = projectsModule.getProjects
+        const projectIdx = projects.findIndex((el) => el.id === parent)
         return [
           {
             label: "Local",
@@ -110,7 +120,11 @@
       },
 
       connection() {
-        const { projectIdx, queryIdx } = this.tab
+        const { parent, id } = this.tab
+        const projects = projectsModule.getProjects
+        const projectIdx = projects.findIndex((el) => el.id === parent)
+        const queries = projectsModule.getQueries(projectIdx)
+        const queryIdx = queries.findIndex((el) => el.id === id)
         const connectionid = projectsModule.getQuery(
           projectIdx,
           queryIdx
@@ -182,10 +196,13 @@
       // },
 
       handleConnection({ value }) {
+        const { parent } = this.tab
+        const projects = projectsModule.getProjects
+        const projectIdx = projects.findIndex((el) => el.id === parent)
         let connection
         if (value.scope == "local") {
           connection = projectsModule
-            .getLocalConnections(this.tab.projectIdx)
+            .getLocalConnections(projectIdx)
             .find((el) => el.id == value.key)
         } else {
           connection = connectionsModule.getGlobalConnections.find(
