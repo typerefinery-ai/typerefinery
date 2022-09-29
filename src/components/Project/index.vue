@@ -47,7 +47,6 @@
         return settingsModule.data.focus
       },
       samplePopupOpen() {
-       
         if (projectsModule.getProjects.length) {
           return false
         } else {
@@ -60,8 +59,6 @@
     },
     methods: {
       toggleMainMenu() {
-        
-
         this.mainMenuVisible = !this.mainMenuVisible
       },
       initTMS() {
@@ -107,13 +104,23 @@
             // }
 
             if (response.type === "publish") {
-              // console.log(response)
+              console.log(response)
               flowModule.setData(response.data)
               appDataModule.setSelectedSplitNodes({
                 id: response.data.stepId,
                 type: "output",
                 label: "Output",
+                key: response.data.stepId,
               })
+              projectsModule.updateExpandedNodes({
+                key: `0-3-0-${response.data.projectId}`,
+                value: true,
+              })
+              projectsModule.updateSelectedNode({
+                key: response.data.stepId,
+                value: true,
+              })
+              appDataModule.setActiveSplitNode(response.data.stepId)
               appDataModule.toggleSplitNode()
               // this.context.commit("setData", response.data)
             }
