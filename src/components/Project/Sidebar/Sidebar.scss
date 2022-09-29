@@ -64,4 +64,12 @@
     justify-content: space-between;
     align-items: center;
   }
+
+  #delete_node {
+    opacity: 0;
+  }
+
+  .p-tree .p-tree-container .p-treenode .p-treenode-content:hover #delete_node {
+    opacity: 1;
+  }
 }

@@ -95,24 +95,7 @@
       allTabs() {
         return this.tabs.map((el) => ({
           ...el,
-          label:
-            el.type === "query"
-              ? projectsModule.getQueries(el.projectIdx)[el.queryIdx].label
-              : el.type === "project"
-              ? projectsModule.getProjectLabel(el.id)
-              : el.type === "theme"
-              ? el.parent
-                ? projectsModule.getProjects[el.parentIdx].themes.list[
-                    el.key.split("-").pop()
-                  ].label
-                : themesModule.data.list[el.key.split("-").pop()].label
-              : el.type === "connection"
-              ? el.parent
-                ? projectsModule.getProjects[el.parentIdx].connections.list[
-                    el.key.split("-").pop()
-                  ].label
-                : connectionsModule.data.list[el.key.split("-").pop()].label
-              : el.label,
+          label: this.getLabel(el),
         }))
       },
       activeNode() {
@@ -143,6 +126,38 @@
     },
 
     methods: {
+      getLabel(tab) {
+        console.log(tab)
+        const projects = projectsModule.getProjects
+        const projectIdx = projects.findIndex((el) => el.id === tab.parent)
+        if (tab.type === "query") {
+          const queries = projectsModule.getQueries(projectIdx)
+          const queryIdx = queries.findIndex((el) => el.id === tab.id)
+          return projectsModule.getQueries(projectIdx)[queryIdx].label
+        } else if (tab.type === "connection" && tab.parent) {
+          const connections = projectsModule.getLocalConnections(projectIdx)
+          const connectionIdx = connections.findIndex((el) => el.id === tab.id)
+          return projectsModule.getLocalConnections(projectIdx)[connectionIdx]
+            .label
+        } else if (tab.type === "connection") {
+          const connections = connectionsModule.getGlobalConnections
+          const connectionIdx = connections.findIndex((el) => el.id === tab.id)
+          return connectionsModule.getGlobalConnections[connectionIdx].label
+        } else if (tab.type === "project") {
+          const projectIdx = projects.findIndex((el) => el.id === tab.id)
+          return projects[projectIdx].label
+        } else if (tab.type === "theme" && tab.parent) {
+          const themes = projectsModule.getLocalThemes(projectIdx)
+          const themeIdx = themes.findIndex((el) => el.id === tab.id)
+          return projectsModule.getLocalThemes(projectIdx)[themeIdx].label
+        } else if (tab.type === "theme") {
+          const themes = themesModule.getGlobalThemes
+          const themeIdx = themes.findIndex((el) => el.id === tab.id)
+          return themesModule.getGlobalThemes[themeIdx].label
+        } else {
+          return tab.label
+        }
+      },
       onTabClick(e) {
         const id = e.originalEvent.target.id
         if (!id) return
@@ -177,7 +192,7 @@
           appDataModule.removeSelectedSplitNodes(tab.id)
           appDataModule.toggleSplitNode()
         } else {
-          appDataModule.removeSelectedTreeNodes(tab.id)
+          appDataModule.removeSelectedTreeNodes([tab.id])
           appDataModule.toggleTreeNode()
         }
         projectsModule.updateSelectedNode({ key: tab.key })

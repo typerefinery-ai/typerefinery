@@ -57,11 +57,19 @@
           : [javascript()]
       },
       label() {
-        const { projectIdx, queryIdx } = this.tab
+        const { parent, id } = this.tab
+        const projects = projectsModule.getProjects
+        const projectIdx = projects.findIndex((el) => el.id === parent)
+        const queries = projectsModule.getQueries(projectIdx)
+        const queryIdx = queries.findIndex((el) => el.id === id)
         return projectsModule.getQuery(projectIdx, queryIdx).label
       },
       query() {
-        const { projectIdx, queryIdx } = this.tab
+        const { parent, id } = this.tab
+        const projects = projectsModule.getProjects
+        const projectIdx = projects.findIndex((el) => el.id === parent)
+        const queries = projectsModule.getQueries(projectIdx)
+        const queryIdx = queries.findIndex((el) => el.id === id)
         return projectsModule.getQuery(projectIdx, queryIdx).query
       },
       viewResized() {
