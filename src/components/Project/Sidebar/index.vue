@@ -144,7 +144,7 @@
                 children: project.themes.list.map((theme, tIdx) => {
                   return {
                     key: `0-${projectIdx}-2-${tIdx}`,
-                    id: theme.label,
+                    id: theme.id,
                     type: theme.type,
                     label: theme.label,
                     icon: "pi pi-fw pi-file",
@@ -284,6 +284,7 @@
         const { id, type } = data
         if (type == "output") {
           // split the tab
+
           const isNew = !appDataModule.data.selectedSplitNodes.list.includes(id)
           if (isNew) {
             appDataModule.toggleSplitNode()
@@ -350,7 +351,6 @@
     },
   }
 </script>
-
 <style lang="scss">
   @import "./Sidebar.scss";
 </style>

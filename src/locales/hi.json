@@ -124,6 +124,7 @@
           "enter-connection-description": "कनेक्शन विवरण दर्ज करें",
           "label": "लेबल"
         },
+        "panelheader": "कनेक्शन",
         "updated-header": "कनेक्शन अपडेट करें"
       },
       "new-query": {
@@ -164,6 +165,9 @@
           "icon": "आइकन",
           "submit": "प्रस्तुत",
           "code": "कोड"
+        },
+        "panel2": {
+          "theme": "थीम"
         }
       },
       "new-transformer": {
