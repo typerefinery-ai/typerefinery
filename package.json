@@ -79,7 +79,7 @@
     "axios": "^0.27.2",
     "codemirror": "^6.0.0",
     "core-js": "^3.8.3",
-    "d3": "^4.13.0",
+    "d3": "^7.6.1",
     "dotenv": "^16.0.0",
     "electron-context-menu": "^3.1.2",
     "electron-log": "^4.4.7",
