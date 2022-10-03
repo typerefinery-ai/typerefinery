@@ -56,7 +56,8 @@
         "chat": "Chat",
         "editor": "Editor",
         "charts": "Charts",
-        "maps": "Maps"
+        "maps": "Maps",
+        "sampleData": "Sample Data"
       }
     },
 
@@ -152,7 +153,8 @@
         },
         "footer": {
           "cancel": "Cancel",
-          "save": "Save"
+          "save": "Save",
+          "download": "Download"
         }
       },
       "new-theme": {
@@ -214,6 +216,12 @@
           "update": "Update"
         },
         "updated-header": "Update Algorithm"
+      },
+      "sample-data": {
+        "header": "Sample Data",
+        "cancel": "Cancel",
+        "proceed": "Proceed",
+        "info": "Click on proceed to load sample data."
       }
     },
     "transformer": {
