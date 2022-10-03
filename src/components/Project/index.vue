@@ -47,11 +47,7 @@
         return settingsModule.data.focus
       },
       samplePopupOpen() {
-        if (projectsModule.getProjects.length) {
-          return false
-        } else {
-          return true
-        }
+        return projectsModule.showSamplePopup
       },
     },
     mounted() {

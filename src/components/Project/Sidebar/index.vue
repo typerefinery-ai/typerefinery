@@ -55,6 +55,11 @@
           ></span>
         </template>
       </Tree>
+      <delete-tree-node-popup
+        v-if="deletePopupOpen"
+        :node="node"
+        @close="deleteclosemodal"
+      />
     </div>
   </div>
 </template>
@@ -70,6 +75,7 @@
   import Settings from "@/store/Modules/Settings"
   import Connections from "@/store/Modules/Connections"
   import FlowMessage from "@/store/Modules/FlowMessage"
+  import DeleteTreeNodePopup from "@/components/Dialog/DeleteProjectPopup.vue"
   // import Transformers from "@/store/Modules/Transformers"
   // import Algorithms from "@/store/Modules/Algorithms"
   import AppData from "@/store/Modules/AppData"
@@ -85,12 +91,13 @@
 
   export default {
     name: "Sidebar",
-    components: { LogoutIcon, FileIcon, Tree, TuneIcon },
+    components: { LogoutIcon, FileIcon, Tree, TuneIcon, DeleteTreeNodePopup },
     data() {
       return {
         selectedNode: null,
         connection: null,
         displayHome: false,
+        deletePopupOpen: false,
       }
     },
     computed: {
@@ -344,31 +351,9 @@
       toggleSidebar() {
         appDataModule.toggleSidebarPanel()
       },
-      async deleteNode(node) {
-        if (node.type == "project") {
-          const payload = {
-            key: node.key,
-            id: node.id,
-            ...this.tab,
-          }
-          const eKeys = [node.key]
-          const sKeys = [node.key]
-          const ids = [node.id]
-          node.children.forEach((el) => {
-            eKeys.push(el.key)
-            el.children.forEach((el) => {
-              sKeys.push(el.key)
-              ids.push(el.id)
-            })
-          })
-          appDataModule.removeSelectedTreeNodes(ids)
-          appDataModule.toggleTreeNode()
-          projectsModule.removeExpandedNodesByKeys(eKeys)
-          projectsModule.removeSelectedNodesByKeys(sKeys)
-          projectsModule.deleteProjectData(payload)
-
-          // projectsModule.updateSelectedNode({ key: node.key })
-        }
+      deleteNode(node) {
+        this.node = node
+        this.deletePopupOpen = !this.deletePopupOpen
       },
     },
   }
