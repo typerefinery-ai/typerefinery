@@ -1,6 +1,6 @@
-{
-  "variables": {},
-  "fsfkt001xx41d": {
+[
+  {
+    "fsfkt001xx41d": {
     "paused": false,
     "id": "fsfkt001xx41d",
     "reference": "",
@@ -539,5 +539,6 @@
     "variables2": {},
     "directory": "C:\\Projects\\typerefinery\\services\\totaljs-flow\\database",
     "sandbox": false
+    }
   }
-}
+]
