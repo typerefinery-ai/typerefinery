@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Module, VuexModule, Mutation, Action } from "vuex-module-decorators"
-import axios from "axios"
 import store from "../index"
 import themes from "@/data/theme.json"
+import axios from "@/axios"
 
 @Module({
   name: "Projects",
@@ -339,11 +339,11 @@ export default class Projects extends VuexModule {
 
   @Action
   async getStoreData() {
-    const responses = await axios.all([
-      axios.get("http://localhost:8000/datastore/project"),
-      axios.get("http://localhost:8000/datastore/connection"),
-      axios.get("http://localhost:8000/datastore/query"),
-      axios.get("http://localhost:8000/datastore/theme"),
+    const responses = await Promise.all([
+      axios.get("/datastore/project"),
+      axios.get("/datastore/connection"),
+      axios.get("/datastore/query"),
+      axios.get("/datastore/theme"),
     ])
     const [projects, connections, queries, themes] = responses.map(
       (el) => el.data
@@ -419,10 +419,7 @@ export default class Projects extends VuexModule {
       [data.field]: data.value,
     }
     try {
-      await axios.put(
-        `http://localhost:8000/datastore/project/${data.id}`,
-        payload
-      )
+      await axios.put(`/datastore/project/${data.id}`, payload)
       this.context.commit("updateProject", data)
     } catch (err) {
       console.log(err)
@@ -450,10 +447,7 @@ export default class Projects extends VuexModule {
       [data.field]: data.value,
     }
     try {
-      await axios.put(
-        `http://localhost:8000/datastore/theme/${data.id}`,
-        payload
-      )
+      await axios.put(`/datastore/theme/${data.id}`, payload)
       data = { ...data, projectIdx }
       this.context.commit("updateTheme", data)
     } catch (err) {
@@ -483,10 +477,7 @@ export default class Projects extends VuexModule {
       [data.field]: data.value,
     }
     try {
-      await axios.put(
-        `http://localhost:8000/datastore/connection/${data.id}`,
-        payload
-      )
+      await axios.put(`/datastore/connection/${data.id}`, payload)
       data = { ...data, projectIdx }
       this.context.commit("updateConnection", data)
     } catch (err) {
@@ -516,10 +507,7 @@ export default class Projects extends VuexModule {
       [data.field]: data.value,
     }
     try {
-      await axios.put(
-        `http://localhost:8000/datastore/query/${data.id}`,
-        payload
-      )
+      await axios.put(`/datastore/query/${data.id}`, payload)
       data = { ...data, projectIdx, queryIdx }
       this.context.commit("updateQuery", data)
     } catch (err) {
@@ -543,17 +531,14 @@ export default class Projects extends VuexModule {
       [data.field]: data.value,
     }
     try {
-      await axios.all([
-        axios.delete(
-          `http://localhost:8000/datastore/project/${data.id}`,
-          payload
-        ),
+      await Promise.all([
+        axios.delete(`/datastore/project/${data.id}`, payload),
         // axios.delete(
-        //   `http://localhost:8000/datastore/connection/${data.id}`,
+        //   `/datastore/connection/${data.id}`,
         //   payload
         // ),
         // axios.delete(
-        //   `http://localhost:8000/datastore/query/${data.id}`,
+        //   `/datastore/query/${data.id}`,
         //   payload
         // ),
       ]),

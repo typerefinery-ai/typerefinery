@@ -233,7 +233,7 @@
   import Projects from "@/store/Modules/Projects"
   import Settings from "@/store/Modules/Settings"
   import Connections from "@/store/Modules/Connections"
-  import axios from "axios"
+  import axios from "@/axios"
   // import Algorithms from "@/store/Modules/Algorithms"
   // import Transformers from "@/store/Modules/Transformers"
   const settingsModule = getModule(Settings)
@@ -472,7 +472,7 @@
             scope: "local",
             data: "",
           }
-          await axios.post("http://localhost:8000/datastore/query", payload)
+          await axios.post("/datastore/query", payload)
           this.submitted = true
           projectsModule.addNewQuery(data)
         } catch (err) {

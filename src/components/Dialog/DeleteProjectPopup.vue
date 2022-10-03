@@ -9,9 +9,7 @@
     >
       <div class="confirmation-content">
         <i class="pi pi-info-circle mr-3" style="font-size: 2rem" />
-        <span>{{
-          $t(`components.dialog.projects.info.delete-project-popup`)
-        }}</span>
+        <span>{{ popupmessage }}</span>
       </div>
 
       <template #footer>
@@ -57,7 +55,18 @@
       return {
         displayDeletePopup: true,
         loading: false,
+        popupmessage: "",
       }
+    },
+    mounted() {
+      if (this.node.label == "Sample Project") {
+        this.popupmessage = this.$t(
+          "components.dialog.projects.info.delete-sample-project-popup"
+        )
+      } else
+        this.popupmessage = this.$t(
+          "components.dialog.projects.info.delete-project-popup"
+        )
     },
     methods: {
       closeDeleteDialog() {
@@ -65,12 +74,14 @@
       },
       async deleteProjectTreenode() {
         const nodeData = this.node
+
         if (nodeData.type == "project") {
           const payload = {
             key: nodeData.key,
             id: nodeData.id,
             ...this.tab,
           }
+
           const eKeys = [nodeData.key]
           const sKeys = [nodeData.key]
           const ids = [nodeData.id]
