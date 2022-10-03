@@ -78,7 +78,7 @@
         }}</label>
         <codemirror
           v-model="themecode"
-          placeholder="Code goes here..."
+          placeholder="Code goes here.."
           :style="{ height: '20vh' }"
           :autofocus="true"
           :indent-with-tab="true"
