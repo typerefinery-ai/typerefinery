@@ -4,6 +4,9 @@ describe("Projecty Tab", () => {
   it("visits the app root url", () => {
     cy.visit("/")
   })
+  it("Has popUp", () => {
+    cy.get(".p-button-text").click()
+  })
 
   it("Has Sub Menu Buttons.", () => {
     cy.get(".p-menuitem-link[href='#/home/project']").click()
