@@ -42,7 +42,6 @@
   import Projects from "@/store/Modules/Projects"
   import { nanoid } from "nanoid"
   const projectsModule = getModule(Projects)
-  import themesData from "@/data/theme.json"
   export default {
     name: "SampleDataPopup",
     components: {
@@ -53,7 +52,7 @@
       return {
         displayBasic: true,
         loading: false,
-        themecode: `"{\n  "attribute": {\n    "colorlist": "Oranges",\n    "cindex": 7,\n    "tcolorlist": "Greys",\n    "tindex": 0\n  },\n  "entity": {\n    "colorlist": "Blue-Green",\n    "cindex": 7,\n    "tcolorlist": "Greys",\n    "tindex": 0\n  },\n  "relation": {\n    "colorlist": "Blue-Green",\n    "cindex": 6,\n    "tcolorlist": "Greys",\n    "tindex": 7\n  },\n  "shadow": {\n    "colorlist": "Yellows",\n    "cindex": 2,\n    "tcolorlist": "Greys",\n    "tindex": 7\n  }\n}"`,
+        themecode: `{\n  "attribute": {\n    "colorlist": "Oranges",\n    "cindex": 7,\n    "tcolorlist": "Greys",\n    "tindex": 0\n  },\n  "entity": {\n    "colorlist": "Blue-Green",\n    "cindex": 7,\n    "tcolorlist": "Greys",\n    "tindex": 0\n  },\n  "relation": {\n    "colorlist": "Blue-Green",\n    "cindex": 6,\n    "tcolorlist": "Greys",\n    "tindex": 7\n  },\n  "shadow": {\n    "colorlist": "Yellows",\n    "cindex": 2,\n    "tcolorlist": "Greys",\n    "tindex": 7\n  }\n}`,
         showError: false,
         error: "Something went wrong!",
       }
@@ -97,7 +96,7 @@
           // create project, connection & query
           const project = {
             projectid,
-            label: "Sample Project",
+            label: "S_Project",
             description: "",
             icon: "icon",
             data: "",
@@ -106,7 +105,7 @@
           const connection = {
             connectionid: projectid + "_con",
             projectid,
-            label: "Sample Connection",
+            label: "S_Connection",
             icon: "Connection",
             type: "connection",
             scope: "local",
@@ -121,7 +120,7 @@
             connectionid: projectid + "_con",
             scope: "local",
             icon: "query",
-            label: "Sample Query",
+            label: "S_Query",
             description: "",
             type: "query",
             query:
@@ -130,7 +129,7 @@
           }
           const theme = {
             id: projectid + "_theme",
-            label: "Theme",
+            label: "S_Theme",
             projectid: projectid,
             scope: "local",
             type: "theme",
@@ -159,7 +158,7 @@
         const connection = {
           type: "connection",
           id: projectid + "_con",
-          label: "Sample Connection",
+          label: "S_Connection",
           icon: "Connection",
           scope: "local",
           description: "",
@@ -168,7 +167,7 @@
           database: "typerefinery",
         }
         const theme = {
-          label: "Sample Theme",
+          label: "S_Theme",
           id: projectid + "_theme",
           projectid: projectid,
           scope: "local",
@@ -182,7 +181,7 @@
         const projectData = {
           type: "project",
           id: projectid,
-          label: "Sample Project",
+          label: "S_Project",
           description: "",
           icon: "icon",
           connections: {
@@ -197,10 +196,11 @@
               {
                 type: "query",
                 id: projectid + "_query",
-                label: "Sample Query",
+                label: "S_Query",
                 icon: "Query",
                 description: "",
-                query: "this.query",
+                query:
+                  "match $a isa log, has logName 'L1';\n$b isa event, has eventName $c;\n$d (owner: $a, item: $b) isa trace,\nhas traceId $e, has index $f;\noffset 0; limit 10;",
                 connectionid: projectid + "_con",
               },
             ],
