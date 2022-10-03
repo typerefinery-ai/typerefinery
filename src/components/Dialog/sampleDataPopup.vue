@@ -2,25 +2,30 @@
   <div>
     <Dialog
       v-model:visible="displayBasic"
-      header="SampleData"
       :modal="true"
       :closable="true"
       :style="{ width: '350px' }"
     >
+      <template #header>
+        <span class="p-dialog-title">
+          {{ $t("components.dialog.sample-data.header") }}</span
+        >
+        <p v-if="showError" :style="{ color: '#f44336' }">{{ error }}</p>
+      </template>
       <div class="confirmation-content">
         <i class="pi pi-exclamation-triangle mr-3 customDataicon" />
-        <span>Click on proceed to load sample data.</span>
+        <span>{{ $t(`components.dialog.sample-data.info`) }}</span>
       </div>
 
       <template #footer>
         <Button
-          :label="$t(`components.dialog.projects.info.cancel`)"
+          :label="$t(`components.dialog.sample-data.cancel`)"
           icon="pi pi-times"
           class="p-button-text"
           @click="closeBasic"
         />
         <Button
-          label="Proceed"
+          :label="$t(`components.dialog.sample-data.proceed`)"
           :icon="`pi ${loading ? 'pi-spin pi-spinner' : 'pi-check'}`"
           autofocus
           @click="getSampleData"
@@ -49,6 +54,8 @@
         displayBasic: true,
         loading: false,
         themecode: `"{\n  "attribute": {\n    "colorlist": "Oranges",\n    "cindex": 7,\n    "tcolorlist": "Greys",\n    "tindex": 0\n  },\n  "entity": {\n    "colorlist": "Blue-Green",\n    "cindex": 7,\n    "tcolorlist": "Greys",\n    "tindex": 0\n  },\n  "relation": {\n    "colorlist": "Blue-Green",\n    "cindex": 6,\n    "tcolorlist": "Greys",\n    "tindex": 7\n  },\n  "shadow": {\n    "colorlist": "Yellows",\n    "cindex": 2,\n    "tcolorlist": "Greys",\n    "tindex": 7\n  }\n}"`,
+        showError: false,
+        error: "Something went wrong!",
       }
     },
     methods: {
@@ -80,6 +87,8 @@
           this.createInitialData(projectId)
         } catch (err) {
           console.log(err)
+          this.loading = false
+          this.showError = true
         }
       },
 
@@ -141,6 +150,8 @@
           await this.createData(projectid)
         } catch (err) {
           console.log(err)
+          this.loading = false
+          this.showError = true
         }
       },
 
@@ -217,6 +228,8 @@
         }
         projectsModule.addNewProject(projectData)
         this.displayBasic = !this.displayBasic
+        this.loading = false
+        this.showError = false
       },
     },
   }
@@ -228,7 +241,6 @@
   .customDataicon {
     font-size: 2rem;
   }
-
   .confirmation-content {
     display: flex;
     align-items: center;
