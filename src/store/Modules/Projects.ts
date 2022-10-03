@@ -19,6 +19,8 @@ export default class Projects extends VuexModule {
     list: [],
   }
 
+  showSamplePopup = false
+
   /**** Getters ****/
   get getProjects() {
     return this.data.list
@@ -125,6 +127,13 @@ export default class Projects extends VuexModule {
   }
 
   @Mutation
+  removeExpandedNodesByKeys(keys) {
+    const projects = JSON.parse(JSON.stringify(this.data))
+    keys.forEach((key) => delete projects.expandedNodes[key])
+    this.data = projects
+  }
+
+  @Mutation
   updateSelectedNode({ key, value }) {
     const projects = JSON.parse(JSON.stringify(this.data))
     if (value) {
@@ -132,6 +141,13 @@ export default class Projects extends VuexModule {
     } else {
       delete projects.selectedNode[key]
     }
+    this.data = projects
+  }
+
+  @Mutation
+  removeSelectedNodesByKeys(keys) {
+    const projects = JSON.parse(JSON.stringify(this.data))
+    keys.forEach((key) => delete projects.selectedNode[key])
     this.data = projects
   }
 
@@ -205,8 +221,14 @@ export default class Projects extends VuexModule {
   @Mutation
   deleteProject(data) {
     const projects = JSON.parse(JSON.stringify(this.data.list))
-    const projectIdx = this.data.list.findIndex((el) => el.id == data.id)
-    this.data.list.splice(projectIdx, 1)
+    const projectIdx = projects.findIndex((el) => el.id == data.id)
+    projects.splice(projectIdx, 1)
+    this.data.list = projects
+  }
+
+  @Mutation
+  toggleSamplePopup() {
+    this.showSamplePopup = !this.showSamplePopup
   }
 
   // @Mutation
@@ -377,6 +399,8 @@ export default class Projects extends VuexModule {
       }
     })
     if (data.length) this.context.commit("addInitialProjects", data)
+    this.context.commit("toggleSamplePopup")
+    if (data.length != 0) this.context.commit("toggleSamplePopup")
   }
 
   // Project
@@ -408,7 +432,9 @@ export default class Projects extends VuexModule {
   @Action
   async setThemeData(data) {
     const themesGetter = this.context.getters["getLocalThemes"]
-    const themes = themesGetter(data.parentIdx)
+    const projects = this.context.getters["getProjects"]
+    const projectIdx = projects.findIndex((el) => el.id === data.parent)
+    const themes = themesGetter(projectIdx)
     const theme = themes[data.themeIdx]
     const payload = {
       id: theme.id,
@@ -425,10 +451,10 @@ export default class Projects extends VuexModule {
     }
     try {
       await axios.put(
-        `http://localhost:8000/datastore/theme/${data.label}`,
+        `http://localhost:8000/datastore/theme/${data.id}`,
         payload
       )
-      data = { ...data, projectIdx: data.parentIdx }
+      data = { ...data, projectIdx }
       this.context.commit("updateTheme", data)
     } catch (err) {
       console.log(err)
@@ -438,7 +464,9 @@ export default class Projects extends VuexModule {
   @Action
   async setConnectionData(data) {
     const connectionsGetter = this.context.getters["getLocalConnections"]
-    const connections = connectionsGetter(data.parentIdx)
+    const projects = this.context.getters["getProjects"]
+    const projectIdx = projects.findIndex((el) => el.id === data.parent)
+    const connections = connectionsGetter(projectIdx)
     const connection = connections[data.connectionIdx]
 
     const payload = {
@@ -459,7 +487,7 @@ export default class Projects extends VuexModule {
         `http://localhost:8000/datastore/connection/${data.id}`,
         payload
       )
-      data = { ...data, projectIdx: data.parentIdx }
+      data = { ...data, projectIdx }
       this.context.commit("updateConnection", data)
     } catch (err) {
       console.log(err)
@@ -468,8 +496,12 @@ export default class Projects extends VuexModule {
 
   @Action
   async setQueryData(data) {
-    const queries = this.context.getters["getQueries"]
-    const query = queries(data.parentIdx).find((el) => el.id === data.id)
+    const queriesGetter = this.context.getters["getQueries"]
+    const projects = this.context.getters["getProjects"]
+    const projectIdx = projects.findIndex((el) => el.id === data.parent)
+    const queries = queriesGetter(projectIdx)
+    const queryIdx = queries.findIndex((el) => el.id === data.id)
+    const query = queries[queryIdx]
     const payload = {
       queryid: query.id,
       scope: query.scope,
@@ -488,6 +520,7 @@ export default class Projects extends VuexModule {
         `http://localhost:8000/datastore/query/${data.id}`,
         payload
       )
+      data = { ...data, projectIdx, queryIdx }
       this.context.commit("updateQuery", data)
     } catch (err) {
       console.log(err)

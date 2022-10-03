@@ -100,8 +100,11 @@
           "description": "विवरण",
           "icon": "आइकन",
           "cancel": "रद्द करना",
+          "delete": "हटाएं",
           "save": "सेव करे",
-          "flowName": "कार्यप्रवाह नाम"
+          "flowName": "कार्यप्रवाह नाम",
+          "delete-project": "प्रोजेक्ट हटाएं",
+          "delete-project-popup": "क्या आप इस प्रोजेक्ट को हटाना चाहते हैं?"
         }
       },
       "connections": {
@@ -124,6 +127,7 @@
           "enter-connection-description": "कनेक्शन विवरण दर्ज करें",
           "label": "लेबल"
         },
+        "panelheader": "कनेक्शन",
         "updated-header": "कनेक्शन अपडेट करें"
       },
       "new-query": {
@@ -164,6 +168,9 @@
           "icon": "आइकन",
           "submit": "प्रस्तुत",
           "code": "कोड"
+        },
+        "panel2": {
+          "theme": "थीम"
         }
       },
       "new-transformer": {

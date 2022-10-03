@@ -38,14 +38,28 @@
             </b>
             <i id="label_icon" class="pi pi-circle-fill"></i>
             <i
+              v-if="slotProps.node.type === 'project'"
               id="delete_node"
               class="pi pi-trash"
               @click="deleteNode(slotProps.node)"
             ></i>
           </span>
-          <span v-else role="treeitem">{{ slotProps.node.label }}</span>
+          <span v-else role="treeitem" class="label_wrapper"
+            >{{ slotProps.node.label
+            }}<i
+              v-if="slotProps.node.type === 'project'"
+              id="delete_node"
+              class="pi pi-trash"
+              @click="deleteNode(slotProps.node)"
+            ></i
+          ></span>
         </template>
       </Tree>
+      <delete-tree-node-popup
+        v-if="deletePopupOpen"
+        :node="node"
+        @close="deleteclosemodal"
+      />
     </div>
   </div>
 </template>
@@ -61,6 +75,7 @@
   import Settings from "@/store/Modules/Settings"
   import Connections from "@/store/Modules/Connections"
   import FlowMessage from "@/store/Modules/FlowMessage"
+  import DeleteTreeNodePopup from "@/components/Dialog/DeleteProjectPopup.vue"
   // import Transformers from "@/store/Modules/Transformers"
   // import Algorithms from "@/store/Modules/Algorithms"
   import AppData from "@/store/Modules/AppData"
@@ -76,12 +91,13 @@
 
   export default {
     name: "Sidebar",
-    components: { LogoutIcon, FileIcon, Tree, TuneIcon },
+    components: { LogoutIcon, FileIcon, Tree, TuneIcon, DeleteTreeNodePopup },
     data() {
       return {
         selectedNode: null,
         connection: null,
         displayHome: false,
+        deletePopupOpen: false,
       }
     },
     computed: {
@@ -91,103 +107,103 @@
           type: "projects",
           label: "Projects",
           icon: "pi pi-fw pi-book",
-          children: projectsModule.data.list.map((project, projectIdx) => ({
-            key: `0-${projectIdx}`,
+          children: projectsModule.data.list.map((project) => ({
+            key: project.id,
             id: project.id,
             type: project.type,
             label: project.label,
             icon: "pi pi-fw pi-file",
             children: [
               {
-                key: `0-${projectIdx}-0`,
+                key: `0-0-${project.id}`,
                 label: "Connections",
                 type: "connections",
-                parentIdx: projectIdx,
+                // parentIdx: projectIdx,
                 icon: "pi pi-fw pi-server",
-                children: project.connections.list.map((connection, cIdx) => {
+                children: project.connections.list.map((connection) => {
                   return {
-                    key: `0-${projectIdx}-0-${cIdx}`,
+                    key: connection.id,
                     id: connection.id,
                     type: connection.type,
                     label: connection.label,
                     icon: "pi pi-fw pi-file",
                     parent: project.id,
-                    parentIdx: projectIdx,
+                    // parentIdx: projectIdx,
                   }
                 }),
               },
               {
-                key: `0-${projectIdx}-1`,
+                key: `0-1-${project.id}`,
                 label: "Queries",
                 type: "queries",
-                parentIdx: projectIdx,
+                // parentIdx: projectIdx,
                 icon: "pi pi-fw pi-database",
-                children: project.queries.list.map((query, qIdx) => {
+                children: project.queries.list.map((query) => {
                   return {
-                    key: `0-${projectIdx}-1-${qIdx}`,
+                    key: query.id,
                     id: query.id,
                     type: query.type,
                     label: query.label,
                     icon: "pi pi-fw pi-file",
                     connection: query.connection,
                     parent: project.id,
-                    parentIdx: projectIdx,
+                    // parentIdx: projectIdx,
                   }
                 }),
               },
               {
-                key: `0-${projectIdx}-2`,
+                key: `0-2-${project.id}`,
                 label: "Themes",
                 type: "themes",
-                parentIdx: projectIdx,
+                // parentIdx: projectIdx,
                 icon: "pi pi-fw pi-server",
-                children: project.themes.list.map((theme, tIdx) => {
+                children: project.themes.list.map((theme) => {
                   return {
-                    key: `0-${projectIdx}-2-${tIdx}`,
-                    id: theme.label,
+                    key: theme.id,
+                    id: theme.id,
                     type: theme.type,
                     label: theme.label,
                     icon: "pi pi-fw pi-file",
                     parent: project.id,
-                    parentIdx: projectIdx,
+                    // parentIdx: projectIdx,
                   }
                 }),
               },
               {
-                key: `0-${projectIdx}-3`,
+                key: `0-3-${project.id}`,
                 label: "Wirings",
                 type: "wirings",
-                parentIdx: projectIdx,
+                // parentIdx: projectIdx,
                 icon: "pi pi-fw pi-server",
                 children: [
                   ...project.wirings.list.map((wiring) => {
                     return {
-                      key: `0-${projectIdx}-3-0`,
+                      key: wiring.id,
                       id: wiring.id,
                       type: wiring.type,
                       label: wiring.label,
                       icon: "pi pi-fw pi-file",
                       parent: project.id,
-                      parentIdx: projectIdx,
+                      // parentIdx: projectIdx,
                     }
                   }),
                   {
-                    key: `0-${projectIdx}-3-1`,
+                    key: `0-3-0-${project.id}`,
                     label: "Outputs",
                     type: "outputs",
-                    parentIdx: projectIdx,
+                    // parentIdx: projectIdx,
                     icon: "pi pi-fw pi-server",
                     children: flowMessageModule.data.list
                       .filter((el) => el.projectId === project.id)
-                      .map((o, oIdx) => {
+                      .map((o) => {
                         return {
-                          key: `0-${projectIdx}-0-${projectIdx}-3-1-${oIdx}`,
+                          key: o.stepId,
                           id: o.stepId,
                           type: "output",
-                          label: "Output_Viz " + ++oIdx,
+                          label: "Output_Viz",
                           icon: "pi pi-fw pi-file",
                           parent: project.id,
-                          parentIdx: projectIdx,
+                          // parentIdx: projectIdx,
                         }
                       }),
                   },
@@ -201,8 +217,8 @@
           type: "connections",
           label: "Global Connections",
           icon: "pi pi-fw pi-book",
-          children: connectionsModule.data.list.map((connection, idx) => ({
-            key: `1-${idx}`,
+          children: connectionsModule.data.list.map((connection) => ({
+            key: connection.id,
             id: connection.id,
             type: connection.type,
             label: connection.label,
@@ -214,9 +230,9 @@
           label: "Themes",
           type: "themes",
           icon: "pi pi-fw pi-server",
-          children: themesModule.data.list.map((theme, tIdx) => {
+          children: themesModule.data.list.map((theme) => {
             return {
-              key: `1-${tIdx}`,
+              key: theme.id,
               id: theme.id,
               type: theme.type,
               label: theme.label,
@@ -264,14 +280,14 @@
         }
       },
       openQuery(data) {
-        const { id, parent, type, key } = data
-        const projectIdx = projectsModule.getProjects.findIndex(
-          (el) => el.id == parent
-        )
-        const queryIdx = projectsModule
-          .getQueries(projectIdx)
-          .findIndex((el) => el.id == id)
-        const queryData = { key, type, id, projectIdx, queryIdx, ...data }
+        const { id, type, key } = data
+        // const projectIdx = projectsModule.getProjects.findIndex(
+        //   (el) => el.id == parent
+        // )
+        // const queryIdx = projectsModule
+        //   .getQueries(projectIdx)
+        //   .findIndex((el) => el.id == id)
+        const queryData = { key, type, id, ...data }
         const isNew = !appDataModule.data.selectedTreeNodes.list.includes(id)
         if (isNew) {
           appDataModule.toggleTreeNode()
@@ -284,6 +300,7 @@
         const { id, type } = data
         if (type == "output") {
           // split the tab
+
           const isNew = !appDataModule.data.selectedSplitNodes.list.includes(id)
           if (isNew) {
             appDataModule.toggleSplitNode()
@@ -335,22 +352,12 @@
         appDataModule.toggleSidebarPanel()
       },
       deleteNode(node) {
-        if (this.selectedNode.type == "project") {
-          const payload = {
-            key: node.key,
-            id: node.id,
-            ...this.tab,
-          }
-          appDataModule.removeSelectedTreeNodes(node.id)
-          appDataModule.toggleTreeNode()
-          projectsModule.updateSelectedNode({ key: node.key })
-          projectsModule.deleteProjectData(payload)
-        }
+        this.node = node
+        this.deletePopupOpen = !this.deletePopupOpen
       },
     },
   }
 </script>
-
 <style lang="scss">
   @import "./Sidebar.scss";
 </style>

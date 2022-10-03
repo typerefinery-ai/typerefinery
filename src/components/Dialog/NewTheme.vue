@@ -279,11 +279,8 @@
           }
           await axios.post("http://localhost:8000/datastore/theme", payload)
           if (projectIndex == -1) {
-            console.log("data2", data.data)
             themesModule.addGlobalTheme(data.data)
-            console.log("data1", data.data)
           } else {
-            console.log("data", data.data)
             projectsModule.addLocalTheme(data)
           }
         } catch (err) {

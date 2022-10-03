@@ -48,6 +48,7 @@
       return {
         displayBasic: true,
         loading: false,
+        themecode: `"{\n  "attribute": {\n    "colorlist": "Oranges",\n    "cindex": 7,\n    "tcolorlist": "Greys",\n    "tindex": 0\n  },\n  "entity": {\n    "colorlist": "Blue-Green",\n    "cindex": 7,\n    "tcolorlist": "Greys",\n    "tindex": 0\n  },\n  "relation": {\n    "colorlist": "Blue-Green",\n    "cindex": 6,\n    "tcolorlist": "Greys",\n    "tindex": 7\n  },\n  "shadow": {\n    "colorlist": "Yellows",\n    "cindex": 2,\n    "tcolorlist": "Greys",\n    "tindex": 7\n  }\n}"`,
       }
     },
     methods: {
@@ -118,11 +119,24 @@
               "match $a isa log, has logName 'L1';\n$b isa event, has eventName $c;\n$d (owner: $a, item: $b) isa trace,\nhas traceId $e, has index $f;\noffset 0; limit 10;",
             data: "",
           }
+          const theme = {
+            id: projectid + "_theme",
+            label: "Theme",
+            projectid: projectid,
+            scope: "local",
+            type: "theme",
+            data: "string",
+            icon: "",
+            themeid: projectid + "_theme",
+            description: "",
+            theme: JSON.parse(JSON.stringify(this.themecode)),
+          }
           const baseURL = "http://localhost:8000/datastore/"
           await axios.all([
             axios.post(`${baseURL}project`, project),
             axios.post(`${baseURL}connection`, connection),
             axios.post(`${baseURL}query`, query),
+            axios.post(`${baseURL}theme`, theme),
           ])
           await this.createData(projectid)
         } catch (err) {
@@ -134,18 +148,30 @@
         const connection = {
           type: "connection",
           id: projectid + "_con",
-          label: "Connection",
+          label: "Sample Connection",
           icon: "Connection",
           scope: "local",
           description: "",
-          port: "7129",
+          port: "1729",
           host: "localhost",
           database: "typerefinery",
+        }
+        const theme = {
+          label: "Sample Theme",
+          id: projectid + "_theme",
+          projectid: projectid,
+          scope: "local",
+          type: "theme",
+          data: "string",
+          icon: "",
+          themeid: projectid + "_theme",
+          description: "",
+          theme: JSON.parse(JSON.stringify(this.themecode)),
         }
         const projectData = {
           type: "project",
           id: projectid,
-          label: "Project",
+          label: "Sample Project",
           description: "",
           icon: "icon",
           connections: {
@@ -160,7 +186,7 @@
               {
                 type: "query",
                 id: projectid + "_query",
-                label: "Query",
+                label: "Sample Query",
                 icon: "Query",
                 description: "",
                 query: "this.query",
@@ -168,7 +194,8 @@
               },
             ],
           },
-          themes: themesData,
+          // themes: themesData,
+          themes: { type: "themes", icon: "", list: [theme] },
           wirings: {
             type: "wirings",
             icon: "",

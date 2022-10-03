@@ -57,17 +57,21 @@
     },
     methods: {
       setInitialData() {
-        const { parentIdx: projectIdx, key } = this.tab
-        const themeIdx = key.split("-").pop()
+        const { parent, id } = this.tab
+        const projects = projectsModule.getProjects
+        const projectIdx = projects.findIndex((el) => el.id === parent)
         let themeData
         if (projectIdx != null || projectIdx != undefined) {
           // local
           const themes = projectsModule.getLocalThemes(projectIdx)
+          const themeIdx = themes.findIndex((el) => el.id === id)
           themeData = themes[themeIdx]
           // const project = projectsModule.getProjects[projectIdx]
           // connection = project.connections.list[connectionIdx]
         } else {
           // global
+          const themes = themesModule.getGlobalConnections
+          const themeIdx = themes.findIndex((el) => el.id === id)
           themeData = themesModule.data.list[themeIdx]
         }
         const { theme } = themeData
@@ -76,13 +80,18 @@
       async handleInputCode(value, field) {
         clearTimeout(this.debounce)
         this.debounce = setTimeout(async () => {
-          const { parentIdx: projectIdx, key: id } = this.tab
-          const themeIdx = id.split("-").pop()
+          const { parent, id } = this.tab
+          const projects = projectsModule.getProjects
+          const projectIdx = projects.findIndex((el) => el.id === parent)
           if (projectIdx != null || projectIdx != undefined) {
+            const themes = projectsModule.getLocalThemes(projectIdx)
+            const themeIdx = themes.findIndex((el) => el.id === id)
             const payload = { field, value, themeIdx, ...this.tab }
             await projectsModule.setThemeData(payload)
           } else {
             // global
+            const themes = themesModule.getGlobalConnections
+            const themeIdx = themes.findIndex((el) => el.id === id)
             const payload = { field, value, themeIdx, ...this.tab }
             await themesModule.setGlobalTheme(payload)
           }
