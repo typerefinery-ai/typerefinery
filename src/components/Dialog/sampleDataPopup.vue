@@ -96,7 +96,7 @@
           // create project, connection & query
           const project = {
             projectid,
-            label: "S_Project",
+            label: "Sample Project",
             description: "",
             icon: "icon",
             data: "",
@@ -181,7 +181,7 @@
         const projectData = {
           type: "project",
           id: projectid,
-          label: "S_Project",
+          label: "Sample Project",
           description: "",
           icon: "icon",
           connections: {
