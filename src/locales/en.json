@@ -264,6 +264,12 @@
       "select": "Select a connection",
       "db": "Database"
     },
+    "tabtheme": {
+      "label": "Name",
+      "label-placeholder": "Enter theme label",
+      "code-placeholder": "Add your theme here..",
+      "theme": "Theme"
+    },
     "algorithm": {
       "label": "Algorithm",
       "select": "Select an Algorithm",

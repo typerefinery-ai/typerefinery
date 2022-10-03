@@ -44,10 +44,21 @@
       class="panel2"
     >
       <div class="field">
-        <label for="name">{{
-          $t("components.dialog.new-theme.info.name")
-        }}</label>
-        <InputText id="name" v-model="name" />
+        <label
+          for="name"
+          :class="{ 'p-error': v$.name.$invalid && submitted }"
+          >{{ $t("components.dialog.new-theme.info.name") }}</label
+        >
+        <InputText
+          id="name"
+          v-model="v$.name.$model"
+          :class="{ 'p-invalid': v$.name.$invalid && submitted }"
+        />
+        <small
+          v-if="(v$.name.$invalid && submitted) || v$.name.$pending.$response"
+          class="p-error"
+          >{{ v$.name.required.$message.replace("Value", "Name") }}</small
+        >
       </div>
       <div class="field">
         <label for="description">
@@ -95,7 +106,7 @@
         :label="$t(`components.dialog.new-transformer.footer.save`)"
         icon="pi pi-check"
         autofocus
-        @click="handlethemestore"
+        @click="handlethemestore(!v$.$invalid)"
       />
     </template>
   </Dialog>
@@ -165,7 +176,7 @@
     },
     validations() {
       return {
-        // name: { required },
+        name: { required },
         // description: { required },
         // icon: { required },
         // host: { required },
@@ -244,7 +255,7 @@
       },
 
       // new dialog
-      async handlethemestore() {
+      async handlethemestore(isFormValid) {
         const projectIndex = projectsModule.getProjects.findIndex(
           (el) => el.id == this.selected
         )
@@ -263,6 +274,11 @@
             description: this.description,
             theme: this.themecode,
           },
+        }
+        this.submitted = true
+        // stop here if form is invalid
+        if (!isFormValid) {
+          return
         }
         try {
           const payload = {

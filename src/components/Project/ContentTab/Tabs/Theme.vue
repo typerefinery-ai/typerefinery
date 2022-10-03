@@ -1,17 +1,31 @@
 <template>
   <div class="theme-container">
-    <div class="field">
-      <div id="query_view_cm" class="shadow-3">
-        <codemirror
-          :model-value="code"
-          placeholder="Add your theme here.."
-          :style="{ height: '400px' }"
-          :autofocus="true"
-          :indent-with-tab="true"
-          :tab-size="2"
-          :extensions="extensions"
-          @change="handleInputCode($event, 'theme')"
+    <div class="col-12 p-fluid">
+      <div class="field">
+        <label for="label">{{ $t("components.tabtheme.label") }}</label>
+        <InputText
+          id="label"
+          v-model="label"
+          aria-describedby="label"
+          :placeholder="$t(`components.tabtheme.label-placeholder`)"
+          @input="handleInputLabel($event, 'label')"
         />
+      </div>
+    </div>
+    <div class="col-12 p-fluid">
+      <div class="field">
+        <div id="query_view_cm" class="shadow-3">
+          <codemirror
+            :model-value="code"
+            :placeholder="$t(`components.tabtheme.code-placeholder`)"
+            :style="{ height: '400px' }"
+            :autofocus="true"
+            :indent-with-tab="true"
+            :tab-size="2"
+            :extensions="extensions"
+            @change="handleInputCode($event, 'theme')"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -25,6 +39,7 @@
   import { oneDark } from "@codemirror/theme-one-dark"
   import Settings from "@/store/Modules/Settings"
   import Projects from "@/store/Modules/Projects"
+  import InputText from "primevue/inputtext"
   import Themes from "@/store/Modules/Theme"
   import axios from "axios"
   const settingsModule = getModule(Settings)
@@ -35,6 +50,7 @@
     components: {
       // Dropdown,
       Codemirror,
+      InputText,
     },
     props: {
       tab: { type: Object, required: true },
@@ -43,6 +59,7 @@
       return {
         code: "",
         debounce: null,
+        label: "",
       }
     },
     computed: {
@@ -61,7 +78,7 @@
         const projects = projectsModule.getProjects
         const projectIdx = projects.findIndex((el) => el.id === parent)
         let themeData
-        if (projectIdx != null || projectIdx != undefined) {
+        if (projectIdx != -1) {
           // local
           const themes = projectsModule.getLocalThemes(projectIdx)
           const themeIdx = themes.findIndex((el) => el.id === id)
@@ -70,12 +87,35 @@
           // connection = project.connections.list[connectionIdx]
         } else {
           // global
-          const themes = themesModule.getGlobalConnections
+          const themes = themesModule.getGlobalThemes
           const themeIdx = themes.findIndex((el) => el.id === id)
           themeData = themesModule.data.list[themeIdx]
         }
-        const { theme } = themeData
+        // const { theme } = themeData
+        // this.code = theme
+        const { theme, label } = themeData
         this.code = theme
+        this.label = label
+      },
+      async handleInputLabel({ target: { value } }, field) {
+        clearTimeout(this.debounce)
+        this.debounce = setTimeout(async () => {
+          const { parent, id } = this.tab
+          const projects = projectsModule.getProjects
+          const projectIdx = projects.findIndex((el) => el.id === parent)
+          if (projectIdx != -1) {
+            const themes = projectsModule.getLocalThemes(projectIdx)
+            const themeIdx = themes.findIndex((el) => el.id === id)
+            const payload = { field, value, themeIdx, ...this.tab }
+            await projectsModule.setThemeData(payload)
+          } else {
+            // global
+            const themes = themesModule.getGlobalThemes
+            const themeIdx = themes.findIndex((el) => el.id === id)
+            const payload = { field, value, themeIdx, ...this.tab }
+            await themesModule.setGlobalTheme(payload)
+          }
+        }, 500)
       },
       async handleInputCode(value, field) {
         clearTimeout(this.debounce)
@@ -83,14 +123,14 @@
           const { parent, id } = this.tab
           const projects = projectsModule.getProjects
           const projectIdx = projects.findIndex((el) => el.id === parent)
-          if (projectIdx != null || projectIdx != undefined) {
+          if (projectIdx != -1) {
             const themes = projectsModule.getLocalThemes(projectIdx)
             const themeIdx = themes.findIndex((el) => el.id === id)
             const payload = { field, value, themeIdx, ...this.tab }
             await projectsModule.setThemeData(payload)
           } else {
             // global
-            const themes = themesModule.getGlobalConnections
+            const themes = themesModule.getGlobalThemes
             const themeIdx = themes.findIndex((el) => el.id === id)
             const payload = { field, value, themeIdx, ...this.tab }
             await themesModule.setGlobalTheme(payload)
