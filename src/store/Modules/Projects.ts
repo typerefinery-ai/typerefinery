@@ -19,6 +19,8 @@ export default class Projects extends VuexModule {
     list: [],
   }
 
+  showSamplePopup = false
+
   /**** Getters ****/
   get getProjects() {
     return this.data.list
@@ -224,6 +226,11 @@ export default class Projects extends VuexModule {
     this.data.list = projects
   }
 
+  @Mutation
+  toggleSamplePopup() {
+    this.showSamplePopup = !this.showSamplePopup
+  }
+
   // @Mutation
   // addLocalTransformer(transformerData) {
   //   const { projectIdx, data } = transformerData
@@ -392,6 +399,8 @@ export default class Projects extends VuexModule {
       }
     })
     if (data.length) this.context.commit("addInitialProjects", data)
+    this.context.commit("toggleSamplePopup")
+    if (data.length != 0) this.context.commit("toggleSamplePopup")
   }
 
   // Project
