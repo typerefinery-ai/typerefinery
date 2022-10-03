@@ -55,11 +55,7 @@
           ></span>
         </template>
       </Tree>
-      <delete-tree-node-popup
-        v-if="deletePopupOpen"
-        :node="node"
-        @close="deleteclosemodal"
-      />
+      <delete-tree-node-popup v-if="deletePopupOpen" :node="node" />
     </div>
   </div>
 </template>
