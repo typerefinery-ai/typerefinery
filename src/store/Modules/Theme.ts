@@ -90,6 +90,7 @@ export default class Connections extends VuexModule {
   }) {
     const themes = this.context.getters["getGlobalThemes"]
     const theme = themes[data.themeIdx]
+    console.log("theme", theme)
     const payload = {
       id: theme.id,
       label: theme.label,
@@ -100,7 +101,7 @@ export default class Connections extends VuexModule {
       icon: theme.icon,
       themeid: theme.id,
       description: theme.description,
-      theme: theme.themecode,
+      theme: theme.theme,
       [data.field]: data.value,
     }
     try {
