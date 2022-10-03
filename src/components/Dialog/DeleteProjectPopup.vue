@@ -81,7 +81,6 @@
             id: nodeData.id,
             ...this.tab,
           }
-
           const eKeys = [nodeData.key]
           const sKeys = [nodeData.key]
           const ids = [nodeData.id]
