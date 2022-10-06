@@ -102,7 +102,7 @@ async def flow_createsample(request: Request, response: Response, body: CreateSa
     SAMPLEFLOWS = sampleflows_file.read()
 
   # open flows database
-  with open(os.path.join(CONFIG.APP_SERVICE_LOCATION, "../", "totaljs-flow", "database", "database.json"), "r") as flowdatabase_file:
+  with open(os.path.join(CONFIG.APP_USER_DATA_LOCATION, "../", "totaljs-flow", "database", "database.json"), "r") as flowdatabase_file:
     FLOW_DATABASE = flowdatabase_file.read()
 
   FLOW_DATABASE_JSON = json.loads(FLOW_DATABASE)
@@ -117,7 +117,7 @@ async def flow_createsample(request: Request, response: Response, body: CreateSa
     else:
         FLOW_DATABASE_JSON[flow_name] = flow[flow_name]
         # save flow to database
-        with open(os.path.join(CONFIG.APP_SERVICE_LOCATION, "../", "totaljs-flow", "database", "database.json"), "w") as flowdatabase_file:
+        with open(os.path.join(CONFIG.APP_USER_DATA_LOCATION, "../", "totaljs-flow", "database", "database.json"), "w") as flowdatabase_file:
           flowdatabase_file.write(json.dumps(FLOW_DATABASE_JSON, indent=4))
           message["status"] = f"flow with id {flow_name} added to database."
 
