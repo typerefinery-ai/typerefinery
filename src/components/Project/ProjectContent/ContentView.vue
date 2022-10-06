@@ -127,7 +127,6 @@
 
     methods: {
       getLabel(tab) {
-        console.log(tab)
         const projects = projectsModule.getProjects
         const projectIdx = projects.findIndex((el) => el.id === tab.parent)
         if (tab.type === "query") {

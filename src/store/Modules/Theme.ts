@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Module, VuexModule, Mutation, Action } from "vuex-module-decorators"
 import store from "../index"
-import axios from "axios"
+import axios from "@/axios"
 
 @Module({
   name: "Themes",
@@ -44,7 +44,7 @@ export default class Connections extends VuexModule {
   //     // [themeDataParsed.field]: themeDataParsed.value,
   //   }
   //   try {
-  //     await axios.post(`http://localhost:8000/datastore/theme/`, payload)
+  //     await axios.post(`/datastore/theme/`, payload)
   //     // const output = {
   //     //   ...themeData,
   //     //   projectIdx: themeData.parentIdx,
@@ -71,7 +71,7 @@ export default class Connections extends VuexModule {
   @Action
   async getInitialThemes() {
     try {
-      const res = await axios.get("http://localhost:8000/datastore/theme")
+      const res = await axios.get("/datastore/theme")
       const data = res.data
         .filter((el) => el.scope === "global")
         .map((el) => ({ ...el, id: el.themeid }))
@@ -105,10 +105,7 @@ export default class Connections extends VuexModule {
       [data.field]: data.value,
     }
     try {
-      await axios.put(
-        `http://localhost:8000/datastore/theme/${data.id}`,
-        payload
-      )
+      await axios.put(`/datastore/theme/${data.id}`, payload)
       this.context.commit("updateGlobalTheme", data)
     } catch (err) {
       console.log(err)

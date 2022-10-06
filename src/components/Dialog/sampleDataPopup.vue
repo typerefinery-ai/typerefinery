@@ -59,7 +59,7 @@
     },
     methods: {
       closeBasic() {
-        this.displayBasic = !this.displayBasic
+        projectsModule.closeSampleDataPopup()
       },
       getSampleData() {
         const projectId = nanoid(14)
@@ -227,7 +227,7 @@
           },
         }
         projectsModule.addNewProject(projectData)
-        this.displayBasic = !this.displayBasic
+        projectsModule.closeSampleDataPopup()
         this.loading = false
         this.showError = false
       },
