@@ -264,6 +264,12 @@
       "select": "कनेक्शन चुनें",
       "db": "डेटाबेस "
     },
+    "tabtheme": {
+      "label": "नाम",
+      "label-placeholder": "थीम लेबल दर्ज करें",
+      "code-placeholder": "अपनी थीम यहां जोड़ें...",
+      "theme": "थीम"
+    },
     "algorithm": {
       "label": "एल्गोरिथम",
       "select": "एल्गोरिथ्म का चयन करें",
