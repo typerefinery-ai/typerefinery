@@ -181,7 +181,7 @@
         const projectIdx = projects.findIndex((el) => el.id === parent)
         // const connectionIdx = key.split("-").pop()
         let connection
-        if (projectIdx != null || projectIdx != undefined) {
+        if (projectIdx != -1) {
           // local
           const connections = projectsModule.getLocalConnections(projectIdx)
           const connectionIdx = connections.findIndex((el) => el.id === id)
@@ -210,7 +210,7 @@
           const projects = projectsModule.getProjects
           const projectIdx = projects.findIndex((el) => el.id === parent)
 
-          if (projectIdx != null || projectIdx != undefined) {
+          if (projectIdx != -1) {
             const connections = projectsModule.getLocalConnections(projectIdx)
             const connectionIdx = connections.findIndex((el) => el.id === id)
             const payload = { field, value, connectionIdx, ...this.tab }

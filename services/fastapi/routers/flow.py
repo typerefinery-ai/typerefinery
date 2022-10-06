@@ -93,8 +93,32 @@ class CreateSample(BaseModel):
 @Logger.catch
 @router.post("/flow/createsample")
 async def flow_createsample(request: Request, response: Response, body: CreateSample):
-    test = {
-      "status": "success",
-    }
-    #TODO: finish implementation
-    return Response(content=json.dumps(test), media_type="application/json", status_code=200)
+  message = {
+    "status": "success"
+  }
+
+  # load sample flows to add
+  with open(os.path.join(CONFIG.APP_SERVICE_LOCATION, "template", "sampleflow", "database.json"), "r") as sampleflows_file:
+    SAMPLEFLOWS = sampleflows_file.read()
+
+  # open flows database
+  with open(os.path.join(CONFIG.APP_SERVICE_LOCATION, "../", "totaljs-flow", "database", "database.json"), "r") as flowdatabase_file:
+    FLOW_DATABASE = flowdatabase_file.read()
+
+  FLOW_DATABASE_JSON = json.loads(FLOW_DATABASE)
+  SAMPLEFLOWS_JSON = json.loads(SAMPLEFLOWS)
+  for flow in SAMPLEFLOWS_JSON:
+    # get first attribute of flow
+    flow_name = list(flow.keys())[0]
+
+    # if FLOW_DATABASE_JSON contains flow_name node add it to FLOW_DATABASE_JSON
+    if flow_name in FLOW_DATABASE_JSON:
+        message["status"] = f"flow with id {flow_name} already exist in database."
+    else:
+        FLOW_DATABASE_JSON[flow_name] = flow[flow_name]
+        # save flow to database
+        with open(os.path.join(CONFIG.APP_SERVICE_LOCATION, "../", "totaljs-flow", "database", "database.json"), "w") as flowdatabase_file:
+          flowdatabase_file.write(json.dumps(FLOW_DATABASE_JSON, indent=4))
+          message["status"] = f"flow with id {flow_name} added to database."
+
+  return Response(content=json.dumps(message), media_type="application/json", status_code=200)

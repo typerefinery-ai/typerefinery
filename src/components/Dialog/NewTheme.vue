@@ -44,10 +44,21 @@
       class="panel2"
     >
       <div class="field">
-        <label for="name">{{
-          $t("components.dialog.new-theme.info.name")
-        }}</label>
-        <InputText id="name" v-model="name" />
+        <label
+          for="name"
+          :class="{ 'p-error': v$.name.$invalid && submitted }"
+          >{{ $t("components.dialog.new-theme.info.name") }}</label
+        >
+        <InputText
+          id="name"
+          v-model="v$.name.$model"
+          :class="{ 'p-invalid': v$.name.$invalid && submitted }"
+        />
+        <small
+          v-if="(v$.name.$invalid && submitted) || v$.name.$pending.$response"
+          class="p-error"
+          >{{ v$.name.required.$message.replace("Value", "Name") }}</small
+        >
       </div>
       <div class="field">
         <label for="description">
@@ -67,7 +78,7 @@
         }}</label>
         <codemirror
           v-model="themecode"
-          placeholder="Code goes here..."
+          placeholder="Code goes here.."
           :style="{ height: '20vh' }"
           :autofocus="true"
           :indent-with-tab="true"
@@ -95,7 +106,7 @@
         :label="$t(`components.dialog.new-transformer.footer.save`)"
         icon="pi pi-check"
         autofocus
-        @click="handlethemestore"
+        @click="handlethemestore(!v$.$invalid)"
       />
     </template>
   </Dialog>
@@ -110,7 +121,7 @@
   import { javascript } from "@codemirror/lang-javascript"
   import { oneDark } from "@codemirror/theme-one-dark"
   import { nanoid } from "nanoid"
-  import axios from "axios"
+  import axios from "@/axios"
   import Dialog from "primevue/dialog"
   import Dropdown from "primevue/dropdown"
   import InputText from "primevue/inputtext"
@@ -165,7 +176,7 @@
     },
     validations() {
       return {
-        // name: { required },
+        name: { required },
         // description: { required },
         // icon: { required },
         // host: { required },
@@ -244,7 +255,7 @@
       },
 
       // new dialog
-      async handlethemestore() {
+      async handlethemestore(isFormValid) {
         const projectIndex = projectsModule.getProjects.findIndex(
           (el) => el.id == this.selected
         )
@@ -264,6 +275,11 @@
             theme: this.themecode,
           },
         }
+        this.submitted = true
+        // stop here if form is invalid
+        if (!isFormValid) {
+          return
+        }
         try {
           const payload = {
             id: id,
@@ -277,7 +293,7 @@
             description: this.description,
             theme: this.themecode,
           }
-          await axios.post("http://localhost:8000/datastore/theme", payload)
+          await axios.post("/datastore/theme", payload)
           if (projectIndex == -1) {
             themesModule.addGlobalTheme(data.data)
           } else {

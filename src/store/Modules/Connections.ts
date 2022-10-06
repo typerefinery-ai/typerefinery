@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import axios from "axios"
+import axios from "@/axios"
 import { Module, VuexModule, Mutation, Action } from "vuex-module-decorators"
 import store from "../index"
 // import sampleData from "@/data/default.json"
@@ -46,7 +46,7 @@ export default class Connections extends VuexModule {
   @Action
   async getInitialConnections() {
     try {
-      const res = await axios.get("http://localhost:8000/datastore/connection")
+      const res = await axios.get("/datastore/connection")
       const data = res.data
         .filter((el) => el.scope === "global")
         .map((el) => ({ ...el, id: el.connectionid }))
@@ -75,10 +75,7 @@ export default class Connections extends VuexModule {
       [data.field]: data.value,
     }
     try {
-      await axios.put(
-        `http://localhost:8000/datastore/connection/${data.id}`,
-        payload
-      )
+      await axios.put(`/datastore/connection/${data.id}`, payload)
       this.context.commit("updateGlobalConnection", data)
     } catch (err) {
       console.log(err)

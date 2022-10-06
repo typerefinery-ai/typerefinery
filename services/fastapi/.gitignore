@@ -1,0 +1,14 @@
+
+# service specific folders
+__pycache__
+__packages__
+generated/algorithm/req-*
+!generated/algorithm/.gitkeep
+generated/transformer/req-*
+!generated/transformer/.gitkeep
+generated/createsvg/req-*
+!generated/createsvg/.gitkeep
+logs/
+
+# datastore db
+database.db
