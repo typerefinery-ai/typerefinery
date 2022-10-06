@@ -454,10 +454,10 @@
       }
     }
     .p-dropdown {
-      width: 80%;
+      width: 100%;
     }
     input {
-      width: 80%;
+      width: 100%;
     }
     .field {
       display: grid;
