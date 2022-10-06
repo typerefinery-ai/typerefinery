@@ -9,9 +9,7 @@
     >
       <div class="confirmation-content">
         <i class="pi pi-info-circle mr-3" style="font-size: 2rem" />
-        <span>{{
-          $t(`components.dialog.projects.info.delete-project-popup`)
-        }}</span>
+        <span>{{ popupmessage }}</span>
       </div>
 
       <template #footer>
@@ -57,7 +55,18 @@
       return {
         displayDeletePopup: true,
         loading: false,
+        popupmessage: "",
       }
+    },
+    mounted() {
+      if (this.node.label == "Sample Project") {
+        this.popupmessage = this.$t(
+          "components.dialog.projects.info.delete-sample-project-popup"
+        )
+      } else
+        this.popupmessage = this.$t(
+          "components.dialog.projects.info.delete-project-popup"
+        )
     },
     methods: {
       closeDeleteDialog() {
@@ -65,22 +74,40 @@
       },
       async deleteProjectTreenode() {
         const nodeData = this.node
+
+        const eKeys = [nodeData.key]
+        const sKeys = [nodeData.key]
+        const ids = [nodeData.id]
+        const connectionid = []
+        const queryid = []
+        const themeid = []
+
+        nodeData.children.forEach((el) => {
+          eKeys.push(el.key)
+          el.children.forEach((el) => {
+            if (el.type == "connection") {
+              connectionid.push(el.id)
+            }
+            if (el.type == "query") {
+              queryid.push(el.id)
+            }
+            if (el.type == "theme") {
+              themeid.push(el.id)
+            }
+            sKeys.push(el.key)
+            ids.push(el.id)
+          })
+        })
+
         if (nodeData.type == "project") {
           const payload = {
             key: nodeData.key,
             id: nodeData.id,
             ...this.tab,
+            connectionid,
+            queryid,
+            themeid,
           }
-          const eKeys = [nodeData.key]
-          const sKeys = [nodeData.key]
-          const ids = [nodeData.id]
-          nodeData.children.forEach((el) => {
-            eKeys.push(el.key)
-            el.children.forEach((el) => {
-              sKeys.push(el.key)
-              ids.push(el.id)
-            })
-          })
 
           this.loading = true
           appDataModule.removeSelectedTreeNodes(ids)

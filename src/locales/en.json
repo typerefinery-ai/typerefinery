@@ -105,7 +105,8 @@
           "save": "Save",
           "flowName": "Workflow Name",
           "delete-project": "Delete Project",
-          "delete-project-popup": "Do you want to delete this Project?"
+          "delete-project-popup": "Do you want to delete this Project?",
+          "delete-sample-project-popup": "Do you want to delete this Sample Project ? Once it get deleted you will have to reload or download the Sample data from 'Setting' tab."
         }
       },
       "connections": {
@@ -263,6 +264,12 @@
       "connection": "Connections",
       "select": "Select a connection",
       "db": "Database"
+    },
+    "tabtheme": {
+      "label": "Name",
+      "label-placeholder": "Enter theme label",
+      "code-placeholder": "Add your theme here..",
+      "theme": "Theme"
     },
     "algorithm": {
       "label": "Algorithm",
