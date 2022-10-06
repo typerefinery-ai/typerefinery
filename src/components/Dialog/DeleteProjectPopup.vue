@@ -75,22 +75,39 @@
       async deleteProjectTreenode() {
         const nodeData = this.node
 
+        const eKeys = [nodeData.key]
+        const sKeys = [nodeData.key]
+        const ids = [nodeData.id]
+        const connectionid = []
+        const queryid = []
+        const themeid = []
+
+        nodeData.children.forEach((el) => {
+          eKeys.push(el.key)
+          el.children.forEach((el) => {
+            if (el.type == "connection") {
+              connectionid.push(el.id)
+            }
+            if (el.type == "query") {
+              queryid.push(el.id)
+            }
+            if (el.type == "theme") {
+              themeid.push(el.id)
+            }
+            sKeys.push(el.key)
+            ids.push(el.id)
+          })
+        })
+
         if (nodeData.type == "project") {
           const payload = {
             key: nodeData.key,
             id: nodeData.id,
             ...this.tab,
+            connectionid,
+            queryid,
+            themeid,
           }
-          const eKeys = [nodeData.key]
-          const sKeys = [nodeData.key]
-          const ids = [nodeData.id]
-          nodeData.children.forEach((el) => {
-            eKeys.push(el.key)
-            el.children.forEach((el) => {
-              sKeys.push(el.key)
-              ids.push(el.id)
-            })
-          })
 
           this.loading = true
           appDataModule.removeSelectedTreeNodes(ids)

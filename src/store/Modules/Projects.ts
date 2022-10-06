@@ -227,10 +227,14 @@ export default class Projects extends VuexModule {
   }
 
   @Mutation
-  toggleSamplePopup() {
-    this.showSamplePopup = !this.showSamplePopup
+  openSampleDataPopup() {
+    this.showSamplePopup = true
   }
 
+  @Mutation
+  closeSampleDataPopup() {
+    this.showSamplePopup = false
+  }
   // @Mutation
   // addLocalTransformer(transformerData) {
   //   const { projectIdx, data } = transformerData
@@ -398,9 +402,11 @@ export default class Projects extends VuexModule {
         },
       }
     })
-    if (data.length) this.context.commit("addInitialProjects", data)
-    this.context.commit("toggleSamplePopup")
-    if (data.length != 0) this.context.commit("toggleSamplePopup")
+    if (projects.length > 0) {
+      this.context.commit("addInitialProjects", data)
+    } else {
+      this.context.commit("openSampleDataPopup")
+    }
   }
 
   // Project
@@ -533,14 +539,15 @@ export default class Projects extends VuexModule {
     try {
       await Promise.all([
         axios.delete(`/datastore/project/${data.id}`, payload),
-        // axios.delete(
-        //   `/datastore/connection/${data.id}`,
-        //   payload
-        // ),
-        // axios.delete(
-        //   `/datastore/query/${data.id}`,
-        //   payload
-        // ),
+        data.connectionid.map((el) => {
+          axios.delete(`/datastore/connection/${el}`, payload)
+        }),
+        data.queryid.map((el) => {
+          axios.delete(`/datastore/query/${el}`, payload)
+        }),
+        data.themeid.map((el) => {
+          axios.delete(`/datastore/theme/${el}`, payload)
+        }),
       ]),
         this.context.commit("deleteProject", data)
     } catch (err) {
