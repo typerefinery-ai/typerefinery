@@ -18,7 +18,7 @@
     <h4>{{ $t("components.dialog.sample-data.header") }}</h4>
     <Button
       :label="$t(`components.dialog.new-query.footer.download`)"
-      class="p-button-raised p-button-success p-button-text"
+      icon="pi pi-download"
       @click="handleSampleData"
     />
   </div>
@@ -28,6 +28,7 @@
 <script>
   import InputSwitch from "primevue/inputswitch"
   import { getModule } from "vuex-module-decorators"
+
   import Settings from "@/store/Modules/Settings"
   const settingsModule = getModule(Settings)
   import sampleDataPopup from "@/components/Dialog/sampleDataPopup.vue"
