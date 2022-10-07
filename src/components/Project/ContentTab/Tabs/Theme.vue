@@ -1,30 +1,57 @@
 <template>
   <div class="theme-container">
-    <div class="col-12 p-fluid">
-      <div class="field">
-        <label for="label">{{ $t("components.tabtheme.label") }}</label>
-        <InputText
-          id="label"
-          v-model="label"
-          aria-describedby="label"
-          :placeholder="$t(`components.tabtheme.label-placeholder`)"
-          @input="handleInputLabel($event, 'label')"
-        />
-      </div>
-    </div>
-    <div class="col-12 p-fluid">
-      <div class="field">
-        <div id="query_view_cm" class="shadow-3">
-          <codemirror
-            :model-value="code"
-            :placeholder="$t(`components.tabtheme.code-placeholder`)"
-            :style="{ height: '400px' }"
-            :autofocus="true"
-            :indent-with-tab="true"
-            :tab-size="2"
-            :extensions="extensions"
-            @change="handleInputCode($event, 'theme')"
+    <div class="grid formgrid theme-form">
+      <div class="col-12 p-fluid">
+        <div class="field">
+          <label for="label">{{ $t("components.tabtheme.label") }}</label>
+          <InputText
+            id="label"
+            v-model="label"
+            aria-describedby="label"
+            :placeholder="$t(`components.tabtheme.label-placeholder`)"
+            @input="handleInputLabel($event, 'label')"
           />
+        </div>
+      </div>
+      <div class="col-12 p-fluid">
+        <div class="field">
+          <label for="icon">{{ $t("components.tabtheme.icon") }}</label>
+          <InputText
+            id="icon"
+            v-model="icon"
+            aria-describedby="label"
+            :placeholder="$t(`components.tabtheme.icon-placeholder`)"
+            @input="handleInputLabel($event, 'icon')"
+          />
+        </div>
+      </div>
+      <div class="col-12 p-fluid">
+        <div class="field">
+          <label for="description">{{ $t("components.tabtheme.des") }}</label>
+          <InputText
+            id="description"
+            v-model="description"
+            aria-describedby="label"
+            :placeholder="$t(`components.tabtheme.des-placeholder`)"
+            @input="handleInputLabel($event, 'description')"
+          />
+        </div>
+      </div>
+      <div class="col-12 p-fluid">
+        <div class="field">
+          <label for="icon">{{ $t("components.tabtheme.theme") }}</label>
+          <div id="query_view_cm" class="shadow-3">
+            <codemirror
+              :model-value="code"
+              :placeholder="$t(`components.tabtheme.code-placeholder`)"
+              :style="{ height: '400px' }"
+              :autofocus="true"
+              :indent-with-tab="true"
+              :tab-size="2"
+              :extensions="extensions"
+              @change="handleInputCode($event, 'theme')"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -60,6 +87,8 @@
         code: "",
         debounce: null,
         label: "",
+        icon: "",
+        description: "",
       }
     },
     computed: {
@@ -93,9 +122,11 @@
         }
         // const { theme } = themeData
         // this.code = theme
-        const { theme, label } = themeData
+        const { theme, label, icon, description } = themeData
         this.code = theme
         this.label = label
+        this.icon = icon
+        this.description = description
       },
       async handleInputLabel({ target: { value } }, field) {
         clearTimeout(this.debounce)
@@ -143,15 +174,9 @@
 
 <style lang="scss">
   .theme-container {
-    padding: 1rem;
-
-    .p-dropdown {
-      max-width: 100%;
-      width: 100%;
-      display: flex;
-
-      border-bottom: 1px solid var(--surface-border);
-      flex-flow: wrap;
+    padding: 2rem 1.75rem;
+    .theme-form {
+      margin-top: -0.75rem;
     }
   }
 </style>

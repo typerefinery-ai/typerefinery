@@ -267,9 +267,13 @@
     },
     "tabtheme": {
       "label": "Name",
-      "label-placeholder": "Enter theme label",
-      "code-placeholder": "Add your theme here..",
-      "theme": "Theme"
+      "label-placeholder": "Enter theme name...",
+      "icon-placeholder": "Enter theme icon...",
+      "des-placeholder": "Enter theme description...",
+      "code-placeholder": "Add your theme here...",
+      "theme": "Theme",
+      "icon": "Icon",
+      "des": "Description"
     },
     "algorithm": {
       "label": "Algorithm",
