@@ -10,6 +10,8 @@
 <script>
   import { getModule } from "vuex-module-decorators"
   import AppData from "@/store/Modules/AppData"
+  import Settings from "@/store/Modules/Settings"
+  const settingsModule = getModule(Settings)
   const appDataModule = getModule(AppData)
   export default {
     name: "WiringContent",
@@ -22,7 +24,9 @@
       },
       path() {
         const flowId = this.tab.id
-        return `http://localhost:8111/designer/?darkmode=0&socket=ws%3A%2F%2Flocalhost%3A8111%2Fflows%2F${flowId}%2F&components=`
+        const theme = settingsModule.data.theme
+        const themeMode = theme == "light" ? 0 : 1
+        return `http://localhost:8111/designer/?darkmode=${themeMode}&socket=ws%3A%2F%2Flocalhost%3A8111%2Fflows%2F${flowId}%2F&components=`
       },
     },
   }
