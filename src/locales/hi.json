@@ -266,9 +266,13 @@
     },
     "tabtheme": {
       "label": "नाम",
-      "label-placeholder": "थीम लेबल दर्ज करें",
+      "label-placeholder": "थीम नाम दर्ज करें...",
+      "icon-placeholder": "थीम आइकन दर्ज करें...",
+      "des-placeholder": "थीम विवरण दर्ज करें...",
       "code-placeholder": "अपनी थीम यहां जोड़ें...",
-      "theme": "थीम"
+      "theme": "थीम",
+      "icon": "आइकन",
+      "des": "विवरण"
     },
     "algorithm": {
       "label": "एल्गोरिथम",
