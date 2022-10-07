@@ -4,7 +4,7 @@
       v-model:visible="displayDeletePopup"
       :header="$t(`components.dialog.projects.info.delete-project`)"
       :modal="true"
-      :closable="true"
+      :closable="false"
       :style="{ width: '350px' }"
     >
       <div class="confirmation-content">
@@ -51,6 +51,7 @@
       node: { type: Object, required: true },
       deletedialog: { type: Boolean, default: false },
     },
+    emits: ["close"],
     data() {
       return {
         displayDeletePopup: true,
@@ -70,7 +71,7 @@
     },
     methods: {
       closeDeleteDialog() {
-        this.displayDeletePopup = !this.displayDeletePopup
+        this.$emit("close")
       },
       async deleteProjectTreenode() {
         const nodeData = this.node
@@ -115,7 +116,7 @@
           projectsModule.removeExpandedNodesByKeys(eKeys)
           projectsModule.removeSelectedNodesByKeys(sKeys)
           projectsModule.deleteProjectData(payload)
-          this.displayDeletePopup = !this.displayDeletePopup
+          this.$emit("close")
         }
       },
     },
