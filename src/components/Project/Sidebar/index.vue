@@ -55,7 +55,12 @@
           ></span>
         </template>
       </Tree>
-      <delete-tree-node-popup v-if="deletePopupOpen" :node="node" />
+      <delete-tree-node-popup
+        v-if="deletedialog"
+        :node="node"
+        :deletedialog="deletedialog"
+        @close="deleteCloseModal"
+      />
     </div>
   </div>
 </template>
@@ -94,9 +99,13 @@
         connection: null,
         displayHome: false,
         deletePopupOpen: false,
+        deletedialog: false,
       }
     },
     computed: {
+      // deletedialog() {
+      //   return appDataModule.data.deletedialog
+      // },
       nodesData() {
         const projects = {
           key: 0,
@@ -255,6 +264,10 @@
       }
     },
     methods: {
+      deleteCloseModal() {
+        // appDataModule.toggleDeleteDialog()
+        this.deletedialog = false
+      },
       isSelected(id) {
         if (
           this.activeNode === id &&
@@ -349,7 +362,9 @@
       },
       deleteNode(node) {
         this.node = node
-        this.deletePopupOpen = !this.deletePopupOpen
+        // this.deletePopupOpen = !this.deletePopupOpen
+        this.deletedialog = true
+        // appDataModule.toggleDeleteDialog()
       },
     },
   }
