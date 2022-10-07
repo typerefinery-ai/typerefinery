@@ -40,8 +40,10 @@
   import Button from "primevue/button"
   import axios from "axios"
   import Projects from "@/store/Modules/Projects"
+  import Services from "@/store/Modules/Services"
   import { nanoid } from "nanoid"
   const projectsModule = getModule(Projects)
+  const servicesModule = getModule(Services)
   export default {
     name: "SampleDataPopup",
     components: {
@@ -64,25 +66,18 @@
       getSampleData() {
         const projectId = nanoid(14)
         this.loading = true
-        this.createFlow(projectId)
+        this.createSampleFlow(projectId)
         return
       },
-      async createFlow(projectId) {
+      async createSampleFlow(projectId) {
         try {
           const payload = {
-            icon: "fa fa-satellite",
-            url: "https://localhost",
-            name: "Workflow",
-            group: "typerefinery",
-            reference: projectId,
-            version: "1.0",
-            author: "typerefinery",
-            color: "#61C83B",
-            readme: "Typerefinery flow",
+            name: "string",
+            overwrite: true,
           }
-          const url = "http://localhost:8000/flow/create"
+          const url = "http://localhost:8000/flow/createsample"
           await axios.post(url, payload)
-
+          await servicesModule.restartService("totaljs-flow")
           this.createInitialData(projectId)
         } catch (err) {
           console.log(err)
