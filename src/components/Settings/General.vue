@@ -44,7 +44,6 @@
     },
     computed: {
       experimentalFeatures() {
-        console.log("sere", settingsModule.data)
         return settingsModule.data.experimentalFeatures
       },
     },
