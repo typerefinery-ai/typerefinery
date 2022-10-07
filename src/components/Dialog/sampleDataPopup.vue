@@ -3,7 +3,7 @@
     <Dialog
       v-model:visible="displayBasic"
       :modal="true"
-      :closable="true"
+      :closable="false"
       :style="{ width: '350px' }"
     >
       <template #header>

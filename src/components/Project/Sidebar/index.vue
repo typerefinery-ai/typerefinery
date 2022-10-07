@@ -265,7 +265,6 @@
     },
     methods: {
       deleteCloseModal() {
-        // appDataModule.toggleDeleteDialog()
         this.deletedialog = false
       },
       isSelected(id) {
@@ -362,9 +361,7 @@
       },
       deleteNode(node) {
         this.node = node
-        // this.deletePopupOpen = !this.deletePopupOpen
         this.deletedialog = true
-        // appDataModule.toggleDeleteDialog()
       },
     },
   }

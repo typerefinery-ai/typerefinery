@@ -119,10 +119,6 @@ export default class AppData extends VuexModule {
     this.data.themeDialog = !this.data.themeDialog
   }
   @Mutation
-  toggleDeleteDialog() {
-    this.data.deletedialog = !this.data.deletedialog
-  }
-  @Mutation
   toggleTransformerDialog() {
     this.data.transformerDialog = !this.data.transformerDialog
   }

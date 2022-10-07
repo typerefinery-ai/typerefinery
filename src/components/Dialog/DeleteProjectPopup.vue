@@ -116,7 +116,6 @@
           projectsModule.removeExpandedNodesByKeys(eKeys)
           projectsModule.removeSelectedNodesByKeys(sKeys)
           projectsModule.deleteProjectData(payload)
-          // this.displayDeletePopup = !this.displayDeletePopup
           this.$emit("close")
         }
       },
