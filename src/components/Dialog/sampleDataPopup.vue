@@ -225,6 +225,7 @@
         projectsModule.closeSampleDataPopup()
         this.loading = false
         this.showError = false
+        window.location.reload()
       },
     },
   }
