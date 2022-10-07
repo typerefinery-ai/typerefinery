@@ -8,7 +8,7 @@
       :style="{ width: '350px' }"
     >
       <div class="confirmation-content">
-        <i class="pi pi-info-circle mr-3" style="font-size: 2rem" />
+        <i class="pi pi-info-circle mr-3 deleteIcon" />
         <span>{{ popupmessage }}</span>
       </div>
 
@@ -133,6 +133,9 @@
   }
   .p-dialog .p-button {
     min-width: 6rem;
+  }
+  .deleteIcon {
+    font-size: 2rem;
   }
 
   #deleteTreeNode {
