@@ -138,7 +138,7 @@ export class Service extends EventEmitter<ServiceEvent> {
   #setup: string[]
   #setuparchiveOutputPath = ""
   #setuparchiveFile = ""
-  #status: ServiceStatus
+  #status: ServiceStatus = ServiceStatus.DISABLED
   #abortController: AbortController
   #logsDir: string
   constructor(
