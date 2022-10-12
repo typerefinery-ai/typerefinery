@@ -171,9 +171,9 @@ export class Service extends EventEmitter<ServiceEvent> {
     this.#servicehost = this.#options.execconfig?.servicehost || "localhost"
     this.#healthCheck = this.#options.execconfig?.healthcheck
     this.#setup = this.#options.execconfig?.setup || []
-    this.#status = ServiceStatus.LOADED
+    this.#setStatus(ServiceStatus.LOADED)
     if (this.#options.enabled === false) {
-      this.#status = ServiceStatus.DISABLED
+      this.#setStatus(ServiceStatus.DISABLED)
     }
     // create logger for service
     this.#logger = logger.forService(this.#id)
@@ -253,7 +253,7 @@ export class Service extends EventEmitter<ServiceEvent> {
       )
       // set status to archived if setuparchiveOutputPath does not exist
       if (!this.isSetup && !fs.existsSync(this.#setuparchiveOutputPath)) {
-        this.#status = ServiceStatus.ARCHIVED
+        this.#setStatus(ServiceStatus.ARCHIVED)
       }
     }
 
@@ -337,6 +337,10 @@ export class Service extends EventEmitter<ServiceEvent> {
     return this.#options
   }
 
+  get isStarted() {
+    return this.#status === ServiceStatus.STARTED
+  }
+
   get isRunning() {
     if (this.#process) {
       return !this.#process.killed
@@ -383,7 +387,7 @@ export class Service extends EventEmitter<ServiceEvent> {
     }
     process.once("exit", () => {
       this.#removeServicePidFile()
-      this.#status = ServiceStatus.STOPPED
+      this.#setStatus(ServiceStatus.STOPPED)
       this.#log(
         `process ${this.#id} with pid ${
           this.#process?.pid
@@ -600,12 +604,12 @@ export class Service extends EventEmitter<ServiceEvent> {
       try {
         const req = http.get(options, (res) => {
           if (res.statusCode == expected_status) {
-            this.#status = ServiceStatus.STARTED
+            this.#setStatus(ServiceStatus.STARTED)
             this.#log(
               `http health check success, service status is ${this.#status}`
             )
           } else {
-            this.#status = ServiceStatus.STOPPED
+            this.#setStatus(ServiceStatus.STOPPED)
             this.#log(
               `http health check failed with status code ${
                 res.statusCode
@@ -614,7 +618,7 @@ export class Service extends EventEmitter<ServiceEvent> {
           }
         })
         req.on("error", (e) => {
-          this.#status = ServiceStatus.STOPPED
+          this.#setStatus(ServiceStatus.STOPPED)
           this.#log(
             `http health check request failed with error ${e}, service status is ${
               this.#status
@@ -622,7 +626,7 @@ export class Service extends EventEmitter<ServiceEvent> {
           )
         })
       } catch (error) {
-        this.#status = ServiceStatus.STOPPED
+        this.#setStatus(ServiceStatus.STOPPED)
         this.#log(
           `http could not execute health check error is ${error}, service status is ${
             this.#status
@@ -638,12 +642,12 @@ export class Service extends EventEmitter<ServiceEvent> {
       const hostname = this.#servicehost
       const port = this.#serviceport
       const socket = net.createConnection(port, hostname, () => {
-        this.#status = ServiceStatus.STARTED
+        this.#setStatus(ServiceStatus.STARTED)
         this.#log(`tcp health check success, service status ${this.#status}`)
         socket.end()
       })
       socket.on("error", (error) => {
-        this.#status = ServiceStatus.STOPPED
+        this.#setStatus(ServiceStatus.STOPPED)
         this.#log(
           `tcp health check failed with error ${error}, service status ${
             this.#status
@@ -665,7 +669,7 @@ export class Service extends EventEmitter<ServiceEvent> {
   // start service and store its process id in a file based on os type
   async start() {
     //quick fail already started
-    if (this.#status == ServiceStatus.STARTED) {
+    if (this.isStarted) {
       this.#log(
         `service ${this.#id} already started with pid ${this.#process?.pid}`
       )
@@ -800,10 +804,11 @@ export class Service extends EventEmitter<ServiceEvent> {
     this.emit("log", this.#id, message)
   }
 
-  #setStatus(output: ServiceStatus) {
+  #setStatus(newstatus: ServiceStatus) {
+    this.#status = newstatus
     if (this.#events.sendServiceStatus) {
-      this.#events.sendServiceStatus(this.#id, output)
-      this.emit("status", this.#id, output)
+      this.#events.sendServiceStatus(this.#id, newstatus)
+      this.emit("status", this.#id, newstatus)
     }
   }
 
@@ -856,7 +861,7 @@ export class Service extends EventEmitter<ServiceEvent> {
             this.#id
           } has not been been configured, executing setup commands.`
         )
-        this.#status = ServiceStatus.INSTALLING
+        this.#setStatus(ServiceStatus.INSTALLING)
 
         let serviceExecutable = this.getServiceExecutable()
         this.#execservicepath = this.getServiceExecutableRoot()
@@ -912,13 +917,13 @@ export class Service extends EventEmitter<ServiceEvent> {
             })
             .then((result) => {
               this.#log(`setup command ${setupCommand} result ${result}`)
-              this.#status = ServiceStatus.INSTALLED
+              this.#setStatus(ServiceStatus.INSTALLED)
               // create setup file to mark that setup already happened
               fs.writeFileSync(this.#setupstatefile, "setup completed")
             })
             .catch((err) => {
               this.#log(`setup command ${setupCommand} error ${err}`)
-              this.#status = ServiceStatus.ERROR
+              this.#setStatus(ServiceStatus.ERROR)
             })
             .finally(() => {
               // this.#log(`setup command ${setupCommand} complete`)
@@ -945,10 +950,9 @@ export class Service extends EventEmitter<ServiceEvent> {
             if (data.includes("No tasks are running")) {
               // no process running
               this.#removeServicePidFile()
-              this.#status = ServiceStatus.STOPPED
+              this.#setStatus(ServiceStatus.STOPPED)
             } else {
               // process is running
-              this.#status = ServiceStatus.STARTED
               this.#setStatus(ServiceStatus.STARTED)
               return
             }
@@ -963,10 +967,9 @@ export class Service extends EventEmitter<ServiceEvent> {
             if (data.includes("No such process")) {
               // no process running
               this.#removeServicePidFile()
-              this.#status = ServiceStatus.STOPPED
+              this.#setStatus(ServiceStatus.STOPPED)
             } else {
               // process is running
-              this.#status = ServiceStatus.STARTED
               this.#setStatus(ServiceStatus.STARTED)
               return
             }
@@ -974,7 +977,7 @@ export class Service extends EventEmitter<ServiceEvent> {
         )
       }
     } else {
-      this.#status = ServiceStatus.AVAILABLE
+      this.#setStatus(ServiceStatus.AVAILABLE)
     }
   }
 
