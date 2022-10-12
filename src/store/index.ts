@@ -55,11 +55,11 @@ const Settings = new VuexPersistence({
   reducer: (state: any) => ({ Settings: state.Settings }),
 })
 
-// const Transformers = new VuexPersistence({
-//   key: "transformers",
-//   storage: window.localStorage,
-//   reducer: (state: any) => ({ Transformers: state.Transformers }),
-// })
+const Queries = new VuexPersistence({
+  key: "queries",
+  storage: window.localStorage,
+  reducer: (state: any) => ({ Queries: state.Queries }),
+})
 
 export default createStore({
   plugins: [
@@ -72,6 +72,6 @@ export default createStore({
     Services.plugin,
     Settings.plugin,
     Themes.plugin,
-    // Transformers.plugin,
+    Queries.plugin,
   ],
 })

@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Module, VuexModule, Mutation, Action } from "vuex-module-decorators"
 import store from "../index"
-import themes from "@/data/theme.json"
 import axios from "@/axios"
 
 @Module({
@@ -112,7 +111,7 @@ export default class Projects extends VuexModule {
 
   @Mutation
   addNewProject(project) {
-    this.data.list.push(project)
+    if (project.type === "project") this.data.list.push(project)
   }
 
   @Mutation
@@ -340,6 +339,120 @@ export default class Projects extends VuexModule {
   //     return { data: error, type: "error" }
   //   }
   // }
+
+  @Action
+  async createSampleProject() {
+    try {
+      const projectid = "s_project"
+      // STEP 1 : create sample flow
+      const payload = { name: "string", overwrite: true }
+      await axios.post("/flow/createsample", payload)
+      // STEP 2 : restart flow service
+      // @ts-expect-error ts-migrate(2339) FIXME: Property 'ipc' does not exist on type 'Window & typeof globalThis'
+      const { ipc } = window
+      if (ipc && ipc.restartService) {
+        await ipc.restartService("totaljs-flow")
+      }
+      // STEP 3 : create project, connection & query
+      const project = {
+        projectid,
+        label: "Sample Project",
+        description: "",
+        icon: "icon",
+        data: "",
+        flowid: "fsfkt001xx41d", // sample flow id
+      }
+      const connection = {
+        connectionid: projectid + "_con",
+        id: projectid + "_con",
+        projectid,
+        label: "S_Connection",
+        icon: "Connection",
+        type: "connection",
+        scope: "local",
+        description: "",
+        port: "1729",
+        host: "localhost",
+        database: "typerefinery",
+      }
+      const query = {
+        queryid: projectid + "_query",
+        id: projectid + "_query",
+        projectid,
+        connectionid: projectid + "_con",
+        scope: "local",
+        icon: "query",
+        label: "S_Query",
+        description: "",
+        type: "query",
+        query:
+          "match $a isa log, has logName 'L1';\n$b isa event, has eventName $c;\n$d (owner: $a, item: $b) isa trace,\nhas traceId $e, has index $f;\noffset 0; limit 10;",
+        data: "",
+      }
+      const theme = {
+        id: projectid + "_theme",
+        label: "S_Theme",
+        projectid: projectid,
+        scope: "local",
+        type: "theme",
+        data: "string",
+        icon: "",
+        themeid: projectid + "_theme",
+        description: "",
+        theme: `{\n  "attribute": {\n    "colorlist": "Oranges",\n    "cindex": 7,\n    "tcolorlist": "Greys",\n    "tindex": 0\n  },\n  "entity": {\n    "colorlist": "Blue-Green",\n    "cindex": 7,\n    "tcolorlist": "Greys",\n    "tindex": 0\n  },\n  "relation": {\n    "colorlist": "Blue-Green",\n    "cindex": 6,\n    "tcolorlist": "Greys",\n    "tindex": 7\n  },\n  "shadow": {\n    "colorlist": "Yellows",\n    "cindex": 2,\n    "tcolorlist": "Greys",\n    "tindex": 7\n  }\n}`,
+      }
+      const baseURL = "http://localhost:8000/datastore/"
+      await Promise.all([
+        axios.post(`${baseURL}project`, project),
+        axios.post(`${baseURL}connection`, connection),
+        axios.post(`${baseURL}query`, query),
+        axios.post(`${baseURL}theme`, theme),
+      ])
+      // STEP 4 : add data to the store
+      const projectData = {
+        type: "project",
+        id: projectid,
+        label: "Sample Project",
+        description: "",
+        icon: "icon",
+        connections: {
+          type: "connections",
+          icon: "",
+          list: [connection],
+        },
+        queries: {
+          type: "queries",
+          icon: "",
+          list: [query],
+        },
+        themes: { type: "themes", icon: "", list: [theme] },
+        wirings: {
+          type: "wirings",
+          icon: "",
+          list: [
+            {
+              type: "wiring",
+              id: "fsfkt001xx41d", // sample flow id
+              label: "Workflow",
+              icon: "workflow",
+              description: "",
+            },
+          ],
+          outputs: {
+            type: "outputs",
+            icon: "",
+            list: [],
+          },
+        },
+      }
+      this.context.commit("addNewProject", projectData)
+      // STEP 5 : reload the application as we have restarted the service
+      window.location.reload()
+    } catch (error) {
+      console.log(error)
+      this.context.commit("addNewProject", {})
+    }
+  }
 
   @Action
   async getStoreData() {

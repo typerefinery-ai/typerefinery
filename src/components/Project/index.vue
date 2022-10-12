@@ -12,8 +12,6 @@
       <menu-bar :menu-bar-visible="mainMenuVisible" @toggle="toggleMainMenu" />
     </div>
     <project-content :focus="focusMode" />
-
-    <sample-data-popup v-if="samplePopupOpen" />
   </div>
 </template>
 
@@ -24,7 +22,6 @@
   import MainMenu from "@/components/Menu/MainMenu.vue"
   import MenuBar from "@/components/Menu/MenuBar.vue"
   import Settings from "@/store/Modules/Settings"
-  import sampleDataPopup from "@/components/Dialog/sampleDataPopup.vue"
   import FlowMessage from "@/store/Modules/FlowMessage"
   const projectsModule = getModule(Projects)
   import AppData from "@/store/Modules/AppData"
@@ -34,7 +31,7 @@
   const appDataModule = getModule(AppData)
   export default {
     name: "Project",
-    components: { ProjectContent, MenuBar, MainMenu, sampleDataPopup },
+    components: { ProjectContent, MenuBar, MainMenu },
 
     data() {
       return {
@@ -45,9 +42,6 @@
     computed: {
       focusMode() {
         return settingsModule.data.focus
-      },
-      samplePopupOpen() {
-        return projectsModule.showSamplePopup
       },
     },
     mounted() {

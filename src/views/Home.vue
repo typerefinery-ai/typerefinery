@@ -19,11 +19,15 @@
   import SettingsStore from "@/store/Modules/Settings"
   import ProjectsStore from "@/store/Modules/Projects"
   import ConnectionsStore from "@/store/Modules/Connections"
+  import AppDataStore from "@/store/Modules/AppData"
+  import QueriesStore from "@/store/Modules/Queries"
   import Themes from "@/store/Modules/Theme"
   const settingsModule = getModule(SettingsStore)
   const projectsModule = getModule(ProjectsStore)
   const connectionsModule = getModule(ConnectionsStore)
   const themesModule = getModule(Themes)
+  const appDataModule = getModule(AppDataStore)
+  const queriesModule = getModule(QueriesStore)
 
   export default {
     name: "Home",
@@ -34,9 +38,29 @@
       },
     },
     mounted() {
-      projectsModule.getStoreData()
-      connectionsModule.getInitialConnections()
-      themesModule.getInitialThemes()
+      const initialDataExists = appDataModule.data.initialDataCreated
+      if (initialDataExists) this.getInitialData()
+      else this.setInitialData()
+    },
+    methods: {
+      async setInitialData() {
+        try {
+          await connectionsModule.createInitialConnection()
+          await themesModule.createInitialTheme()
+          await queriesModule.createInitialQuery()
+
+          appDataModule.setInitialDataCreated()
+          // load data
+          this.getInitialData()
+        } catch (err) {
+          console.log(err)
+        }
+      },
+      getInitialData() {
+        projectsModule.getStoreData()
+        connectionsModule.getInitialConnections()
+        themesModule.getInitialThemes()
+      },
     },
   }
 </script>
