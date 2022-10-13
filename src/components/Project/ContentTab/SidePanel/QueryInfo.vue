@@ -65,8 +65,10 @@
   import Projects from "@/store/Modules/Projects"
   import Connections from "@/store/Modules/Connections"
   // import Transformers from "@/store/Modules/Transformers"
+  import Queries from "@/store/Modules/Queries"
   const projectsModule = getModule(Projects)
   const connectionsModule = getModule(Connections)
+  const queriesModule = getModule(Queries)
   // const transformersModule = getModule(Transformers)
   export default {
     name: "QueryInfo",
@@ -78,24 +80,31 @@
     props: {
       tab: { type: Object, required: true },
     },
+    data() {
+      return {
+        debounce: null,
+        icon: "",
+        description: "",
+      }
+    },
     computed: {
-      description() {
-        const { parent, id } = this.tab
-        const projects = projectsModule.getProjects
-        const projectIdx = projects.findIndex((el) => el.id === parent)
-        const queries = projectsModule.getQueries(projectIdx)
-        const queryIdx = queries.findIndex((el) => el.id === id)
-        return projectsModule.getQuery(projectIdx, queryIdx).description
-      },
+      // description() {
+      //   const { parent, id } = this.tab
+      //   const projects = projectsModule.getProjects
+      //   const projectIdx = projects.findIndex((el) => el.id === parent)
+      //   const queries = projectsModule.getQueries(projectIdx)
+      //   const queryIdx = queries.findIndex((el) => el.id === id)
+      //   return projectsModule.getQuery(projectIdx, queryIdx).description
+      // },
 
-      icon() {
-        const { parent, id } = this.tab
-        const projects = projectsModule.getProjects
-        const projectIdx = projects.findIndex((el) => el.id === parent)
-        const queries = projectsModule.getQueries(projectIdx)
-        const queryIdx = queries.findIndex((el) => el.id === id)
-        return projectsModule.getQuery(projectIdx, queryIdx).icon
-      },
+      // icon() {
+      //   const { parent, id } = this.tab
+      //   const projects = projectsModule.getProjects
+      //   const projectIdx = projects.findIndex((el) => el.id === parent)
+      //   const queries = projectsModule.getQueries(projectIdx)
+      //   const queryIdx = queries.findIndex((el) => el.id === id)
+      //   return projectsModule.getQuery(projectIdx, queryIdx).icon
+      // },
 
       connections() {
         const { parent } = this.tab
@@ -174,10 +183,55 @@
       //   return projectsModule.getQuery(projectIdx, queryIdx).database
       // },
     },
+    mounted() {
+      this.setInitialData()
+    },
     methods: {
+      setInitialData() {
+        const { parent, id } = this.tab
+        const projects = projectsModule.getProjects
+        const projectIdx = projects.findIndex((el) => el.id === parent)
+        let queryData
+        if (projectIdx != -1) {
+          // local
+          const queries = projectsModule.getQueries(projectIdx)
+          const queryIdx = queries.findIndex((el) => el.id === id)
+          queryData = queries[queryIdx]
+          // const project = projectsModule.getProjects[projectIdx]
+          // connection = project.connections.list[connectionIdx]
+        } else {
+          // global
+          const queries = queriesModule.getGlobalQueries
+          const queryIdx = queries.findIndex((el) => el.id === id)
+          queryData = queriesModule.data.list[queryIdx]
+        }
+        // const { theme } = themeData
+        // this.code = theme
+        const { description, icon } = queryData
+        this.description = description
+        this.icon = icon
+      },
       handleInput({ target: { value } }, field) {
-        const payload = { field, value, ...this.tab }
-        projectsModule.setQueryData(payload)
+        // const payload = { field, value, ...this.tab }
+        // projectsModule.setQueryData(payload)
+        clearTimeout(this.debounce)
+        this.debounce = setTimeout(async () => {
+          const { parent, id } = this.tab
+          const projects = projectsModule.getProjects
+          const projectIdx = projects.findIndex((el) => el.id === parent)
+          if (projectIdx != -1) {
+            const queries = projectsModule.getQueries(projectIdx)
+            const queryIdx = queries.findIndex((el) => el.id === id)
+            const payload = { field, value, queryIdx, ...this.tab }
+            await projectsModule.setQueryData(payload)
+          } else {
+            // global
+            const queries = queriesModule.getGlobalQueries
+            const queryIdx = queries.findIndex((el) => el.id === id)
+            const payload = { field, value, queryIdx, ...this.tab }
+            await queriesModule.setGlobalQuery(payload)
+          }
+        }, 500)
       },
 
       // handleTransformer({ value }) {

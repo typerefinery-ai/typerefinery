@@ -89,6 +89,7 @@ export default class Queries extends VuexModule {
       scope: "global",
       connectionid: query.connectionid,
       query: query.query,
+      data: "",
       [data.field]: data.value,
     }
     try {

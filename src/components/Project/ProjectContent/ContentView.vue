@@ -55,11 +55,13 @@
   import Connections from "@/store/Modules/Connections"
   import AppData from "@/store/Modules/AppData"
   import Themes from "@/store/Modules/Theme"
+  import Queries from "@/store/Modules/Queries"
   const settingsModule = getModule(Settings)
   const projectsModule = getModule(Projects)
   const connectionsModule = getModule(Connections)
   const appDataModule = getModule(AppData)
   const themesModule = getModule(Themes)
+  const queriesModule = getModule(Queries)
 
   TabView.methods.onTabClick = function (event, i) {
     this.$emit("tab-click", {
@@ -129,10 +131,14 @@
       getLabel(tab) {
         const projects = projectsModule.getProjects
         const projectIdx = projects.findIndex((el) => el.id === tab.parent)
-        if (tab.type === "query") {
+        if (tab.type === "query" && tab.parent) {
           const queries = projectsModule.getQueries(projectIdx)
           const queryIdx = queries.findIndex((el) => el.id === tab.id)
           return projectsModule.getQueries(projectIdx)[queryIdx].label
+        } else if (tab.type === "query") {
+          const queries = queriesModule.getGlobalQueries
+          const queryIdx = queries.findIndex((el) => el.id === tab.id)
+          return queriesModule.getGlobalQueries[queryIdx].label
         } else if (tab.type === "connection" && tab.parent) {
           const connections = projectsModule.getLocalConnections(projectIdx)
           const connectionIdx = connections.findIndex((el) => el.id === tab.id)

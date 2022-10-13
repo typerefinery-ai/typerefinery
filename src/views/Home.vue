@@ -60,6 +60,7 @@
         projectsModule.getStoreData()
         connectionsModule.getInitialConnections()
         themesModule.getInitialThemes()
+        queriesModule.getInitialQueries()
       },
     },
   }

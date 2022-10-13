@@ -23,30 +23,16 @@
     </template>
     <Panel :header="$t(`components.dialog.new-query.panel1.header`)">
       <div class="field">
-        <label
-          for="expand"
-          :class="{ 'p-error': v$.projectselected.$invalid && submitted }"
-        >
-          {{ $t("components.dialog.new-query.panel1.label1") }}*</label
+        <label for="expand">
+          {{ $t("components.dialog.new-query.panel1.label1") }}</label
         >
         <Dropdown
-          v-model="v$.projectselected.$model"
+          v-model="projectselected"
           :options="projectList"
           option-label="label"
           option-value="key"
           :placeholder="$t(`components.dialog.new-query.panel1.select1`)"
-          :class="{ 'p-error': v$.projectselected.$invalid && submitted }"
         />
-        <small
-          v-if="
-            (v$.projectselected.$invalid && submitted) ||
-            v$.projectselected.$pending.$response
-          "
-          class="p-error"
-          >{{
-            v$.projectselected.required.$message.replace("Value", "Project")
-          }}</small
-        >
       </div>
     </Panel>
     <Panel
@@ -234,11 +220,13 @@
   import Settings from "@/store/Modules/Settings"
   import Connections from "@/store/Modules/Connections"
   import axios from "@/axios"
+  import Queries from "@/store/Modules/Queries"
   // import Algorithms from "@/store/Modules/Algorithms"
   // import Transformers from "@/store/Modules/Transformers"
   const settingsModule = getModule(Settings)
   const projectsModule = getModule(Projects)
   const connectionsModule = getModule(Connections)
+  const queriesModule = getModule(Queries)
   // const transformersModule = getModule(Transformers)
   // const algorithmsModule = getModule(Algorithms)
 
@@ -279,7 +267,7 @@
     },
     validations() {
       return {
-        projectselected: { required },
+        // projectselected: { required },
         connectionselected: { required },
         name: { required },
         // description: { required },
@@ -447,10 +435,14 @@
             icon: this.icon,
             query: this.query,
             type: "query",
+            queryid: id,
+            projectid: this.projectselected,
+            scope: projectIdx == -1 ? "global" : "local",
+            data: "",
             // transformer: this.transformdata,
             // algorithm: this.algorithmdata,
-            dataPath: "",
-            endpoint: "",
+            // dataPath: "",
+            // endpoint: "",
             // database: "",
           },
         }
@@ -469,12 +461,17 @@
             icon: this.icon,
             query: this.query,
             description: this.description,
-            scope: "local",
+            scope: projectIdx == -1 ? "global" : "local",
             data: "",
           }
           await axios.post("/datastore/query", payload)
           this.submitted = true
-          projectsModule.addNewQuery(data)
+          // projectsModule.addNewQuery(data)
+          if (projectIdx == -1) {
+            queriesModule.addGlobalQuery(data.data)
+          } else {
+            projectsModule.addNewQuery(data)
+          }
         } catch (err) {
           console.log(err)
         }
