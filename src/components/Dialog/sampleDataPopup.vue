@@ -41,7 +41,6 @@
   import axios from "axios"
   import Projects from "@/store/Modules/Projects"
   import Services from "@/store/Modules/Services"
-  import { nanoid } from "nanoid"
   const projectsModule = getModule(Projects)
   const servicesModule = getModule(Services)
   export default {
@@ -64,7 +63,7 @@
         projectsModule.closeSampleDataPopup()
       },
       getSampleData() {
-        const projectId = nanoid(14)
+        const projectId = "s_project"
         this.loading = true
         this.createSampleFlow(projectId)
         return

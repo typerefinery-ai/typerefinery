@@ -14,25 +14,16 @@
         $t(`components.setting.general.${feature.id}`)
       }}</label>
     </div>
-    <h4>{{ $t("components.dialog.sample-data.header") }}</h4>
-    <Button
-      :label="$t(`components.dialog.new-query.footer.download`)"
-      icon="pi pi-download"
-      @click="handleSampleData"
-    />
   </div>
 </template>
 <script>
   import InputSwitch from "primevue/inputswitch"
   import { getModule } from "vuex-module-decorators"
-  import Projects from "@/store/Modules/Projects"
   import Settings from "@/store/Modules/Settings"
   const settingsModule = getModule(Settings)
-  const projectsModule = getModule(Projects)
-  import Button from "primevue/button"
   export default {
     name: "General",
-    components: { InputSwitch, Button },
+    components: { InputSwitch },
     computed: {
       experimentalFeatures() {
         return settingsModule.data.experimentalFeatures
@@ -41,9 +32,6 @@
     methods: {
       handleFeatureToggle(enabled, id) {
         settingsModule.toggleExperimentalFeatures({ id, enabled })
-      },
-      handleSampleData() {
-        projectsModule.openSampleDataPopup()
       },
     },
   }

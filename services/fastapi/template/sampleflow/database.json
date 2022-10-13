@@ -1,541 +1,537 @@
-[
-  {
-    "fsfkt001xx41d": {
-      "paused": false,
-      "id": "fsfkt001xx41d",
-      "reference": "",
-      "author": "",
-      "group": "",
-      "icon": "fa fa-chart-pie",
-      "color": "#041EF5",
-      "version": "",
-      "readme": "",
-      "url": "https://localhost:8111/Typerefinery_Wiring",
-      "name": "Typerefinery_Wiring",
-      "components": {
-        "cyejp563cd": "<script total>\n\n\texports.name = 'Trigger';\n\texports.group = 'Triggers';\n\texports.version = '3';\n\texports.icon = 'fa fa-bullhorn';\n\texports.author = 'Total.js';\n\texports.config = { random: true, type: 'string', data: '', restart: false };\n\texports.outputs = [{ id: 'output', name: 'Output' }];\n\n\texports.make = function(instance, config) {\n\n\t\tinstance.trigger = function() {\n\n\t\t\tvar val;\n\n\t\t\tswitch (config.type) {\n\t\t\t\tcase 'number':\n\t\t\t\t\tval = config.random ? U.random() : config.data.parseFloat();\n\t\t\t\t\tbreak;\n\t\t\t\tcase 'buffer':\n\t\t\t\t\ttry {\n\t\t\t\t\t\tval = config.random ? Buffer.from(U.random_string()) : Buffer.from(config.data, 'base64');\n\t\t\t\t\t} catch (e) {\n\t\t\t\t\t\tinstance.throw(e);\n\t\t\t\t\t}\n\t\t\t\t\tbreak;\n\t\t\t\tcase 'date':\n\t\t\t\t\tval = config.random ? NOW.add('-' + U.random(500, 10) + ' seconds') : config.data.parseDate();\n\t\t\t\t\tbreak;\n\t\t\t\tcase 'object':\n\t\t\t\t\ttry {\n\t\t\t\t\t\tval = config.random ? {} : (new Function('return ' + config.data))();\n\t\t\t\t\t} catch (e) {\n\t\t\t\t\t\tinstance.throw(e);\n\t\t\t\t\t}\n\t\t\t\t\tbreak;\n\t\t\t\tcase 'boolean':\n\t\t\t\t\tval = config.random ? U.random() % 2 === 0 : config.data === 'true' || config.data === 'on' || config.data === '1';\n\t\t\t\t\tbreak;\n\t\t\t\tdefault:\n\t\t\t\t\tval = config.random ? U.random_string(20) : config.data;\n\t\t\t\t\tbreak;\n\t\t\t}\n\n\t\t\tinstance.send('output', val);\n\t\t};\n\n\t\tconfig.restart && setTimeout(() => instance.trigger(), 5000);\n\t};\n\n</script>\n\n<style>\n\t.CLASS .padding { padding: 0 10px 10px; }\n\t.CLASS button { width: 100%; height: 24px; border: 1px solid #E0E0E0; border-radius: var(--radius); color: #000; background-color: #F0F0F0; margin: 0; }\n\t.CLASS button:hover { background-color: #F8F8F8; }\n\t.CLASS button:active { background-color: #E0E0E0; }\n\t.ui-dark .CLASS button { border-color: #404040; color: #FFF; background-color: #222; }\n\t.ui-dark .CLASS button:hover { background-color: #303030; }\n\t.ui-dark .CLASS button:active { background-color: #404040; }\n</style>\n\n<settings>\n\t<div class=\"padding\">\n\t\t<div data---=\"input__?.type__dirsource:string|String,number|Number,boolean|Boolean,date|Date,object|Object,buffer|Buffer as Base64;required:1\">Type</div>\n\t\t<div class=\"mt10 m\">\n\t\t\t<div data---=\"input__?.restart__type:checkbox\">Trigger 5s after initialization.</div>\n\t\t\t<div data---=\"input__?.random__type:checkbox\">Random data</div>\n\t\t</div>\n\t\t<div data-bind=\"?.random__hide\" class=\"hidden\">\n\t\t\t<hr />\n\t\t\t<div data---=\"input__?.data__required:1;height:250;type:multiline;maxlength:100000;monospace:1\">Data</div>\n\t\t</div>\n\t</div>\n</settings>\n\n<readme>\nThe component triggers data into the Flow.\n</readme>\n\n<body>\n\t<header>\n\t\t<i class=\"ICON\"></i>NAME\n\t</header>\n\t<div class=\"padding\">\n\t\t<button class=\"exec\" data-exec=\"FUNC.trigger\">Run</button>\n\t</div>\n</body>",
-        "c5aria8f8f": "<script total>\n\n\texports.name = 'Print JSON';\n\texports.group = 'Common';\n\texports.version = '1';\n\texports.icon = 'fa fa-print';\n\texports.author = 'Martin Smola';\n\texports.config = { repo: false, data: true };\n\texports.inputs = [{ id: 'input', name: 'Input' }];\n\n\texports.make = function(instance, config) {\n\t\tinstance.message = function($) {\n\n\t\t\tvar data = $.data;\n\n\t\t\tif (config.data !== false) {\n\t\t\t\tif (data instanceof Buffer)\n\t\t\t\t\tdata = data.toString('hex').substring(0, 200);\n\t\t\t}\n\n\t\t\tvar count = 0;\n\n\t\t\tfor (var key in config) {\n\t\t\t\tif (config[key])\n\t\t\t\t\tcount++;\n\t\t\t}\n\n\t\t\tvar output = count > 1 ? {} : null;\n\n\t\t\tif (config.repo) {\n\t\t\t\tif (output)\n\t\t\t\t\toutput.repo = $.repo;\n\t\t\t\telse\n\t\t\t\t\toutput = $.repository;\n\t\t\t}\n\n\t\t\tif (config.data) {\n\t\t\t\tif (output)\n\t\t\t\t\toutput.data = $.data;\n\t\t\t\telse\n\t\t\t\t\toutput = $.data;\n\t\t\t}\n\n\t\t\toutput && instance.status(output);\n\t\t\t$.destroy();\n\t\t};\n\n\t\tinstance.trigger = function() {\n\t\t\tinstance.status('');\n\t\t}\n\n\t};\n\n</script>\n\n<style>\n\t.CLASS footer > div { margin: 10px; }\n\t.CLASS pre { font-size: 10px; margin: 0; padding: 5px; background-color: #F0F0F0; border-radius: var(--radius); }\n\t.CLASS button { float: right; height: 20px; font-size: 11px; border: 1px solid #E0E0E0; border-radius: var(--radius); color: #000; background-color: transparent; margin: 0; padding: 0 5px; }\n\t.CLASS button:hover { background-color: #F8F8F8; }\n\t.CLASS button:active { background-color: #E0E0E0; }\n\t.CLASS .ui-objecttree { background-color: #f0f0f0; padding: 4px; }\n\n\t.ui-dark .CLASS pre { background-color: #404040; tab-size: 2; }\n\t.ui-dark .CLASS button { border-color: #404040; color: #FFF; }\n\t.ui-dark .CLASS button:hover { background-color: #303030; }\n\t.ui-dark .CLASS button:active { background-color: #404040; }\n</style>\n\n<readme>\nThe component prints incoming data in a JSON format.\n</readme>\n\n<settings>\n\t<div class=\"padding\">\n\t\t<div data---=\"input__?.repo__type:checkbox\">Shows repository</div>\n\t\t<div data---=\"input__?.data__type:checkbox\">Shows data</div>\n\t</div>\n</settings>\n\n<script>\n\tFUNC.printjson_click = function(type, data) { // type = path/data\n\t\tnavigator.clipboard.writeText(type === 'path' ? data : STRINGIFY(data)).catch(e => console.error(e));\n\t};\n\n\t$('body').on('click', '.ui-objecttree .fa-copy, .ui-objecttree .fa-link', function(){\n\t\tvar el = $(this);\n\t\tvar iscopy = el.hclass('fa-copy');\n\t\tel.tclass(iscopy ? 'fa-copy' : 'fa-link').tclass('fa-check');\n\t\tsetTimeout(function(){\n\t\t\tel.tclass('fa-check').tclass(iscopy ? 'fa-copy' : 'fa-link');\n\t\t}, 2000);\n\t});\n</script>\n\n<body>\n\t<header>\n\t\t<button class=\"exec\" data-exec=\"FUNC.trigger\">Clear</button>\n\t\t<i class=\"ICON\"></i>NAME\n\t</header>\n\t<footer>\n\t\t<div data---=\"objecttree__!STATUS__exec:FUNC.printjson_click\" class=\"selectable\"></div>\n\t</footer>\n</body>",
-        "run": "<script total>\n    exports.name = 'WebCola Viz';\n    exports.group = 'TypeRefinery';\n    exports.version = '1';\n    exports.icon = 'fa fa-code';\n    exports.author = 'TypeRefinery';\n    exports.config = { code: '' };\n    exports.inputs = [{ id: 'graph_data', name: 'DATA' },{ id: 'theme', name: 'Theme' }];\n    exports.outputs = [{ id: 'output', name: 'Output' }];\n    exports.meta = { settingswidth: 1200 };\n\n    exports.make = function(instance, config) {\n        var fn;\n        var values = {};\n\n\t\tinstance.message = function($) {\n\t\t\t// Getting endpoint from the user\n            const endpointData = { endpoint: config.endpoint }\n\n\t\t\t// Inputs to this block will be saved in values Object\n            values[$.input] = $.data\n\n\t\t\tif (values.graph_data && values.theme) {\n\t\t\t\t\tvar project;\n\t\t\t\t\tvar input_data = {\n\t\t\t\t\t\ttheme: values.theme,\n\t\t\t\t\t\tgraph_data: values.graph_data\n\t\t\t\t\t};\n\n\t\t\t\t\t// Replacing GRAPH_DATA variable with actual DATA\n\t\t\t\t\tconst codeWithData = config.code.replace('GRAPH_DATA', JSON.stringify(input_data.graph_data))\n\t\t\t\t\t// Replacing THEME variable with actual THEME\n\t\t\t\t\tconst code = codeWithData.replace('THEME', JSON.stringify(input_data.theme))\n\n\t\t\t\t\t const payload = {\n\t\t\t\t\t\t \"code\": code,\n\t\t\t\t\t\t \"dependecies\": [\"https://d3js.org/d3.v4.js\", \"https://cdn.jsdelivr.net/npm/webcola@3.4.0/WebCola/cola.js\"],\n\t\t\t\t\t\t  \"returnoutput\": \"script\"\n\t\t\t\t\t };\n                     let options = {\n\t\t\t\t\t\t\tmethod: 'POST',\n\t\t\t\t\t\t\theaders: {\n\t\t\t\t\t\t\t\t'Content-Type':\n\t\t\t\t\t\t\t\t\t'application/json;charset=utf-8'\n\t\t\t\t\t\t\t},\n            \t\t\t\tbody: JSON.stringify(payload)\n       \t\t\t\t   }\n\t\t\t\t\t// Sending request to generate SVG\n\t\t\t\t \tPromise.all([\n\t\t\t\t\t  fetch(\"http://127.0.0.1:8000/datastore/project\").then(value => value.json()),\n\t\t\t\t\t  fetch(endpointData.endpoint,options).then(value => value.json()),\n\t\t\t\t\t]).then(([projects, output]) => {\n\t\t\t\t\t\t// Getting current project\n\t\t\t\t\t\tproject = projects.find(el => el.flowid == instance.main.id)\n\t\t\t\t\t\t// response output\n\t\t\t\t\t\tconst res = {\n\t\t\t\t\t\t\tpath: output[\"output.url\"],\n\t\t\t\t\t\t\tstepId: instance.id,\n\t\t\t\t\t\t\tstepName: instance.module.name,\n\t\t\t\t\t\t\tflowId: instance.main.id,\n\t\t\t\t\t\t\tprojectId: project.projectid\n\t\t\t\t\t\t}\n\t\t\t\t\t\t// Sending the response\n\t\t\t\t\t\t$.send('output', res)\n\t\t\t\t\t}).catch((err) => {\n\t\t\t\t\t\t// Sending the error\n\t\t\t\t\t\t $.send('output', err)\n\t\t\t\t\t});\n\n\t\t\t\tvalues.theme = null\n\t\t\t}\n        };\n        instance.configure = function() {\n            instance.outputs = [];\n            for (let i = 1; i <= config.outputs; i++)\n                instance.outputs.push({ id: 'output' + (i === 1 ? '' : i), name: 'Output #' + i });\n            instance.save();\n\n            try {\n                if (config.code) {\n                    instance.status(1);\n                    fn = new Function('value', 'instance', '$', 'message', 'require', 'send', 'repo', 'vars', 'data', config.code);\n                } else {\n                    instance.status(0);\n                    fn = null;\n                }\n            } catch (e) {\n                fn = null;\n                instance.throw('Code: ' + e.message);\n            }\n        };\n\n        instance.close = function() {\n            fn = null;\n        };\n\n        instance.configure();\n    };\n</script>\n\n<readme>\n    This component executes a custom JavaScript code as it is.\n\n\n    To send data to the default output use `send(somedata);`\n    To send data to specific output when number of outputs > 1 use `$.send('outputX', somedata)` where `X` is output index, see example bellow:\n    - first output--> `send(somedata)` or `$.send('output', somedata)`\n    - second output --> `$.send('output2', somedata)`\n    - ...\n    - 5th output --> `$.send('output5', somedata)`\n    - etc.\n</readme>\n\n<settings>\n    <div class=\"padding\">\n        <div data---=\"input__?.endpoint__required:1\" class=\"m\">Endpont</div>\n        <div class=\"ui-input-label\">Code:</div>\n        <div data---=\"codemirror__?.code__type:javascript;minheight:300;parent:auto;margin:60;tabs:true;trim:true\" class=\"m\"></div>\n    </div>\n</settings>\n\n<body>\n    <header>\n        <i class=\"ICON\"></i>NAME\n    </header>\n</body>",
-        "c418t8a6b8": "<script total>\n\texports.name = 'Run (node & edges)';\n    exports.icon = 'fa fa-code';\n    exports.author = 'TypeRefinery';\n    exports.group = 'TypeRefinery';\n    exports.version = '1';\n    exports.config = { algorithm: '',endpoint:'' };\n    exports.inputs = [{ id: 'connection', name: 'Connection' }, { id: 'query', name: 'TQL Query' }];\n    exports.outputs = [{ id: 'output', name: 'Output' }];\n    exports.meta = { settingswidth: 1200 };\n\n    exports.make = function(instance, config) {\n        var fn;\n        var values = {};\n        instance.message = function($) {\n\t\t\t// Getting endpoint from the user\n            const endpointData = {\n                 endpoint: config.endpoint,\n            }\n\t\t\t// Inputs to this block will be saved in values Object\n            values[$.input] = $.data;\n            if (values.connection && values.query && config.algorithm) {\n                var payload = {\n                    dbhost: values.connection.dbhost,\n                    dbport: values.connection.dbport,\n                    dbdatabase: values.connection.dbdatabase,\n                    dbquery: values.query.dbquery,\n                    algorithm: config.algorithm,\n                    algorithmrequirements: 'argparse\\nloguru',\n                    returnoutput: 'output'\n                };\n                let options = {\n            \t\tmethod: 'POST',\n            \t\theaders: {\n                \t\t'Content-Type':\n                    \t'application/json;charset=utf-8'\n            \t},\n            \tbody: JSON.stringify(payload)\n        }\n\t\t// Sending request to get Data\n        let fetchRes = fetch(endpointData.endpoint,options);\n        fetchRes.then(res =>\n            res.json()).then(d => { $.send('output', d) }).catch(err => { $.send('output', err) })\n                values.query = null;\n            } else {\n                // IMPORTANT: we must destroy the current message becase we don't need to send it next\n                $.destroy();\n            }\n        };\n        instance.close = function() {\n            fn = null;\n        };\n    };\n</script>\n<readme>\n    Lorem ipsum dolor sit amet consectetur adipisicing, elit. Laudantium, in.\n</readme>\n<settings>\n    <div class=\"padding\">\n        <div data---=\"input__?.endpoint__required:1\" class=\"m\">Endpont</div>\n        <div class=\"ui-input-label\">Algorithm:</div>\n        <div data---=\"codemirror__?.algorithm__type:python;minheight:300;parent:auto;margin:60;tabs:true;trim:true\" class=\"m\"></div>\n    </div>\n</settings>\n<body>\n    <header>\n        <i class=\"ICON\"></i>NAME\n    </header>\n</body>",
-        "pubsrcfyn2ecf44Xsvg_insert": "<script total>\n\n\texports.name = 'TMS Example';\n\texports.icon = 'fas fa-broadcast-tower';\n\texports.config = {};\n\texports.outputs = [{ id: 'publish', name: 'Output' }];\n\texports.group = 'Publishers';\n\texports.type = 'pub';\n\texports.schemaid = ['srcfyn2ecf44', 'svg_insert'];\n\n\texports.make = function(instance) {\n\t\tinstance.process = function(msg, client) {\n\t\t\tinstance.send('publish', msg, client);\n\t\t};\n\t};\n\n</script>\n\n<style>\n\t.f-pubsrcfyn2ecf44Xsvg_insert .url { font-size: 11px; }\n</style>\n\n<readme>\n# svg_insert\n- URL address: <http://127.0.0.1:8112>\n- Channel: __publish__\n- JSON schema `svg_insert.json`\n- Version: 24\n\n```json\n{\n  \"$id\": \"https://schemas.totaljs.com/Svg.json\",\n  \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"stepId\": {\n      \"type\": \"string\"\n    },\n    \"flowId\": {\n      \"type\": \"string\"\n    },\n    \"stepName\": {\n      \"type\": \"string\"\n    },\n    \"path\": {\n      \"type\": \"string\"\n    },\n    \"projectId\": {\n      \"type\": \"string\"\n    },\n    \"id\": {\n      \"type\": \"string\"\n    },\n    \"dtcreated\": {\n      \"type\": \"date\"\n    },\n    \"dtupdated\": {\n      \"type\": \"date\"\n    }\n  }\n}\n```\n</readme>\n\n<body>\n\t<header>\n\t\t<div><i class=\"fas fa-broadcast-tower mr5\"></i><span>TMS Example / <b>svg_insert</b></span></div>\n\t\t<div class=\"url\"></div>\n\t</header>\n</body>",
-        "subsrcfyn2ecf44Xsvg_insert": "<script total>\n\n\texports.name = 'TMS Example';\n\texports.icon = 'fas fa-satellite-dish';\n\texports.group = 'Subscribers';\n\texports.config = {};\n\texports.inputs = [{ id: 'subscribe', name: 'Input' }];\n\texports.type = 'sub';\n\texports.schemaid = ['srcfyn2ecf44', 'svg_insert'];\n\n\texports.make = function(instance) {\n\t\tinstance.message = function($) {\n\t\t\tvar socket = instance.main.sockets['srcfyn2ecf44'];\n\t\t\tif (socket && socket.subscribers && socket.subscribers['svg_insert']) {\n\n\t\t\t\tvar data = $.data;\n\n\t\t\t\t/*\n\t\t\t\t\tvar err = new ErrorBuilder();\n\t\t\t\t\tdata = framework_jsonschema.transform(schema, err, data, true);\n\n\t\t\t\t\tif (err.is) {\n\t\t\t\t\t\t$.destroy();\n\t\t\t\t\t\treturn;\n\t\t\t\t\t}\n\n\t\t\t\t*/\n\n\t\t\t\tsocket.send({ type: 'subscribe', id: 'svg_insert', data: data });\n\t\t\t}\n\t\t\t$.destroy();\n\t\t};\n\t};\n\n</script>\n\n<style>\n\t.f-subsrcfyn2ecf44Xsvg_insert .url { font-size: 11px; }\n</style>\n\n<readme>\n# svg_insert\n- URL address: <http://127.0.0.1:8112>\n- Channel: __subscribe__\n- JSON schema `svg_insert.json`\n- Version: 24\n\n```json\n{\n  \"id\": \"svg_insert\",\n  \"schema\": {\n    \"$id\": \"https://schemas.totaljs.com/Svg.json\",\n    \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n    \"type\": \"object\",\n    \"properties\": {\n      \"stepId\": {\n        \"type\": \"string\"\n      },\n      \"flowId\": {\n        \"type\": \"string\"\n      },\n      \"stepName\": {\n        \"type\": \"string\"\n      },\n      \"path\": {\n        \"type\": \"string\"\n      },\n      \"projectId\": {\n        \"type\": \"string\"\n      },\n      \"id\": {\n        \"type\": \"string\"\n      },\n      \"dtcreated\": {\n        \"type\": \"date\"\n      },\n      \"dtupdated\": {\n        \"type\": \"date\"\n      }\n    }\n  }\n}\n```\n</readme>\n\n<body>\n\t<header>\n\t\t<div><i class=\"fas fa-satellite-dish mr5\"></i><span>TMS Example / <b>svg_insert</b></span></div>\n\t\t<div class=\"url\"></div>\n\t</header>\n</body>",
-        "calsrcfyn2ecf44Xsvg_query": "<script total>\n\n\texports.name = 'TMS Example';\n\texports.icon = 'fa fa-plug';\n\texports.config = { timeout: 60000 };\n\texports.inputs = [{ id: 'input', name: 'Input' }];\n\texports.outputs = [{ id: 'output', name: 'Output' }, { id: 'error', name: 'Error' }];\n\texports.group = 'Calls';\n\texports.type = 'call';\n\texports.schemaid = ['srcfyn2ecf44', 'svg_query'];\n\n\texports.make = function(instance, config) {\n\n\t\tinstance.message = function($, client) {\n\t\t\tvar socket = instance.main.sockets['srcfyn2ecf44'];\n\t\t\tif (socket && socket.calls && socket.calls['svg_query']) {\n\n\t\t\t\tvar data = $.data;\n\n\t\t\t\t/*\n\t\t\t\t\tvar err = new ErrorBuilder();\n\t\t\t\t\tdata = framework_jsonschema.transform(schema, err, data, true);\n\n\t\t\t\t\tif (err.is) {\n\t\t\t\t\t\t$.send('error', err.toString());\n\t\t\t\t\t\treturn;\n\t\t\t\t\t}\n\n\t\t\t\t*/\n\n\t\t\t\tvar callback = function(err, response) {\n\t\t\t\t\tif (err)\n\t\t\t\t\t\t$.send('error', err);\n\t\t\t\t\telse\n\t\t\t\t\t\t$.send('output', response);\n\t\t\t\t};\n\n\t\t\t\tvar callbackid = (socket.callbackindexer++) + '';\n\n\t\t\t\tif (socket.callbackindexer > 999999999)\n\t\t\t\t\tsocket.callbackindexer = 0;\n\n\t\t\t\tsocket.callbacks[callbackid] = { callback: callback, id: setTimeout(socket.callbacktimeout, config.timeout, callbackid) };\n\t\t\t\tsocket.send({ type: 'call', id: 'svg_query', data: data, callbackid: callbackid });\n\n\t\t\t} else\n\t\t\t\t$.destroy();\n\t\t};\n\t};\n\n</script>\n\n<style>\n\t.f-calsrcfyn2ecf44Xsvg_query .url { font-size: 11px; }\n</style>\n\n<readme>\n# svg_query\n- URL address: <http://127.0.0.1:8112>\n- Channel: __call__\n- JSON schema `svg_query.json`\n- Version: 24\n\n```json\n{\n  \"$id\": \"https://schemas.totaljs.com/Svg.json\",\n  \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"stepId\": {\n      \"type\": \"string\"\n    },\n    \"flowId\": {\n      \"type\": \"string\"\n    },\n    \"stepName\": {\n      \"type\": \"string\"\n    },\n    \"path\": {\n      \"type\": \"string\"\n    },\n    \"projectId\": {\n      \"type\": \"string\"\n    },\n    \"id\": {\n      \"type\": \"string\"\n    },\n    \"dtcreated\": {\n      \"type\": \"date\"\n    },\n    \"dtupdated\": {\n      \"type\": \"date\"\n    }\n  }\n}\n```\n</readme>\n\n<body>\n\t<header>\n\t\t<div><i class=\"fa fa-plug mr5\"></i><span>TMS Example / <b>svg_query</b></span></div>\n\t\t<div class=\"url\"></div>\n\t</header>\n</body>",
-        "cq5161fa3c": "<script total>\n    exports.name = 'Datastore Query';\n    exports.icon = 'fa fa-code';\n    exports.author = 'Total Avengers';\n    exports.group = 'TypeRefinery';\n    exports.version = '1';\n    exports.config = {queryid: ''};\n    exports.inputs = [{ id: 'input', name: 'Input' }];\n    exports.outputs = [{ id: 'output', name: 'Output' }];\n    exports.meta = { settingswidth: 1200 };\n    exports.make = function(instance, config) {\n        instance.message = async function($) {\n\t\t\tvar queryList;\n\n\t\t\t// Getting all the queries from the store\n\t\t\tconst endpoint = 'http://127.0.0.1:8000/datastore/query';\n\t\t\tconst res = await fetch(endpoint);\n\t\t\tconst res_data = await res.json();\n\n\t\t\t// Getting query details to display the dropdown list of all queries\n\t\t\tqueryList = res_data.map(el => ({id: el.queryid, name: `${el.label} (${el.queryid},${el.query.substr(12)})`}));\n\n\t\t\t// Find the selected query\n\t\t\tconst selectedQuery = res_data.find(el => el.queryid === config.queryid)\n\n\t\t\tif(selectedQuery) {\n\t\t\t\tconst queryDetails = { dbquery: selectedQuery.query };\n\t\t\t\t// send the query details as the output of this block\n\t\t\t\tinstance.send('output', queryDetails);\n\t\t\t}\n\t\t\t// Set the queries dropdown in the UI\n\t\t\tinstance.call = async function(data, answer) {\n            \tanswer(queryList);\n        \t};\n        };\n\n\t\tinstance.configure = function(el) {\n\t\t};\n\n\t\tinstance.close = function() {\n\t\t};\n\n\t\tinstance.configure();\n    };\n</script>\n<readme>\n</readme>\n<script>\n    // datastorequery is the name of your component in lower-case\n    ON('configure_datastorequery', function(data) {\n        data.call(function(response) {\n\t\t\tconsole.log('on', response);\n            SET('%queryidList', response);\n        });\n    });\n</script>\n<settings>\n    <div class=\"padding\">\n        <div data---=\"input__?.queryid__dirsource:%queryidList;dirraw:1;placeholder:Choose a query;dirempty:No query\" class=\"m\"><b>Query</b></div>\n    </div>\n</settings>\n<body>\n    <header>\n        <i class=\"ICON\"></i>NAME\n    </header>\n</body>",
-        "c1ucx34982": "<script total>\n    exports.name = 'Datastore Theme';\n    exports.icon = 'fa fa-code';\n    exports.author = 'Total Avengers';\n    exports.group = 'TypeRefinery';\n    exports.version = '1';\n    exports.config = {themeid: ''};\n    exports.inputs = [{ id: 'input', name: 'Input' }];\n    exports.outputs = [{ id: 'output', name: 'Output' }];\n    exports.meta = { settingswidth: 1200 };\n    exports.make = function(instance, config) {\n        instance.message = async function($) {\n\t\t\tvar themesList;\n\n\t\t\t// Getting all the themes from the store\n            const endpoint = 'http://127.0.0.1:8000/datastore/theme';\n            const res = await fetch(endpoint);\n            const res_data = await res.json();\n\n\t\t\t// Getting theme details to display the dropdown list of all themes\n            themesList = res_data.map(el => ({id: el.themeid, name: `${el.label} (${el.themeid},${el.theme.substr(12)})`}));\n\n\t\t\t// Find the selected theme\n            const selectedTheme = res_data.find(el => el.themeid === config.themeid)\n\n\t\t\tif(selectedTheme) {\n\t\t\t\tconst themeDetails = JSON.parse(selectedTheme.theme);\n\t\t\t\t// send the theme details as the output of this block\n\t\t\t\tinstance.send('output', themeDetails);\n\t\t\t}\n\t\t\t// Set the themes dropdown in the UI\n            instance.call = async function(data, answer) {\n                answer(themesList);\n            };\n        };\n        instance.configure = function(el) {\n        };\n        instance.close = function() {\n        };\n        instance.configure();\n    };\n</script>\n<readme>\n</readme>\n<script>\n    // datastoretheme is the name of your component in lower-case\n    ON('configure_datastoretheme', function(data) {\n        data.call(function(response) {\n            SET('%themeidList', response);\n        });\n    });\n</script>\n<settings>\n    <div class=\"padding\">\n        <div data---=\"input__?.themeid__dirsource:%themeidList;dirraw:1;placeholder:Choose a theme;dirempty:No theme\" class=\"m\"><b>Theme</b></div>\n    </div>\n</settings>\n<body>\n    <header>\n        <i class=\"ICON\"></i>NAME\n    </header>\n</body>",
-        "cbj43f380a": "<script total>\n    exports.name = 'Datastore Connection';\n    exports.icon = 'fa fa-code';\n    exports.author = 'Total Avengers';\n    exports.group = 'TypeRefinery';\n    exports.version = '1';\n    exports.config = {connectionid:''};\n    exports.inputs = [{ id: 'input', name: 'Input' }];\n    exports.outputs = [{ id: 'output', name: 'Output' }];\n    exports.meta = { settingswidth: 1200 };\n \texports.make = function(instance, config) {\n        instance.message = async function($) {\n\t\t\tvar connectionsList;\n\n\t\t\t// Getting all the connections from the store\n            const endpoint = 'http://127.0.0.1:8000/datastore/connection';\n            const res = await fetch(endpoint);\n            const res_data = await res.json();\n\n\t\t\t// Getting connections details to display the dropdown list of all connections\n            connectionsList = res_data.map(el => ({id: el.connectionid, name: el.label + ' - ' + el.connectionid }));\n\n\t\t\t// Find the selected connection\n            const connection = res_data.find(el => el.connectionid === config.connectionid);\n\n\t\t\tif(connection) {\n\t\t\t\tconst connectionDetails = {\n\t\t\t\t\tdbhost: connection.host,\n\t\t\t\t\tdbport: connection.port,\n\t\t\t\t\tdbdatabase: connection.database,\n\t\t\t\t}\n\t\t\t\t// send the connection details as the output of this block\n\t\t\t\tinstance.send('output', connectionDetails);\n\t\t\t}\n\t\t\t// Set the connections dropdown in the UI\n            instance.call = async function(data, answer) {\n                answer(connectionsList);\n            };\n        };\n        instance.configure = function() {\n        };\n        instance.close = function() {\n        };\n        instance.configure();\n    };\n</script>\n<readme>\n</readme>\n<script>\n\t// datastoreconnection is the name of your component in lower-case\n    ON('configure_datastoreconnection', function(data) {\n        data.call(function(response) {\n            SET('%connectionidList', response);\n        });\n    });\n</script>\n<settings>\n    <div class=\"padding\">\n        <div data---=\"input__?.connectionid__dirsource:%connectionidList;dirraw:1;placeholder:Choose a connection;dirempty:No connection\" class=\"m\"><b>Connection</b></div>\n    </div>\n</settings>\n<body>\n    <header>\n        <i class=\"ICON\"></i>NAME\n    </header>\n</body>"
+{
+  "paused": false,
+  "id": "",
+  "reference": "",
+  "author": "",
+  "group": "",
+  "icon": "fa fa-chart-pie",
+  "color": "#041EF5",
+  "version": "",
+  "readme": "",
+  "url": "https://localhost:8111/Typerefinery_Wiring",
+  "name": "Typerefinery_Wiring",
+  "components": {
+    "cyejp563cd": "<script total>\n\n\texports.name = 'Trigger';\n\texports.group = 'Triggers';\n\texports.version = '3';\n\texports.icon = 'fa fa-bullhorn';\n\texports.author = 'Total.js';\n\texports.config = { random: true, type: 'string', data: '', restart: false };\n\texports.outputs = [{ id: 'output', name: 'Output' }];\n\n\texports.make = function(instance, config) {\n\n\t\tinstance.trigger = function() {\n\n\t\t\tvar val;\n\n\t\t\tswitch (config.type) {\n\t\t\t\tcase 'number':\n\t\t\t\t\tval = config.random ? U.random() : config.data.parseFloat();\n\t\t\t\t\tbreak;\n\t\t\t\tcase 'buffer':\n\t\t\t\t\ttry {\n\t\t\t\t\t\tval = config.random ? Buffer.from(U.random_string()) : Buffer.from(config.data, 'base64');\n\t\t\t\t\t} catch (e) {\n\t\t\t\t\t\tinstance.throw(e);\n\t\t\t\t\t}\n\t\t\t\t\tbreak;\n\t\t\t\tcase 'date':\n\t\t\t\t\tval = config.random ? NOW.add('-' + U.random(500, 10) + ' seconds') : config.data.parseDate();\n\t\t\t\t\tbreak;\n\t\t\t\tcase 'object':\n\t\t\t\t\ttry {\n\t\t\t\t\t\tval = config.random ? {} : (new Function('return ' + config.data))();\n\t\t\t\t\t} catch (e) {\n\t\t\t\t\t\tinstance.throw(e);\n\t\t\t\t\t}\n\t\t\t\t\tbreak;\n\t\t\t\tcase 'boolean':\n\t\t\t\t\tval = config.random ? U.random() % 2 === 0 : config.data === 'true' || config.data === 'on' || config.data === '1';\n\t\t\t\t\tbreak;\n\t\t\t\tdefault:\n\t\t\t\t\tval = config.random ? U.random_string(20) : config.data;\n\t\t\t\t\tbreak;\n\t\t\t}\n\n\t\t\tinstance.send('output', val);\n\t\t};\n\n\t\tconfig.restart && setTimeout(() => instance.trigger(), 5000);\n\t};\n\n</script>\n\n<style>\n\t.CLASS .padding { padding: 0 10px 10px; }\n\t.CLASS button { width: 100%; height: 24px; border: 1px solid #E0E0E0; border-radius: var(--radius); color: #000; background-color: #F0F0F0; margin: 0; }\n\t.CLASS button:hover { background-color: #F8F8F8; }\n\t.CLASS button:active { background-color: #E0E0E0; }\n\t.ui-dark .CLASS button { border-color: #404040; color: #FFF; background-color: #222; }\n\t.ui-dark .CLASS button:hover { background-color: #303030; }\n\t.ui-dark .CLASS button:active { background-color: #404040; }\n</style>\n\n<settings>\n\t<div class=\"padding\">\n\t\t<div data---=\"input__?.type__dirsource:string|String,number|Number,boolean|Boolean,date|Date,object|Object,buffer|Buffer as Base64;required:1\">Type</div>\n\t\t<div class=\"mt10 m\">\n\t\t\t<div data---=\"input__?.restart__type:checkbox\">Trigger 5s after initialization.</div>\n\t\t\t<div data---=\"input__?.random__type:checkbox\">Random data</div>\n\t\t</div>\n\t\t<div data-bind=\"?.random__hide\" class=\"hidden\">\n\t\t\t<hr />\n\t\t\t<div data---=\"input__?.data__required:1;height:250;type:multiline;maxlength:100000;monospace:1\">Data</div>\n\t\t</div>\n\t</div>\n</settings>\n\n<readme>\nThe component triggers data into the Flow.\n</readme>\n\n<body>\n\t<header>\n\t\t<i class=\"ICON\"></i>NAME\n\t</header>\n\t<div class=\"padding\">\n\t\t<button class=\"exec\" data-exec=\"FUNC.trigger\">Run</button>\n\t</div>\n</body>",
+    "c5aria8f8f": "<script total>\n\n\texports.name = 'Print JSON';\n\texports.group = 'Common';\n\texports.version = '1';\n\texports.icon = 'fa fa-print';\n\texports.author = 'Martin Smola';\n\texports.config = { repo: false, data: true };\n\texports.inputs = [{ id: 'input', name: 'Input' }];\n\n\texports.make = function(instance, config) {\n\t\tinstance.message = function($) {\n\n\t\t\tvar data = $.data;\n\n\t\t\tif (config.data !== false) {\n\t\t\t\tif (data instanceof Buffer)\n\t\t\t\t\tdata = data.toString('hex').substring(0, 200);\n\t\t\t}\n\n\t\t\tvar count = 0;\n\n\t\t\tfor (var key in config) {\n\t\t\t\tif (config[key])\n\t\t\t\t\tcount++;\n\t\t\t}\n\n\t\t\tvar output = count > 1 ? {} : null;\n\n\t\t\tif (config.repo) {\n\t\t\t\tif (output)\n\t\t\t\t\toutput.repo = $.repo;\n\t\t\t\telse\n\t\t\t\t\toutput = $.repository;\n\t\t\t}\n\n\t\t\tif (config.data) {\n\t\t\t\tif (output)\n\t\t\t\t\toutput.data = $.data;\n\t\t\t\telse\n\t\t\t\t\toutput = $.data;\n\t\t\t}\n\n\t\t\toutput && instance.status(output);\n\t\t\t$.destroy();\n\t\t};\n\n\t\tinstance.trigger = function() {\n\t\t\tinstance.status('');\n\t\t}\n\n\t};\n\n</script>\n\n<style>\n\t.CLASS footer > div { margin: 10px; }\n\t.CLASS pre { font-size: 10px; margin: 0; padding: 5px; background-color: #F0F0F0; border-radius: var(--radius); }\n\t.CLASS button { float: right; height: 20px; font-size: 11px; border: 1px solid #E0E0E0; border-radius: var(--radius); color: #000; background-color: transparent; margin: 0; padding: 0 5px; }\n\t.CLASS button:hover { background-color: #F8F8F8; }\n\t.CLASS button:active { background-color: #E0E0E0; }\n\t.CLASS .ui-objecttree { background-color: #f0f0f0; padding: 4px; }\n\n\t.ui-dark .CLASS pre { background-color: #404040; tab-size: 2; }\n\t.ui-dark .CLASS button { border-color: #404040; color: #FFF; }\n\t.ui-dark .CLASS button:hover { background-color: #303030; }\n\t.ui-dark .CLASS button:active { background-color: #404040; }\n</style>\n\n<readme>\nThe component prints incoming data in a JSON format.\n</readme>\n\n<settings>\n\t<div class=\"padding\">\n\t\t<div data---=\"input__?.repo__type:checkbox\">Shows repository</div>\n\t\t<div data---=\"input__?.data__type:checkbox\">Shows data</div>\n\t</div>\n</settings>\n\n<script>\n\tFUNC.printjson_click = function(type, data) { // type = path/data\n\t\tnavigator.clipboard.writeText(type === 'path' ? data : STRINGIFY(data)).catch(e => console.error(e));\n\t};\n\n\t$('body').on('click', '.ui-objecttree .fa-copy, .ui-objecttree .fa-link', function(){\n\t\tvar el = $(this);\n\t\tvar iscopy = el.hclass('fa-copy');\n\t\tel.tclass(iscopy ? 'fa-copy' : 'fa-link').tclass('fa-check');\n\t\tsetTimeout(function(){\n\t\t\tel.tclass('fa-check').tclass(iscopy ? 'fa-copy' : 'fa-link');\n\t\t}, 2000);\n\t});\n</script>\n\n<body>\n\t<header>\n\t\t<button class=\"exec\" data-exec=\"FUNC.trigger\">Clear</button>\n\t\t<i class=\"ICON\"></i>NAME\n\t</header>\n\t<footer>\n\t\t<div data---=\"objecttree__!STATUS__exec:FUNC.printjson_click\" class=\"selectable\"></div>\n\t</footer>\n</body>",
+    "run": "<script total>\n    exports.name = 'WebCola Viz';\n    exports.group = 'TypeRefinery';\n    exports.version = '1';\n    exports.icon = 'fa fa-code';\n    exports.author = 'TypeRefinery';\n    exports.config = { code: '' };\n    exports.inputs = [{ id: 'graph_data', name: 'DATA' },{ id: 'theme', name: 'Theme' }];\n    exports.outputs = [{ id: 'output', name: 'Output' }];\n    exports.meta = { settingswidth: 1200 };\n\n    exports.make = function(instance, config) {\n        var fn;\n        var values = {};\n\n\t\tinstance.message = function($) {\n\t\t\t// Getting endpoint from the user\n            const endpointData = { endpoint: config.endpoint }\n\n\t\t\t// Inputs to this block will be saved in values Object\n            values[$.input] = $.data\n\n\t\t\tif (values.graph_data && values.theme) {\n\t\t\t\t\tvar project;\n\t\t\t\t\tvar input_data = {\n\t\t\t\t\t\ttheme: values.theme,\n\t\t\t\t\t\tgraph_data: values.graph_data\n\t\t\t\t\t};\n\n\t\t\t\t\t// Replacing GRAPH_DATA variable with actual DATA\n\t\t\t\t\tconst codeWithData = config.code.replace('GRAPH_DATA', JSON.stringify(input_data.graph_data))\n\t\t\t\t\t// Replacing THEME variable with actual THEME\n\t\t\t\t\tconst code = codeWithData.replace('THEME', JSON.stringify(input_data.theme))\n\n\t\t\t\t\t const payload = {\n\t\t\t\t\t\t \"code\": code,\n\t\t\t\t\t\t \"dependecies\": [\"https://d3js.org/d3.v4.js\", \"https://cdn.jsdelivr.net/npm/webcola@3.4.0/WebCola/cola.js\"],\n\t\t\t\t\t\t  \"returnoutput\": \"script\"\n\t\t\t\t\t };\n                     let options = {\n\t\t\t\t\t\t\tmethod: 'POST',\n\t\t\t\t\t\t\theaders: {\n\t\t\t\t\t\t\t\t'Content-Type':\n\t\t\t\t\t\t\t\t\t'application/json;charset=utf-8'\n\t\t\t\t\t\t\t},\n            \t\t\t\tbody: JSON.stringify(payload)\n       \t\t\t\t   }\n\t\t\t\t\t// Sending request to generate SVG\n\t\t\t\t \tPromise.all([\n\t\t\t\t\t  fetch(\"http://127.0.0.1:8000/datastore/project\").then(value => value.json()),\n\t\t\t\t\t  fetch(endpointData.endpoint,options).then(value => value.json()),\n\t\t\t\t\t]).then(([projects, output]) => {\n\t\t\t\t\t\t// Getting current project\n\t\t\t\t\t\tproject = projects.find(el => el.flowid == instance.main.id)\n\t\t\t\t\t\t// response output\n\t\t\t\t\t\tconst res = {\n\t\t\t\t\t\t\tpath: output[\"output.url\"],\n\t\t\t\t\t\t\tstepId: instance.id,\n\t\t\t\t\t\t\tstepName: instance.module.name,\n\t\t\t\t\t\t\tflowId: instance.main.id,\n\t\t\t\t\t\t\tprojectId: project.projectid\n\t\t\t\t\t\t}\n\t\t\t\t\t\t// Sending the response\n\t\t\t\t\t\t$.send('output', res)\n\t\t\t\t\t}).catch((err) => {\n\t\t\t\t\t\t// Sending the error\n\t\t\t\t\t\t $.send('output', err)\n\t\t\t\t\t});\n\n\t\t\t\tvalues.theme = null\n\t\t\t}\n        };\n        instance.configure = function() {\n            instance.outputs = [];\n            for (let i = 1; i <= config.outputs; i++)\n                instance.outputs.push({ id: 'output' + (i === 1 ? '' : i), name: 'Output #' + i });\n            instance.save();\n\n            try {\n                if (config.code) {\n                    instance.status(1);\n                    fn = new Function('value', 'instance', '$', 'message', 'require', 'send', 'repo', 'vars', 'data', config.code);\n                } else {\n                    instance.status(0);\n                    fn = null;\n                }\n            } catch (e) {\n                fn = null;\n                instance.throw('Code: ' + e.message);\n            }\n        };\n\n        instance.close = function() {\n            fn = null;\n        };\n\n        instance.configure();\n    };\n</script>\n\n<readme>\n    This component executes a custom JavaScript code as it is.\n\n\n    To send data to the default output use `send(somedata);`\n    To send data to specific output when number of outputs > 1 use `$.send('outputX', somedata)` where `X` is output index, see example bellow:\n    - first output--> `send(somedata)` or `$.send('output', somedata)`\n    - second output --> `$.send('output2', somedata)`\n    - ...\n    - 5th output --> `$.send('output5', somedata)`\n    - etc.\n</readme>\n\n<settings>\n    <div class=\"padding\">\n        <div data---=\"input__?.endpoint__required:1\" class=\"m\">Endpont</div>\n        <div class=\"ui-input-label\">Code:</div>\n        <div data---=\"codemirror__?.code__type:javascript;minheight:300;parent:auto;margin:60;tabs:true;trim:true\" class=\"m\"></div>\n    </div>\n</settings>\n\n<body>\n    <header>\n        <i class=\"ICON\"></i>NAME\n    </header>\n</body>",
+    "c418t8a6b8": "<script total>\n\texports.name = 'Run (node & edges)';\n    exports.icon = 'fa fa-code';\n    exports.author = 'TypeRefinery';\n    exports.group = 'TypeRefinery';\n    exports.version = '1';\n    exports.config = { algorithm: '',endpoint:'' };\n    exports.inputs = [{ id: 'connection', name: 'Connection' }, { id: 'query', name: 'TQL Query' }];\n    exports.outputs = [{ id: 'output', name: 'Output' }];\n    exports.meta = { settingswidth: 1200 };\n\n    exports.make = function(instance, config) {\n        var fn;\n        var values = {};\n        instance.message = function($) {\n\t\t\t// Getting endpoint from the user\n            const endpointData = {\n                 endpoint: config.endpoint,\n            }\n\t\t\t// Inputs to this block will be saved in values Object\n            values[$.input] = $.data;\n            if (values.connection && values.query && config.algorithm) {\n                var payload = {\n                    dbhost: values.connection.dbhost,\n                    dbport: values.connection.dbport,\n                    dbdatabase: values.connection.dbdatabase,\n                    dbquery: values.query.dbquery,\n                    algorithm: config.algorithm,\n                    algorithmrequirements: 'argparse\\nloguru',\n                    returnoutput: 'output'\n                };\n                let options = {\n            \t\tmethod: 'POST',\n            \t\theaders: {\n                \t\t'Content-Type':\n                    \t'application/json;charset=utf-8'\n            \t},\n            \tbody: JSON.stringify(payload)\n        }\n\t\t// Sending request to get Data\n        let fetchRes = fetch(endpointData.endpoint,options);\n        fetchRes.then(res =>\n            res.json()).then(d => { $.send('output', d) }).catch(err => { $.send('output', err) })\n                values.query = null;\n            } else {\n                // IMPORTANT: we must destroy the current message becase we don't need to send it next\n                $.destroy();\n            }\n        };\n        instance.close = function() {\n            fn = null;\n        };\n    };\n</script>\n<readme>\n    Lorem ipsum dolor sit amet consectetur adipisicing, elit. Laudantium, in.\n</readme>\n<settings>\n    <div class=\"padding\">\n        <div data---=\"input__?.endpoint__required:1\" class=\"m\">Endpont</div>\n        <div class=\"ui-input-label\">Algorithm:</div>\n        <div data---=\"codemirror__?.algorithm__type:python;minheight:300;parent:auto;margin:60;tabs:true;trim:true\" class=\"m\"></div>\n    </div>\n</settings>\n<body>\n    <header>\n        <i class=\"ICON\"></i>NAME\n    </header>\n</body>",
+    "pubsrcfyn2ecf44Xsvg_insert": "<script total>\n\n\texports.name = 'TMS Example';\n\texports.icon = 'fas fa-broadcast-tower';\n\texports.config = {};\n\texports.outputs = [{ id: 'publish', name: 'Output' }];\n\texports.group = 'Publishers';\n\texports.type = 'pub';\n\texports.schemaid = ['srcfyn2ecf44', 'svg_insert'];\n\n\texports.make = function(instance) {\n\t\tinstance.process = function(msg, client) {\n\t\t\tinstance.send('publish', msg, client);\n\t\t};\n\t};\n\n</script>\n\n<style>\n\t.f-pubsrcfyn2ecf44Xsvg_insert .url { font-size: 11px; }\n</style>\n\n<readme>\n# svg_insert\n- URL address: <http://127.0.0.1:8112>\n- Channel: __publish__\n- JSON schema `svg_insert.json`\n- Version: 24\n\n```json\n{\n  \"$id\": \"https://schemas.totaljs.com/Svg.json\",\n  \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"stepId\": {\n      \"type\": \"string\"\n    },\n    \"flowId\": {\n      \"type\": \"string\"\n    },\n    \"stepName\": {\n      \"type\": \"string\"\n    },\n    \"path\": {\n      \"type\": \"string\"\n    },\n    \"projectId\": {\n      \"type\": \"string\"\n    },\n    \"id\": {\n      \"type\": \"string\"\n    },\n    \"dtcreated\": {\n      \"type\": \"date\"\n    },\n    \"dtupdated\": {\n      \"type\": \"date\"\n    }\n  }\n}\n```\n</readme>\n\n<body>\n\t<header>\n\t\t<div><i class=\"fas fa-broadcast-tower mr5\"></i><span>TMS Example / <b>svg_insert</b></span></div>\n\t\t<div class=\"url\"></div>\n\t</header>\n</body>",
+    "subsrcfyn2ecf44Xsvg_insert": "<script total>\n\n\texports.name = 'TMS Example';\n\texports.icon = 'fas fa-satellite-dish';\n\texports.group = 'Subscribers';\n\texports.config = {};\n\texports.inputs = [{ id: 'subscribe', name: 'Input' }];\n\texports.type = 'sub';\n\texports.schemaid = ['srcfyn2ecf44', 'svg_insert'];\n\n\texports.make = function(instance) {\n\t\tinstance.message = function($) {\n\t\t\tvar socket = instance.main.sockets['srcfyn2ecf44'];\n\t\t\tif (socket && socket.subscribers && socket.subscribers['svg_insert']) {\n\n\t\t\t\tvar data = $.data;\n\n\t\t\t\t/*\n\t\t\t\t\tvar err = new ErrorBuilder();\n\t\t\t\t\tdata = framework_jsonschema.transform(schema, err, data, true);\n\n\t\t\t\t\tif (err.is) {\n\t\t\t\t\t\t$.destroy();\n\t\t\t\t\t\treturn;\n\t\t\t\t\t}\n\n\t\t\t\t*/\n\n\t\t\t\tsocket.send({ type: 'subscribe', id: 'svg_insert', data: data });\n\t\t\t}\n\t\t\t$.destroy();\n\t\t};\n\t};\n\n</script>\n\n<style>\n\t.f-subsrcfyn2ecf44Xsvg_insert .url { font-size: 11px; }\n</style>\n\n<readme>\n# svg_insert\n- URL address: <http://127.0.0.1:8112>\n- Channel: __subscribe__\n- JSON schema `svg_insert.json`\n- Version: 24\n\n```json\n{\n  \"id\": \"svg_insert\",\n  \"schema\": {\n    \"$id\": \"https://schemas.totaljs.com/Svg.json\",\n    \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n    \"type\": \"object\",\n    \"properties\": {\n      \"stepId\": {\n        \"type\": \"string\"\n      },\n      \"flowId\": {\n        \"type\": \"string\"\n      },\n      \"stepName\": {\n        \"type\": \"string\"\n      },\n      \"path\": {\n        \"type\": \"string\"\n      },\n      \"projectId\": {\n        \"type\": \"string\"\n      },\n      \"id\": {\n        \"type\": \"string\"\n      },\n      \"dtcreated\": {\n        \"type\": \"date\"\n      },\n      \"dtupdated\": {\n        \"type\": \"date\"\n      }\n    }\n  }\n}\n```\n</readme>\n\n<body>\n\t<header>\n\t\t<div><i class=\"fas fa-satellite-dish mr5\"></i><span>TMS Example / <b>svg_insert</b></span></div>\n\t\t<div class=\"url\"></div>\n\t</header>\n</body>",
+    "calsrcfyn2ecf44Xsvg_query": "<script total>\n\n\texports.name = 'TMS Example';\n\texports.icon = 'fa fa-plug';\n\texports.config = { timeout: 60000 };\n\texports.inputs = [{ id: 'input', name: 'Input' }];\n\texports.outputs = [{ id: 'output', name: 'Output' }, { id: 'error', name: 'Error' }];\n\texports.group = 'Calls';\n\texports.type = 'call';\n\texports.schemaid = ['srcfyn2ecf44', 'svg_query'];\n\n\texports.make = function(instance, config) {\n\n\t\tinstance.message = function($, client) {\n\t\t\tvar socket = instance.main.sockets['srcfyn2ecf44'];\n\t\t\tif (socket && socket.calls && socket.calls['svg_query']) {\n\n\t\t\t\tvar data = $.data;\n\n\t\t\t\t/*\n\t\t\t\t\tvar err = new ErrorBuilder();\n\t\t\t\t\tdata = framework_jsonschema.transform(schema, err, data, true);\n\n\t\t\t\t\tif (err.is) {\n\t\t\t\t\t\t$.send('error', err.toString());\n\t\t\t\t\t\treturn;\n\t\t\t\t\t}\n\n\t\t\t\t*/\n\n\t\t\t\tvar callback = function(err, response) {\n\t\t\t\t\tif (err)\n\t\t\t\t\t\t$.send('error', err);\n\t\t\t\t\telse\n\t\t\t\t\t\t$.send('output', response);\n\t\t\t\t};\n\n\t\t\t\tvar callbackid = (socket.callbackindexer++) + '';\n\n\t\t\t\tif (socket.callbackindexer > 999999999)\n\t\t\t\t\tsocket.callbackindexer = 0;\n\n\t\t\t\tsocket.callbacks[callbackid] = { callback: callback, id: setTimeout(socket.callbacktimeout, config.timeout, callbackid) };\n\t\t\t\tsocket.send({ type: 'call', id: 'svg_query', data: data, callbackid: callbackid });\n\n\t\t\t} else\n\t\t\t\t$.destroy();\n\t\t};\n\t};\n\n</script>\n\n<style>\n\t.f-calsrcfyn2ecf44Xsvg_query .url { font-size: 11px; }\n</style>\n\n<readme>\n# svg_query\n- URL address: <http://127.0.0.1:8112>\n- Channel: __call__\n- JSON schema `svg_query.json`\n- Version: 24\n\n```json\n{\n  \"$id\": \"https://schemas.totaljs.com/Svg.json\",\n  \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"stepId\": {\n      \"type\": \"string\"\n    },\n    \"flowId\": {\n      \"type\": \"string\"\n    },\n    \"stepName\": {\n      \"type\": \"string\"\n    },\n    \"path\": {\n      \"type\": \"string\"\n    },\n    \"projectId\": {\n      \"type\": \"string\"\n    },\n    \"id\": {\n      \"type\": \"string\"\n    },\n    \"dtcreated\": {\n      \"type\": \"date\"\n    },\n    \"dtupdated\": {\n      \"type\": \"date\"\n    }\n  }\n}\n```\n</readme>\n\n<body>\n\t<header>\n\t\t<div><i class=\"fa fa-plug mr5\"></i><span>TMS Example / <b>svg_query</b></span></div>\n\t\t<div class=\"url\"></div>\n\t</header>\n</body>",
+    "cq5161fa3c": "<script total>\n    exports.name = 'Datastore Query';\n    exports.icon = 'fa fa-code';\n    exports.author = 'Total Avengers';\n    exports.group = 'TypeRefinery';\n    exports.version = '1';\n    exports.config = {queryid: 's_project_query'};\n    exports.inputs = [{ id: 'input', name: 'Input' }];\n    exports.outputs = [{ id: 'output', name: 'Output' }];\n    exports.meta = { settingswidth: 1200 };\n    exports.make = function(instance, config) {\n        instance.message = async function($) {\n\t\t\tvar queryList;\n\n\t\t\t// Getting all the queries from the store\n\t\t\tconst endpoint = 'http://127.0.0.1:8000/datastore/query';\n\t\t\tconst res = await fetch(endpoint);\n\t\t\tconst res_data = await res.json();\n\n\t\t\t// Getting query details to display the dropdown list of all queries\n\t\t\tqueryList = res_data.map(el => ({id: el.queryid, name: `${el.label} (${el.queryid},${el.query.substr(12)})`}));\n\n\t\t\t// Find the selected query\n\t\t\tconst selectedQuery = res_data.find(el => el.queryid === config.queryid)\n\n\t\t\tif(selectedQuery) {\n\t\t\t\tconst queryDetails = { dbquery: selectedQuery.query };\n\t\t\t\t// send the query details as the output of this block\n\t\t\t\tinstance.send('output', queryDetails);\n\t\t\t}\n\t\t\t// Set the queries dropdown in the UI\n\t\t\tinstance.call = async function(data, answer) {\n            \tanswer(queryList);\n        \t};\n        };\n\n\t\tinstance.configure = function(el) {\n\t\t};\n\n\t\tinstance.close = function() {\n\t\t};\n\n\t\tinstance.configure();\n    };\n</script>\n<readme>\n</readme>\n<script>\n    // datastorequery is the name of your component in lower-case\n    ON('configure_datastorequery', function(data) {\n        data.call(function(response) {\n\t\t\tconsole.log('on', response);\n            SET('%queryidList', response);\n        });\n    });\n</script>\n<settings>\n    <div class=\"padding\">\n        <div data---=\"input__?.queryid__dirsource:%queryidList;dirraw:1;placeholder:Choose a query;dirempty:No query\" class=\"m\"><b>Query</b></div>\n    </div>\n</settings>\n<body>\n    <header>\n        <i class=\"ICON\"></i>NAME\n    </header>\n</body>",
+    "c1ucx34982": "<script total>\n    exports.name = 'Datastore Theme';\n    exports.icon = 'fa fa-code';\n    exports.author = 'Total Avengers';\n    exports.group = 'TypeRefinery';\n    exports.version = '1';\n    exports.config = {themeid: 's_project_theme'};\n    exports.inputs = [{ id: 'input', name: 'Input' }];\n    exports.outputs = [{ id: 'output', name: 'Output' }];\n    exports.meta = { settingswidth: 1200 };\n    exports.make = function(instance, config) {\n        instance.message = async function($) {\n\t\t\tvar themesList;\n\n\t\t\t// Getting all the themes from the store\n            const endpoint = 'http://127.0.0.1:8000/datastore/theme';\n            const res = await fetch(endpoint);\n            const res_data = await res.json();\n\n\t\t\t// Getting theme details to display the dropdown list of all themes\n            themesList = res_data.map(el => ({id: el.themeid, name: `${el.label} (${el.themeid},${el.theme.substr(12)})`}));\n\n\t\t\t// Find the selected theme\n            const selectedTheme = res_data.find(el => el.themeid === config.themeid)\n\n\t\t\tif(selectedTheme) {\n\t\t\t\tconst themeDetails = JSON.parse(selectedTheme.theme);\n\t\t\t\t// send the theme details as the output of this block\n\t\t\t\tinstance.send('output', themeDetails);\n\t\t\t}\n\t\t\t// Set the themes dropdown in the UI\n            instance.call = async function(data, answer) {\n                answer(themesList);\n            };\n        };\n        instance.configure = function(el) {\n        };\n        instance.close = function() {\n        };\n        instance.configure();\n    };\n</script>\n<readme>\n</readme>\n<script>\n    // datastoretheme is the name of your component in lower-case\n    ON('configure_datastoretheme', function(data) {\n        data.call(function(response) {\n            SET('%themeidList', response);\n        });\n    });\n</script>\n<settings>\n    <div class=\"padding\">\n        <div data---=\"input__?.themeid__dirsource:%themeidList;dirraw:1;placeholder:Choose a theme;dirempty:No theme\" class=\"m\"><b>Theme</b></div>\n    </div>\n</settings>\n<body>\n    <header>\n        <i class=\"ICON\"></i>NAME\n    </header>\n</body>",
+    "cbj43f380a": "<script total>\n    exports.name = 'Datastore Connection';\n    exports.icon = 'fa fa-code';\n    exports.author = 'Total Avengers';\n    exports.group = 'TypeRefinery';\n    exports.version = '1';\n    exports.config = {connectionid:'s_project_con'};\n    exports.inputs = [{ id: 'input', name: 'Input' }];\n    exports.outputs = [{ id: 'output', name: 'Output' }];\n    exports.meta = { settingswidth: 1200 };\n \texports.make = function(instance, config) {\n        instance.message = async function($) {\n\t\t\tvar connectionsList;\n\n\t\t\t// Getting all the connections from the store\n            const endpoint = 'http://127.0.0.1:8000/datastore/connection';\n            const res = await fetch(endpoint);\n            const res_data = await res.json();\n\n\t\t\t// Getting connections details to display the dropdown list of all connections\n            connectionsList = res_data.map(el => ({id: el.connectionid, name: el.label + ' - ' + el.connectionid }));\n\n\t\t\t// Find the selected connection\n            const connection = res_data.find(el => el.connectionid === config.connectionid);\n\n\t\t\tif(connection) {\n\t\t\t\tconst connectionDetails = {\n\t\t\t\t\tdbhost: connection.host,\n\t\t\t\t\tdbport: connection.port,\n\t\t\t\t\tdbdatabase: connection.database,\n\t\t\t\t}\n\t\t\t\t// send the connection details as the output of this block\n\t\t\t\tinstance.send('output', connectionDetails);\n\t\t\t}\n\t\t\t// Set the connections dropdown in the UI\n            instance.call = async function(data, answer) {\n                answer(connectionsList);\n            };\n        };\n        instance.configure = function() {\n        };\n        instance.close = function() {\n        };\n        instance.configure();\n    };\n</script>\n<readme>\n</readme>\n<script>\n\t// datastoreconnection is the name of your component in lower-case\n    ON('configure_datastoreconnection', function(data) {\n        data.call(function(response) {\n            SET('%connectionidList', response);\n        });\n    });\n</script>\n<settings>\n    <div class=\"padding\">\n        <div data---=\"input__?.connectionid__dirsource:%connectionidList;dirraw:1;placeholder:Choose a connection;dirempty:No connection\" class=\"m\"><b>Connection</b></div>\n    </div>\n</settings>\n<body>\n    <header>\n        <i class=\"ICON\"></i>NAME\n    </header>\n</body>"
+  },
+  "design": {
+    "il7a4yk2e": {
+      "id": "il7a4yk2e",
+      "config": {
+        "random": true,
+        "type": "string",
+        "data": "",
+        "restart": false
       },
-      "design": {
-        "il7a4yk2e": {
-          "id": "il7a4yk2e",
-          "config": {
-            "random": true,
-            "type": "string",
-            "data": "",
-            "restart": false
+      "x": 5,
+      "y": 153,
+      "component": "cyejp563cd",
+      "connections": {
+        "output": [
+          {
+            "id": "il8juy675",
+            "index": "input"
           },
-          "x": 5,
-          "y": 153,
-          "component": "cyejp563cd",
-          "connections": {
-            "output": [
-              {
-                "id": "il8juy675",
-                "index": "input"
-              },
-              {
-                "id": "il8jvwewi",
-                "index": "input"
-              }
-            ]
-          },
-          "template": {
-            "icon": "fa fa-bullhorn",
-            "group": "Triggers",
-            "name": "Trigger",
-            "outputs": [
-              {
-                "id": "output",
-                "name": "Output"
-              }
-            ]
+          {
+            "id": "il8jvwewi",
+            "index": "input"
           }
-        },
-        "il7fy1rnx": {
-          "id": "il7fy1rnx",
-          "config": {
-            "code": "var colors = [\n  {\n    name: \"Greys\",\n    colors: [\n      \"#f0f0f0\",\n      \"#d9d9d9\",\n      \"#bdbdbd\",\n      \"#969696\",\n      \"#737373\",\n      \"#525252\",\n      \"#252525\",\n      \"#000000\",\n    ],\n  },\n  {\n    name: \"Reds\",\n    colors: [\n      \"#fee0d2\",\n      \"#fcbba1\",\n      \"#fc9272\",\n      \"#fb6a4a\",\n      \"#ef3b2c\",\n      \"#cb181d\",\n      \"#a50f15\",\n      \"#67000d\",\n    ],\n  },\n  {\n    name: \"Oranges\",\n    colors: [\n      \"#fee6ce\",\n      \"#fdd0a2\",\n      \"#fdae6b\",\n      \"#fd8d3c\",\n      \"#f16913\",\n      \"#d94801\",\n      \"#a63603\",\n      \"#7f2704\",\n    ],\n  },\n  {\n    name: \"Greens\",\n    colors: [\n      \"#e5f5e0\",\n      \"#c7e9c0\",\n      \"#a1d99b\",\n      \"#74c476\",\n      \"#41ab5d\",\n      \"#238b45\",\n      \"#006d2c\",\n      \"#00441b\",\n    ],\n  },\n  {\n    name: \"Blues\",\n    colors: [\n      \"#deebf7\",\n      \"#c6dbef\",\n      \"#9ecae1\",\n      \"#6baed6\",\n      \"#4292c6\",\n      \"#2171b5\",\n      \"#08519c\",\n      \"#08306b\",\n    ],\n  },\n  {\n    name: \"Purples\",\n    colors: [\n      \"#efedf5\",\n      \"#dadaeb\",\n      \"#bcbddc\",\n      \"#9e9ac8\",\n      \"#807dba\",\n      \"#6a51a3\",\n      \"#54278f\",\n      \"#3f007d\",\n    ],\n  },\n  {\n    name: \"Orange-Red\",\n    colors: [\n      \"#fee8c8\",\n      \"#fdd49e\",\n      \"#fdbb84\",\n      \"#fc8d59\",\n      \"#ef6548\",\n      \"#d7301f\",\n      \"#b30000\",\n      \"#7f0000\",\n    ],\n  },\n  {\n    name: \"Red-Purples\",\n    colors: [\n      \"#fde0dd\",\n      \"#fcc5c0\",\n      \"#fa9fb5\",\n      \"#f768a1\",\n      \"#dd3497\",\n      \"#ae017e\",\n      \"#7a0177\",\n      \"#49006a\",\n    ],\n  },\n  {\n    name: \"Blue-Green\",\n    colors: [\n      \"#e5f5f9\",\n      \"#ccece6\",\n      \"#99d8c9\",\n      \"#66c2a4\",\n      \"#41ae76\",\n      \"#238b45\",\n      \"#006d2c\",\n      \"#00441b\",\n    ],\n  },\n  {\n    name: \"Yellows\",\n    colors: [\n      \"#fffee5\",\n      \"#fffcbd\",\n      \"#fff98b\",\n      \"#fff533\",\n      \"#eedf00\",\n      \"#dad000\",\n      \"#c0b700\",\n      \"#b0a800\",\n    ],\n  },\n];\n\nvar theme = THEME;\n\nvar svg = d3.select(\"svg\")\n  .attr(\"width\", 900)\n  .attr(\"height\", 500)\n  .call(\n    d3.zoom().on(\"zoom\", function () {\n      svg.attr(\"transform\", d3.event.transform);\n    })\n  )\n  .append(\"g\");\n\nconst height = 500;\nconst width = 600;\n\n// setup the theme color\n\nconst textPadding = 8;\nconst corner = 5;\nconst grp_corner = 8;\nconst pad = 5;\nvar ent_colour = \"#03396c\";\nvar ent_t_colour = \"white\";\nvar att_colour = \"#ff4d00\";\nvar att_t_colour = \"white\";\nvar shad_colour = \"#ff4d00\";\nvar shad_t_colour = \"white\";\nvar rel_colour = \"#007777\";\nvar rel_t_colour = \"black\";\n\nlet colours = colors;\n// load the colours from the theme\nent_colour = colors.find((colour) => colour.name == theme.entity.colorlist)[\n  \"colors\"\n][theme.entity.cindex];\nent_t_colour = colors.find((colour) => colour.name == theme.entity.tcolorlist)[\n  \"colors\"\n][theme.entity.tindex];\natt_colour = colors.find((colour) => colour.name == theme.attribute.colorlist)[\n  \"colors\"\n][theme.attribute.cindex];\natt_t_colour = colors.find(\n  (colour) => colour.name == theme.attribute.tcolorlist\n)[\"colors\"][theme.attribute.tindex];\nshad_colour = colors.find((colour) => colour.name == theme.shadow.colorlist)[\n  \"colors\"\n][theme.shadow.cindex];\nshad_t_colour = colors.find((colour) => colour.name == theme.shadow.tcolorlist)[\n  \"colors\"\n][theme.shadow.tindex];\nrel_colour = colors.find((colour) => colour.name == theme.relation.colorlist)[\n  \"colors\"\n][theme.relation.cindex];\nrel_t_colour = colors.find(\n  (colour) => colour.name == theme.relation.tcolorlist\n)[\"colors\"][theme.relation.tindex];\n\nvar cola = cola.d3adaptor(d3).size([width, height]);\n\n// graph.json\nvar Graph_Data = GRAPH_DATA;\n\ndata = Graph_Data.basic;\ncola\n  .nodes(data.nodes)\n  .links(data.links)\n  .groups(data.groups)\n  .linkDistance(100)\n  .avoidOverlaps(true)\n  .handleDisconnected(false)\n  .start(30);\n\nvar group = svg\n  .selectAll(\".group\")\n  .data(data.groups)\n  .enter()\n  .append(\"rect\")\n  .attr(\"rx\", grp_corner)\n  .attr(\"ry\", grp_corner)\n  .attr(\"class\", \"group\")\n  .style(\"fill\", function (d, i) {\n    return colours.find(\n      (colour) => colour.name == d.colour_list\n    )[\"colors\"][d.level];\n  })\n  .attr(\"stroke-width\", 1)\n  .attr(\"stroke\", function (d, i) {\n    return colours.find((colour) => colour.name == d.colour_list)[\"colors\"][7];\n  })\n  .call(cola.drag);\n\ngroup.append(\"title\").text(function (d) {\n  return d.label;\n});\n\nvar link = svg\n  .selectAll(\".link\")\n  .data(data.links)\n  .enter()\n  .append(\"line\")\n  .attr(\"class\", \"link\")\n  .style(\"stroke-width\", \"1px\")\n  .attr(\"stroke\", \"black\");\n\nvar node = svg\n  .selectAll(\".node\")\n  .data(data.nodes)\n  .enter()\n  .append(\"rect\")\n  .attr(\"class\", \"node\")\n  .attr(\"class\", (d) => d.type)\n  .attr(\"class\", (d) => d.G_name)\n  .attr(\"id\", (d) => d.G_id);\n\nvar label = svg\n  .selectAll(\".label\")\n  .data(data.nodes)\n  .enter()\n  .append(\"text\")\n  .attr(\"class\", \"label\")\n  .text((d) =>\n    d.type == \"attribute\" ? d.G_name + \": \" + d.value : d.G_name + \": \" + d.G_id\n  )\n  .attr(\"id\", (d) => \"heading-\" + d.G_id)\n  .style(\"font-size\", 10)\n  .style(\"text-anchor\", \"middle\")\n  .style(\"color\", (d) => text_colour(d))\n  .style(\"fill\", (d) => text_colour(d))\n  .style(\"pointer-events\", \"none\")\n  .call(cola.drag);\n\n// setup heading colours for attribute, entity and relation\nfunction text_colour(d) {\n  let colour = \"black\";\n  switch (d.type) {\n    case \"attribute\":\n      if (d.dtype == \"actual\") {\n        colour = att_t_colour;\n      } else {\n        colour = shad_t_colour;\n      }\n      break;\n    case \"entity\":\n      colour = ent_t_colour;\n      break;\n    case \"relation\":\n      colour = rel_t_colour;\n      break;\n    default:\n      colour = \"black\";\n      break;\n  }\n  return colour;\n}\n\nnode\n  .attr(\"width\", (d) => nodeWidth(d))\n  .attr(\"height\", (d) => d.height)\n  .attr(\"rx\", (d) => d.corner)\n  .attr(\"ry\", (d) => d.corner)\n  .attr(\"x\", (d) => d.x)\n  .attr(\"y\", (d) => d.y)\n  .attr(\"class\", (d) => d.G_name)\n  .style(\"fill\", (d) => d.colour)\n  .on(\"click\", function (d) {\n    d.fixed = true;\n  })\n  .call(cola.drag);\n\n// function to set dimensions and colours for shapes\nfunction nodeWidth(d) {\n  let headingid = \"#heading-\" + d.G_id;\n  let headingbbox = d3.select(headingid).node().getBBox();\n\n  d.width = d3.max([5, headingbbox.width]) + textPadding * 2;\n  d.height = headingbbox.height + textPadding * 2;\n\n  // attributes and entities rounded rectangle, relation is circle\n  switch (d.type) {\n    case \"attribute\":\n      d.corner = corner;\n      d.colour = att_colour;\n      d.x = headingbbox.x - textPadding;\n      d.y = headingbbox.y - textPadding;\n      if (d.dtype === \"shadow\") {\n        d.colour = shad_colour;\n      } else {\n        d.colour = att_colour;\n      }\n      break;\n\n    case \"entity\":\n      d.corner = corner;\n      d.colour = ent_colour;\n      d.x = headingbbox.x - textPadding;\n      d.y = headingbbox.y - textPadding;\n      break;\n\n    case \"relation\":\n      d.width = 16;\n      d.height = 16;\n      d.corner = 8;\n      d.colour = rel_colour;\n      d.x = headingbbox.x + headingbbox.width / 2 - d.width / 2;\n      d.y = headingbbox.y + d.height / 2;\n      break;\n\n    default:\n      break;\n  }\n  return d.width;\n}\n\ncola.on(\"tick\", function () {\n  link\n    .attr(\"x1\", function (d) {\n      return d.source.x;\n    })\n    .attr(\"y1\", function (d) {\n      return d.source.y;\n    })\n    .attr(\"x2\", function (d) {\n      return d.target.x;\n    })\n    .attr(\"y2\", function (d) {\n      return d.target.y;\n    });\n\n  node\n    .attr(\"x\", function (d) {\n      return d.x - d.width / 2;\n    })\n    .attr(\"y\", function (d) {\n      return d.y - d.height / 2;\n    });\n\n  group\n    .attr(\"x\", function (d) {\n      return d.bounds.x - pad;\n    })\n    .attr(\"y\", function (d) {\n      return d.bounds.y - pad;\n    })\n    .attr(\"width\", function (d) {\n      return d.bounds.width() + 2 * pad;\n    })\n    .attr(\"height\", function (d) {\n      return d.bounds.height() + 2 * pad;\n    });\n\n  label\n    .attr(\"x\", function (d) {\n      return d.x;\n    })\n    .attr(\"y\", function (d) {\n      var h = this.getBBox().height;\n      return d.y + h / 4;\n    });\n});",
-            "endpoint": "http:127.0.0.1:8000/createSvg",
-            "outputs": 1
-          },
-          "x": 769,
-          "y": 188,
-          "component": "run",
-          "connections": {
-            "output": [
-              {
-                "id": "il7g116vw",
-                "index": "input"
-              },
-              {
-                "id": "il7g1v8q2",
-                "index": "subscribe"
-              }
-            ]
-          },
-          "outputs": [
-            {
-              "id": "output",
-              "name": "Output #1"
-            }
-          ],
-          "template": {
-            "icon": "fa fa-code",
-            "group": "TypeRefinery",
-            "name": "WebCola Viz",
-            "inputs": [
-              {
-                "id": "graph_data",
-                "name": "DATA"
-              },
-              {
-                "id": "theme",
-                "name": "Theme"
-              }
-            ],
-            "outputs": [
-              {
-                "id": "output",
-                "name": "Output"
-              }
-            ]
+        ]
+      },
+      "template": {
+        "icon": "fa fa-bullhorn",
+        "group": "Triggers",
+        "name": "Trigger",
+        "outputs": [
+          {
+            "id": "output",
+            "name": "Output"
           }
-        },
-        "il7fy4dli": {
-          "id": "il7fy4dli",
-          "config": {
-            "repo": false,
-            "data": true
+        ]
+      }
+    },
+    "il7fy1rnx": {
+      "id": "il7fy1rnx",
+      "config": {
+        "code": "var colors = [\n  {\n    name: \"Greys\",\n    colors: [\n      \"#f0f0f0\",\n      \"#d9d9d9\",\n      \"#bdbdbd\",\n      \"#969696\",\n      \"#737373\",\n      \"#525252\",\n      \"#252525\",\n      \"#000000\",\n    ],\n  },\n  {\n    name: \"Reds\",\n    colors: [\n      \"#fee0d2\",\n      \"#fcbba1\",\n      \"#fc9272\",\n      \"#fb6a4a\",\n      \"#ef3b2c\",\n      \"#cb181d\",\n      \"#a50f15\",\n      \"#67000d\",\n    ],\n  },\n  {\n    name: \"Oranges\",\n    colors: [\n      \"#fee6ce\",\n      \"#fdd0a2\",\n      \"#fdae6b\",\n      \"#fd8d3c\",\n      \"#f16913\",\n      \"#d94801\",\n      \"#a63603\",\n      \"#7f2704\",\n    ],\n  },\n  {\n    name: \"Greens\",\n    colors: [\n      \"#e5f5e0\",\n      \"#c7e9c0\",\n      \"#a1d99b\",\n      \"#74c476\",\n      \"#41ab5d\",\n      \"#238b45\",\n      \"#006d2c\",\n      \"#00441b\",\n    ],\n  },\n  {\n    name: \"Blues\",\n    colors: [\n      \"#deebf7\",\n      \"#c6dbef\",\n      \"#9ecae1\",\n      \"#6baed6\",\n      \"#4292c6\",\n      \"#2171b5\",\n      \"#08519c\",\n      \"#08306b\",\n    ],\n  },\n  {\n    name: \"Purples\",\n    colors: [\n      \"#efedf5\",\n      \"#dadaeb\",\n      \"#bcbddc\",\n      \"#9e9ac8\",\n      \"#807dba\",\n      \"#6a51a3\",\n      \"#54278f\",\n      \"#3f007d\",\n    ],\n  },\n  {\n    name: \"Orange-Red\",\n    colors: [\n      \"#fee8c8\",\n      \"#fdd49e\",\n      \"#fdbb84\",\n      \"#fc8d59\",\n      \"#ef6548\",\n      \"#d7301f\",\n      \"#b30000\",\n      \"#7f0000\",\n    ],\n  },\n  {\n    name: \"Red-Purples\",\n    colors: [\n      \"#fde0dd\",\n      \"#fcc5c0\",\n      \"#fa9fb5\",\n      \"#f768a1\",\n      \"#dd3497\",\n      \"#ae017e\",\n      \"#7a0177\",\n      \"#49006a\",\n    ],\n  },\n  {\n    name: \"Blue-Green\",\n    colors: [\n      \"#e5f5f9\",\n      \"#ccece6\",\n      \"#99d8c9\",\n      \"#66c2a4\",\n      \"#41ae76\",\n      \"#238b45\",\n      \"#006d2c\",\n      \"#00441b\",\n    ],\n  },\n  {\n    name: \"Yellows\",\n    colors: [\n      \"#fffee5\",\n      \"#fffcbd\",\n      \"#fff98b\",\n      \"#fff533\",\n      \"#eedf00\",\n      \"#dad000\",\n      \"#c0b700\",\n      \"#b0a800\",\n    ],\n  },\n];\n\nvar theme = THEME;\n\nvar svg = d3.select(\"svg\")\n  .attr(\"width\", 900)\n  .attr(\"height\", 500)\n  .call(\n    d3.zoom().on(\"zoom\", function () {\n      svg.attr(\"transform\", d3.event.transform);\n    })\n  )\n  .append(\"g\");\n\nconst height = 500;\nconst width = 600;\n\n// setup the theme color\n\nconst textPadding = 8;\nconst corner = 5;\nconst grp_corner = 8;\nconst pad = 5;\nvar ent_colour = \"#03396c\";\nvar ent_t_colour = \"white\";\nvar att_colour = \"#ff4d00\";\nvar att_t_colour = \"white\";\nvar shad_colour = \"#ff4d00\";\nvar shad_t_colour = \"white\";\nvar rel_colour = \"#007777\";\nvar rel_t_colour = \"black\";\n\nlet colours = colors;\n// load the colours from the theme\nent_colour = colors.find((colour) => colour.name == theme.entity.colorlist)[\n  \"colors\"\n][theme.entity.cindex];\nent_t_colour = colors.find((colour) => colour.name == theme.entity.tcolorlist)[\n  \"colors\"\n][theme.entity.tindex];\natt_colour = colors.find((colour) => colour.name == theme.attribute.colorlist)[\n  \"colors\"\n][theme.attribute.cindex];\natt_t_colour = colors.find(\n  (colour) => colour.name == theme.attribute.tcolorlist\n)[\"colors\"][theme.attribute.tindex];\nshad_colour = colors.find((colour) => colour.name == theme.shadow.colorlist)[\n  \"colors\"\n][theme.shadow.cindex];\nshad_t_colour = colors.find((colour) => colour.name == theme.shadow.tcolorlist)[\n  \"colors\"\n][theme.shadow.tindex];\nrel_colour = colors.find((colour) => colour.name == theme.relation.colorlist)[\n  \"colors\"\n][theme.relation.cindex];\nrel_t_colour = colors.find(\n  (colour) => colour.name == theme.relation.tcolorlist\n)[\"colors\"][theme.relation.tindex];\n\nvar cola = cola.d3adaptor(d3).size([width, height]);\n\n// graph.json\nvar Graph_Data = GRAPH_DATA;\n\ndata = Graph_Data.basic;\ncola\n  .nodes(data.nodes)\n  .links(data.links)\n  .groups(data.groups)\n  .linkDistance(100)\n  .avoidOverlaps(true)\n  .handleDisconnected(false)\n  .start(30);\n\nvar group = svg\n  .selectAll(\".group\")\n  .data(data.groups)\n  .enter()\n  .append(\"rect\")\n  .attr(\"rx\", grp_corner)\n  .attr(\"ry\", grp_corner)\n  .attr(\"class\", \"group\")\n  .style(\"fill\", function (d, i) {\n    return colours.find(\n      (colour) => colour.name == d.colour_list\n    )[\"colors\"][d.level];\n  })\n  .attr(\"stroke-width\", 1)\n  .attr(\"stroke\", function (d, i) {\n    return colours.find((colour) => colour.name == d.colour_list)[\"colors\"][7];\n  })\n  .call(cola.drag);\n\ngroup.append(\"title\").text(function (d) {\n  return d.label;\n});\n\nvar link = svg\n  .selectAll(\".link\")\n  .data(data.links)\n  .enter()\n  .append(\"line\")\n  .attr(\"class\", \"link\")\n  .style(\"stroke-width\", \"1px\")\n  .attr(\"stroke\", \"black\");\n\nvar node = svg\n  .selectAll(\".node\")\n  .data(data.nodes)\n  .enter()\n  .append(\"rect\")\n  .attr(\"class\", \"node\")\n  .attr(\"class\", (d) => d.type)\n  .attr(\"class\", (d) => d.G_name)\n  .attr(\"id\", (d) => d.G_id);\n\nvar label = svg\n  .selectAll(\".label\")\n  .data(data.nodes)\n  .enter()\n  .append(\"text\")\n  .attr(\"class\", \"label\")\n  .text((d) =>\n    d.type == \"attribute\" ? d.G_name + \": \" + d.value : d.G_name + \": \" + d.G_id\n  )\n  .attr(\"id\", (d) => \"heading-\" + d.G_id)\n  .style(\"font-size\", 10)\n  .style(\"text-anchor\", \"middle\")\n  .style(\"color\", (d) => text_colour(d))\n  .style(\"fill\", (d) => text_colour(d))\n  .style(\"pointer-events\", \"none\")\n  .call(cola.drag);\n\n// setup heading colours for attribute, entity and relation\nfunction text_colour(d) {\n  let colour = \"black\";\n  switch (d.type) {\n    case \"attribute\":\n      if (d.dtype == \"actual\") {\n        colour = att_t_colour;\n      } else {\n        colour = shad_t_colour;\n      }\n      break;\n    case \"entity\":\n      colour = ent_t_colour;\n      break;\n    case \"relation\":\n      colour = rel_t_colour;\n      break;\n    default:\n      colour = \"black\";\n      break;\n  }\n  return colour;\n}\n\nnode\n  .attr(\"width\", (d) => nodeWidth(d))\n  .attr(\"height\", (d) => d.height)\n  .attr(\"rx\", (d) => d.corner)\n  .attr(\"ry\", (d) => d.corner)\n  .attr(\"x\", (d) => d.x)\n  .attr(\"y\", (d) => d.y)\n  .attr(\"class\", (d) => d.G_name)\n  .style(\"fill\", (d) => d.colour)\n  .on(\"click\", function (d) {\n    d.fixed = true;\n  })\n  .call(cola.drag);\n\n// function to set dimensions and colours for shapes\nfunction nodeWidth(d) {\n  let headingid = \"#heading-\" + d.G_id;\n  let headingbbox = d3.select(headingid).node().getBBox();\n\n  d.width = d3.max([5, headingbbox.width]) + textPadding * 2;\n  d.height = headingbbox.height + textPadding * 2;\n\n  // attributes and entities rounded rectangle, relation is circle\n  switch (d.type) {\n    case \"attribute\":\n      d.corner = corner;\n      d.colour = att_colour;\n      d.x = headingbbox.x - textPadding;\n      d.y = headingbbox.y - textPadding;\n      if (d.dtype === \"shadow\") {\n        d.colour = shad_colour;\n      } else {\n        d.colour = att_colour;\n      }\n      break;\n\n    case \"entity\":\n      d.corner = corner;\n      d.colour = ent_colour;\n      d.x = headingbbox.x - textPadding;\n      d.y = headingbbox.y - textPadding;\n      break;\n\n    case \"relation\":\n      d.width = 16;\n      d.height = 16;\n      d.corner = 8;\n      d.colour = rel_colour;\n      d.x = headingbbox.x + headingbbox.width / 2 - d.width / 2;\n      d.y = headingbbox.y + d.height / 2;\n      break;\n\n    default:\n      break;\n  }\n  return d.width;\n}\n\ncola.on(\"tick\", function () {\n  link\n    .attr(\"x1\", function (d) {\n      return d.source.x;\n    })\n    .attr(\"y1\", function (d) {\n      return d.source.y;\n    })\n    .attr(\"x2\", function (d) {\n      return d.target.x;\n    })\n    .attr(\"y2\", function (d) {\n      return d.target.y;\n    });\n\n  node\n    .attr(\"x\", function (d) {\n      return d.x - d.width / 2;\n    })\n    .attr(\"y\", function (d) {\n      return d.y - d.height / 2;\n    });\n\n  group\n    .attr(\"x\", function (d) {\n      return d.bounds.x - pad;\n    })\n    .attr(\"y\", function (d) {\n      return d.bounds.y - pad;\n    })\n    .attr(\"width\", function (d) {\n      return d.bounds.width() + 2 * pad;\n    })\n    .attr(\"height\", function (d) {\n      return d.bounds.height() + 2 * pad;\n    });\n\n  label\n    .attr(\"x\", function (d) {\n      return d.x;\n    })\n    .attr(\"y\", function (d) {\n      var h = this.getBBox().height;\n      return d.y + h / 4;\n    });\n});",
+        "endpoint": "http:127.0.0.1:8000/createSvg",
+        "outputs": 1
+      },
+      "x": 769,
+      "y": 188,
+      "component": "run",
+      "connections": {
+        "output": [
+          {
+            "id": "il7g116vw",
+            "index": "input"
           },
-          "x": 387,
-          "y": 396,
-          "component": "c5aria8f8f",
-          "connections": {},
-          "template": {
-            "icon": "fa fa-print",
-            "group": "Common",
-            "name": "Print JSON",
-            "inputs": [
-              {
-                "id": "input",
-                "name": "Input"
-              }
-            ]
+          {
+            "id": "il7g1v8q2",
+            "index": "subscribe"
           }
-        },
-        "il7fy86wj": {
-          "id": "il7fy86wj",
-          "config": {
-            "algorithm": "from typedb.client import *\nfrom loguru import logger as Logger\nfrom posixpath import basename\nimport json\nimport copy\nimport os\nimport sys\nimport argparse\nfrom datetime import datetime\ngquery = \"match $a isa log, has logName 'L1'; \"\ngquery += \"$b isa event, has eventName $c;\"\ngquery += \" $d (owner: $a, item: $b) isa trace, \"\ngquery += \" has traceId $t, has index $f; offset 0; limit 100;\"#  get; \"\ngroup_raw = [{\n    \"leaves\": [\n                    0\n                ],\n                \"colour_list\": \"Greys\",\n                \"level\": 7,\n                \"label\": \"hidden\"\n}]\n# function to collect all of the data out of the iterator\n# with read transaction object to use asRemote mode\ndef collect_answers(answer_iterator, r_tx, logger: Logger):\n    logger.info(f'into collect answers, iterator -> {answer_iterator}')\n    res = []\n    layers = []\n    layer = []\n    for answer in answer_iterator:\n        dict_answer = answer.map()\n        #logger.info(f'dict answer is {dict_answer}')\n        for key, thing in dict_answer.items():\n            logger.info(f'key, things is {key}, {thing}')\n            # pull entity data\n            if thing.is_entity():\n                ent = {}\n                ent['type'] = 'entity'\n                ent['symbol'] = key\n                ent['G_id'] = thing.get_iid()\n                ent['G_name'] = thing.get_type().get_label().name()\n                logger.info((f'entity name is {ent[\"G_name\"]}'))\n                logger.info((f'thing value is {thing}'))\n                att_obj = thing.as_remote(r_tx).get_has()\n                att = []\n                for a in att_obj:\n                    att.append(a.get_iid())\n                ent['has'] = att\n                res.append(ent)\n                layer.append(ent)\n                logger.info(f'ent -> {ent}')\n            # pull attribute data\n            elif thing.is_attribute():\n                att = {}\n                att['type'] = 'attribute'\n                att['symbol'] = key\n                att['G_id'] = thing.get_iid()\n                att['G_name'] = thing.get_type().get_label().name()\n                att['value'] = thing.get_value()\n                att['datatype'] = thing.get_type().get_value_type().name\n                att_obj = thing.as_remote(r_tx).get_has()\n                attrib = []\n                for a in att_obj:\n                    attrib.append(a.get_iid())\n                att['has'] = attrib\n                res.append(att)\n                layer.append(att)\n                logger.info(f'att -> {att}')\n            # pull relation data\n            elif thing.is_relation():\n                rel = {}\n                rel['type'] = 'relation'\n                rel['symbol'] = key\n                rel['G_id'] = thing.get_iid()\n                rel['G_name'] = thing.get_type().get_label().name()\n                att_obj = thing.as_remote(r_tx).get_has()\n                att = []\n                for a in att_obj:\n                    att.append(a.get_iid())\n                rel['has'] = att\n                links = thing.as_remote(r_tx).get_players_by_role_type()\n                logger.info(f' links are -> {links}')\n                edges = {}\n                for edge_key, edge_thing in links.items():\n                    logger.info(f' edge key is -> {edge_key}')\n                    logger.info(f' edge_thing is -> {list(edge_thing)}')\n                    edges[edge_key.get_label().name()] = [e.get_iid() for e in list(edge_thing)]\n                rel['edges'] = edges\n                res.append(rel)\n                layer.append(rel)\n                logger.info(f'rel -> {rel}')\n            # else log out error condition\n            else:\n                logger.info(f'Error key is {key}, thing is {thing}')\n        layers.append(layer)\n    return res\n# function to filter the links, so that there are none pointing to data not included\ndef filter_links(reduced_at, reduced_en, re):\n    #first build list of all node id's\n    att_list = [e['G_id'] for e in reduced_at]\n    ent_list = [e['G_id'] for e in reduced_en]\n    rel_list = [e['G_id'] for e in re]\n    node_list = att_list + ent_list + rel_list\n    #check each input list to delete those not in node_list\n    for item in reduced_en:\n        for link in item['has']:\n            if link not in node_list:\n                item['has'].remove(link)\n    for item in re:\n        for link in item['has']:\n            if link not in node_list:\n                item['has'].remove(link)\n    return reduced_at, reduced_en, re\n# function to convert the list of results into nodes and edges\ndef convert_res_to_graph(res, logger: Logger):\n    edges = []\n    nodes = []\n    en = [e for e in res if e['type'] == 'entity']\n    at = [e for e in res if e['type'] == 'attribute']\n    re = [e for e in res if e['type'] == 'relation']\n    # remove duplicates from attributes\n    reduced_at = [v for i,v in enumerate(at) if v not in at[i+1:] ]\n    reduced_en = [v for i,v in enumerate(en) if v not in en[i+1:] ]\n    # find number of types\n    G_types = {}\n    G_types['entity'] = list(set([v['G_name'] for v in reduced_en]))\n    G_types['attribute'] = list(set([v['G_name'] for v in reduced_at]))\n    G_types['relation'] = list(set([v['G_name'] for v in re]))\n    #filter out has links due to variables given thing, or attributes not expressed in the original query\n    reduced_at, reduced_en, re = filter_links(reduced_at, reduced_en, re)\n    # build edges list for attributes\n    for e in reduced_en:\n        own = e['has']\n        source = e['G_id']\n        name = 'has'\n        for o in own:\n            edge = {}\n            edge['G_target'] = o\n            edge['role'] = name\n            edge['G_source'] = source\n            edges.append(edge)\n    for a in reduced_at:\n        own = a['has']\n        source = a['G_id']\n        name = 'has'\n        for o in own:\n            edge = {}\n            edge['G_target'] = o\n            edge['role'] = name\n            edge['G_source'] = source\n            edges.append(edge)\n    for r in re:\n        own = r['has']\n        source = r['G_id']\n        name = 'has'\n        for o in own:\n            edge = {}\n            edge['G_target'] = o\n            edge['role'] = name\n            edge['G_source'] = source\n            edges.append(edge)\n    # add edges from relations\n    for r in re:\n        source = r['G_id']\n        edge_dict = r['edges']\n        for k, e in edge_dict.items():\n            edge = {}\n            edge['G_target'] = e[0]\n            edge['role'] = k\n            edge['G_source'] = source\n            edges.append(edge)\n    # add all nodes together\n    nodes = reduced_en + reduced_at + re\n    for node in nodes:\n        node['dtype'] = 'actual'\n    return nodes, edges, G_types\ndef get_node_id(nodes, G_id):\n    for index, element in enumerate(nodes):\n        if element['G_id'] == G_id:\n            return index;\ndef convert_res_to_cola(nodes, edges, G_types, logger: Logger):\n    # convert edges to id\n    for edge in edges:\n        edge['target'] = get_node_id(nodes, edge['G_target'])\n        edge['source'] = get_node_id(nodes, edge['G_source'])\n    for index, element in enumerate(nodes):\n        element['id'] = index\n    # find actual attributes in edges\n    att_list = []\n    for index, node in enumerate(nodes):\n        if node['type'] == 'attribute':\n            att_list.append(index)\n    for edge in edges:\n        edge['is_act_Attr'] = False\n        for att in att_list:\n            if edge['target'] == att or edge['source'] == att:\n                edge['is_act_Attr'] = True\n                break\n    temp_edges = copy.deepcopy(edges)\n    for t_edge in temp_edges:\n        target_node = nodes[t_edge['target']]\n        t_edge['target_name'] = target_node['G_name']\n        source_node = nodes[t_edge['source']]\n        t_edge['source_name'] = source_node['G_name']\n        if t_edge['role'] == 'has' or source_node['type'] == 'relation':\n            t_edge['direction'] = 'down'\n        else:\n            t_edge['direction'] = 'up'\n        t_edge.pop('target')\n        t_edge.pop('source')\n        t_edge.pop('G_target')\n        t_edge.pop('G_source')\n        t_edge.pop('is_act_Attr')\n    myUniqueSet = [dict(s) for s in set(frozenset(myObject.items()) for myObject in temp_edges)]\n    logger.info(f\"myUniqueSet:, {myUniqueSet}\")\n    G_types['schema'] = myUniqueSet\n    logger.info('==========================================================================================')\n    logger.info('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')\n    logger.info(f'g-types is -> {G_types}')\n    logger.info('==========================================================================================')\n    logger.info('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')\n    logger.info(f'nodes is ->  {nodes}')\n    logger.info('==========================================================================================')\n    logger.info('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')\n    logger.info(f'edges is -> {edges}')\n    logger.info('==========================================================================================')\n    logger.info('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')\n    colaGraph = {}\n    basic = {}\n    basic['nodes'] = nodes\n    basic['links'] = edges\n    basic['G_types'] = G_types\n    basic['groups'] = []\n    basic['constraints'] = []\n    colaGraph['basic'] = basic\n    colaGraph['grouped'] = {}\n    return colaGraph\n@Logger.catch\ndef get_data(dbhost, dbport, dbdatabase, dbquery, logger: Logger):\n    typeDBConnect = f'{dbhost}:{dbport}'\n    with TypeDB.core_client(typeDBConnect) as client:\n        with client.session(dbdatabase, SessionType.DATA) as session:\n            with session.transaction(TransactionType.READ) as read_transaction:\n                answer_iterator = read_transaction.query().match(dbquery)\n                res = collect_answers(answer_iterator, read_transaction, logger)\n                nodes, edges, G_types = convert_res_to_graph(res, logger)\n                colaGraph = convert_res_to_cola(nodes, edges, G_types, logger)\n    ## save file for reference\n    # with open(\"g_to_webcola.json\", \"w\") as outfile:\n    #     json.dump(colaGraph, outfile)\n    return colaGraph\n@Logger.catch\ndef main(dbhost, dbport, dbdatabase, dbquery, outputfile, logger: Logger):\n  # setup logger for execution\n  colaGraph = get_data(dbhost, dbport, dbdatabase, dbquery, logger)\n  basic = colaGraph['basic']\n  with open(outputfile, \"w\") as outfile:\n      json.dump(colaGraph, outfile)\n  logger.info('================ Schema ==================')\n  logger.info(f\"{basic['G_types']}\")",
-            "endpoint": "http://127.0.0.1:8000/algorithm",
-            "outputs": 1
-          },
-          "x": 391,
-          "y": 199,
-          "component": "c418t8a6b8",
-          "connections": {
-            "output": [
-              {
-                "id": "il7fy4dli",
-                "index": "input"
-              },
-              {
-                "id": "il7fy1rnx",
-                "index": "graph_data"
-              },
-              {
-                "id": "il8jwacs1",
-                "index": "input"
-              }
-            ]
-          },
-          "outputs": [
-            {
-              "id": "output",
-              "name": "Output #1"
-            }
-          ],
-          "template": {
-            "icon": "fa fa-code",
-            "group": "TypeRefinery",
-            "name": "Run (node & edges)",
-            "inputs": [
-              {
-                "id": "connection",
-                "name": "Connection"
-              },
-              {
-                "id": "query",
-                "name": "TQL Query"
-              }
-            ],
-            "outputs": [
-              {
-                "id": "output",
-                "name": "Output"
-              }
-            ]
-          }
-        },
-        "il7g116vw": {
-          "id": "il7g116vw",
-          "config": {
-            "repo": false,
-            "data": true
-          },
-          "x": 1012,
-          "y": 345,
-          "component": "c5aria8f8f",
-          "connections": {},
-          "template": {
-            "icon": "fa fa-print",
-            "group": "Common",
-            "name": "Print JSON",
-            "inputs": [
-              {
-                "id": "input",
-                "name": "Input"
-              }
-            ]
-          }
-        },
-        "il7g1v8q2": {
-          "id": "il7g1v8q2",
-          "config": {},
-          "x": 953,
-          "y": 234,
-          "component": "subsrcfyn2ecf44Xsvg_insert",
-          "connections": {},
-          "template": {
-            "type": "sub",
-            "icon": "fas fa-satellite-dish",
-            "group": "Subscribers",
-            "name": "TMS Example",
-            "inputs": [
-              {
-                "id": "subscribe",
-                "name": "Input"
-              }
-            ]
-          }
-        },
-        "il7g2g5w1": {
-          "id": "il7g2g5w1",
-          "config": {
-            "timeout": 60000
-          },
-          "x": 1171,
-          "y": 167,
-          "component": "calsrcfyn2ecf44Xsvg_query",
-          "connections": {},
-          "template": {
-            "type": "call",
-            "icon": "fa fa-plug",
-            "group": "Calls",
-            "name": "TMS Example",
-            "inputs": [
-              {
-                "id": "input",
-                "name": "Input"
-              }
-            ],
-            "outputs": [
-              {
-                "id": "output",
-                "name": "Output"
-              },
-              {
-                "id": "error",
-                "name": "Error"
-              }
-            ]
-          }
-        },
-        "il7g2g96i": {
-          "id": "il7g2g96i",
-          "config": {},
-          "x": 956,
-          "y": 166,
-          "component": "pubsrcfyn2ecf44Xsvg_insert",
-          "connections": {
-            "publish": [
-              {
-                "id": "il7g2g5w1",
-                "index": "input"
-              }
-            ]
-          },
-          "template": {
-            "type": "pub",
-            "icon": "fas fa-broadcast-tower",
-            "group": "Publishers",
-            "name": "TMS Example",
-            "outputs": [
-              {
-                "id": "publish",
-                "name": "Output"
-              }
-            ]
-          }
-        },
-        "il8juy675": {
-          "id": "il8juy675",
-          "config": {
-            "connectionid": ""
-          },
-          "x": 190,
-          "y": 130,
-          "component": "cbj43f380a",
-          "connections": {
-            "output": [
-              {
-                "id": "il7fy86wj",
-                "index": "connection"
-              }
-            ]
-          },
-          "template": {
-            "icon": "fa fa-code",
-            "group": "TypeRefinery",
-            "name": "Datastore Connection",
-            "inputs": [
-              {
-                "id": "input",
-                "name": "Input"
-              }
-            ],
-            "outputs": [
-              {
-                "id": "output",
-                "name": "Output"
-              }
-            ]
-          }
-        },
-        "il8jvwewi": {
-          "id": "il8jvwewi",
-          "config": {
-            "queryid": ""
-          },
-          "x": 191,
-          "y": 240,
-          "component": "cq5161fa3c",
-          "connections": {
-            "output": [
-              {
-                "id": "il7fy86wj",
-                "index": "query"
-              }
-            ]
-          },
-          "template": {
-            "icon": "fa fa-code",
-            "group": "TypeRefinery",
-            "name": "Datastore Query",
-            "inputs": [
-              {
-                "id": "input",
-                "name": "Input"
-              }
-            ],
-            "outputs": [
-              {
-                "id": "output",
-                "name": "Output"
-              }
-            ]
-          }
-        },
-        "il8jwacs1": {
-          "id": "il8jwacs1",
-          "config": {
-            "themeid": ""
-          },
-          "x": 576,
-          "y": 217,
-          "component": "c1ucx34982",
-          "connections": {
-            "output": [
-              {
-                "id": "il7fy1rnx",
-                "index": "theme"
-              }
-            ]
-          },
-          "template": {
-            "icon": "fa fa-code",
-            "group": "TypeRefinery",
-            "name": "Datastore Theme",
-            "inputs": [
-              {
-                "id": "input",
-                "name": "Input"
-              }
-            ],
-            "outputs": [
-              {
-                "id": "output",
-                "name": "Output"
-              }
-            ]
-          }
+        ]
+      },
+      "outputs": [
+        {
+          "id": "output",
+          "name": "Output #1"
         }
-      },
-      "variables": {},
-      "sources": {
-        "srcfyn2ecf44": {
-          "token": "",
-          "url": "http://127.0.0.1:8112/$tms/",
-          "id": "srcfyn2ecf44",
-          "meta": {
-            "type": "meta",
-            "name": "TMS Example",
-            "subscribe": [
-              {
-                "id": "svg_insert",
-                "schema": {
-                  "$id": "https://schemas.totaljs.com/Svg.json",
-                  "$schema": "https://json-schema.org/draft/2020-12/schema",
-                  "type": "object",
-                  "properties": {
-                    "stepId": {
-                      "type": "string"
-                    },
-                    "flowId": {
-                      "type": "string"
-                    },
-                    "stepName": {
-                      "type": "string"
-                    },
-                    "path": {
-                      "type": "string"
-                    },
-                    "projectId": {
-                      "type": "string"
-                    },
-                    "id": {
-                      "type": "string"
-                    },
-                    "dtcreated": {
-                      "type": "date"
-                    },
-                    "dtupdated": {
-                      "type": "date"
-                    }
-                  }
-                }
-              }
-            ],
-            "publish": [
-              {
-                "id": "svg_insert",
-                "schema": {
-                  "$id": "https://schemas.totaljs.com/Svg.json",
-                  "$schema": "https://json-schema.org/draft/2020-12/schema",
-                  "type": "object",
-                  "properties": {
-                    "stepId": {
-                      "type": "string",
-                      "$$ID": "stepId",
-                      "$$REQUIRED": false
-                    },
-                    "flowId": {
-                      "type": "string",
-                      "$$ID": "flowId",
-                      "$$REQUIRED": false
-                    },
-                    "stepName": {
-                      "type": "string",
-                      "$$ID": "stepName",
-                      "$$REQUIRED": false
-                    },
-                    "path": {
-                      "type": "string",
-                      "$$ID": "path",
-                      "$$REQUIRED": false
-                    },
-                    "projectId": {
-                      "type": "string",
-                      "$$ID": "projectId",
-                      "$$REQUIRED": false
-                    },
-                    "id": {
-                      "type": "string",
-                      "$$ID": "id",
-                      "$$REQUIRED": false
-                    },
-                    "dtcreated": {
-                      "type": "date",
-                      "$$ID": "dtcreated",
-                      "$$REQUIRED": false
-                    },
-                    "dtupdated": {
-                      "type": "date",
-                      "$$ID": "dtupdated",
-                      "$$REQUIRED": false
-                    }
-                  }
-                }
-              }
-            ],
-            "subscribers": ["svg_insert"],
-            "call": [
-              {
-                "id": "svg_query",
-                "schema": {
-                  "$id": "https://schemas.totaljs.com/Svg.json",
-                  "$schema": "https://json-schema.org/draft/2020-12/schema",
-                  "type": "object",
-                  "properties": {
-                    "stepId": {
-                      "type": "string"
-                    },
-                    "flowId": {
-                      "type": "string"
-                    },
-                    "stepName": {
-                      "type": "string"
-                    },
-                    "path": {
-                      "type": "string"
-                    },
-                    "projectId": {
-                      "type": "string"
-                    },
-                    "id": {
-                      "type": "string"
-                    },
-                    "dtcreated": {
-                      "type": "date"
-                    },
-                    "dtupdated": {
-                      "type": "date"
-                    }
-                  }
-                }
-              }
-            ]
+      ],
+      "template": {
+        "icon": "fa fa-code",
+        "group": "TypeRefinery",
+        "name": "WebCola Viz",
+        "inputs": [
+          {
+            "id": "graph_data",
+            "name": "DATA"
           },
-          "checksum": "22372718031",
-          "restart": false,
-          "error": 0,
-          "init": true,
-          "online": true,
-          "dtupdated": "2022-09-09T05:34:41.628Z"
-        }
+          {
+            "id": "theme",
+            "name": "Theme"
+          }
+        ],
+        "outputs": [
+          {
+            "id": "output",
+            "name": "Output"
+          }
+        ]
+      }
+    },
+    "il7fy4dli": {
+      "id": "il7fy4dli",
+      "config": {
+        "repo": false,
+        "data": true
       },
-      "origin": "http://localhost:8111",
-      "dtcreated": "2022-08-10T04:16:32.454Z",
-      "size": 51863
+      "x": 387,
+      "y": 396,
+      "component": "c5aria8f8f",
+      "connections": {},
+      "template": {
+        "icon": "fa fa-print",
+        "group": "Common",
+        "name": "Print JSON",
+        "inputs": [
+          {
+            "id": "input",
+            "name": "Input"
+          }
+        ]
+      }
+    },
+    "il7fy86wj": {
+      "id": "il7fy86wj",
+      "config": {
+        "algorithm": "from typedb.client import *\nfrom loguru import logger as Logger\nfrom posixpath import basename\nimport json\nimport copy\nimport os\nimport sys\nimport argparse\nfrom datetime import datetime\ngquery = \"match $a isa log, has logName 'L1'; \"\ngquery += \"$b isa event, has eventName $c;\"\ngquery += \" $d (owner: $a, item: $b) isa trace, \"\ngquery += \" has traceId $t, has index $f; offset 0; limit 100;\"#  get; \"\ngroup_raw = [{\n    \"leaves\": [\n                    0\n                ],\n                \"colour_list\": \"Greys\",\n                \"level\": 7,\n                \"label\": \"hidden\"\n}]\n# function to collect all of the data out of the iterator\n# with read transaction object to use asRemote mode\ndef collect_answers(answer_iterator, r_tx, logger: Logger):\n    logger.info(f'into collect answers, iterator -> {answer_iterator}')\n    res = []\n    layers = []\n    layer = []\n    for answer in answer_iterator:\n        dict_answer = answer.map()\n        #logger.info(f'dict answer is {dict_answer}')\n        for key, thing in dict_answer.items():\n            logger.info(f'key, things is {key}, {thing}')\n            # pull entity data\n            if thing.is_entity():\n                ent = {}\n                ent['type'] = 'entity'\n                ent['symbol'] = key\n                ent['G_id'] = thing.get_iid()\n                ent['G_name'] = thing.get_type().get_label().name()\n                logger.info((f'entity name is {ent[\"G_name\"]}'))\n                logger.info((f'thing value is {thing}'))\n                att_obj = thing.as_remote(r_tx).get_has()\n                att = []\n                for a in att_obj:\n                    att.append(a.get_iid())\n                ent['has'] = att\n                res.append(ent)\n                layer.append(ent)\n                logger.info(f'ent -> {ent}')\n            # pull attribute data\n            elif thing.is_attribute():\n                att = {}\n                att['type'] = 'attribute'\n                att['symbol'] = key\n                att['G_id'] = thing.get_iid()\n                att['G_name'] = thing.get_type().get_label().name()\n                att['value'] = thing.get_value()\n                att['datatype'] = thing.get_type().get_value_type().name\n                att_obj = thing.as_remote(r_tx).get_has()\n                attrib = []\n                for a in att_obj:\n                    attrib.append(a.get_iid())\n                att['has'] = attrib\n                res.append(att)\n                layer.append(att)\n                logger.info(f'att -> {att}')\n            # pull relation data\n            elif thing.is_relation():\n                rel = {}\n                rel['type'] = 'relation'\n                rel['symbol'] = key\n                rel['G_id'] = thing.get_iid()\n                rel['G_name'] = thing.get_type().get_label().name()\n                att_obj = thing.as_remote(r_tx).get_has()\n                att = []\n                for a in att_obj:\n                    att.append(a.get_iid())\n                rel['has'] = att\n                links = thing.as_remote(r_tx).get_players_by_role_type()\n                logger.info(f' links are -> {links}')\n                edges = {}\n                for edge_key, edge_thing in links.items():\n                    logger.info(f' edge key is -> {edge_key}')\n                    logger.info(f' edge_thing is -> {list(edge_thing)}')\n                    edges[edge_key.get_label().name()] = [e.get_iid() for e in list(edge_thing)]\n                rel['edges'] = edges\n                res.append(rel)\n                layer.append(rel)\n                logger.info(f'rel -> {rel}')\n            # else log out error condition\n            else:\n                logger.info(f'Error key is {key}, thing is {thing}')\n        layers.append(layer)\n    return res\n# function to filter the links, so that there are none pointing to data not included\ndef filter_links(reduced_at, reduced_en, re):\n    #first build list of all node id's\n    att_list = [e['G_id'] for e in reduced_at]\n    ent_list = [e['G_id'] for e in reduced_en]\n    rel_list = [e['G_id'] for e in re]\n    node_list = att_list + ent_list + rel_list\n    #check each input list to delete those not in node_list\n    for item in reduced_en:\n        for link in item['has']:\n            if link not in node_list:\n                item['has'].remove(link)\n    for item in re:\n        for link in item['has']:\n            if link not in node_list:\n                item['has'].remove(link)\n    return reduced_at, reduced_en, re\n# function to convert the list of results into nodes and edges\ndef convert_res_to_graph(res, logger: Logger):\n    edges = []\n    nodes = []\n    en = [e for e in res if e['type'] == 'entity']\n    at = [e for e in res if e['type'] == 'attribute']\n    re = [e for e in res if e['type'] == 'relation']\n    # remove duplicates from attributes\n    reduced_at = [v for i,v in enumerate(at) if v not in at[i+1:] ]\n    reduced_en = [v for i,v in enumerate(en) if v not in en[i+1:] ]\n    # find number of types\n    G_types = {}\n    G_types['entity'] = list(set([v['G_name'] for v in reduced_en]))\n    G_types['attribute'] = list(set([v['G_name'] for v in reduced_at]))\n    G_types['relation'] = list(set([v['G_name'] for v in re]))\n    #filter out has links due to variables given thing, or attributes not expressed in the original query\n    reduced_at, reduced_en, re = filter_links(reduced_at, reduced_en, re)\n    # build edges list for attributes\n    for e in reduced_en:\n        own = e['has']\n        source = e['G_id']\n        name = 'has'\n        for o in own:\n            edge = {}\n            edge['G_target'] = o\n            edge['role'] = name\n            edge['G_source'] = source\n            edges.append(edge)\n    for a in reduced_at:\n        own = a['has']\n        source = a['G_id']\n        name = 'has'\n        for o in own:\n            edge = {}\n            edge['G_target'] = o\n            edge['role'] = name\n            edge['G_source'] = source\n            edges.append(edge)\n    for r in re:\n        own = r['has']\n        source = r['G_id']\n        name = 'has'\n        for o in own:\n            edge = {}\n            edge['G_target'] = o\n            edge['role'] = name\n            edge['G_source'] = source\n            edges.append(edge)\n    # add edges from relations\n    for r in re:\n        source = r['G_id']\n        edge_dict = r['edges']\n        for k, e in edge_dict.items():\n            edge = {}\n            edge['G_target'] = e[0]\n            edge['role'] = k\n            edge['G_source'] = source\n            edges.append(edge)\n    # add all nodes together\n    nodes = reduced_en + reduced_at + re\n    for node in nodes:\n        node['dtype'] = 'actual'\n    return nodes, edges, G_types\ndef get_node_id(nodes, G_id):\n    for index, element in enumerate(nodes):\n        if element['G_id'] == G_id:\n            return index;\ndef convert_res_to_cola(nodes, edges, G_types, logger: Logger):\n    # convert edges to id\n    for edge in edges:\n        edge['target'] = get_node_id(nodes, edge['G_target'])\n        edge['source'] = get_node_id(nodes, edge['G_source'])\n    for index, element in enumerate(nodes):\n        element['id'] = index\n    # find actual attributes in edges\n    att_list = []\n    for index, node in enumerate(nodes):\n        if node['type'] == 'attribute':\n            att_list.append(index)\n    for edge in edges:\n        edge['is_act_Attr'] = False\n        for att in att_list:\n            if edge['target'] == att or edge['source'] == att:\n                edge['is_act_Attr'] = True\n                break\n    temp_edges = copy.deepcopy(edges)\n    for t_edge in temp_edges:\n        target_node = nodes[t_edge['target']]\n        t_edge['target_name'] = target_node['G_name']\n        source_node = nodes[t_edge['source']]\n        t_edge['source_name'] = source_node['G_name']\n        if t_edge['role'] == 'has' or source_node['type'] == 'relation':\n            t_edge['direction'] = 'down'\n        else:\n            t_edge['direction'] = 'up'\n        t_edge.pop('target')\n        t_edge.pop('source')\n        t_edge.pop('G_target')\n        t_edge.pop('G_source')\n        t_edge.pop('is_act_Attr')\n    myUniqueSet = [dict(s) for s in set(frozenset(myObject.items()) for myObject in temp_edges)]\n    logger.info(f\"myUniqueSet:, {myUniqueSet}\")\n    G_types['schema'] = myUniqueSet\n    logger.info('==========================================================================================')\n    logger.info('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')\n    logger.info(f'g-types is -> {G_types}')\n    logger.info('==========================================================================================')\n    logger.info('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')\n    logger.info(f'nodes is ->  {nodes}')\n    logger.info('==========================================================================================')\n    logger.info('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')\n    logger.info(f'edges is -> {edges}')\n    logger.info('==========================================================================================')\n    logger.info('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')\n    colaGraph = {}\n    basic = {}\n    basic['nodes'] = nodes\n    basic['links'] = edges\n    basic['G_types'] = G_types\n    basic['groups'] = []\n    basic['constraints'] = []\n    colaGraph['basic'] = basic\n    colaGraph['grouped'] = {}\n    return colaGraph\n@Logger.catch\ndef get_data(dbhost, dbport, dbdatabase, dbquery, logger: Logger):\n    typeDBConnect = f'{dbhost}:{dbport}'\n    with TypeDB.core_client(typeDBConnect) as client:\n        with client.session(dbdatabase, SessionType.DATA) as session:\n            with session.transaction(TransactionType.READ) as read_transaction:\n                answer_iterator = read_transaction.query().match(dbquery)\n                res = collect_answers(answer_iterator, read_transaction, logger)\n                nodes, edges, G_types = convert_res_to_graph(res, logger)\n                colaGraph = convert_res_to_cola(nodes, edges, G_types, logger)\n    ## save file for reference\n    # with open(\"g_to_webcola.json\", \"w\") as outfile:\n    #     json.dump(colaGraph, outfile)\n    return colaGraph\n@Logger.catch\ndef main(dbhost, dbport, dbdatabase, dbquery, outputfile, logger: Logger):\n  # setup logger for execution\n  colaGraph = get_data(dbhost, dbport, dbdatabase, dbquery, logger)\n  basic = colaGraph['basic']\n  with open(outputfile, \"w\") as outfile:\n      json.dump(colaGraph, outfile)\n  logger.info('================ Schema ==================')\n  logger.info(f\"{basic['G_types']}\")",
+        "endpoint": "http://127.0.0.1:8000/algorithm",
+        "outputs": 1
+      },
+      "x": 391,
+      "y": 199,
+      "component": "c418t8a6b8",
+      "connections": {
+        "output": [
+          {
+            "id": "il7fy4dli",
+            "index": "input"
+          },
+          {
+            "id": "il7fy1rnx",
+            "index": "graph_data"
+          },
+          {
+            "id": "il8jwacs1",
+            "index": "input"
+          }
+        ]
+      },
+      "outputs": [
+        {
+          "id": "output",
+          "name": "Output #1"
+        }
+      ],
+      "template": {
+        "icon": "fa fa-code",
+        "group": "TypeRefinery",
+        "name": "Run (node & edges)",
+        "inputs": [
+          {
+            "id": "connection",
+            "name": "Connection"
+          },
+          {
+            "id": "query",
+            "name": "TQL Query"
+          }
+        ],
+        "outputs": [
+          {
+            "id": "output",
+            "name": "Output"
+          }
+        ]
+      }
+    },
+    "il7g116vw": {
+      "id": "il7g116vw",
+      "config": {
+        "repo": false,
+        "data": true
+      },
+      "x": 1012,
+      "y": 345,
+      "component": "c5aria8f8f",
+      "connections": {},
+      "template": {
+        "icon": "fa fa-print",
+        "group": "Common",
+        "name": "Print JSON",
+        "inputs": [
+          {
+            "id": "input",
+            "name": "Input"
+          }
+        ]
+      }
+    },
+    "il7g1v8q2": {
+      "id": "il7g1v8q2",
+      "config": {},
+      "x": 953,
+      "y": 234,
+      "component": "subsrcfyn2ecf44Xsvg_insert",
+      "connections": {},
+      "template": {
+        "type": "sub",
+        "icon": "fas fa-satellite-dish",
+        "group": "Subscribers",
+        "name": "TMS Example",
+        "inputs": [
+          {
+            "id": "subscribe",
+            "name": "Input"
+          }
+        ]
+      }
+    },
+    "il7g2g5w1": {
+      "id": "il7g2g5w1",
+      "config": {
+        "timeout": 60000
+      },
+      "x": 1171,
+      "y": 167,
+      "component": "calsrcfyn2ecf44Xsvg_query",
+      "connections": {},
+      "template": {
+        "type": "call",
+        "icon": "fa fa-plug",
+        "group": "Calls",
+        "name": "TMS Example",
+        "inputs": [
+          {
+            "id": "input",
+            "name": "Input"
+          }
+        ],
+        "outputs": [
+          {
+            "id": "output",
+            "name": "Output"
+          },
+          {
+            "id": "error",
+            "name": "Error"
+          }
+        ]
+      }
+    },
+    "il7g2g96i": {
+      "id": "il7g2g96i",
+      "config": {},
+      "x": 956,
+      "y": 166,
+      "component": "pubsrcfyn2ecf44Xsvg_insert",
+      "connections": {
+        "publish": [
+          {
+            "id": "il7g2g5w1",
+            "index": "input"
+          }
+        ]
+      },
+      "template": {
+        "type": "pub",
+        "icon": "fas fa-broadcast-tower",
+        "group": "Publishers",
+        "name": "TMS Example",
+        "outputs": [
+          {
+            "id": "publish",
+            "name": "Output"
+          }
+        ]
+      }
+    },
+    "il8juy675": {
+      "id": "il8juy675",
+      "config": {
+        "connectionid": "s_project_con"
+      },
+      "x": 190,
+      "y": 130,
+      "component": "cbj43f380a",
+      "connections": {
+        "output": [
+          {
+            "id": "il7fy86wj",
+            "index": "connection"
+          }
+        ]
+      },
+      "template": {
+        "icon": "fa fa-code",
+        "group": "TypeRefinery",
+        "name": "Datastore Connection",
+        "inputs": [
+          {
+            "id": "input",
+            "name": "Input"
+          }
+        ],
+        "outputs": [
+          {
+            "id": "output",
+            "name": "Output"
+          }
+        ]
+      }
+    },
+    "il8jvwewi": {
+      "id": "il8jvwewi",
+      "config": {
+        "queryid": "s_project_query"
+      },
+      "x": 191,
+      "y": 240,
+      "component": "cq5161fa3c",
+      "connections": {
+        "output": [
+          {
+            "id": "il7fy86wj",
+            "index": "query"
+          }
+        ]
+      },
+      "template": {
+        "icon": "fa fa-code",
+        "group": "TypeRefinery",
+        "name": "Datastore Query",
+        "inputs": [
+          {
+            "id": "input",
+            "name": "Input"
+          }
+        ],
+        "outputs": [
+          {
+            "id": "output",
+            "name": "Output"
+          }
+        ]
+      }
+    },
+    "il8jwacs1": {
+      "id": "il8jwacs1",
+      "config": {
+        "themeid": "s_project_theme"
+      },
+      "x": 576,
+      "y": 217,
+      "component": "c1ucx34982",
+      "connections": {
+        "output": [
+          {
+            "id": "il7fy1rnx",
+            "index": "theme"
+          }
+        ]
+      },
+      "template": {
+        "icon": "fa fa-code",
+        "group": "TypeRefinery",
+        "name": "Datastore Theme",
+        "inputs": [
+          {
+            "id": "input",
+            "name": "Input"
+          }
+        ],
+        "outputs": [
+          {
+            "id": "output",
+            "name": "Output"
+          }
+        ]
+      }
     }
-  }
-]
+  },
+  "variables": {},
+  "sources": {
+    "srcfyn2ecf44": {
+      "token": "",
+      "url": "http://127.0.0.1:8112/$tms/",
+      "id": "srcfyn2ecf44",
+      "meta": {
+        "type": "meta",
+        "name": "TMS Example",
+        "subscribe": [
+          {
+            "id": "svg_insert",
+            "schema": {
+              "$id": "https://schemas.totaljs.com/Svg.json",
+              "$schema": "https://json-schema.org/draft/2020-12/schema",
+              "type": "object",
+              "properties": {
+                "stepId": {
+                  "type": "string"
+                },
+                "flowId": {
+                  "type": "string"
+                },
+                "stepName": {
+                  "type": "string"
+                },
+                "path": {
+                  "type": "string"
+                },
+                "projectId": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "dtcreated": {
+                  "type": "date"
+                },
+                "dtupdated": {
+                  "type": "date"
+                }
+              }
+            }
+          }
+        ],
+        "publish": [
+          {
+            "id": "svg_insert",
+            "schema": {
+              "$id": "https://schemas.totaljs.com/Svg.json",
+              "$schema": "https://json-schema.org/draft/2020-12/schema",
+              "type": "object",
+              "properties": {
+                "stepId": {
+                  "type": "string",
+                  "$$ID": "stepId",
+                  "$$REQUIRED": false
+                },
+                "flowId": {
+                  "type": "string",
+                  "$$ID": "flowId",
+                  "$$REQUIRED": false
+                },
+                "stepName": {
+                  "type": "string",
+                  "$$ID": "stepName",
+                  "$$REQUIRED": false
+                },
+                "path": {
+                  "type": "string",
+                  "$$ID": "path",
+                  "$$REQUIRED": false
+                },
+                "projectId": {
+                  "type": "string",
+                  "$$ID": "projectId",
+                  "$$REQUIRED": false
+                },
+                "id": {
+                  "type": "string",
+                  "$$ID": "id",
+                  "$$REQUIRED": false
+                },
+                "dtcreated": {
+                  "type": "date",
+                  "$$ID": "dtcreated",
+                  "$$REQUIRED": false
+                },
+                "dtupdated": {
+                  "type": "date",
+                  "$$ID": "dtupdated",
+                  "$$REQUIRED": false
+                }
+              }
+            }
+          }
+        ],
+        "subscribers": ["svg_insert"],
+        "call": [
+          {
+            "id": "svg_query",
+            "schema": {
+              "$id": "https://schemas.totaljs.com/Svg.json",
+              "$schema": "https://json-schema.org/draft/2020-12/schema",
+              "type": "object",
+              "properties": {
+                "stepId": {
+                  "type": "string"
+                },
+                "flowId": {
+                  "type": "string"
+                },
+                "stepName": {
+                  "type": "string"
+                },
+                "path": {
+                  "type": "string"
+                },
+                "projectId": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "dtcreated": {
+                  "type": "date"
+                },
+                "dtupdated": {
+                  "type": "date"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "checksum": "22372718031",
+      "restart": false,
+      "error": 0,
+      "init": true,
+      "online": true,
+      "dtupdated": "2022-09-09T05:34:41.628Z"
+    }
+  },
+  "origin": "http://localhost:8111",
+  "dtcreated": "2022-08-10T04:16:32.454Z",
+  "size": 51863
+}

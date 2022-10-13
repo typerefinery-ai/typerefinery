@@ -139,4 +139,10 @@ export default class AppData extends VuexModule {
   toggleSidebarPanel() {
     this.data.sidebarVisible = !this.data.sidebarVisible
   }
+
+  // Initial Data
+  @Mutation
+  setInitialDataCreated() {
+    this.data.initialDataCreated = true
+  }
 }

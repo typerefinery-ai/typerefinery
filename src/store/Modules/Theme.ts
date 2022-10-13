@@ -20,8 +20,8 @@ export default class Connections extends VuexModule {
     this.data.list = themes
   }
   @Mutation
-  addGlobalTheme(themeData: { data: any }) {
-    this.data.list.push(themeData)
+  addGlobalTheme(theme) {
+    if (theme.type === "theme") this.data.list.push(theme)
   }
   // @Action
   // async addNewThemeGlobal(themeData) {
@@ -68,6 +68,30 @@ export default class Connections extends VuexModule {
     themes.list[themeIdx][field] = value
     this.data = themes
   }
+
+  @Action
+  async createInitialTheme() {
+    try {
+      const theme = {
+        themeid: "defaulttheme",
+        id: "defaulttheme",
+        label: "Global Theme",
+        projectid: null,
+        scope: "global",
+        type: "theme",
+        data: "",
+        icon: "",
+        description: "",
+        theme: `{\n  "attribute": {\n    "colorlist": "Oranges",\n    "cindex": 7,\n    "tcolorlist": "Greys",\n    "tindex": 0\n  },\n  "entity": {\n    "colorlist": "Blue-Green",\n    "cindex": 7,\n    "tcolorlist": "Greys",\n    "tindex": 0\n  },\n  "relation": {\n    "colorlist": "Blue-Green",\n    "cindex": 6,\n    "tcolorlist": "Greys",\n    "tindex": 7\n  },\n  "shadow": {\n    "colorlist": "Yellows",\n    "cindex": 2,\n    "tcolorlist": "Greys",\n    "tindex": 7\n  }\n}`,
+      }
+      await axios.post(`/datastore/theme`, theme)
+      this.context.commit("addGlobalTheme", theme)
+    } catch (error) {
+      console.log(error)
+      this.context.commit("addGlobalTheme", {})
+    }
+  }
+
   @Action
   async getInitialThemes() {
     try {
