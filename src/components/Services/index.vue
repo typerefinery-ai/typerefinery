@@ -8,6 +8,7 @@
       :key="item.name"
       class="menu-item service-button"
       :status="item.value"
+      @click="OpenServices"
     >
       <i class="pi pi-cog"></i>&nbsp;
       <span class="service-button-text">{{ item.count }}</span>
@@ -169,8 +170,8 @@
       }
     },
     methods: {
-      openSettings(serviceId) {
-        settingsModule.openSettingsDialog("services/" + serviceId)
+      OpenServices() {
+        settingsModule.openSettingsDialog("services")
       },
     },
   }
@@ -227,13 +228,13 @@
       background-color: v-bind("serviceStatusColorList['disabled']");
     }
     &[status="10"] {
-      background-color: v-bind("serviceStatusColorList['stopped']");
+      background-color: v-bind("serviceStatusColorList['available']");
     }
     &[status="15"] {
-      background-color: v-bind("serviceStatusColorList['stopped']");
+      background-color: v-bind("serviceStatusColorList['installing']");
     }
     &[status="20"] {
-      background-color: v-bind("serviceStatusColorList['stopped']");
+      background-color: v-bind("serviceStatusColorList['installed']");
     }
     &[status="30"] {
       background-color: v-bind("serviceStatusColorList['stopping']");
@@ -261,13 +262,13 @@
       color: v-bind("serviceStatusColorList['disabled']");
     }
     &[status="10"] {
-      color: v-bind("serviceStatusColorList['stopped']");
+      color: v-bind("serviceStatusColorList['available']");
     }
     &[status="15"] {
-      color: v-bind("serviceStatusColorList['stopped']");
+      color: v-bind("serviceStatusColorList['installing']");
     }
     &[status="20"] {
-      color: v-bind("serviceStatusColorList['stopped']");
+      color: v-bind("serviceStatusColorList['installed']");
     }
     &[status="30"] {
       color: v-bind("serviceStatusColorList['stopping']");
