@@ -317,7 +317,7 @@
       "0": { "name": "disabled", "color": "gray" },
       "10": { "name": "available", "color": "gray" },
       "15": { "name": "installing", "color": "gray" },
-      "20": { "name": "installed", "color": "gray" },
+      "20": { "name": "installed", "color": "olive" },
       "30": { "name": "stopping", "color": "blue" },
       "60": { "name": "stopped", "color": "purple" },
       "90": { "name": "starting", "color": "yellow" },
