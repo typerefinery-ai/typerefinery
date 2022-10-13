@@ -17,7 +17,8 @@
     "transformerDialog": false,
     "algorithmDialog": false,
     "resizingFlow": false,
-    "sidebarVisible": true
+    "sidebarVisible": true,
+    "initialDataCreated": false
   },
   "auth": {
     "username": "TypeRefinery User",

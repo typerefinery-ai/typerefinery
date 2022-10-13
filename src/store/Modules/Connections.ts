@@ -24,7 +24,7 @@ export default class Connections extends VuexModule {
 
   @Mutation
   addGlobalConnection(connection) {
-    this.data.list.push(connection)
+    if (connection.type === "connection") this.data.list.push(connection)
   }
 
   // @Mutation
@@ -41,6 +41,30 @@ export default class Connections extends VuexModule {
     const connections = JSON.parse(JSON.stringify(this.data))
     connections.list[connectionIdx][field] = value
     this.data = connections
+  }
+
+  @Action
+  async createInitialConnection() {
+    try {
+      const connection = {
+        connectionid: "defaultconnection",
+        id: "defaultconnection",
+        projectid: null,
+        label: "Global Connection",
+        icon: "",
+        type: "connection",
+        scope: "global",
+        description: "",
+        port: "1729",
+        host: "localhost",
+        database: "typerefinery",
+      }
+      await axios.post(`/datastore/connection`, connection)
+      this.context.commit("addGlobalConnection", connection)
+    } catch (error) {
+      console.log(error)
+      this.context.commit("addGlobalConnection", {})
+    }
   }
 
   @Action
@@ -64,6 +88,7 @@ export default class Connections extends VuexModule {
     const payload = {
       projectid: null,
       connectionid: connection.id,
+      id: connection.id,
       icon: connection.icon,
       description: connection.description,
       type: connection.type,
