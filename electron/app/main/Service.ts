@@ -609,7 +609,6 @@ export class Service extends EventEmitter<ServiceEvent> {
               `http health check success, service status is ${this.#status}`
             )
           } else {
-            this.#setStatus(ServiceStatus.STOPPED)
             this.#log(
               `http health check failed with status code ${
                 res.statusCode
@@ -618,7 +617,6 @@ export class Service extends EventEmitter<ServiceEvent> {
           }
         })
         req.on("error", (e) => {
-          this.#setStatus(ServiceStatus.STOPPED)
           this.#log(
             `http health check request failed with error ${e}, service status is ${
               this.#status
@@ -626,7 +624,6 @@ export class Service extends EventEmitter<ServiceEvent> {
           )
         })
       } catch (error) {
-        this.#setStatus(ServiceStatus.STOPPED)
         this.#log(
           `http could not execute health check error is ${error}, service status is ${
             this.#status
@@ -647,7 +644,6 @@ export class Service extends EventEmitter<ServiceEvent> {
         socket.end()
       })
       socket.on("error", (error) => {
-        this.#setStatus(ServiceStatus.STOPPED)
         this.#log(
           `tcp health check failed with error ${error}, service status ${
             this.#status
