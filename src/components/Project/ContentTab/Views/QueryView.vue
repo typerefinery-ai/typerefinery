@@ -24,7 +24,7 @@
               :indent-with-tab="true"
               :tab-size="2"
               :extensions="extensions"
-              @change="handleQuery"
+              @change="handleQuery($event, 'query')"
             />
           </div>
         </div>
@@ -41,8 +41,10 @@
   import InputText from "primevue/inputtext"
   import Projects from "@/store/Modules/Projects"
   import Settings from "@/store/Modules/Settings"
+  import Queries from "@/store/Modules/Queries"
   const projectsModule = getModule(Projects)
   const settingsModule = getModule(Settings)
+  const queriesModule = getModule(Queries)
   export default {
     name: "QueryView",
     components: { InputText, Codemirror },
@@ -50,28 +52,37 @@
       tab: { type: Object, required: true },
       view: { type: String, required: true },
     },
+    data() {
+      return {
+        query: "",
+        debounce: null,
+        label: "",
+        // icon: "",
+        // description: "",
+      }
+    },
     computed: {
       extensions() {
         return settingsModule.data.theme === "dark"
           ? [javascript(), oneDark]
           : [javascript()]
       },
-      label() {
-        const { parent, id } = this.tab
-        const projects = projectsModule.getProjects
-        const projectIdx = projects.findIndex((el) => el.id === parent)
-        const queries = projectsModule.getQueries(projectIdx)
-        const queryIdx = queries.findIndex((el) => el.id === id)
-        return projectsModule.getQuery(projectIdx, queryIdx).label
-      },
-      query() {
-        const { parent, id } = this.tab
-        const projects = projectsModule.getProjects
-        const projectIdx = projects.findIndex((el) => el.id === parent)
-        const queries = projectsModule.getQueries(projectIdx)
-        const queryIdx = queries.findIndex((el) => el.id === id)
-        return projectsModule.getQuery(projectIdx, queryIdx).query
-      },
+      // label() {
+      //   const { parent, id } = this.tab
+      //   const projects = projectsModule.getProjects
+      //   const projectIdx = projects.findIndex((el) => el.id === parent)
+      //   const queries = projectsModule.getQueries(projectIdx)
+      //   const queryIdx = queries.findIndex((el) => el.id === id)
+      //   return projectsModule.getQuery(projectIdx, queryIdx).label
+      // },
+      // query() {
+      //   const { parent, id } = this.tab
+      //   const projects = projectsModule.getProjects
+      //   const projectIdx = projects.findIndex((el) => el.id === parent)
+      //   const queries = projectsModule.getQueries(projectIdx)
+      //   const queryIdx = queries.findIndex((el) => el.id === id)
+      //   return projectsModule.getQuery(projectIdx, queryIdx).query
+      // },
       viewResized() {
         return settingsModule.data.viewResized
       },
@@ -83,16 +94,72 @@
     },
     mounted() {
       setTimeout(() => this.setEditorHeight(), 0)
+      this.setInitialData()
     },
     methods: {
-      handleInput({ target: { value } }, field) {
-        const payload = { field, value, ...this.tab }
-        projectsModule.setQueryData(payload)
-        // projectsModule.updateQuery(payload)
+      setInitialData() {
+        const { parent, id } = this.tab
+        const projects = projectsModule.getProjects
+        const projectIdx = projects.findIndex((el) => el.id === parent)
+        let queryData
+        if (projectIdx != -1) {
+          // local
+          const queries = projectsModule.getQueries(projectIdx)
+          const queryIdx = queries.findIndex((el) => el.id === id)
+          queryData = queries[queryIdx]
+          // const project = projectsModule.getProjects[projectIdx]
+          // connection = project.connections.list[connectionIdx]
+        } else {
+          // global
+          const queries = queriesModule.getGlobalQueries
+          const queryIdx = queries.findIndex((el) => el.queryid === id)
+          queryData = queriesModule.data.list[queryIdx]
+        }
+        // const { theme } = themeData
+        // this.code = theme
+        const { query, label } = queryData
+        this.query = query
+        this.label = label
       },
-      handleQuery(code) {
-        const payload = { field: "query", value: code, ...this.tab }
-        projectsModule.setQueryData(payload)
+      async handleInput({ target: { value } }, field) {
+        clearTimeout(this.debounce)
+        this.debounce = setTimeout(async () => {
+          const { parent, id } = this.tab
+          const projects = projectsModule.getProjects
+          const projectIdx = projects.findIndex((el) => el.id === parent)
+          if (projectIdx != -1) {
+            const queries = projectsModule.getQueries(projectIdx)
+            const queryIdx = queries.findIndex((el) => el.id === id)
+            const payload = { field, value, queryIdx, ...this.tab }
+            await projectsModule.setQueryData(payload)
+          } else {
+            // global
+            const queries = queriesModule.getGlobalQueries
+            const queryIdx = queries.findIndex((el) => el.id === id)
+            const payload = { field, value, queryIdx, ...this.tab }
+            await queriesModule.setGlobalQuery(payload)
+          }
+        }, 500)
+      },
+      handleQuery(value, field) {
+        clearTimeout(this.debounce)
+        this.debounce = setTimeout(async () => {
+          const { parent, id } = this.tab
+          const projects = projectsModule.getProjects
+          const projectIdx = projects.findIndex((el) => el.id === parent)
+          if (projectIdx != -1) {
+            const queries = projectsModule.getQueries(projectIdx)
+            const queryIdx = queries.findIndex((el) => el.id === id)
+            const payload = { field, value, queryIdx, ...this.tab }
+            await projectsModule.setQueryData(payload)
+          } else {
+            // global
+            const queries = queriesModule.getGlobalQueries
+            const queryIdx = queries.findIndex((el) => el.id === id)
+            const payload = { field, value, queryIdx, ...this.tab }
+            await queriesModule.setGlobalQuery(payload)
+          }
+        }, 500)
       },
       setEditorHeight() {
         if (this.view !== "Q") return

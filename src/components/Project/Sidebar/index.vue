@@ -81,11 +81,13 @@
   // import Algorithms from "@/store/Modules/Algorithms"
   import AppData from "@/store/Modules/AppData"
   import Themes from "@/store/Modules/Theme"
+  import Queries from "@/store/Modules/Queries"
   const themesModule = getModule(Themes)
   const settingsModule = getModule(Settings)
   const projectsModule = getModule(Projects)
   const connectionsModule = getModule(Connections)
   const flowMessageModule = getModule(FlowMessage)
+  const queriesModule = getModule(Queries)
   // const transformersModule = getModule(Transformers)
   // const algorithmsModule = getModule(Algorithms)
   const appDataModule = getModule(AppData)
@@ -230,9 +232,22 @@
             icon: "pi pi-fw pi-file",
           })),
         }
-        const themes = {
+        const queries = {
           key: 2,
-          label: "Themes",
+          type: "queries",
+          label: "Global Queries",
+          icon: "pi pi-fw pi-book",
+          children: queriesModule.data.list.map((query) => ({
+            key: query.id,
+            id: query.id,
+            type: query.type,
+            label: query.label,
+            icon: "pi pi-fw pi-file",
+          })),
+        }
+        const themes = {
+          key: 3,
+          label: "Global Themes",
           type: "themes",
           icon: "pi pi-fw pi-server",
           children: themesModule.data.list.map((theme) => {
@@ -245,7 +260,7 @@
             }
           }),
         }
-        return [projects, connections, themes]
+        return [projects, connections, themes, queries]
       },
       expandedKeys() {
         return projectsModule.data.expandedNodes
