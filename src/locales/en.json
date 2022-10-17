@@ -145,8 +145,8 @@
           "header": "Connection Info",
           "label1": "Projects",
           "label2": "Connections",
-          "select1": "Select project",
-          "select2": "Select connection",
+          "select-project": "Select project",
+          "select-connection": "Select connection",
           "select-query": "Select query"
         },
         "panel2": {

@@ -31,7 +31,7 @@
           :options="projectList"
           option-label="label"
           option-value="key"
-          :placeholder="$t(`components.dialog.new-query.panel1.select1`)"
+          :placeholder="$t(`components.dialog.new-query.panel1.select-project`)"
         />
       </div>
     </Panel>
@@ -109,7 +109,9 @@
           option-label="label"
           option-group-label="label"
           option-group-children="items"
-          :placeholder="$t(`components.dialog.new-query.panel1.select2`)"
+          :placeholder="
+            $t(`components.dialog.new-query.panel1.select-connection`)
+          "
           :class="{ 'p-error': v$.connectionselected.$invalid && submitted }"
           @change="handleConnection"
         />

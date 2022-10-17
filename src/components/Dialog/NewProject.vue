@@ -99,20 +99,7 @@
           }}</small
         >
       </div>
-      <!-- Select Query -->
-      <div class="field">
-        <label for="expand">{{
-          $t("components.dialog.new-query.query") + "*"
-        }}</label>
-        <Dropdown
-          v-model="selected"
-          :options="queryList"
-          option-label="label"
-          option-group-label="label"
-          option-group-children="items"
-          :placeholder="$t(`components.dialog.new-query.panel1.select-query`)"
-        />
-      </div>
+
       <!-- Select Connection -->
       <div class="field">
         <label
@@ -146,6 +133,21 @@
             )
           }}</small
         >
+      </div>
+
+      <!-- Select Query -->
+      <div class="field">
+        <label for="expand">{{
+          $t("components.dialog.new-query.query") + "*"
+        }}</label>
+        <Dropdown
+          v-model="selected"
+          :options="queryList"
+          option-label="label"
+          option-group-label="label"
+          option-group-children="items"
+          :placeholder="$t(`components.dialog.new-query.panel1.select-query`)"
+        />
       </div>
       <!-- Select Theme -->
       <div class="field">
