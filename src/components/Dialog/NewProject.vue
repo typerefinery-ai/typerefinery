@@ -74,105 +74,105 @@
           }}</small
         >
       </div> -->
-    </Panel>
-    <Panel
-      :header="$t(`components.dialog.connections.panelheader`)"
-      class="mt-3"
-    >
-      <div class="field">
-        <label for="uri" :class="{ 'p-error': v$.host.$invalid && submitted }">
-          {{ $t("components.dialog.connections.info.uri") + "*" }}</label
-        >
-        <InputText
-          id="uri"
-          v-model="v$.host.$model"
-          :class="{ 'p-invalid': v$.host.$invalid && submitted }"
-        />
-        <small
-          v-if="(v$.host.$invalid && submitted) || v$.host.$pending.$response"
-          class="p-error"
-          >{{ v$.host.required.$message.replace("Value", "Host") }}</small
-        >
-      </div>
-      <div class="field">
-        <label for="port" :class="{ 'p-error': v$.port.$invalid && submitted }">
-          {{ $t("components.dialog.connections.info.port") + "*" }}</label
-        >
-        <InputText
-          id="port"
-          v-model="v$.port.$model"
-          :class="{ 'p-invalid': v$.port.$invalid && submitted }"
-        />
-        <small
-          v-if="(v$.port.$invalid && submitted) || v$.port.$pending.$response"
-          class="p-error"
-          >{{ v$.port.required.$message.replace("Value", "Port") }}</small
-        >
-      </div>
+      <!-- Select Project Type -->
       <div class="field">
         <label
-          for="database"
-          :class="{ 'p-error': v$.database.$invalid && submitted }"
+          for="expand"
+          :class="{ 'p-error': v$.projectType.$invalid && submitted }"
+          >{{ $t("components.dialog.projects.project-type") + "*" }}</label
         >
-          {{ $t("components.dialog.connections.info.database") + "*" }}</label
-        >
-        <InputText
-          id="database"
-          v-model="v$.database.$model"
-          :class="{ 'p-invalid': v$.database.$invalid && submitted }"
+        <Dropdown
+          v-model="v$.projectType.$model"
+          :options="projectTypeList"
+          option-label="label"
+          :placeholder="$t(`components.dialog.projects.info.select`)"
+          :class="{ 'p-error': v$.projectType.$invalid && submitted }"
         />
         <small
           v-if="
-            (v$.database.$invalid && submitted) ||
-            v$.database.$pending.$response
+            (v$.projectType.$invalid && submitted) ||
+            v$.projectType.$pending.$response
           "
           class="p-error"
           >{{
-            v$.database.required.$message.replace("Value", "Database")
+            v$.projectType.required.$message.replace("Value", "Project type")
           }}</small
         >
       </div>
-    </Panel>
-    <Panel
-      :header="$t(`components.dialog.new-query.panel2.query`)"
-      class="mt-3"
-    >
+      <!-- Select Query -->
       <div class="field">
-        <!--  <InputText
-          id="query"
-          v-model="v$.query.$model"
-          :class="{ 'p-invalid': v$.query.$invalid && submitted }"
-        /> -->
-        <codemirror
-          v-model="query"
-          placeholder="Code goes here..."
-          :style="{ height: '20vh' }"
-          :autofocus="true"
-          :indent-with-tab="true"
-          :tab-size="2"
-          :extensions="extensions"
+        <label for="expand">{{
+          $t("components.dialog.new-query.query") + "*"
+        }}</label>
+        <Dropdown
+          v-model="selected"
+          :options="queryList"
+          option-label="label"
+          option-group-label="label"
+          option-group-children="items"
+          :placeholder="$t(`components.dialog.new-query.panel1.select-query`)"
         />
       </div>
-    </Panel>
-    <Panel
-      :header="$t(`components.dialog.new-theme.panel2.theme`)"
-      class="mt-3"
-    >
+      <!-- Select Connection -->
       <div class="field">
-        <!--  <InputText
-          id="query"
-          v-model="v$.query.$model"
-          :class="{ 'p-invalid': v$.query.$invalid && submitted }"
-        /> -->
-        <codemirror
-          v-model="themecode"
-          placeholder="Code goes here..."
-          :style="{ height: '20vh' }"
-          :autofocus="true"
-          :indent-with-tab="true"
-          :tab-size="2"
-          :extensions="extensions"
+        <label
+          for="expand"
+          :class="{ 'p-error': v$.connectionselected.$invalid && submitted }"
+          >{{
+            $t("components.dialog.connections.info.connection") + "*"
+          }}</label
+        >
+        <Dropdown
+          v-model="v$.connectionselected.$model"
+          :options="connectionsList"
+          option-label="label"
+          option-group-label="label"
+          option-group-children="items"
+          :placeholder="
+            $t(`components.dialog.connections.info.select-connection`)
+          "
+          :class="{ 'p-error': v$.connectionselected.$invalid && submitted }"
         />
+        <small
+          v-if="
+            (v$.connectionselected.$invalid && submitted) ||
+            v$.connectionselected.$pending.$response
+          "
+          class="p-error"
+          >{{
+            v$.connectionselected.required.$message.replace(
+              "Value",
+              "Connection"
+            )
+          }}</small
+        >
+      </div>
+      <!-- Select Theme -->
+      <div class="field">
+        <label
+          for="expand"
+          :class="{ 'p-error': v$.themeselected.$invalid && submitted }"
+          >{{ $t("components.dialog.new-theme.theme") + "*" }}</label
+        >
+        <Dropdown
+          v-model="v$.themeselected.$model"
+          :options="themesList"
+          option-label="label"
+          option-group-label="label"
+          option-group-children="items"
+          :placeholder="$t(`components.dialog.new-theme.info.select-theme`)"
+          :class="{ 'p-error': v$.themeselected.$invalid && submitted }"
+        />
+        <small
+          v-if="
+            (v$.themeselected.$invalid && submitted) ||
+            v$.themeselected.$pending.$response
+          "
+          class="p-error"
+          >{{
+            v$.themeselected.required.$message.replace("Value", "Theme")
+          }}</small
+        >
       </div>
     </Panel>
     <template #footer>
@@ -192,25 +192,31 @@
     </template>
   </Dialog>
 </template>
-
 <script>
   import { getModule } from "vuex-module-decorators"
   import { required } from "@vuelidate/validators"
   import { useVuelidate } from "@vuelidate/core"
   import { nanoid } from "nanoid"
-  import { Codemirror } from "vue-codemirror"
   import { oneDark } from "@codemirror/theme-one-dark"
   import { javascript } from "@codemirror/lang-javascript"
   import axios from "axios"
   import Dialog from "primevue/dialog"
+  import Dropdown from "primevue/dropdown"
   import Panel from "primevue/panel"
   import InputText from "primevue/inputtext"
   import Button from "primevue/button"
   import Projects from "@/store/Modules/Projects"
   import Settings from "@/store/Modules/Settings"
+  import Services from "@/store/Modules/Services"
+  import Themes from "@/store/Modules/Theme"
+  import Connections from "@/store/Modules/Connections"
+  import Queries from "@/store/Modules/Queries"
+  const queriesModule = getModule(Queries)
   const settingsModule = getModule(Settings)
+  const connectionsModule = getModule(Connections)
+  const servicesModule = getModule(Services)
   const projectsModule = getModule(Projects)
-
+  const themesModule = getModule(Themes)
   export default {
     name: "NewProject",
     components: {
@@ -218,7 +224,7 @@
       Panel,
       InputText,
       Button,
-      Codemirror,
+      Dropdown,
     },
     props: {
       projectdialog: { type: Boolean, default: false },
@@ -239,6 +245,26 @@
         // flowName: "",
         display: true,
         submitted: false,
+        projectTypeList: [
+          { label: "Default", key: "default" },
+          { label: "Custom", key: "custom" },
+        ],
+        connectionselected: {
+          label: "Global Connection",
+          key: "defaultconnection",
+          scope: "global",
+        },
+        themeselected: {
+          label: "Global Theme",
+          key: "defaulttheme",
+          scope: "global",
+        },
+        selected: {
+          label: "Global Query",
+          key: "defaultquery",
+          scope: "global",
+        },
+        projectType: { label: "Default", key: "default" },
         displayModal: true,
         loading: false,
         showError: false,
@@ -253,6 +279,10 @@
         host: { required },
         port: { required },
         database: { required },
+        connectionselected: { required },
+        themeselected: { required },
+        selected: { required },
+        projectType: { required },
         // flowName: { required },
       }
     },
@@ -262,6 +292,38 @@
           ? [javascript(), oneDark]
           : [javascript()]
       },
+      connectionsList() {
+        return [
+          {
+            label: "Global",
+            items: connectionsModule.getGlobalConnections.map((el) => {
+              return { label: el.label, key: el.id, scope: el.scope }
+            }),
+          },
+        ]
+      },
+      themesList() {
+        let projectIdx = projectsModule.getProjects.findIndex((el) => el.id)
+        return [
+          {
+            label: "Global",
+            items: themesModule.getGlobalThemes.map((el) => {
+              return { label: el.label, key: el.id, scope: el.scope }
+            }),
+          },
+        ]
+      },
+      queryList() {
+        let projectIdx = projectsModule.getProjects.findIndex((el) => el.id)
+        return [
+          {
+            label: "Global",
+            items: queriesModule.getGlobalQueries.map((el) => {
+              return { label: el.label, key: el.id, scope: el.scope }
+            }),
+          },
+        ]
+      },
     },
     methods: {
       closeDialog() {
@@ -269,6 +331,7 @@
       },
       async handleProjectstore(isFormValid) {
         const projectId = nanoid(14)
+
         this.submitted = true
         // stop here if form is invalid
         if (!isFormValid) {
@@ -277,7 +340,6 @@
         this.loading = true
         await this.createFlow(projectId)
       },
-
       async createFlow(projectId) {
         try {
           const payload = {
@@ -293,16 +355,39 @@
           }
           const url = "http://localhost:8000/flow/create"
           const { data } = await axios.post(url, payload)
-
-          this.createInitialData(projectId, data.id)
+          const defaultFlowId = nanoid(14)
+          if (this.projectType.key === "custom") {
+            this.createInitialData(projectId, data.id)
+          } else if (this.projectType.key === "default") {
+            this.insertFlowData(projectId, defaultFlowId)
+          }
         } catch (err) {
           console.log(err)
           this.loading = false
           this.showError = true
         }
       },
-
+      async insertFlowData(projectid, flowid) {
+        try {
+          const payload = { flowid }
+          const url = "http://localhost:8000/flow/createsample"
+          await axios.post(url, payload)
+          await servicesModule.restartService("totaljs-flow")
+          await this.createInitialData(projectid, flowid)
+        } catch (error) {
+          console.log(error)
+        }
+      },
       async createInitialData(projectid, flowid) {
+        const connectionData = connectionsModule.getGlobalConnections.find(
+          (el) => el.id === this.connectionselected.key
+        )
+        const queryData = queriesModule.getGlobalQueries.find(
+          (el) => el.id === this.selected.key
+        )
+        const themeData = themesModule.getGlobalThemes.find(
+          (el) => el.id === this.themeselected.key
+        )
         try {
           // create project, connection & query
           const project = {
@@ -314,40 +399,25 @@
             flowid: flowid,
           }
           const connection = {
+            ...connectionData,
             connectionid: projectid + "_con",
             projectid,
-            label: "Connection",
-            icon: "Connection",
-            type: "connection",
             scope: "local",
-            description: "",
-            port: this.port,
-            host: this.host,
-            database: this.database,
           }
           const theme = {
+            ...themeData,
             id: projectid + "_theme",
-            label: "Theme",
             projectid: projectid,
             scope: "local",
-            type: "theme",
-            data: "string",
-            icon: this.icon,
             themeid: projectid + "_theme",
-            description: "",
             theme: JSON.parse(JSON.stringify(this.themecode)),
           }
           const query = {
+            ...queryData,
             queryid: projectid + "_query",
             projectid,
             connectionid: projectid + "_con",
             scope: "local",
-            icon: "query",
-            label: "Query",
-            description: "",
-            type: "query",
-            query: this.query,
-            data: "",
           }
           const baseURL = "http://localhost:8000/datastore/"
           await axios.all([
@@ -363,7 +433,6 @@
           this.showError = true
         }
       },
-
       createData(projectid, flowid) {
         const connection = {
           type: "connection",
