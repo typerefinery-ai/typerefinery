@@ -95,6 +95,7 @@
     "dialog": {
       "projects": {
         "header": "Projects ",
+        "project-type": "Project type",
         "panelheader": "Project Info",
         "info": {
           "name": "Name",
@@ -104,6 +105,9 @@
           "delete": "Delete",
           "save": "Save",
           "flowName": "Workflow Name",
+          "select": "Select project",
+          "default-project": "Default Project",
+          "custom-project": "Custom Project",
           "delete-project": "Delete Project",
           "delete-project-popup": "Do you want to delete this Project?",
           "delete-sample-project-popup": "Do you want to delete this Sample Project ? Once it get deleted you will have to reload or download the Sample data from 'Setting' tab."
@@ -112,10 +116,12 @@
       "connections": {
         "header": "New connections ",
         "info": {
+          "connection": "Connection",
           "panelheader": "Project Info",
           "panel2header": "Connection Info",
           "project": "Projects",
           "select": "Select project",
+          "select-connection": "Select connection",
           "connection-info": "Connections Info",
           "name": "Name",
           "uri": "URI",
@@ -133,13 +139,15 @@
         "updated-header": "Update Connection"
       },
       "new-query": {
+        "query": "Query",
         "header": "New Query ",
         "panel1": {
           "header": "Connection Info",
           "label1": "Projects",
           "label2": "Connections",
-          "select1": "Select project",
-          "select2": "Select connection"
+          "select-project": "Select project",
+          "select-connection": "Select connection",
+          "select-query": "Select query"
         },
         "panel2": {
           "header": "Query Info",
@@ -159,12 +167,14 @@
         }
       },
       "new-theme": {
+        "theme": "Theme",
         "header": "New Theme ",
         "info": {
           "panelheader": "Project Info",
           "panel2header": "Theme Info",
           "project": "Projects",
           "select": "Select project",
+          "select-theme": "Select theme",
           "theme-info": "Theme Info",
           "name": "Name",
           "description": "Description",

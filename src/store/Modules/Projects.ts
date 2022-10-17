@@ -499,7 +499,7 @@ export default class Projects extends VuexModule {
           list: [
             {
               type: "wiring",
-              id: "fsfkt001xx41d", // TODO: make it dynamic
+              id: p.flowid,
               label: "Workflow",
               icon: "Workflow",
               scope: "local",
