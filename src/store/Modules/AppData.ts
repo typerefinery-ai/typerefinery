@@ -145,4 +145,15 @@ export default class AppData extends VuexModule {
   setInitialDataCreated() {
     this.data.initialDataCreated = true
   }
+
+  // services
+  @Mutation
+  setServicesStarted() {
+    this.data.servicesStarted = true
+  }
+
+  @Mutation
+  setServicesStopped() {
+    this.data.servicesStarted = false
+  }
 }
