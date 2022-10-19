@@ -27,7 +27,7 @@
       port() {
         const services = servicesModule.data.services
         const flowService = services.find((el) => el.id === "totaljs-flow")
-        return flowService.serviceport
+        return flowService?.serviceport ?? 8111
       },
       path() {
         const flowId = this.tab.id

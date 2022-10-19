@@ -102,10 +102,6 @@ async def flow_createsample(request: Request, response: Response, body: CreateSa
   with open(os.path.join(CONFIG.APP_SERVICE_LOCATION, "template", "sampleflow", "database.json"), "r") as sampleflows_file:
     SAMPLEFLOWS = sampleflows_file.read()
 
-  # load custom flows to add
-  with open(os.path.join(CONFIG.APP_SERVICE_LOCATION, "template", "sampleflow", "custom.json"), "r") as customflow_file:
-    CUSTOMFLOW = customflow_file.read()
-
   # open flows database
   flowid = body.flowid
   projectid = body.projectid
