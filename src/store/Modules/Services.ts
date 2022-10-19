@@ -22,6 +22,24 @@ export default class Services extends VuexModule {
   }
 
   @Action({ rawError: true })
+  async stopService(serviceid: string) {
+    // @ts-expect-error ts-migrate(2339) FIXME: Property 'ipc' does not exist on type 'Window & typeof globalThis'
+    const { ipc } = window
+    if (ipc && ipc.stopService) {
+      await ipc.stopService(serviceid)
+    }
+  }
+
+  @Action({ rawError: true })
+  async startService(serviceid: string) {
+    // @ts-expect-error ts-migrate(2339) FIXME: Property 'ipc' does not exist on type 'Window & typeof globalThis'
+    const { ipc } = window
+    if (ipc && ipc.startService) {
+      await ipc.startService(serviceid)
+    }
+  }
+
+  @Action({ rawError: true })
   async getServices() {
     // @ts-expect-error ts-migrate(2339) FIXME: Property 'ipc' does not exist on type 'Window & typeof globalThis'
     const { ipc } = window

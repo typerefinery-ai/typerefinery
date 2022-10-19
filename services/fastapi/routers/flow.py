@@ -8,7 +8,6 @@ from datetime import datetime
 import random
 import requests
 
-
 router = APIRouter()
 
 from config import CONFIG
@@ -88,6 +87,9 @@ class CreateSample(BaseModel):
   flowid: str | None = Field(
       default="", title="flowid"
   )
+  date: str | None = Field(
+      default="", title="Date"
+  )
      
 @Logger.catch
 @router.post("/flow/createsample")
@@ -100,9 +102,14 @@ async def flow_createsample(request: Request, response: Response, body: CreateSa
   with open(os.path.join(CONFIG.APP_SERVICE_LOCATION, "template", "sampleflow", "database.json"), "r") as sampleflows_file:
     SAMPLEFLOWS = sampleflows_file.read()
 
+  # load custom flows to add
+  with open(os.path.join(CONFIG.APP_SERVICE_LOCATION, "template", "sampleflow", "custom.json"), "r") as customflow_file:
+    CUSTOMFLOW = customflow_file.read()
+
   # open flows database
   flowid = body.flowid
   projectid = body.projectid
+  flowdate = body.date
   if not flowid or not projectid:
     message["status"] = "Either flowid or projectid is missing"
     return Response(content=json.dumps(message), media_type="application/json", status_code=422)
@@ -125,6 +132,8 @@ async def flow_createsample(request: Request, response: Response, body: CreateSa
 
             # Replace dummy ids with Actual Ids
             FLOW_DATABASE_JSON[flowid]["id"] = flowid
+            FLOW_DATABASE_JSON[flowid]["name"] = flowid
+            FLOW_DATABASE_JSON[flowid]["dtcreated"] = flowdate
             flowData = json.dumps(FLOW_DATABASE_JSON, indent=4)
             flowData = flowData.replace('PROJECT_ID', body.projectid)
 
@@ -141,9 +150,13 @@ async def flow_createsample(request: Request, response: Response, body: CreateSa
         
     FLOW_DATABASE_JSON[flowid] = SAMPLEFLOWS_JSON
     FLOW_DATABASE_JSON[flowid]["id"] = flowid
+    FLOW_DATABASE_JSON[flowid]["name"] = flowid
+    FLOW_DATABASE_JSON[flowid]["dtcreated"] = flowdate
+    flowData = json.dumps(FLOW_DATABASE_JSON, indent=4)
+    flowData = flowData.replace('PROJECT_ID', body.projectid)
     # save flow to database
     with open(os.path.join(CONFIG.APP_USER_DATA_LOCATION, "../", "totaljs-flow", "database", "database.json"), "w") as flowdatabase_file:
-        flowdatabase_file.write(json.dumps(FLOW_DATABASE_JSON, indent=4))
+        flowdatabase_file.write(flowData)
         message["status"] = f"flow with id {flowid} added to database."
 
   return Response(content=json.dumps(message), media_type="application/json", status_code=200)

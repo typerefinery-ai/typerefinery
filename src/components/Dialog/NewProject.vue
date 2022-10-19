@@ -251,6 +251,7 @@
           { label: "Default", key: "default" },
           { label: "Custom", key: "custom" },
         ],
+        projectType: { label: "Default", key: "default" },
         connectionselected: {
           label: "Global Connection",
           key: "defaultconnection",
@@ -266,7 +267,6 @@
           key: "defaultquery",
           scope: "global",
         },
-        projectType: { label: "Default", key: "default" },
         displayModal: true,
         loading: false,
         showError: false,
@@ -369,10 +369,12 @@
       },
       async insertFlowData(projectid, flowid) {
         try {
-          const payload = { flowid, projectid }
+          const date = new Date().toISOString()
+          const payload = { flowid, projectid, date }
           const url = "http://localhost:8000/flow/createsample"
           await axios.post(url, payload)
-          await servicesModule.restartService("totaljs-flow")
+          await servicesModule.stopService("totaljs-flow")
+          await servicesModule.startService("totaljs-flow")
           await this.createInitialData(projectid, flowid)
         } catch (error) {
           console.log(error)

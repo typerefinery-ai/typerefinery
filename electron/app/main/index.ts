@@ -389,6 +389,28 @@ function addIpcEvents(window: BrowserWindow) {
       }
       return true
     },
+    startService(serviceid: string): any {
+      logger.log(`ipc startService {serviceid}`)
+      const aservice = serviceManager.getService(serviceid)
+      if (aservice) {
+        aservice.start()
+      } else {
+        logger.log(`service {serviceid} not found`)
+        return false
+      }
+      return true
+    },
+    stopService(serviceid: string): any {
+      logger.log(`ipc stopService {serviceid}`)
+      const aservice = serviceManager.getService(serviceid)
+      if (aservice) {
+        aservice.stop()
+      } else {
+        logger.log(`service {serviceid} not found`)
+        return false
+      }
+      return true
+    },
   }
 
   Object.values(sharedAppIpc).forEach((method) => method.clean())
