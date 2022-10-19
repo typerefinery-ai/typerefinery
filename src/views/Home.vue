@@ -1,5 +1,5 @@
 <template>
-  <template v-if="!servicesStarted">
+  <template v-if="!servicesStarted && isElectron">
     <loader />
   </template>
   <template v-else>
@@ -12,13 +12,13 @@
     <settings v-if="settingsDialogVisible" />
   </template>
 </template>
-
 <script>
   import { getModule } from "vuex-module-decorators"
   import Project from "@/components/Project"
   import Charts from "@/components/Charts"
   import Maps from "@/components/Maps"
   import Chat from "@/components/Chat"
+  import * as electronHelpers from "@/utils/electron"
   // import CodeEditor from "@/components/CodeEditor/MonacoEditor"
   import Loader from "@/components/Loader"
   import Settings from "@/components/Settings/Settings.vue"
@@ -34,7 +34,6 @@
   const themesModule = getModule(Themes)
   const appDataModule = getModule(AppDataStore)
   const queriesModule = getModule(QueriesStore)
-
   export default {
     name: "Home",
     components: { Project, Charts, Maps, Settings, Chat, Loader },
@@ -44,6 +43,9 @@
       },
       servicesStarted() {
         return appDataModule.data.servicesStarted
+      },
+      isElectron() {
+        return electronHelpers.isElectron()
       },
     },
     mounted() {
@@ -57,7 +59,6 @@
           await connectionsModule.createInitialConnection()
           await themesModule.createInitialTheme()
           await queriesModule.createInitialQuery()
-
           appDataModule.setInitialDataCreated()
           // load data
           this.getInitialData()
