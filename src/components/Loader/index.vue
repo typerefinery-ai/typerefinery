@@ -1,4 +1,9 @@
 <template>
+  <div class="menu-bar" :class="{ focus: focus }">
+    <!-- service icons -->
+
+    <window-controls v-if="isElectron" />
+  </div>
   <div class="container">
     <div class="row">
       <div class="col-xl-4 pt-5">
@@ -19,8 +24,19 @@
   </div>
 </template>
 <script>
+  import WindowControls from "@/components/Menu/WindowControls.vue"
+
+  import * as electronHelpers from "@/utils/electron"
   export default {
     name: "Loadingpage",
+    components: {
+      WindowControls,
+    },
+    computed: {
+      isElectron() {
+        return electronHelpers.isElectron()
+      },
+    },
   }
 </script>
 <style scoped lang="scss">
