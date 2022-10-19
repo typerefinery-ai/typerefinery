@@ -30,13 +30,20 @@
         >
         <InputText
           id="name"
-          v-model="v$.name.$model"
-          :class="{ 'p-invalid': v$.name.$invalid && submitted }"
+          :value="v$.name.$model"
+          :class="{ 'p-invalid': v$.name.$invalid && submitted && validname }"
+          @input="projectName($event.target.value, !v$.$invalid)"
         />
         <small
           v-if="(v$.name.$invalid && submitted) || v$.name.$pending.$response"
           class="p-error"
           >{{ v$.name.required.$message.replace("Value", "Name") }}</small
+        >
+        <!-- <small v-if="validname" class="p-error"
+          >This Project name already taken...Try another</small
+        > -->
+        <small v-if="validname" class="p-error"
+          >This Project name already taken...Try another</small
         >
       </div>
       <div class="field">
@@ -213,6 +220,8 @@
   import Themes from "@/store/Modules/Theme"
   import Connections from "@/store/Modules/Connections"
   import Queries from "@/store/Modules/Queries"
+  import AppDataStore from "@/store/Modules/AppData"
+  const appDataModule = getModule(AppDataStore)
   const queriesModule = getModule(Queries)
   const settingsModule = getModule(Settings)
   const connectionsModule = getModule(Connections)
@@ -235,8 +244,11 @@
     setup: () => ({ v$: useVuelidate() }),
     data() {
       return {
+        disabled: true,
         type: "",
+        // projectdata: "",
         name: "Project",
+        validname: false,
         expanded: "",
         description: "",
         icon: "",
@@ -325,15 +337,39 @@
         ]
       },
     },
+    mounted() {
+      const projectexists = projectsModule.getProjects.find(
+        (el) => el.label == this.name
+      )
+      if (projectexists) {
+        this.validname = true
+      } else {
+        this.validname = false
+      }
+    },
     methods: {
+      projectName(value, isFormValid) {
+        this.name = value
+        this.v$.name.$model = value
+        this.name = this.v$.name.$model
+        const projectexists = projectsModule.getProjects.find(
+          (el) => el.label == this.v$.name.$model
+        )
+        if (projectexists) {
+          this.validname = true
+        } else {
+          this.validname = false
+        }
+        if (!isFormValid) {
+          return
+        }
+      },
       closeDialog() {
         this.$emit("close")
       },
       async handleProjectstore(isFormValid) {
         const projectId = nanoid(14)
-
         this.submitted = true
-        // stop here if form is invalid
         if (!isFormValid) {
           return
         }
