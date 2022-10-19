@@ -83,15 +83,12 @@ async def flow_create(request: Request, response: Response, body: FlowSchema):
 
 class CreateSample(BaseModel):
   projectid: str | None = Field(
-      default="", title="projectid",
-      
+      default="", title="projectid", 
   )
   flowid: str | None = Field(
       default="", title="flowid"
   )
      
-     
-
 @Logger.catch
 @router.post("/flow/createsample")
 async def flow_createsample(request: Request, response: Response, body: CreateSample):
@@ -104,9 +101,12 @@ async def flow_createsample(request: Request, response: Response, body: CreateSa
     SAMPLEFLOWS = sampleflows_file.read()
 
   # open flows database
-  print(body.flowid)
-  flowData = ''
   flowid = body.flowid
+  projectid = body.projectid
+  if not flowid or not projectid:
+    message["status"] = "Either flowid or projectid is missing"
+    return Response(content=json.dumps(message), media_type="application/json", status_code=422)
+
   isExist= os.path.exists(os.path.join(CONFIG.APP_USER_DATA_LOCATION, "../", "totaljs-flow", "database", "database.json"))
 
   if isExist:
