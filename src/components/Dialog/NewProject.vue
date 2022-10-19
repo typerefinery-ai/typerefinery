@@ -305,7 +305,6 @@
         ]
       },
       themesList() {
-        let projectIdx = projectsModule.getProjects.findIndex((el) => el.id)
         return [
           {
             label: "Global",
@@ -316,7 +315,6 @@
         ]
       },
       queryList() {
-        let projectIdx = projectsModule.getProjects.findIndex((el) => el.id)
         return [
           {
             label: "Global",
@@ -403,22 +401,23 @@
           const connection = {
             ...connectionData,
             connectionid: projectid + "_con",
+            id: projectid + "_con",
             projectid,
             scope: "local",
             label: "Local  Connection",
           }
           const theme = {
             ...themeData,
+            themeid: projectid + "_theme",
             id: projectid + "_theme",
-            projectid: projectid,
+            projectid,
             scope: "local",
             label: "Local  Theme",
-            themeid: projectid + "_theme",
-            theme: JSON.parse(JSON.stringify(this.themecode)),
           }
           const query = {
             ...queryData,
             queryid: projectid + "_query",
+            id: projectid + "_query",
             projectid,
             label: "Local  Query",
             connectionid: projectid + "_con",
@@ -431,37 +430,22 @@
             axios.post(`${baseURL}query`, query),
             axios.post(`${baseURL}theme`, theme),
           ])
-          await this.createData(projectid, flowid)
+          const payload = {
+            projectid,
+            flowid,
+            connection,
+            query,
+            theme,
+          }
+          await this.createData(payload)
         } catch (err) {
           console.log(err)
           this.loading = false
           this.showError = true
         }
       },
-      createData(projectid, flowid) {
-        const connection = {
-          type: "connection",
-          id: projectid + "_con",
-          label: "Connection",
-          icon: "Connection",
-          scope: "local",
-          description: "",
-          port: this.port,
-          host: this.host,
-          database: this.database,
-        }
-        const theme = {
-          label: "Theme",
-          id: projectid + "_theme",
-          projectid: projectid,
-          scope: "local",
-          type: "theme",
-          data: "string",
-          icon: "",
-          themeid: projectid + "_theme",
-          description: "",
-          theme: JSON.parse(JSON.stringify(this.themecode)),
-        }
+      createData(payload) {
+        const { projectid, flowid, connection, query, theme } = payload
         const projectData = {
           type: "project",
           id: projectid,
@@ -476,19 +460,7 @@
           queries: {
             type: "queries",
             icon: "",
-            list: [
-              {
-                type: "query",
-                id: projectid + "_query",
-                label: "Query",
-                icon: "Query",
-                description: "",
-                query: this.query,
-                connectionid: projectid + "_con",
-                data: "",
-                scope: "local",
-              },
-            ],
+            list: [query],
           },
           themes: { type: "themes", icon: "", list: [theme] },
           wirings: {
