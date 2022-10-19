@@ -336,6 +336,7 @@
     "minimize": "Minimize",
     "maximize": "Maximize",
     "close": "Close",
+    "restore": "Restore",
     "hide-content-tools": "Hide Content Tools",
     "show-content-tools": "Show Content Tools",
     "project": "Project",
