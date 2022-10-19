@@ -1,4 +1,3 @@
-
 import re
 from fastapi import APIRouter, Response, Request, Body, Form
 from loguru import logger as Logger
@@ -83,15 +82,15 @@ async def flow_create(request: Request, response: Response, body: FlowSchema):
     return Response(content=json.dumps(service_reponse.json()), media_type="application/json", status_code=service_reponse.status_code)
 
 class CreateSample(BaseModel):
-  name: str | None = Field(
-      default="", title="name of flow"
-  )
-  override: bool | None = Field(
-      default="", title="override existing"
+  projectid: str | None = Field(
+      default="", title="projectid",
+      
   )
   flowid: str | None = Field(
       default="", title="flowid"
   )
+     
+     
 
 @Logger.catch
 @router.post("/flow/createsample")
@@ -106,6 +105,7 @@ async def flow_createsample(request: Request, response: Response, body: CreateSa
 
   # open flows database
   print(body.flowid)
+  flowData = ''
   flowid = body.flowid
   isExist= os.path.exists(os.path.join(CONFIG.APP_USER_DATA_LOCATION, "../", "totaljs-flow", "database", "database.json"))
 
@@ -116,13 +116,22 @@ async def flow_createsample(request: Request, response: Response, body: CreateSa
         FLOW_DATABASE_JSON = json.loads(FLOW_DATABASE)
         SAMPLEFLOWS_JSON = json.loads(SAMPLEFLOWS)
 
-        # add data to flowid in FLOW_DATABASE_JSON
-        FLOW_DATABASE_JSON[flowid] = SAMPLEFLOWS_JSON
-        FLOW_DATABASE_JSON[flowid]["id"] = flowid
-        # save flow to database
-        with open(os.path.join(CONFIG.APP_USER_DATA_LOCATION, "../", "totaljs-flow", "database", "database.json"), "w") as flowdatabase_file:
-            flowdatabase_file.write(json.dumps(FLOW_DATABASE_JSON, indent=4))
-            message["status"] = f"flow with id {flowid} added to database."
+        # if FLOW_DATABASE_JSON contains flow_name node add it to FLOW_DATABASE_JSON
+        if flowid in FLOW_DATABASE_JSON:
+            message["status"] = f"flow with id {flowid} already exist in database."
+        else:
+            # Adding default flow data
+            FLOW_DATABASE_JSON[flowid] = SAMPLEFLOWS_JSON
+
+            # Replace dummy ids with Actual Ids
+            FLOW_DATABASE_JSON[flowid]["id"] = flowid
+            flowData = json.dumps(FLOW_DATABASE_JSON, indent=4)
+            flowData = flowData.replace('PROJECT_ID', body.projectid)
+
+            # save flow to database
+            with open(os.path.join(CONFIG.APP_USER_DATA_LOCATION, "../", "totaljs-flow", "database", "database.json"), "w") as flowdatabase_file:
+                flowdatabase_file.write(flowData)
+                message["status"] = f"flow with id {flowid} added to database."
 
   else:
     f = open(os.path.join(CONFIG.APP_USER_DATA_LOCATION, "../", "totaljs-flow", "database", "database.json"), "x")
