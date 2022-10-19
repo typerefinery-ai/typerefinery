@@ -18,7 +18,8 @@
     "algorithmDialog": false,
     "resizingFlow": false,
     "sidebarVisible": true,
-    "initialDataCreated": false
+    "initialDataCreated": false,
+    "servicesStarted": false
   },
   "auth": {
     "username": "TypeRefinery User",

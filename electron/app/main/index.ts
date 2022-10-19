@@ -159,7 +159,10 @@ function sendServiceList(serviceConfigList: Service[]) {
 }
 
 function sendServiceStatus(id: string, output: string) {
-  logger.log("sendServiceStatus", id, output)
+  if (mainWindow && mainWindow.webContents) {
+    mainWindow.webContents.send("sendServiceStatus", { id, output })
+    logger.log("sendServiceStatus", id, output)
+  }
 }
 
 function sendServiceLog(id: string, output: string) {
@@ -188,12 +191,10 @@ async function createWindow() {
       preload: SCRIPT_PRELOAD,
       nodeIntegration: true,
       contextIsolation: true,
-      devTools: true,
       spellcheck: true,
     },
   })
-
-  mainWindowState.manage(mainWindow)
+  // mainWindowState.manage(mainWindow)
 
   addIpcEvents(mainWindow)
 
@@ -204,7 +205,7 @@ async function createWindow() {
   // if (isDev) {
   //   mainWindow.webContents.openDevTools()
   // }
-  mainWindow.webContents.openDevTools()
+  // mainWindow.webContents.openDevTools()
 
   loadResource(mainWindow, "../index.html", "")
 
@@ -212,7 +213,7 @@ async function createWindow() {
   const splash = new BrowserWindow({
     width: 500,
     height: 550,
-    transparent: true,
+    transparent: false,
     frame: false,
     alwaysOnTop: true,
   })
@@ -221,9 +222,10 @@ async function createWindow() {
   splash.center()
   setTimeout(function () {
     splash.close()
+    mainWindowState.manage(mainWindow)
     mainWindow.center()
     mainWindow.show()
-  }, 5000)
+  }, 2000)
 
   //tray
   tray = new Tray(path.join(__dirname, "assets/tray_icon.png"))
@@ -282,6 +284,7 @@ app.whenReady().then(() => {
       e.preventDefault()
       mainWindow.hide()
     } else {
+      mainWindow.webContents.send("sendServiceStopped")
       serviceManager.stopAll()
     }
   })
@@ -329,7 +332,7 @@ function loadResource(window: BrowserWindow, uri: string, arg: any) {
       hash: `${arg}`,
     })
   }
-  window.webContents.openDevTools()
+  // window.webContents.openDevTools()
 }
 
 function addIpcEvents(window: BrowserWindow) {
