@@ -448,6 +448,7 @@
             // database: "",
           },
         }
+        this.submitted = true
         // stop here if form is invalid
         if (!isFormValid) {
           return
