@@ -41,11 +41,11 @@
         const { ipc } = window
         if (ipc && ipc.getServices) {
           const services = await ipc.getServices()
-          const requiredServices = services.filter((el) =>
+          const requiredServices = services.filter((el: { id: string }) =>
             this.servicesToCheck.includes(el.id)
           )
           const reqServicesStarted = requiredServices.every(
-            (el) => el.status === "120"
+            (el: { status: string }) => el.status === "120"
           )
           if (!reqServicesStarted) {
             appDataModule.setServicesStopped()
