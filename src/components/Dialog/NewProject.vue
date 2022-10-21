@@ -201,6 +201,7 @@
   import { nanoid } from "nanoid"
   import { oneDark } from "@codemirror/theme-one-dark"
   import { javascript } from "@codemirror/lang-javascript"
+  import * as electronHelpers from "@/utils/electron"
   import axios from "axios"
   import Dialog from "primevue/dialog"
   import Dropdown from "primevue/dropdown"
@@ -272,6 +273,8 @@
         showError: false,
         error: "Something went wrong!",
         themecode: `{\n  "attribute": {\n    "colorlist": "Oranges",\n    "cindex": 7,\n    "tcolorlist": "Greys",\n    "tindex": 0\n  },\n  "entity": {\n    "colorlist": "Blue-Green",\n    "cindex": 7,\n    "tcolorlist": "Greys",\n    "tindex": 0\n  },\n  "relation": {\n    "colorlist": "Blue-Green",\n    "cindex": 6,\n    "tcolorlist": "Greys",\n    "tindex": 7\n  },\n  "shadow": {\n    "colorlist": "Yellows",\n    "cindex": 2,\n    "tcolorlist": "Greys",\n    "tindex": 7\n  }\n}`,
+        serviceStopped: false,
+        serviceStarted: false,
       }
     },
     // setup: () => ({ v$: useVuelidate() }),
@@ -324,6 +327,9 @@
           },
         ]
       },
+      isElectron() {
+        return electronHelpers.isElectron()
+      },
     },
     methods: {
       closeDialog() {
@@ -338,7 +344,14 @@
           return
         }
         this.loading = true
-        await this.createFlow(projectId)
+        this.serviceStarted = false
+        this.serviceStopped = false
+        if (this.projectType.key === "custom") {
+          this.createFlow(projectId)
+        } else if (this.projectType.key === "default") {
+          const defaultFlowId = nanoid(13)
+          await this.insertFlowData(projectId, defaultFlowId)
+        }
       },
       async createFlow(projectId) {
         try {
@@ -355,12 +368,7 @@
           }
           const url = "http://localhost:8000/flow/create"
           const { data } = await axios.post(url, payload)
-          const defaultFlowId = nanoid(14)
-          if (this.projectType.key === "custom") {
-            this.createInitialData(projectId, data.id)
-          } else if (this.projectType.key === "default") {
-            this.insertFlowData(projectId, defaultFlowId)
-          }
+          this.createInitialData(projectId, data.id)
         } catch (err) {
           console.log(err)
           this.loading = false
@@ -373,9 +381,22 @@
           const payload = { flowid, projectid, date }
           const url = "http://localhost:8000/flow/createsample"
           await axios.post(url, payload)
-          await servicesModule.stopService("totaljs-flow")
-          await servicesModule.startService("totaljs-flow")
-          await this.createInitialData(projectid, flowid)
+          servicesModule.stopService("totaljs-flow")
+          // @ts-expect-error ts-migrate(2339) FIXME: Property 'api' does not exist on type 'Window & typeof globalThis'
+          window.api?.response("sendServiceStatus", ({ id, output }) => {
+            const isFlow = id === "totaljs-flow"
+            if (isFlow && output === "60" && !this.serviceStopped) {
+              servicesModule.startService("totaljs-flow")
+              this.serviceStopped = true
+            } else if (isFlow && output === "120" && !this.serviceStarted) {
+              this.createInitialData(projectid, flowid)
+              this.serviceStarted = true
+            }
+          })
+          // JUST FOR WEB VERSION
+          if (!this.isElectron) {
+            this.createInitialData(projectid, flowid)
+          }
         } catch (error) {
           console.log(error)
         }
