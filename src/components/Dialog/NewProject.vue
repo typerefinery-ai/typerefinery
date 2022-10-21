@@ -325,9 +325,16 @@
         ]
       },
     },
+    created() {
+      this.getProjectName()
+    },
     methods: {
       closeDialog() {
         this.$emit("close")
+      },
+      getProjectName() {
+        let projectList = [...projectsModule.getProjects]
+        this.name = `Project ${projectList.length + 1}`
       },
       async handleProjectstore(isFormValid) {
         const projectId = nanoid(14)
@@ -406,7 +413,7 @@
             id: projectid + "_con",
             projectid,
             scope: "local",
-            label: "Local  Connection",
+            label: `${this.name}:C1`,
           }
           const theme = {
             ...themeData,
@@ -414,14 +421,14 @@
             id: projectid + "_theme",
             projectid,
             scope: "local",
-            label: "Local  Theme",
+            label: `${this.name}:T1`,
           }
           const query = {
             ...queryData,
             queryid: projectid + "_query",
             id: projectid + "_query",
             projectid,
-            label: "Local  Query",
+            label: `${this.name}:Q1`,
             connectionid: projectid + "_con",
             scope: "local",
           }
