@@ -427,7 +427,7 @@
             id: projectid + "_con",
             projectid,
             scope: "local",
-            label: "Local  Connection",
+            label: "Local Connection",
           }
           const theme = {
             ...themeData,
@@ -435,14 +435,14 @@
             id: projectid + "_theme",
             projectid,
             scope: "local",
-            label: "Local  Theme",
+            label: "Local Theme",
           }
           const query = {
             ...queryData,
             queryid: projectid + "_query",
             id: projectid + "_query",
             projectid,
-            label: "Local  Query",
+            label: "Local Query",
             connectionid: projectid + "_con",
             scope: "local",
           }

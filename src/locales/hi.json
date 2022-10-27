@@ -274,13 +274,16 @@
     },
     "tabtheme": {
       "label": "नाम",
-      "label-placeholder": "थीम नाम दर्ज करें...",
+      "theme-name": "थीम नाम दर्ज करें...",
       "icon-placeholder": "थीम आइकन दर्ज करें...",
       "des-placeholder": "थीम विवरण दर्ज करें...",
       "code-placeholder": "अपनी थीम यहां जोड़ें...",
       "theme": "थीम",
       "icon": "आइकन",
-      "des": "विवरण"
+      "des": "विवरण",
+      "save-as-local": "स्थानीय के रूप में सहेजें",
+      "save-as-global": "वैश्विक के रूप में सहेजें",
+      "save-theme-as": "सहेजें"
     },
     "algorithm": {
       "label": "एल्गोरिथम",
