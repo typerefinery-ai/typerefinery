@@ -1,16 +1,16 @@
 <div class="flow" data-scope="flow">
 
 	<header class="header">
-		<div class="pull-right" data-bind="?.head.proxyurl__show__href a">
+		<!-- <div class="pull-right" data-bind="?.head.proxyurl__show__href a">
 			<button class="exec" data-exec="?/copyendpoint" title="@(Copy endpoint to the clipboard)"><i class="fa fa-link"></i></button>
 			<a title="@(Open endpoint)" target="_blank"><i class="fa fa-globe"></i></a>
-		</div>
-		<div class="pull-right">
-			<a href="https://docs.totaljs.com/flow10/" title="@(Documentation: Total.js Platform)" target="_blank" class="special"><i class="fa fa-book"></i></a>
+		</div> -->
+		<!-- <div class="pull-right">
+			<a href="https://typerefinery.ai/" title="@(Documentation: Typerefinery)" target="_blank" class="special"><i class="fa fa-book"></i></a>
 			<button title="@(FlowStream information)" class="exec pull-right" data-exec="?/info"><i class="fa fa-info-circle color"></i></button>
-		</div>
+		</div> -->
 		<div class="apply-button">
-			<button class="exec apply" data-exec="?/submit" data-bind="?.changed__.highlight"><i class="fas fa-play"></i><span>@(APPLY)</span></button>
+			<button class="exec apply" data-exec="?/submit" data-bind="?.changed__.highlight"><i class="fas fa-save"></i><span>@(SAVE)</span></button>
 		</div>
 		<div>
 			<button title="@(Pause)" class="exec" data-exec="?/pause" data-bind="?.stats.paused__.paused"><i class="fas fa-pause"></i><span></span></button>

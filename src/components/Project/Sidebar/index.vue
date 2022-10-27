@@ -11,9 +11,9 @@
       <div class="sidebar-fixed-items hover:text-primary" @click="openSettings">
         <tune-icon v-tooltip="$t(`tooltips.settings`)" :size="25" />
       </div>
-      <div class="sidebar-fixed-items hover:text-primary">
+      <!-- <div class="sidebar-fixed-items hover:text-primary">
         <logout-icon v-tooltip="$t(`tooltips.logout`)" :size="25" />
-      </div>
+      </div> -->
     </div>
     <div id="sidebar-draggable" class="sidebar-draggable">
       <Tree
@@ -69,7 +69,7 @@
   import Tree from "primevue/tree"
   import FileIcon from "vue-material-design-icons/FileMultipleOutline.vue"
   //   import MagnifyIcon from "vue-material-design-icons/Magnify.vue"
-  import LogoutIcon from "vue-material-design-icons/Logout.vue"
+  // import LogoutIcon from "vue-material-design-icons/Logout.vue"
   import TuneIcon from "vue-material-design-icons/Tune.vue"
   import { getModule } from "vuex-module-decorators"
   import Projects from "@/store/Modules/Projects"
@@ -94,7 +94,7 @@
 
   export default {
     name: "Sidebar",
-    components: { LogoutIcon, FileIcon, Tree, TuneIcon, DeleteTreeNodePopup },
+    components: { FileIcon, Tree, TuneIcon, DeleteTreeNodePopup },
     data() {
       return {
         selectedNode: null,
