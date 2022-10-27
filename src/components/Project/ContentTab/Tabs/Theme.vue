@@ -19,7 +19,7 @@
           <label for="icon">{{ $t("components.tabtheme.icon") }}</label>
           <InputText
             id="icon"
-            v-model="icon"
+            v-model.trim="icon"
             aria-describedby="label"
             :placeholder="$t(`components.tabtheme.icon-placeholder`)"
           />
@@ -30,7 +30,7 @@
           <label for="description">{{ $t("components.tabtheme.des") }}</label>
           <InputText
             id="description"
-            v-model="description"
+            v-model.trim="description"
             aria-describedby="label"
             :placeholder="$t(`components.tabtheme.des-placeholder`)"
           />
@@ -74,10 +74,9 @@
           <label for="label">{{ $t("components.tabtheme.label") }}</label>
           <InputText
             id="themeName"
-            :model-value="themeName"
+            v-model.trim="themeName"
             type="text"
             :placeholder="$t(`components.tabtheme.theme-name`)"
-            @input="handleThemeName($event)"
           />
           <span v-if="dialogError" class="p-error">{{ dialogError }}</span>
         </div>
@@ -210,34 +209,10 @@
           await themesModule.setGlobalTheme(payload)
         }
       },
-      // async handleInputCode(value, field) {
-      //   clearTimeout(this.debounce)
-      //   this.debounce = setTimeout(async () => {
-      //     const { parent, id } = this.tab
-      //     const projects = projectsModule.getProjects
-      //     const projectIdx = projects.findIndex((el) => el.id === parent)
-      //     if (projectIdx != -1) {
-      //       const themes = projectsModule.getLocalThemes(projectIdx)
-      //       const themeIdx = themes.findIndex((el) => el.id === id)
-      //       const payload = { field, value, themeIdx, ...this.tab }
-      //       await projectsModule.setThemeData(payload)
-      //     } else {
-      //       // global
-      //       const themes = themesModule.getGlobalThemes
-      //       const themeIdx = themes.findIndex((el) => el.id === id)
-      //       const payload = { field, value, themeIdx, ...this.tab }
-      //       await themesModule.setGlobalTheme(payload)
-      //     }
-      //   }, 500)
-      // },
-      handleThemeName(e) {
-        this.themeName = e.target.value
-      },
-      handleLabel(e) {
+      handleLabel({ target: { value } }) {
         clearTimeout(this.debounce)
         this.debounce = setTimeout(async () => {
-          console.log("yo")
-          this.label = e.target.value
+          this.label = value.trim()
           const { parent, id } = this.tab
           const projects = projectsModule.getProjects
           const projectIdx = projects.findIndex((el) => el.id === parent)
@@ -246,10 +221,10 @@
               (el) => el.id !== id
             )
             const themeExists = themes.find(
-              (el) => el.label.toLowerCase() === e.target.value.toLowerCase()
+              (el) => el.label.toLowerCase() === value.toLowerCase().trim()
             )
             if (themeExists) {
-              this.error = `Theme with label "${e.target.value}" already exists.`
+              this.error = `Theme with label "${value}" already exists.`
             } else {
               this.error = ""
             }
@@ -258,10 +233,10 @@
               .getLocalThemes(projectIdx)
               .filter((el) => el.id !== id)
             const themeExists = themes.find(
-              (el) => el.label.toLowerCase() === e.target.value.toLowerCase()
+              (el) => el.label.toLowerCase() === value.toLowerCase().trim()
             )
             if (themeExists) {
-              this.error = `Theme with label "${e.target.value}" already exists.`
+              this.error = `Theme with label "${value}" already exists.`
             } else {
               this.error = ""
             }
@@ -275,7 +250,7 @@
         if (scope === "global") {
           const themes = themesModule.getGlobalThemes
           const themeExists = themes.find(
-            (el) => el.label.toLowerCase() === label.toLowerCase()
+            (el) => el.label.toLowerCase() === label.toLowerCase().trim()
           )
           if (themeExists) {
             this.dialogError = `Theme with label "${label}" already exists.`
@@ -287,7 +262,7 @@
         } else {
           const themes = projectsModule.getLocalThemes(projectIdx)
           const themeExists = themes.find(
-            (el) => el.label.toLowerCase() === label.toLowerCase()
+            (el) => el.label.toLowerCase() === label.toLowerCase().trim()
           )
           if (themeExists) {
             this.dialogError = `Theme with label "${label}" already exists.`
