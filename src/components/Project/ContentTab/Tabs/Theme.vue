@@ -3,14 +3,15 @@
     <div class="grid formgrid theme-form">
       <div class="col-12 p-fluid">
         <div class="field">
-          <label for="label">{{ $t("components.tabtheme.label") }}</label>
+          <label for="label">{{ $t("components.tabtheme.label") }}*</label>
           <InputText
             id="label"
-            v-model="label"
+            :model-value="label"
             aria-describedby="label"
-            :placeholder="$t(`components.tabtheme.label-placeholder`)"
-            @input="handleInputLabel($event, 'label')"
+            :placeholder="$t(`components.tabtheme.theme-name`)"
+            @input="handleLabel($event)"
           />
+          <span v-if="error" class="p-error">{{ error }}</span>
         </div>
       </div>
       <div class="col-12 p-fluid">
@@ -21,7 +22,6 @@
             v-model="icon"
             aria-describedby="label"
             :placeholder="$t(`components.tabtheme.icon-placeholder`)"
-            @input="handleInputLabel($event, 'icon')"
           />
         </div>
       </div>
@@ -33,7 +33,6 @@
             v-model="description"
             aria-describedby="label"
             :placeholder="$t(`components.tabtheme.des-placeholder`)"
-            @input="handleInputLabel($event, 'description')"
           />
         </div>
       </div>
@@ -42,42 +41,87 @@
           <label for="icon">{{ $t("components.tabtheme.theme") }}</label>
           <div id="query_view_cm" class="shadow-3">
             <codemirror
-              :model-value="code"
+              v-model="code"
               :placeholder="$t(`components.tabtheme.code-placeholder`)"
               :style="{ height: '400px' }"
               :autofocus="true"
               :indent-with-tab="true"
               :tab-size="2"
               :extensions="extensions"
-              @change="handleInputCode($event, 'theme')"
             />
           </div>
         </div>
       </div>
+      <div class="col-12">
+        <Button
+          label="Save"
+          :disabled="Boolean(error) || !label.length"
+          class="p-button-raised mr-2"
+          @click="saveTheme"
+        />
+        <Button label="Save as" class="p-button-raised" @click="handleDialog" />
+      </div>
     </div>
+    <Dialog
+      v-model:visible="showDialog"
+      class="save-theme-dialog"
+      modal
+      :header="$t(`components.tabtheme.save-theme-as`)"
+      :style="{ width: '400px' }"
+    >
+      <div class="dialog-content">
+        <div class="field">
+          <label for="label">{{ $t("components.tabtheme.label") }}</label>
+          <InputText
+            id="themeName"
+            :model-value="themeName"
+            type="text"
+            :placeholder="$t(`components.tabtheme.theme-name`)"
+            @input="handleThemeName($event)"
+          />
+          <span v-if="dialogError" class="p-error">{{ dialogError }}</span>
+        </div>
+        <Button
+          class="p-button-raised mr-2"
+          :disabled="!themeName.length"
+          :label="$t(`components.tabtheme.save-as-global`)"
+          @click="saveNewTheme('global')"
+        />
+        <Button
+          v-if="isLocal"
+          class="p-button-raised p-button-success"
+          :disabled="!themeName.length"
+          :label="$t(`components.tabtheme.save-as-local`)"
+          @click="saveNewTheme('local')"
+        />
+      </div>
+    </Dialog>
   </div>
 </template>
 
 <script>
   import { getModule } from "vuex-module-decorators"
-  import Dropdown from "primevue/dropdown"
   import { Codemirror } from "vue-codemirror"
   import { javascript } from "@codemirror/lang-javascript"
   import { oneDark } from "@codemirror/theme-one-dark"
+  import { nanoid } from "nanoid"
+  import Dialog from "primevue/dialog"
+  import Button from "primevue/button"
   import Settings from "@/store/Modules/Settings"
   import Projects from "@/store/Modules/Projects"
   import InputText from "primevue/inputtext"
   import Themes from "@/store/Modules/Theme"
-  import axios from "axios"
+  import axios from "@/axios"
   const settingsModule = getModule(Settings)
   const projectsModule = getModule(Projects)
   const themesModule = getModule(Themes)
   export default {
     name: "ThemeContent",
     components: {
-      // Dropdown,
+      Button,
       Codemirror,
       InputText,
+      Dialog,
     },
     props: {
       tab: { type: Object, required: true },
@@ -89,6 +133,10 @@
         label: "",
         icon: "",
         description: "",
+        showDialog: false,
+        themeName: "",
+        dialogError: "",
+        error: "",
       }
     },
     computed: {
@@ -96,6 +144,9 @@
         return settingsModule.data.theme === "dark"
           ? [javascript(), oneDark]
           : [javascript()]
+      },
+      isLocal() {
+        return Boolean(this.tab.parent)
       },
     },
     mounted() {
@@ -128,45 +179,163 @@
         this.icon = icon
         this.description = description
       },
-      async handleInputLabel({ target: { value } }, field) {
+      async saveTheme() {
+        if (this.error) return
+        const { parent, id } = this.tab
+        const projects = projectsModule.getProjects
+        const projectIdx = projects.findIndex((el) => el.id === parent)
+        if (projectIdx != -1) {
+          const themes = projectsModule.getLocalThemes(projectIdx)
+          const themeIdx = themes.findIndex((el) => el.id === id)
+          const data = {
+            ...themes[themeIdx],
+            label: this.label,
+            icon: this.icon,
+            description: this.description,
+            theme: this.code,
+          }
+          await projectsModule.setThemeData({ data, themeIdx, projectIdx })
+        } else {
+          // global
+          const themes = themesModule.getGlobalThemes
+          const themeIdx = themes.findIndex((el) => el.id === id)
+          const data = {
+            ...themes[themeIdx],
+            label: this.label,
+            icon: this.icon,
+            description: this.description,
+            theme: this.code,
+          }
+          const payload = { data, themeIdx }
+          await themesModule.setGlobalTheme(payload)
+        }
+      },
+      // async handleInputCode(value, field) {
+      //   clearTimeout(this.debounce)
+      //   this.debounce = setTimeout(async () => {
+      //     const { parent, id } = this.tab
+      //     const projects = projectsModule.getProjects
+      //     const projectIdx = projects.findIndex((el) => el.id === parent)
+      //     if (projectIdx != -1) {
+      //       const themes = projectsModule.getLocalThemes(projectIdx)
+      //       const themeIdx = themes.findIndex((el) => el.id === id)
+      //       const payload = { field, value, themeIdx, ...this.tab }
+      //       await projectsModule.setThemeData(payload)
+      //     } else {
+      //       // global
+      //       const themes = themesModule.getGlobalThemes
+      //       const themeIdx = themes.findIndex((el) => el.id === id)
+      //       const payload = { field, value, themeIdx, ...this.tab }
+      //       await themesModule.setGlobalTheme(payload)
+      //     }
+      //   }, 500)
+      // },
+      handleThemeName(e) {
+        this.themeName = e.target.value
+      },
+      handleLabel(e) {
         clearTimeout(this.debounce)
         this.debounce = setTimeout(async () => {
+          console.log("yo")
+          this.label = e.target.value
           const { parent, id } = this.tab
           const projects = projectsModule.getProjects
           const projectIdx = projects.findIndex((el) => el.id === parent)
-          if (projectIdx != -1) {
-            const themes = projectsModule.getLocalThemes(projectIdx)
-            const themeIdx = themes.findIndex((el) => el.id === id)
-            const payload = { field, value, themeIdx, ...this.tab }
-            await projectsModule.setThemeData(payload)
+          if (projectIdx === -1) {
+            const themes = themesModule.getGlobalThemes.filter(
+              (el) => el.id !== id
+            )
+            const themeExists = themes.find(
+              (el) => el.label.toLowerCase() === e.target.value.toLowerCase()
+            )
+            if (themeExists) {
+              this.error = `Theme with label "${e.target.value}" already exists.`
+            } else {
+              this.error = ""
+            }
           } else {
-            // global
-            const themes = themesModule.getGlobalThemes
-            const themeIdx = themes.findIndex((el) => el.id === id)
-            const payload = { field, value, themeIdx, ...this.tab }
-            await themesModule.setGlobalTheme(payload)
+            const themes = projectsModule
+              .getLocalThemes(projectIdx)
+              .filter((el) => el.id !== id)
+            const themeExists = themes.find(
+              (el) => el.label.toLowerCase() === e.target.value.toLowerCase()
+            )
+            if (themeExists) {
+              this.error = `Theme with label "${e.target.value}" already exists.`
+            } else {
+              this.error = ""
+            }
           }
         }, 500)
       },
-      async handleInputCode(value, field) {
-        clearTimeout(this.debounce)
-        this.debounce = setTimeout(async () => {
-          const { parent, id } = this.tab
-          const projects = projectsModule.getProjects
-          const projectIdx = projects.findIndex((el) => el.id === parent)
-          if (projectIdx != -1) {
-            const themes = projectsModule.getLocalThemes(projectIdx)
-            const themeIdx = themes.findIndex((el) => el.id === id)
-            const payload = { field, value, themeIdx, ...this.tab }
-            await projectsModule.setThemeData(payload)
+      checkExists(scope, label) {
+        const { parent } = this.tab
+        const projects = projectsModule.getProjects
+        const projectIdx = projects.findIndex((el) => el.id === parent)
+        if (scope === "global") {
+          const themes = themesModule.getGlobalThemes
+          const themeExists = themes.find(
+            (el) => el.label.toLowerCase() === label.toLowerCase()
+          )
+          if (themeExists) {
+            this.dialogError = `Theme with label "${label}" already exists.`
+            return true
           } else {
-            // global
-            const themes = themesModule.getGlobalThemes
-            const themeIdx = themes.findIndex((el) => el.id === id)
-            const payload = { field, value, themeIdx, ...this.tab }
-            await themesModule.setGlobalTheme(payload)
+            this.dialogError = ""
+            return false
           }
-        }, 500)
+        } else {
+          const themes = projectsModule.getLocalThemes(projectIdx)
+          const themeExists = themes.find(
+            (el) => el.label.toLowerCase() === label.toLowerCase()
+          )
+          if (themeExists) {
+            this.dialogError = `Theme with label "${label}" already exists.`
+            return true
+          } else {
+            this.dialogError = ""
+            return false
+          }
+        }
+      },
+      handleDialog() {
+        this.showDialog = !this.showDialog
+      },
+      async saveNewTheme(scope) {
+        const { parent: projectId } = this.tab
+        const projects = projectsModule.getProjects
+        const projectIdx = projects.findIndex((el) => el.id === projectId)
+        const themeId = nanoid(14)
+        const data = {
+          label: this.themeName, // new theme
+          id: themeId,
+          projectid: projectId,
+          scope: projectIdx == -1 ? "global" : "local",
+          type: "theme",
+          data: "",
+          icon: this.icon,
+          themeid: themeId,
+          description: this.description,
+          theme: this.code,
+        }
+        try {
+          await axios.post("/datastore/theme", data)
+          if (scope === "global") {
+            if (!this.checkExists("global", this.themeName)) {
+              themesModule.addGlobalTheme(data)
+              this.showDialog = false
+              this.themeName = ""
+            }
+          } else if (scope === "local") {
+            if (!this.checkExists("local", this.themeName)) {
+              projectsModule.addLocalTheme({ projectIdx, data })
+              this.showDialog = false
+              this.themeName = ""
+            }
+          }
+        } catch (err) {
+          console.log(err)
+        }
       },
     },
   }
@@ -177,6 +346,16 @@
     padding: 2rem 1.75rem;
     .theme-form {
       margin-top: -0.75rem;
+    }
+  }
+
+  div.save-theme-dialog.p-dialog {
+    .p-dialog-content {
+      padding-bottom: 1.5rem;
+
+      input {
+        width: 100%;
+      }
     }
   }
 </style>
