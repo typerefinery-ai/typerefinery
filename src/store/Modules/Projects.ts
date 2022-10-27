@@ -181,10 +181,10 @@ export default class Projects extends VuexModule {
     this.data.list = projects
   }
   @Mutation
-  updateTheme(data) {
-    const { projectIdx, themeIdx, field, value } = data
+  updateTheme(payload) {
+    const { data, themeIdx, projectIdx } = payload
     const projects = JSON.parse(JSON.stringify(this.data.list))
-    projects[projectIdx].themes.list[themeIdx][field] = value
+    projects[projectIdx].themes.list[themeIdx] = data
     this.data.list = projects
   }
   // @Mutation
@@ -546,29 +546,15 @@ export default class Projects extends VuexModule {
   }
   // Theme
   @Action
-  async setThemeData(data) {
+  async setThemeData(themeData) {
+    const { data, themeIdx, projectIdx } = themeData
     const themesGetter = this.context.getters["getLocalThemes"]
-    const projects = this.context.getters["getProjects"]
-    const projectIdx = projects.findIndex((el) => el.id === data.parent)
     const themes = themesGetter(projectIdx)
-    const theme = themes[data.themeIdx]
-    const payload = {
-      id: theme.id,
-      projectid: theme.projectid,
-      scope: theme.scope,
-      label: theme.label,
-      type: theme.type,
-      data: theme.data,
-      icon: theme.icon,
-      themeid: theme.themeid,
-      description: theme.description,
-      theme: theme.theme,
-      [data.field]: data.value,
-    }
+    const theme = themes[themeIdx]
+    const payload = { ...theme, ...data }
     try {
       await axios.put(`/datastore/theme/${data.id}`, payload)
-      data = { ...data, projectIdx }
-      this.context.commit("updateTheme", data)
+      this.context.commit("updateTheme", themeData)
     } catch (err) {
       console.log(err)
     }
