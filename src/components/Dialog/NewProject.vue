@@ -201,6 +201,7 @@
   import { nanoid } from "nanoid"
   import { oneDark } from "@codemirror/theme-one-dark"
   import { javascript } from "@codemirror/lang-javascript"
+  import * as electronHelpers from "@/utils/electron"
   import axios from "axios"
   import Dialog from "primevue/dialog"
   import Dropdown from "primevue/dropdown"
@@ -251,6 +252,7 @@
           { label: "Default", key: "default" },
           { label: "Custom", key: "custom" },
         ],
+        projectType: { label: "Default", key: "default" },
         connectionselected: {
           label: "Global Connection",
           key: "defaultconnection",
@@ -266,12 +268,13 @@
           key: "defaultquery",
           scope: "global",
         },
-        projectType: { label: "Default", key: "default" },
         displayModal: true,
         loading: false,
         showError: false,
         error: "Something went wrong!",
-        themecode: `{\n    "attribute": {\n        "colour": "#7f2704",\n        "tcolour": "white",\n        "label_name": true,\n        "label_value": true,\n        "corner": 5,\n        "split_line": true,\n        "tsize": "10px"\n    },\n    "entity": {\n        "colour": "#08306b",\n        "tcolour": "white",\n        "label_name": true,\n        "label_iid": true,\n        "iid_shorten": true,\n        "corner": 5,\n        "split_line": true,\n        "tsize": "10px"\n    },\n    "relation": {\n        "colour": "#006d2c",\n        "tcolour": "black",\n        "label_name": true,\n        "label_iid": true,\n        "label_offset": 0,\n        "radius": 5,\n        "iid_shorten": true,\n        "split_line": true,\n        "tsize": "10px"\n    },\n    "shadow": {\n        "colour": "#fdae6b",\n        "tcolour": "black"\n    },\n    "edges": {\n        "colour": "black",\n        "stroke": "1px",\n        "arrow": true,\n        "acolour": "black",\n        "labels": true,\n        "split_line": true,\n        "tsize": "10px"\n    },\n    "tooltip": {\n        "fill": "white",\n        "stroke": "1px",\n        "scolour": "black",\n        "corner": 5,\n        "tcolour": "black",\n        "tsize": "11px",\n        "padding": "10px"\n    },\n    "d3sim": {\n        "linkdistance": 150,\n        "charge": -200\n    },\n    "super": {\n        "radius": 25,\n        "label_name": true,\n        "label_iid": true,\n        "iid_shorten": true,\n        "split_line": true,\n        "tsize": "10px"\n    },\n    "tt_description": {\n        "title": true,\n        "name": true,\n        "role": true,\n        "value": true,\n        "boldtitle": true,\n        "subtitle": true,\n        "type": true,\n        "g_G_name": true,\n        "g_role": true,\n        "v_G_name": true,\n        "v_Value": true,\n        "where": true,\n        "number": true\n    }\n}`,
+        themecode: `{\n  "attribute": {\n    "colorlist": "Oranges",\n    "cindex": 7,\n    "tcolorlist": "Greys",\n    "tindex": 0\n  },\n  "entity": {\n    "colorlist": "Blue-Green",\n    "cindex": 7,\n    "tcolorlist": "Greys",\n    "tindex": 0\n  },\n  "relation": {\n    "colorlist": "Blue-Green",\n    "cindex": 6,\n    "tcolorlist": "Greys",\n    "tindex": 7\n  },\n  "shadow": {\n    "colorlist": "Yellows",\n    "cindex": 2,\n    "tcolorlist": "Greys",\n    "tindex": 7\n  }\n}`,
+        serviceStopped: false,
+        serviceStarted: false,
       }
     },
     // setup: () => ({ v$: useVuelidate() }),
@@ -305,7 +308,6 @@
         ]
       },
       themesList() {
-        let projectIdx = projectsModule.getProjects.findIndex((el) => el.id)
         return [
           {
             label: "Global",
@@ -316,7 +318,6 @@
         ]
       },
       queryList() {
-        let projectIdx = projectsModule.getProjects.findIndex((el) => el.id)
         return [
           {
             label: "Global",
@@ -326,10 +327,20 @@
           },
         ]
       },
+      isElectron() {
+        return electronHelpers.isElectron()
+      },
+    },
+    created() {
+      this.getProjectName()
     },
     methods: {
       closeDialog() {
         this.$emit("close")
+      },
+      getProjectName() {
+        let projectList = [...projectsModule.getProjects]
+        this.name = `Project ${projectList.length + 1}`
       },
       async handleProjectstore(isFormValid) {
         const projectId = nanoid(14)
@@ -340,7 +351,14 @@
           return
         }
         this.loading = true
-        await this.createFlow(projectId)
+        this.serviceStarted = false
+        this.serviceStopped = false
+        if (this.projectType.key === "custom") {
+          this.createFlow(projectId)
+        } else if (this.projectType.key === "default") {
+          const defaultFlowId = nanoid(13)
+          await this.insertFlowData(projectId, defaultFlowId)
+        }
       },
       async createFlow(projectId) {
         try {
@@ -357,12 +375,7 @@
           }
           const url = "http://localhost:8000/flow/create"
           const { data } = await axios.post(url, payload)
-          const defaultFlowId = nanoid(14)
-          if (this.projectType.key === "custom") {
-            this.createInitialData(projectId, data.id)
-          } else if (this.projectType.key === "default") {
-            this.insertFlowData(projectId, defaultFlowId)
-          }
+          this.createInitialData(projectId, data.id)
         } catch (err) {
           console.log(err)
           this.loading = false
@@ -371,11 +384,26 @@
       },
       async insertFlowData(projectid, flowid) {
         try {
-          const payload = { flowid }
+          const date = new Date().toISOString()
+          const payload = { flowid, projectid, date }
           const url = "http://localhost:8000/flow/createsample"
           await axios.post(url, payload)
-          await servicesModule.restartService("totaljs-flow")
-          await this.createInitialData(projectid, flowid)
+          servicesModule.stopService("totaljs-flow")
+          // @ts-expect-error ts-migrate(2339) FIXME: Property 'api' does not exist on type 'Window & typeof globalThis'
+          window.api?.response("sendServiceStatus", ({ id, output }) => {
+            const isFlow = id === "totaljs-flow"
+            if (isFlow && output === "60" && !this.serviceStopped) {
+              servicesModule.startService("totaljs-flow")
+              this.serviceStopped = true
+            } else if (isFlow && output === "120" && !this.serviceStarted) {
+              this.createInitialData(projectid, flowid)
+              this.serviceStarted = true
+            }
+          })
+          // JUST FOR WEB VERSION
+          if (!this.isElectron) {
+            this.createInitialData(projectid, flowid)
+          }
         } catch (error) {
           console.log(error)
         }
@@ -403,21 +431,25 @@
           const connection = {
             ...connectionData,
             connectionid: projectid + "_con",
+            id: projectid + "_con",
             projectid,
             scope: "local",
+            label: `${this.name}:C1`,
           }
           const theme = {
             ...themeData,
-            id: projectid + "_theme",
-            projectid: projectid,
-            scope: "local",
             themeid: projectid + "_theme",
-            theme: JSON.parse(JSON.stringify(this.themecode)),
+            id: projectid + "_theme",
+            projectid,
+            scope: "local",
+            label: `${this.name}:T1`,
           }
           const query = {
             ...queryData,
             queryid: projectid + "_query",
+            id: projectid + "_query",
             projectid,
+            label: `${this.name}:Q1`,
             connectionid: projectid + "_con",
             scope: "local",
           }
@@ -428,37 +460,22 @@
             axios.post(`${baseURL}query`, query),
             axios.post(`${baseURL}theme`, theme),
           ])
-          await this.createData(projectid, flowid)
+          const payload = {
+            projectid,
+            flowid,
+            connection,
+            query,
+            theme,
+          }
+          await this.createData(payload)
         } catch (err) {
           console.log(err)
           this.loading = false
           this.showError = true
         }
       },
-      createData(projectid, flowid) {
-        const connection = {
-          type: "connection",
-          id: projectid + "_con",
-          label: "Connection",
-          icon: "Connection",
-          scope: "local",
-          description: "",
-          port: this.port,
-          host: this.host,
-          database: this.database,
-        }
-        const theme = {
-          label: "Theme",
-          id: projectid + "_theme",
-          projectid: projectid,
-          scope: "local",
-          type: "theme",
-          data: "string",
-          icon: "",
-          themeid: projectid + "_theme",
-          description: "",
-          theme: JSON.parse(JSON.stringify(this.themecode)),
-        }
+      createData(payload) {
+        const { projectid, flowid, connection, query, theme } = payload
         const projectData = {
           type: "project",
           id: projectid,
@@ -473,19 +490,7 @@
           queries: {
             type: "queries",
             icon: "",
-            list: [
-              {
-                type: "query",
-                id: projectid + "_query",
-                label: "Query",
-                icon: "Query",
-                description: "",
-                query: this.query,
-                connectionid: projectid + "_con",
-                data: "",
-                scope: "local",
-              },
-            ],
+            list: [query],
           },
           themes: { type: "themes", icon: "", list: [theme] },
           wirings: {

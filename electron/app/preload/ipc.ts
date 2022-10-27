@@ -59,6 +59,8 @@ export const sharedAppIpc = {
   setBadgeCount: new IPCMethod<[number], boolean>("setBadgeCount"),
   getServices: new IPCMethod<[], any[]>("getServices"),
   restartService: new IPCMethod<[string], any[]>("restartService"),
+  stopService: new IPCMethod<[string], any[]>("stopService"),
+  startService: new IPCMethod<[string], any[]>("startService"),
 }
 
 export type AppIPC = {

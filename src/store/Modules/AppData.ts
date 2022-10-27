@@ -68,7 +68,7 @@ export default class AppData extends VuexModule {
   removeSelectedTreeNodes(ids: string[]) {
     const nodes = JSON.parse(JSON.stringify(this.data.selectedTreeNodes))
     ids.forEach((id) => {
-      const idx = nodes.list.findIndex((el) => el == id)
+      const idx = nodes.list.findIndex((el: string) => el == id)
       if (idx !== -1) {
         nodes.list.splice(idx, 1)
         delete nodes[id]
@@ -83,7 +83,7 @@ export default class AppData extends VuexModule {
   @Mutation
   removeSelectedSplitNodes(id: string) {
     const nodes = JSON.parse(JSON.stringify(this.data.selectedSplitNodes))
-    const idx = nodes.list.findIndex((el) => el == id)
+    const idx = nodes.list.findIndex((el: string) => el == id)
     nodes.list.splice(idx, 1)
     delete nodes[id]
     if (nodes.list.length) {

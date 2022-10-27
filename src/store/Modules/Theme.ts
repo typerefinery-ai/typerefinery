@@ -63,9 +63,9 @@ export default class Connections extends VuexModule {
   // }
   @Mutation
   updateGlobalTheme(themeData) {
-    const { themeIdx, field, value } = themeData
+    const { themeIdx, data } = themeData
     const themes = JSON.parse(JSON.stringify(this.data))
-    themes.list[themeIdx][field] = value
+    themes.list[themeIdx] = data
     this.data = themes
   }
 
@@ -106,30 +106,13 @@ export default class Connections extends VuexModule {
     }
   }
   @Action
-  async setGlobalTheme(data: {
-    themeIdx: string | number
-    field: any
-    value: any
-    id: any
-  }) {
+  async setGlobalTheme({ data, themeIdx }) {
     const themes = this.context.getters["getGlobalThemes"]
-    const theme = themes[data.themeIdx]
-    const payload = {
-      id: theme.id,
-      label: theme.label,
-      projectid: null,
-      scope: "global",
-      type: "theme",
-      data: "string",
-      icon: theme.icon,
-      themeid: theme.id,
-      description: theme.description,
-      theme: theme.theme,
-      [data.field]: data.value,
-    }
+    const theme = themes[themeIdx]
+    const payload = { ...theme, ...data }
     try {
       await axios.put(`/datastore/theme/${data.id}`, payload)
-      this.context.commit("updateGlobalTheme", data)
+      this.context.commit("updateGlobalTheme", { data, themeIdx })
     } catch (err) {
       console.log(err)
     }

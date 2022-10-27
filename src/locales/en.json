@@ -277,13 +277,16 @@
     },
     "tabtheme": {
       "label": "Name",
-      "label-placeholder": "Enter theme name...",
+      "theme-name": "Enter theme name...",
       "icon-placeholder": "Enter theme icon...",
       "des-placeholder": "Enter theme description...",
       "code-placeholder": "Add your theme here...",
       "theme": "Theme",
       "icon": "Icon",
-      "des": "Description"
+      "des": "Description",
+      "save-as-local": "Save as Local",
+      "save-as-global": "Save as Global",
+      "save-theme-as": "Save theme as"
     },
     "algorithm": {
       "label": "Algorithm",
