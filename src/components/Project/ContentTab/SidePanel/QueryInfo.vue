@@ -80,6 +80,7 @@
     props: {
       tab: { type: Object, required: true },
     },
+    emits: ["on-input"],
     data() {
       return {
         debounce: null,
@@ -87,6 +88,7 @@
         description: "",
       }
     },
+
     computed: {
       // description() {
       //   const { parent, id } = this.tab
@@ -212,26 +214,27 @@
         this.icon = icon
       },
       handleInput({ target: { value } }, field) {
+        this.$emit("on-input", field, value)
         // const payload = { field, value, ...this.tab }
         // projectsModule.setQueryData(payload)
-        clearTimeout(this.debounce)
-        this.debounce = setTimeout(async () => {
-          const { parent, id } = this.tab
-          const projects = projectsModule.getProjects
-          const projectIdx = projects.findIndex((el) => el.id === parent)
-          if (projectIdx != -1) {
-            const queries = projectsModule.getQueries(projectIdx)
-            const queryIdx = queries.findIndex((el) => el.id === id)
-            const payload = { field, value, queryIdx, ...this.tab }
-            await projectsModule.setQueryData(payload)
-          } else {
-            // global
-            const queries = queriesModule.getGlobalQueries
-            const queryIdx = queries.findIndex((el) => el.id === id)
-            const payload = { field, value, queryIdx, ...this.tab }
-            await queriesModule.setGlobalQuery(payload)
-          }
-        }, 500)
+        // clearTimeout(this.debounce)
+        // this.debounce = setTimeout(async () => {
+        //   const { parent, id } = this.tab
+        //   const projects = projectsModule.getProjects
+        //   const projectIdx = projects.findIndex((el) => el.id === parent)
+        //   if (projectIdx != -1) {
+        //     const queries = projectsModule.getQueries(projectIdx)
+        //     const queryIdx = queries.findIndex((el) => el.id === id)
+        //     const payload = { field, value, queryIdx, ...this.tab }
+        //     await projectsModule.setQueryData(payload)
+        //   } else {
+        //     // global
+        //     const queries = queriesModule.getGlobalQueries
+        //     const queryIdx = queries.findIndex((el) => el.id === id)
+        //     const payload = { field, value, queryIdx, ...this.tab }
+        //     await queriesModule.setGlobalQuery(payload)
+        //   }
+        // }, 500)
       },
 
       // handleTransformer({ value }) {

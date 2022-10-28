@@ -47,7 +47,7 @@
         <label
           for="name"
           :class="{ 'p-error': v$.name.$invalid && submitted }"
-          >{{ $t("components.dialog.new-theme.info.name") }}</label
+          >{{ $t("components.dialog.new-theme.info.name") + "*" }}</label
         >
         <InputText
           id="name"

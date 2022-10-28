@@ -3,7 +3,7 @@
     <div class="card">
       <div class="card-container text-left">
         <div class="field p-4 pb-2">
-          <label for="label">{{ $t(`components.project.name`) }}</label>
+          <label for="label"> {{ $t(`components.project.name`) + "*" }} </label>
           <InputText
             id="label"
             :model-value="label"
@@ -11,6 +11,12 @@
             type="text"
             @input="handleInput($event, 'label')"
           />
+          <small
+            v-if="!error.label.valid && !error.label.isOnDialog"
+            class="p-error"
+          >
+            {{ error.label.message }}
+          </small>
         </div>
 
         <div class="field m-4 my-2">
@@ -51,12 +57,15 @@
     props: {
       tab: { type: Object, required: true },
       view: { type: String, required: true },
+      error: { type: Object, required: true },
     },
+    emits: ["on-input"],
     data() {
       return {
         query: "",
         debounce: null,
         label: "",
+        queryData: {},
         // icon: "",
         // description: "",
       }
@@ -118,48 +127,49 @@
         // const { theme } = themeData
         // this.code = theme
         const { query, label } = queryData
+        this.queryData = queryData
         this.query = query
         this.label = label
       },
       async handleInput({ target: { value } }, field) {
-        clearTimeout(this.debounce)
-        this.debounce = setTimeout(async () => {
-          const { parent, id } = this.tab
-          const projects = projectsModule.getProjects
-          const projectIdx = projects.findIndex((el) => el.id === parent)
-          if (projectIdx != -1) {
-            const queries = projectsModule.getQueries(projectIdx)
-            const queryIdx = queries.findIndex((el) => el.id === id)
-            const payload = { field, value, queryIdx, ...this.tab }
-            await projectsModule.setQueryData(payload)
-          } else {
-            // global
-            const queries = queriesModule.getGlobalQueries
-            const queryIdx = queries.findIndex((el) => el.id === id)
-            const payload = { field, value, queryIdx, ...this.tab }
-            await queriesModule.setGlobalQuery(payload)
-          }
-        }, 500)
+        this.$emit("on-input", field, value)
+        // this.debounce = setTimeout(async () => {
+        //   const { parent, id } = this.tab
+        //   const projects = projectsModule.getProjects
+        //   const projectIdx = projects.findIndex((el) => el.id === parent)
+        //   if (projectIdx != -1) {
+        //     const queries = projectsModule.getQueries(projectIdx)
+        //     const queryIdx = queries.findIndex((el) => el.id === id)
+        //     const payload = { field, value, queryIdx, ...this.tab }
+        //     await projectsModule.setQueryData(payload)
+        //   } else {
+        //     // global
+        //     const queries = queriesModule.getGlobalQueries
+        //     const queryIdx = queries.findIndex((el) => el.id === id)
+        //     const payload = { field, value, queryIdx, ...this.tab }
+        //     await queriesModule.setGlobalQuery(payload)
+        //   }
+        // }, 500)
       },
       handleQuery(value, field) {
-        clearTimeout(this.debounce)
-        this.debounce = setTimeout(async () => {
-          const { parent, id } = this.tab
-          const projects = projectsModule.getProjects
-          const projectIdx = projects.findIndex((el) => el.id === parent)
-          if (projectIdx != -1) {
-            const queries = projectsModule.getQueries(projectIdx)
-            const queryIdx = queries.findIndex((el) => el.id === id)
-            const payload = { field, value, queryIdx, ...this.tab }
-            await projectsModule.setQueryData(payload)
-          } else {
-            // global
-            const queries = queriesModule.getGlobalQueries
-            const queryIdx = queries.findIndex((el) => el.id === id)
-            const payload = { field, value, queryIdx, ...this.tab }
-            await queriesModule.setGlobalQuery(payload)
-          }
-        }, 500)
+        this.$emit("on-input", field, value)
+        // this.debounce = setTimeout(async () => {
+        //   const { parent, id } = this.tab
+        //   const projects = projectsModule.getProjects
+        //   const projectIdx = projects.findIndex((el) => el.id === parent)
+        //   if (projectIdx != -1) {
+        //     const queries = projectsModule.getQueries(projectIdx)
+        //     const queryIdx = queries.findIndex((el) => el.id === id)
+        //     const payload = { field, value, queryIdx, ...this.tab }
+        //     await projectsModule.setQueryData(payload)
+        //   } else {
+        //     // global
+        //     const queries = queriesModule.getGlobalQueries
+        //     const queryIdx = queries.findIndex((el) => el.id === id)
+        //     const payload = { field, value, queryIdx, ...this.tab }
+        //     await queriesModule.setGlobalQuery(payload)
+        //   }
+        // }, 500)
       },
       setEditorHeight() {
         if (this.view !== "Q") return

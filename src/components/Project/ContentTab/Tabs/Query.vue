@@ -67,7 +67,12 @@
         </div> -->
 
         <div class="content-area-window" :class="{ show: activeView === 'Q' }">
-          <query-view :tab="tab" :view="activeView" />
+          <query-view
+            :tab="tab"
+            :view="activeView"
+            :error="error"
+            @on-input="handleInput"
+          />
         </div>
 
         <!-- <div class="content-area-window" :class="{ show: activeView === 'T' }">
@@ -118,10 +123,64 @@
           :node-data="nodeData"
           :active-view="activeView"
           @handle-dependencies="handleDependencies"
+          @on-input="handleInput"
         />
       </pane>
     </splitpanes>
+    <div class="col">
+      <Button
+        :label="$t(`components.dialog.projects.info.save`)"
+        :style="{ 'pointer-events': loading ? 'none' : 'auto' }"
+        autofocus
+        @click.prevent="saveHandler"
+      />
+      <Button
+        label="Save as"
+        :style="{ 'pointer-events': loading ? 'none' : 'auto' }"
+        style="margin-left: 15px"
+        autofocus
+        @click.prevent="displaySaveDialog = true"
+      />
+    </div>
   </div>
+  <Dialog
+    v-model:visible="displaySaveDialog"
+    class="save-theme-dialog"
+    modal
+    :header="$t(`components.tabtheme.save-theme-as`)"
+    :style="{ width: '400px' }"
+  >
+    <div class="dialog-content">
+      <div class="field">
+        <label for="label">{{ $t("components.tabtheme.label") }}</label>
+        <InputText
+          id="label"
+          type="text"
+          :placeholder="$t(`components.tabtheme.theme-name`)"
+          :model-value="payload.label"
+          @input="handleInput('label', $event.target.value)"
+        />
+        <span
+          v-if="!error.label.valid && error.label.isOnDialog"
+          class="p-error"
+          >{{ error.label.message }}</span
+        >
+      </div>
+      <Button
+        class="p-button-raised mr-2"
+        :disabled="!payload.label.length"
+        :label="$t(`components.tabtheme.save-as-global`)"
+        @click="saveNewQuery('global')"
+      />
+      <Button
+        v-if="isLocal"
+        class="p-button-raised p-button-success"
+        :disabled="!payload.label.length"
+        :label="$t(`components.tabtheme.save-as-local`)"
+        @click="saveNewQuery('local')"
+      />
+    </div>
+  </Dialog>
 </template>
 
 <script>
@@ -138,12 +197,22 @@
   // import TransformerView from "../Views/TransformerView.vue"
   // import AlgorithmView from "../Views/AlgorithmView.vue"
   import SidePanel from "../SidePanel"
+  import Dialog from "primevue/dialog"
+  import { nanoid } from "nanoid"
+  import axios from "@/axios"
+
   // import Graph from "../../../Graph/Graph.vue"
   import renderD3 from "../../../Transformer/D3/d3"
   import renderWebcola from "../../../Transformer/WebCola/webcola"
   import renderD3LabelsChart from "../../../Transformer/D3Labels/d3labels"
   import Settings from "@/store/Modules/Settings"
+  import Projects from "@/store/Modules/Projects"
+  import AppData from "@/store/Modules/AppData"
+  import Queries from "@/store/Modules/Queries"
+
   const settingsModule = getModule(Settings)
+  const queriesModule = getModule(Queries)
+  const projectsModule = getModule(Projects)
   export default {
     name: "QueryContent",
     components: {
@@ -151,6 +220,7 @@
       Pane,
       // DataView,
       QueryView,
+      Dialog,
       // TransformerView,
       // AlgorithmView,
       Button,
@@ -170,20 +240,334 @@
     emits: ["toggle"],
     data() {
       return {
+        selectedProject: null,
+        projects: [],
+        displaySaveDialog: false,
         activeView: "Q",
         nodeData: {},
         dependencies: [],
+        payload: {
+          label: "",
+          query: "",
+          description: "",
+          icon: "",
+        },
+        queryData: {},
+        loading: false,
+        queryTitle: "",
+        error: {
+          label: {
+            valid: true,
+            message: "",
+            isOnDialog: false,
+          },
+        },
       }
     },
+    computed: {
+      projectList() {
+        return projectsModule.getProjects.map((el) => ({
+          label: el.label,
+          id: el.id,
+        }))
+      },
+      isLocal() {
+        return Boolean(this.tab.parent)
+      },
+    },
+
     watch: {
       focus(isTrue) {
         if (isTrue) this.handleSplitterClick()
       },
     },
+    mounted() {
+      this.setInitialData()
+    },
+
     methods: {
       handleView(view) {
         this.activeView = view
         setTimeout(() => settingsModule.resizeView(), 0)
+      },
+      handleInput(key, value) {
+        this.payload[key] = value
+        this.error = {
+          label: {
+            valid: true,
+            message: "",
+            isOnDialog: false,
+          },
+        }
+      },
+
+      setInitialData() {
+        const { parent, id } = this.tab
+        const projects = projectsModule.getProjects
+        const projectIdx = projects.findIndex((el) => el.id === parent)
+        let queryData
+        if (projectIdx != -1) {
+          // local
+          const queries = projectsModule.getQueries(projectIdx)
+          const queryIdx = queries.findIndex((el) => el.id === id)
+          queryData = queries[queryIdx]
+        } else {
+          // global
+          const queries = queriesModule.getGlobalQueries
+          const queryIdx = queries.findIndex((el) => el.queryid === id)
+          queryData = queriesModule.data.list[queryIdx]
+        }
+
+        this.payload = {
+          label: queryData.label,
+          query: queryData.query,
+          description: queryData.description,
+          icon: queryData.icon,
+        }
+        this.queryData = {
+          label: queryData.label,
+          query: queryData.query,
+          description: queryData.description,
+          icon: queryData.icon,
+        }
+      },
+      async saveHandler() {
+        if (this.loading === true) {
+          return
+        }
+        if (
+          this.validatePayload(this.isLocal ? "local" : "global", false) ===
+          false
+        ) {
+          return
+        }
+        this.loading = true
+        const projectData = JSON.parse(JSON.stringify(this.queryData))
+        const currentData = JSON.parse(JSON.stringify(this.payload))
+
+        const { parent, id } = this.tab
+        const projects = projectsModule.getProjects
+        const projectIdx = projects.findIndex((el) => el.id === parent)
+        if (projectIdx != -1) {
+          // local
+          const queries = projectsModule.getQueries(projectIdx)
+          const queryIdx = queries.findIndex((el) => el.id === id)
+          if (projectData.query !== currentData.query) {
+            const payload = {
+              field: "query",
+              value: currentData.query,
+              queryIdx,
+              ...this.tab,
+            }
+            await projectsModule.setQueryData(payload)
+          }
+          if (projectData.label !== currentData.label) {
+            const payload = {
+              field: "label",
+              value: currentData.label,
+              queryIdx,
+              ...this.tab,
+            }
+            await projectsModule.setQueryData(payload)
+          }
+          if (projectData.description !== currentData.description) {
+            const payload = {
+              field: "description",
+              value: currentData.description,
+              queryIdx,
+              ...this.tab,
+            }
+            await projectsModule.setQueryData(payload)
+          }
+          if (projectData.icon !== currentData.icon) {
+            const payload = {
+              field: "icon",
+              value: currentData.icon,
+              queryIdx,
+              ...this.tab,
+            }
+            await projectsModule.setQueryData(payload)
+          }
+        } else {
+          // global
+          const queries = queriesModule.getGlobalQueries
+          const queryIdx = queries.findIndex((el) => el.id === id)
+          if (projectData.query !== currentData.query) {
+            const payload = {
+              field: "query",
+              value: currentData.query,
+              queryIdx,
+              ...this.tab,
+            }
+            await queriesModule.setGlobalQuery(payload)
+          }
+          if (projectData.label !== currentData.label) {
+            const payload = {
+              field: "label",
+              value: currentData.label,
+              queryIdx,
+              ...this.tab,
+            }
+            await queriesModule.setGlobalQuery(payload)
+          }
+          if (projectData.description !== currentData.description) {
+            const payload = {
+              field: "description",
+              value: currentData.description,
+              queryIdx,
+              ...this.tab,
+            }
+            await queriesModule.setGlobalQuery(payload)
+          }
+          if (projectData.icon !== currentData.icon) {
+            const payload = {
+              field: "icon",
+              value: currentData.icon,
+              queryIdx,
+              ...this.tab,
+            }
+            await queriesModule.setGlobalQuery(payload)
+          }
+        }
+
+        this.queryData = { ...this.payload }
+        // appDataModule.removeDirtyTreeNode();
+        this.loading = false
+        this.displaySaveDialog = false
+      },
+      async saveNewQuery(scope) {
+        if (this.loading === true) {
+          return
+        }
+
+        if (this.validatePayload(scope, true) === false) {
+          return
+        }
+        this.loading = true
+        const id = nanoid(14)
+        if (scope === "global") {
+          const payload = {
+            queryid: id,
+            id: id,
+            projectid: null,
+            connectionid: "defaultconnection",
+            scope: "global",
+            icon: this.payload.icon,
+            label: this.payload.label,
+            description: this.payload.description,
+            type: "query",
+            query: this.payload.query,
+            data: "",
+          }
+          await axios.post(`/datastore/query`, payload)
+
+          queriesModule.addGlobalQuery(payload)
+        } else {
+          const projects = projectsModule.getProjects
+          const projectIdx = projects.findIndex(
+            (el) => el.id === this.tab.parent
+          )
+          if (projectIdx != -1) {
+            const data = {
+              projectIdx: projectIdx,
+              data: {
+                id: id,
+                queryid: id,
+                label: this.payload.label,
+                type: "query",
+                projectid: this.tab.parent,
+                icon: this.payload.icon,
+                query: this.payload.query,
+                description: this.payload.description,
+                scope: "local",
+                data: "",
+              },
+            }
+            try {
+              await axios.post("/datastore/query", data.data)
+              projectsModule.addNewQuery(data)
+            } catch (err) {
+              console.log(err)
+            }
+          }
+        }
+        this.payload = {
+          label: this.queryData.label,
+          query: this.queryData.query,
+          description: this.queryData.description,
+          icon: this.queryData.icon,
+        }
+        this.loading = false
+        this.displaySaveDialog = false
+      },
+      validatePayload(scope, isOnDialog) {
+        if (this.payload.label.trim().length === 0) {
+          this.error = {
+            label: {
+              valid: false,
+              message: "Label Can't be empty",
+              isOnDialog,
+            },
+          }
+          return false
+        } else {
+          // Check for the existing name
+
+          if (scope === "global") {
+            const queries = JSON.parse(
+              JSON.stringify(queriesModule.getGlobalQueries)
+            )
+            const check = queries.filter(
+              (query) => query.label.trim() === this.payload.label.trim()
+            )
+
+            this.error = {
+              label: {
+                valid: !isOnDialog
+                  ? check.length === 0
+                    ? true
+                    : this.tab.id === check[0].id
+                  : check.length === 0,
+                message: `Query with label "${this.payload.label}" already exists.`,
+                isOnDialog,
+              },
+            }
+            return !isOnDialog
+              ? check.length === 0
+                ? true
+                : this.tab.id === check[0].id
+              : check.length === 0
+          }
+
+          // Local
+          const projects = projectsModule.getProjects
+          const projectIdx = projects.findIndex(
+            (el) => el.id === this.tab.parent
+          )
+          const queries = JSON.parse(
+            JSON.stringify(projectsModule.getQueries(projectIdx))
+          )
+          const check = queries.filter(
+            (query) => query.label.trim() === this.payload.label.trim()
+          )
+
+          this.error = {
+            label: {
+              valid: !isOnDialog
+                ? check.length === 0
+                  ? true
+                  : this.tab.id === check[0].id
+                : check.length === 0,
+              message: `Query with label "${this.payload.label}" already exists.`,
+              isOnDialog,
+            },
+          }
+          return !isOnDialog
+            ? check.length === 0
+              ? true
+              : this.tab.id === check[0].id
+            : check.length === 0
+        }
       },
       handleSplitterClick() {
         const rightPanel = this.$refs[`p-${this.tab.id}-${this.paneId}`]
