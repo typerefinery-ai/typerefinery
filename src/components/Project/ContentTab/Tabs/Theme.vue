@@ -43,7 +43,7 @@
             <codemirror
               v-model="code"
               :placeholder="$t(`components.tabtheme.code-placeholder`)"
-              :style="{ height: '250px' }"
+              :style="{ height: '300px' }"
               :autofocus="true"
               :indent-with-tab="true"
               :tab-size="2"
