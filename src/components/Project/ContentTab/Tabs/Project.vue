@@ -117,40 +117,17 @@
           (el) => el.id == id
         )
         const projectData = projectsModule.getProjects[projectIdx]
-
         const { label, icon, description } = projectData
-        console.log(this, "this")
         this.label = label
         this.icon = icon
         this.description = description
-
-        // projectName(value, isFormValid) {
-        //   this.name = value
-        //   this.v$.name.$model = value
-        //   this.name = this.v$.name.$model
-        //   const projectexists = projectsModule.getProjects.find(
-        //     (el) => el.label == this.v$.name.$model
-        //   )
-        //   if (projectexists) {
-        //     this.validname = true
-        //   } else {
-        //     this.validname = false
-        //   }
-        //   if (!isFormValid) {
-        //     return
-        //   }
-        // },
       },
       async saveProject() {
         if (this.error) return
-        // console.log(this.label, "he")
-        // console.log(this.project.icon, "he")
-
         const { id } = this.tab
         const projects = projectsModule.getProjects
         const projectIdx = projects.findIndex((el) => el.id == id)
         const projectData = projectsModule.getProjects[projectIdx]
-
         const data = {
           ...projectData,
           label: this.label,
@@ -159,32 +136,6 @@
         }
         this.project.label = this.label
         await projectsModule.setProjectData(data)
-        //   clearTimeout(this.debounce)
-        //   this.debounce = setTimeout(async () => {
-        //     // const payload = { field, value, ...this.tab }
-        //     // this.submitted = true
-        //     // if (!isFormValid) {
-        //     //   return
-        //     // }
-        //     const { id } = this.tab
-        //     const projectIdx = projectsModule.getProjects.findIndex(
-        //       (el) => el.id == id
-        //     )
-        //     const projectdata = projectsModule.getProjects[projectIdx]
-
-        //     const payload = {
-        //       ...projectdata,
-        //       label: this.name,
-        //       description: this.description,
-        //       icon: this.icon,
-        //     }
-        //     // this.project.label = this.name
-
-        //     projectsModule.setProjectData(payload)
-
-        //     // console.log(projectdata, "pppp")
-        //   }, 600)
-        // },
       },
       handleLabel(e) {
         clearTimeout(this.debounce)
