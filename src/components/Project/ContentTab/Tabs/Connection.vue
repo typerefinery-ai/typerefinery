@@ -215,7 +215,6 @@
         connectionName: "",
         error: "",
         dialogError: "",
-        isFormDirty: false,
       }
     },
     validations() {
