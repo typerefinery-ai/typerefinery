@@ -37,9 +37,9 @@ export default class Connections extends VuexModule {
 
   @Mutation
   updateGlobalConnection(connectionData) {
-    const { connectionIdx, field, value } = connectionData
+    const { connectionIdx, data } = connectionData
     const connections = JSON.parse(JSON.stringify(this.data))
-    connections.list[connectionIdx][field] = value
+    connections.list[connectionIdx] = data
     this.data = connections
   }
 
@@ -81,27 +81,13 @@ export default class Connections extends VuexModule {
   }
 
   @Action
-  async setGlobalConnection(data) {
+  async setGlobalConnection({ data, connectionIdx }) {
     const connections = this.context.getters["getGlobalConnections"]
-    const connection = connections[data.connectionIdx]
-
-    const payload = {
-      projectid: null,
-      connectionid: connection.id,
-      id: connection.id,
-      icon: connection.icon,
-      description: connection.description,
-      type: connection.type,
-      host: connection.host,
-      port: connection.port,
-      label: connection.label,
-      scope: "global",
-      database: connection.database,
-      [data.field]: data.value,
-    }
+    const connection = connections[connectionIdx]
+    const payload = { ...connection, ...data }
     try {
       await axios.put(`/datastore/connection/${data.id}`, payload)
-      this.context.commit("updateGlobalConnection", data)
+      this.context.commit("updateGlobalConnection", { data, connectionIdx })
     } catch (err) {
       console.log(err)
     }

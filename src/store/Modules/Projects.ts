@@ -174,10 +174,10 @@ export default class Projects extends VuexModule {
   }
 
   @Mutation
-  updateConnection(data) {
-    const { projectIdx, connectionIdx, field, value } = data
+  updateConnection(payload) {
+    const { data, connectionIdx, projectIdx } = payload
     const projects = JSON.parse(JSON.stringify(this.data.list))
-    projects[projectIdx].connections.list[connectionIdx][field] = value
+    projects[projectIdx].connections.list[connectionIdx] = data
     this.data.list = projects
   }
   @Mutation
@@ -561,30 +561,15 @@ export default class Projects extends VuexModule {
   }
   // Connection
   @Action
-  async setConnectionData(data) {
+  async setConnectionData(connectionData) {
+    const { data, connectionIdx, projectIdx } = connectionData
     const connectionsGetter = this.context.getters["getLocalConnections"]
-    const projects = this.context.getters["getProjects"]
-    const projectIdx = projects.findIndex((el) => el.id === data.parent)
     const connections = connectionsGetter(projectIdx)
-    const connection = connections[data.connectionIdx]
-
-    const payload = {
-      projectid: data.parent,
-      connectionid: connection.id,
-      icon: connection.icon,
-      description: connection.description,
-      type: connection.type,
-      host: connection.host,
-      port: connection.port,
-      label: connection.label,
-      scope: connection.scope,
-      database: connection.database,
-      [data.field]: data.value,
-    }
+    const connection = connections[connectionIdx]
+    const payload = { ...connection, ...data }
     try {
       await axios.put(`/datastore/connection/${data.id}`, payload)
-      data = { ...data, projectIdx }
-      this.context.commit("updateConnection", data)
+      this.context.commit("updateConnection", connectionData)
     } catch (err) {
       console.log(err)
     }
