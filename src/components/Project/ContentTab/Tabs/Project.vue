@@ -124,7 +124,6 @@
         this.icon = icon
         this.description = description
 
-        console.log(label, icon, description, "hello")
         // projectName(value, isFormValid) {
         //   this.name = value
         //   this.v$.name.$model = value
@@ -149,11 +148,9 @@
 
         const { id } = this.tab
         const projects = projectsModule.getProjects
-        console.log(projects, "projects")
         const projectIdx = projects.findIndex((el) => el.id == id)
-        console.log(projectIdx, "projectIdx")
         const projectData = projectsModule.getProjects[projectIdx]
-        console.log(projectData, "projectData")
+
         const data = {
           ...projectData,
           label: this.label,
