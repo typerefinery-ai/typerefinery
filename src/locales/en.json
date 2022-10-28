@@ -136,7 +136,10 @@
           "label": "Label"
         },
         "panelheader": "Connection",
-        "updated-header": "Update Connection"
+        "updated-header": "Update Connection",
+        "save-as-local": "Save as Local",
+        "save-as-global": "Save as Global",
+        "save-connection-as": "Save connection as"
       },
       "new-query": {
         "query": "Query",

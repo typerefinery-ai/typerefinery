@@ -1,7 +1,7 @@
 <template>
   <div class="theme-container">
     <div class="grid formgrid theme-form">
-      <div class="col-12 p-fluid">
+      <div class="col-6 p-fluid">
         <div class="field">
           <label for="label">{{ $t("components.tabtheme.label") }}*</label>
           <InputText
@@ -14,7 +14,7 @@
           <span v-if="error" class="p-error">{{ error }}</span>
         </div>
       </div>
-      <div class="col-12 p-fluid">
+      <div class="col-6 p-fluid">
         <div class="field">
           <label for="icon">{{ $t("components.tabtheme.icon") }}</label>
           <InputText
@@ -39,11 +39,11 @@
       <div class="col-12 p-fluid">
         <div class="field">
           <label for="icon">{{ $t("components.tabtheme.theme") }}</label>
-          <div id="query_view_cm" class="shadow-3">
+          <div class="shadow-3">
             <codemirror
               v-model="code"
               :placeholder="$t(`components.tabtheme.code-placeholder`)"
-              :style="{ height: '400px' }"
+              :style="{ height: '250px' }"
               :autofocus="true"
               :indent-with-tab="true"
               :tab-size="2"
@@ -294,15 +294,16 @@
           theme: this.code,
         }
         try {
-          await axios.post("/datastore/theme", data)
           if (scope === "global") {
             if (!this.checkExists("global", this.themeName)) {
+              await axios.post("/datastore/theme", data)
               themesModule.addGlobalTheme(data)
               this.showDialog = false
               this.themeName = ""
             }
           } else if (scope === "local") {
             if (!this.checkExists("local", this.themeName)) {
+              await axios.post("/datastore/theme", data)
               projectsModule.addLocalTheme({ projectIdx, data })
               this.showDialog = false
               this.themeName = ""
