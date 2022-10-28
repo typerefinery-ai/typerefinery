@@ -133,7 +133,10 @@
           "label": "लेबल"
         },
         "panelheader": "कनेक्शन",
-        "updated-header": "कनेक्शन अपडेट करें"
+        "updated-header": "कनेक्शन अपडेट करें",
+        "save-as-local": "स्थानीय के रूप में सहेजें",
+        "save-as-global": "वैश्विक के रूप में सहेजें",
+        "save-connection-as": "सहेजें"
       },
       "new-query": {
         "query": "क्वेरी",
