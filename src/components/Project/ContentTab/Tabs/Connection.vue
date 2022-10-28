@@ -17,6 +17,7 @@
               aria-describedby="host"
               placeholder="Eg: localhost"
               :class="{ 'p-invalid': v$.host.$error }"
+              @input="setFormDirty"
             />
           </div>
         </div>
@@ -32,6 +33,7 @@
               aria-describedby="port"
               placeholder="Eg: 1729"
               :class="{ 'p-invalid': v$.port.$error }"
+              @input="setFormDirty"
             />
           </div>
         </div>
@@ -47,6 +49,7 @@
               aria-describedby="database"
               placeholder="Enter database name"
               :class="{ 'p-invalid': v$.database.$error }"
+              @input="setFormDirty"
             />
           </div>
         </div>
@@ -101,6 +104,7 @@
               v-model.trim="icon"
               aria-describedby="icon"
               placeholder="Enter connection icon"
+              @input="setFormDirty"
             />
           </div>
         </div>
@@ -118,6 +122,7 @@
                   `components.dialog.connections.info.enter-connection-description`
                 )
               "
+              @input="setFormDirty"
             />
           </div>
         </div>
@@ -193,6 +198,7 @@
     props: {
       tab: { type: Object, required: true },
     },
+    emits: ["input"],
     setup() {
       return { v$: useVuelidate() }
     },
@@ -209,6 +215,7 @@
         connectionName: "",
         error: "",
         dialogError: "",
+        isFormDirty: false,
       }
     },
     validations() {
@@ -256,7 +263,12 @@
         this.description = description
       },
 
-      // async handleInput({ target: { value } }, field) {
+      setFormDirty(val = true) {
+        const payload = { id: this.tab.id, isDirty: val }
+        this.$emit("input", payload)
+      },
+
+      // async handeInput({ target: { value } }, field) {
       //   clearTimeout(this.debounce)
       //   this.debounce = setTimeout(async () => {
       //     const { parent, id } = this.tab
@@ -284,6 +296,7 @@
         clearTimeout(this.debounce)
         this.debounce = setTimeout(async () => {
           this.v$.label.$model = value.trim()
+          this.setFormDirty() // set form dirty
           const { parent, id } = this.tab
           const projects = projectsModule.getProjects
           const projectIdx = projects.findIndex((el) => el.id === parent)
@@ -366,6 +379,7 @@
             connectionIdx,
             projectIdx,
           })
+          this.setFormDirty(false)
         } else {
           // global
           const connections = connectionsModule.getGlobalConnections
@@ -381,6 +395,7 @@
           }
           const payload = { data, connectionIdx }
           await connectionsModule.setGlobalConnection(payload)
+          this.setFormDirty(false)
         }
       },
       async saveNewConnection(scope) {
@@ -424,7 +439,7 @@
       },
     },
     // methods: {
-    //   async handleInput({ target: { value } }, field) {
+    //   async handeInput({ target: { value } }, field) {
     //     clearTimeout(this.debounce)
     //     this.debounce = setTimeout(async () => {
     //       const payload = { field, value, ...this.tab }
