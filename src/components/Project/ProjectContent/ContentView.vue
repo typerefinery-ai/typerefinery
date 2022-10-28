@@ -2,6 +2,7 @@
   <div class="content-area">
     <div class="tabs-wrapper">
       <TabView
+        :scrollable="true"
         class="tab-view-wrapper"
         :class="{ draggable: focus }"
         :active-index="activeIndex"
