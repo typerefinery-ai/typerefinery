@@ -12,7 +12,11 @@
           <template #header>
             <div class="tab-item" :class="{ active: activeIndex === i }">
               <span :id="tab.id">{{ tab.label }}</span>
-              <i class="pi pi-times" @click.stop="closeSplitView(tab)"></i>
+              <i
+                v-if="dirtyTabs[tab.id]"
+                class="pi pi-circle-fill mini-circle"
+              ></i>
+              <i class="pi pi-times" @click.stop="handleClosePrompt(tab)"></i>
             </div>
           </template>
 
@@ -23,6 +27,7 @@
             :tools-visible="contentToolsVisible"
             :tab="tab"
             @toggle="toggleContentTools"
+            @input="handleFormState"
           />
         </TabPanel>
       </TabView>
@@ -42,6 +47,11 @@
         @toggle="toggleContentTools"
       />
     </div>
+    <close-prompt
+      :show-dialog="showDialog"
+      @close="showDialog = false"
+      @confirm="handleConfirm"
+    />
   </div>
 </template>
 
@@ -51,6 +61,7 @@
   import TabPanel from "primevue/tabpanel"
   import MenuBar from "@/components/Menu/MenuBar.vue"
   import ContentTab from "../ContentTab"
+  import ClosePrompt from "./ClosePrompt.vue"
   import Settings from "@/store/Modules/Settings"
   import Projects from "@/store/Modules/Projects"
   import Connections from "@/store/Modules/Connections"
@@ -78,6 +89,7 @@
       MenuBar,
       TabView,
       TabPanel,
+      ClosePrompt,
     },
 
     props: {
@@ -91,6 +103,9 @@
       return {
         contentToolsVisible: true,
         activeIndex: 0,
+        dirtyTabs: {},
+        showDialog: false,
+        dialogTab: {},
       }
     },
 
@@ -190,10 +205,23 @@
         this.$emit("split-view", idx)
       },
 
-      closeSplitView(tab) {
-        // if (this.paneId == "pane2") {
-        //   return this.$emit("close-split-view")
-        // }
+      handleClosePrompt(tab) {
+        if (this.dirtyTabs[tab.id]) {
+          this.showDialog = true
+          this.dialogTab = tab
+        } else {
+          this.closeTab(tab)
+        }
+      },
+
+      handleConfirm() {
+        this.closeTab(this.dialogTab)
+        this.handleFormState({ id: this.dialogTab.id, isDirty: false })
+        this.showDialog = false
+      },
+
+      closeTab(tab) {
+        if (!tab.id) return
         if (tab.type == "output") {
           appDataModule.removeSelectedSplitNodes(tab.id)
           appDataModule.toggleSplitNode()
@@ -202,6 +230,14 @@
           appDataModule.toggleTreeNode()
         }
         projectsModule.updateSelectedNode({ key: tab.key })
+      },
+
+      handleFormState({ id, isDirty }) {
+        if (this.dirtyTabs[id] && !isDirty) {
+          delete this.dirtyTabs[id]
+        } else if (!this.dirtyTabs[id] && isDirty) {
+          this.dirtyTabs[id] = true
+        }
       },
     },
   }
@@ -247,6 +283,13 @@
             height: 100%;
           }
         }
+      }
+
+      .mini-circle {
+        font-size: 0.8rem;
+        margin-left: 0.5rem;
+        top: 1px;
+        position: relative;
       }
     }
   }

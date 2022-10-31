@@ -8,7 +8,7 @@
     @toggle="$emit('toggle')"
   />
   <project v-if="tab.type === 'project'" :tab="tab" />
-  <connection v-if="tab.type === 'connection'" :tab="tab" />
+  <connection v-if="tab.type === 'connection'" :tab="tab" @input="handleEmit" />
   <wiring v-show="tab.type === 'wiring'" :tab="tab" />
   <theme v-if="tab.type === 'theme'" :tab="tab" />
   <output-content v-show="tab.type === 'output'" :tab="tab" />
@@ -37,7 +37,12 @@
       tab: { type: Object, required: true },
       paneId: { type: String, required: true },
     },
-    emits: ["toggle"],
+    emits: ["toggle", "input"],
+    methods: {
+      handleEmit(payload) {
+        this.$emit("input", payload)
+      },
+    },
   }
 </script>
 
