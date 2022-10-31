@@ -43,7 +43,7 @@
             <codemirror
               v-model="code"
               :placeholder="$t(`components.tabtheme.code-placeholder`)"
-              :style="{ height: '250px' }"
+              :style="{ height: '300px' }"
               :autofocus="true"
               :indent-with-tab="true"
               :tab-size="2"
@@ -156,12 +156,16 @@
         const { parent, id } = this.tab
         const projects = projectsModule.getProjects
         const projectIdx = projects.findIndex((el) => el.id === parent)
+        //console.log(projectIdx, "projectt")
         let themeData
         if (projectIdx != -1) {
           // local
           const themes = projectsModule.getLocalThemes(projectIdx)
+          // console.log("themes", themes)
           const themeIdx = themes.findIndex((el) => el.id === id)
+          // console.log(themeIdx, "themeIdx")
           themeData = themes[themeIdx]
+          //console.log(themeData, "themeData")
           // const project = projectsModule.getProjects[projectIdx]
           // connection = project.connections.list[connectionIdx]
         } else {
@@ -319,7 +323,7 @@
 
 <style lang="scss">
   .theme-container {
-    padding: 2rem 1.75rem;
+    padding: 1rem 1.75rem 0.5rem 1rem;
     .theme-form {
       margin-top: -0.75rem;
     }
