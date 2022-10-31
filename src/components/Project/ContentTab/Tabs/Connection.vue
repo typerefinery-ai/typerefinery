@@ -17,7 +17,7 @@
               aria-describedby="host"
               placeholder="Eg: localhost"
               :class="{ 'p-invalid': v$.host.$error }"
-              @input="setFormDirty"
+              @input="handleInput('host', $event.target.value)"
             />
           </div>
         </div>
@@ -33,7 +33,7 @@
               aria-describedby="port"
               placeholder="Eg: 1729"
               :class="{ 'p-invalid': v$.port.$error }"
-              @input="setFormDirty"
+              @input="handleInput('port', $event.target.value)"
             />
           </div>
         </div>
@@ -49,7 +49,7 @@
               aria-describedby="database"
               placeholder="Enter database name"
               :class="{ 'p-invalid': v$.database.$error }"
-              @input="setFormDirty"
+              @input="handleInput('database', $event.target.value)"
             />
           </div>
         </div>
@@ -72,7 +72,6 @@
         </div>
       </div>
     </Fieldset> -->
-
     <Fieldset
       :legend="$t(`components.dialog.connections.info.connection-detail`)"
     >
@@ -104,7 +103,7 @@
               v-model.trim="icon"
               aria-describedby="icon"
               placeholder="Enter connection icon"
-              @input="setFormDirty"
+              @input="handleInput('icon', $event.target.value)"
             />
           </div>
         </div>
@@ -122,7 +121,7 @@
                   `components.dialog.connections.info.enter-connection-description`
                 )
               "
-              @input="setFormDirty"
+              @input="handleInput('description', $event.target.value)"
             />
           </div>
         </div>
@@ -175,7 +174,6 @@
     </Dialog>
   </div>
 </template>
-
 <script>
   import { getModule } from "vuex-module-decorators"
   import { required } from "@vuelidate/validators"
@@ -191,7 +189,6 @@
   import Connections from "@/store/Modules/Connections"
   const projectsModule = getModule(Projects)
   const connectionsModule = getModule(Connections)
-
   export default {
     name: "ConnectionContent",
     components: { InputText, Fieldset, Button, Dialog },
@@ -215,6 +212,14 @@
         connectionName: "",
         error: "",
         dialogError: "",
+        initialData: {
+          icon: "",
+          label: "",
+          description: "",
+          port: "",
+          host: "",
+          database: "",
+        },
       }
     },
     validations() {
@@ -260,20 +265,28 @@
         this.v$.label.$model = label
         this.icon = icon
         this.description = description
+        this.initialData = {
+          icon,
+          label,
+          description,
+          port,
+          host,
+          database,
+        }
       },
-
+      handleInput(key, value) {
+        this.setFormDirty(!(this.initialData[key].trim() === value.trim()))
+      },
       setFormDirty(val = true) {
         const payload = { id: this.tab.id, isDirty: val }
         this.$emit("input", payload)
       },
-
       // async handeInput({ target: { value } }, field) {
       //   clearTimeout(this.debounce)
       //   this.debounce = setTimeout(async () => {
       //     const { parent, id } = this.tab
       //     const projects = projectsModule.getProjects
       //     const projectIdx = projects.findIndex((el) => el.id === parent)
-
       //     if (projectIdx != -1) {
       //       const connections = projectsModule.getLocalConnections(projectIdx)
       //       const connectionIdx = connections.findIndex((el) => el.id === id)
@@ -295,7 +308,7 @@
         clearTimeout(this.debounce)
         this.debounce = setTimeout(async () => {
           this.v$.label.$model = value.trim()
-          this.setFormDirty() // set form dirty
+          this.handleInput("label", value)
           const { parent, id } = this.tab
           const projects = projectsModule.getProjects
           const projectIdx = projects.findIndex((el) => el.id === parent)
@@ -448,34 +461,27 @@
     // },
   }
 </script>
-
 <style scoped lang="scss">
   .connection-wrapper {
     padding: 1rem 1.75rem;
-
     .connection-form {
       margin-top: -0.75rem;
     }
-
     .asterisk {
       position: relative;
       bottom: 3px;
       color: #908b8b;
     }
-
     .field > label {
       display: block;
     }
-
     input {
       width: 100%;
     }
   }
-
   div.save-connection-dialog.p-dialog {
     .p-dialog-content {
       padding-bottom: 1.5rem;
-
       input {
         width: 100%;
       }
