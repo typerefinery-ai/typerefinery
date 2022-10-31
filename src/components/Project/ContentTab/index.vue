@@ -8,7 +8,7 @@
     @toggle="$emit('toggle')"
     @input="handleEmit"
   />
-  <project v-if="tab.type === 'project'" :tab="tab" />
+  <project v-if="tab.type === 'project'" :tab="tab" @input="handleEmit" />
   <connection v-if="tab.type === 'connection'" :tab="tab" @input="handleEmit" />
   <wiring v-show="tab.type === 'wiring'" :tab="tab" />
   <theme v-if="tab.type === 'theme'" :tab="tab" @input="handleEmit" />

@@ -33,6 +33,7 @@
               v-model="project.description"
               class="w-full"
               type="text"
+              @input="handleInput('description', $event.target.value)"
             />
           </div>
         </div>
@@ -47,6 +48,7 @@
               v-model="project.icon"
               class="w-full"
               type="text"
+              @input="handleInput('icon', $event.target.value)"
             />
           </div>
         </div>
@@ -78,7 +80,7 @@
     props: {
       tab: { type: Object, required: true },
     },
-
+    emits: ["input"],
     data() {
       return {
         debounce: null,
@@ -88,7 +90,11 @@
         description: "",
 
         error: "",
-
+        initialData: {
+          icon: "",
+          label: "",
+          description: "",
+        },
         //submitted: false,
       }
     },
@@ -121,6 +127,18 @@
         this.label = label
         this.icon = icon
         this.description = description
+        this.initialData = {
+          label,
+          icon,
+          description,
+        }
+      },
+      handleInput(key, value) {
+        this.setFormDirty(!(this.initialData[key].trim() === value.trim()))
+      },
+      setFormDirty(val = true) {
+        const payload = { id: this.tab.id, isDirty: val }
+        this.$emit("input", payload)
       },
       async saveProject() {
         if (this.error) return
@@ -136,11 +154,13 @@
         }
         this.project.label = this.label
         await projectsModule.setProjectData(data)
+        this.setFormDirty(false)
       },
       handleLabel(e) {
         clearTimeout(this.debounce)
         this.debounce = setTimeout(async () => {
           this.label = e.target.value
+          this.handleInput("label", e.target.value)
           const { id } = this.tab
           const projects = projectsModule.getProjects.filter(
             (el) => el.id !== id
