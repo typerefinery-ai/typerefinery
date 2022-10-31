@@ -22,6 +22,7 @@
             v-model.trim="icon"
             aria-describedby="label"
             :placeholder="$t(`components.tabtheme.icon-placeholder`)"
+            @input="handleInput('label', $event.target.value)"
           />
         </div>
       </div>
@@ -33,6 +34,7 @@
             v-model.trim="description"
             aria-describedby="label"
             :placeholder="$t(`components.tabtheme.des-placeholder`)"
+            @input="handleInput('description', $event.target.value)"
           />
         </div>
       </div>
@@ -43,23 +45,28 @@
             <codemirror
               v-model="code"
               :placeholder="$t(`components.tabtheme.code-placeholder`)"
-              :style="{ height: '300px' }"
+              :style="{ height: '250px' }"
               :autofocus="true"
               :indent-with-tab="true"
               :tab-size="2"
               :extensions="extensions"
+              @change="handleInput('code', $event)"
             />
           </div>
         </div>
       </div>
       <div class="col-12">
         <Button
-          label="Save"
+          :label="$t(`components.dialog.projects.info.save`)"
           :disabled="Boolean(error) || !label.length"
           class="p-button-raised mr-2"
           @click="saveTheme"
         />
-        <Button label="Save as" class="p-button-raised" @click="handleDialog" />
+        <Button
+          :label="$t(`components.dialog.projects.info.saveas`)"
+          class="p-button-raised"
+          @click="handleDialog"
+        />
       </div>
     </div>
     <Dialog
@@ -125,6 +132,7 @@
     props: {
       tab: { type: Object, required: true },
     },
+    emits: ["input"],
     data() {
       return {
         code: "",
@@ -136,6 +144,12 @@
         themeName: "",
         dialogError: "",
         error: "",
+        initialData: {
+          label: "",
+          code: "",
+          description: "",
+          icon: "",
+        },
       }
     },
     computed: {
@@ -152,20 +166,23 @@
       this.setInitialData()
     },
     methods: {
+      handleInput(key, value) {
+        this.setFormDirty(!(this.initialData[key].trim() === value.trim()))
+      },
+      setFormDirty(val = true) {
+        const payload = { id: this.tab.id, isDirty: val }
+        this.$emit("input", payload)
+      },
       setInitialData() {
         const { parent, id } = this.tab
         const projects = projectsModule.getProjects
         const projectIdx = projects.findIndex((el) => el.id === parent)
-        //console.log(projectIdx, "projectt")
         let themeData
         if (projectIdx != -1) {
           // local
           const themes = projectsModule.getLocalThemes(projectIdx)
-          // console.log("themes", themes)
           const themeIdx = themes.findIndex((el) => el.id === id)
-          // console.log(themeIdx, "themeIdx")
           themeData = themes[themeIdx]
-          //console.log(themeData, "themeData")
           // const project = projectsModule.getProjects[projectIdx]
           // connection = project.connections.list[connectionIdx]
         } else {
@@ -181,6 +198,12 @@
         this.label = label
         this.icon = icon
         this.description = description
+        this.initialData = {
+          code: theme,
+          label,
+          icon,
+          description,
+        }
       },
       async saveTheme() {
         if (this.error) return
@@ -217,6 +240,7 @@
         clearTimeout(this.debounce)
         this.debounce = setTimeout(async () => {
           this.label = value.trim()
+          this.handleInput("label", value)
           const { parent, id } = this.tab
           const projects = projectsModule.getProjects
           const projectIdx = projects.findIndex((el) => el.id === parent)
@@ -323,7 +347,7 @@
 
 <style lang="scss">
   .theme-container {
-    padding: 1rem 1.75rem 0.5rem 1rem;
+    padding: 2rem 1.75rem;
     .theme-form {
       margin-top: -0.75rem;
     }

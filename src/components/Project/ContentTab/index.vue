@@ -6,11 +6,12 @@
     :tab="tab"
     :pane-id="paneId"
     @toggle="$emit('toggle')"
+    @input="handleEmit"
   />
   <project v-if="tab.type === 'project'" :tab="tab" />
   <connection v-if="tab.type === 'connection'" :tab="tab" @input="handleEmit" />
   <wiring v-show="tab.type === 'wiring'" :tab="tab" />
-  <theme v-if="tab.type === 'theme'" :tab="tab" />
+  <theme v-if="tab.type === 'theme'" :tab="tab" @input="handleEmit" />
   <output-content v-show="tab.type === 'output'" :tab="tab" />
 </template>
 

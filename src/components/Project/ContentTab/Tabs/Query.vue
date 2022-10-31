@@ -135,7 +135,7 @@
         @click.prevent="saveHandler"
       />
       <Button
-        label="Save as"
+        :label="$t(`components.dialog.projects.info.saveas`)"
         :style="{ 'pointer-events': loading ? 'none' : 'auto' }"
         style="margin-left: 15px"
         autofocus
@@ -147,16 +147,16 @@
     v-model:visible="displaySaveDialog"
     class="save-theme-dialog"
     modal
-    :header="$t(`components.tabtheme.save-theme-as`)"
+    :header="$t(`components.tabquery.save-query-as`)"
     :style="{ width: '400px' }"
   >
     <div class="dialog-content">
       <div class="field">
-        <label for="label">{{ $t("components.tabtheme.label") }}</label>
+        <label for="label">{{ $t("components.tabquery.label") }}</label>
         <InputText
           id="label"
           type="text"
-          :placeholder="$t(`components.tabtheme.theme-name`)"
+          :placeholder="$t(`components.tabquery.query-name`)"
           :model-value="payload.label"
           @input="handleInput('label', $event.target.value)"
         />
@@ -169,14 +169,14 @@
       <Button
         class="p-button-raised mr-2"
         :disabled="!payload.label.length"
-        :label="$t(`components.tabtheme.save-as-global`)"
+        :label="$t(`components.tabquery.save-as-global`)"
         @click="saveNewQuery('global')"
       />
       <Button
         v-if="isLocal"
         class="p-button-raised p-button-success"
         :disabled="!payload.label.length"
-        :label="$t(`components.tabtheme.save-as-local`)"
+        :label="$t(`components.tabquery.save-as-local`)"
         @click="saveNewQuery('local')"
       />
     </div>
@@ -237,7 +237,7 @@
       tab: { type: Object, required: true },
       paneId: { type: String, required: true },
     },
-    emits: ["toggle"],
+    emits: ["toggle", "input"],
     data() {
       return {
         selectedProject: null,
@@ -299,6 +299,7 @@
             isOnDialog: false,
           },
         }
+        this.checkDirtyNode(key, value)
       },
 
       setInitialData() {
@@ -330,6 +331,13 @@
           description: queryData.description,
           icon: queryData.icon,
         }
+      },
+      checkDirtyNode(key, value) {
+        this.setFormDirty(!(this.queryData[key].trim() === value.trim()))
+      },
+      setFormDirty(val = true) {
+        const payload = { id: this.tab.id, isDirty: val }
+        this.$emit("input", payload)
       },
       async saveHandler() {
         if (this.loading === true) {
@@ -431,7 +439,7 @@
         }
 
         this.queryData = { ...this.payload }
-        // appDataModule.removeDirtyTreeNode();
+        this.setFormDirty(false)
         this.loading = false
         this.displaySaveDialog = false
       },
@@ -497,6 +505,7 @@
           description: this.queryData.description,
           icon: this.queryData.icon,
         }
+        this.setFormDirty(false)
         this.loading = false
         this.displaySaveDialog = false
       },
