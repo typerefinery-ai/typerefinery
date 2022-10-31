@@ -130,14 +130,13 @@
     <div class="col">
       <Button
         :label="$t(`components.dialog.projects.info.save`)"
-        :style="{ 'pointer-events': loading ? 'none' : 'auto' }"
+        class="p-button-raised mr-2"
         autofocus
         @click.prevent="saveHandler"
       />
       <Button
         :label="$t(`components.dialog.projects.info.saveas`)"
-        :style="{ 'pointer-events': loading ? 'none' : 'auto' }"
-        style="margin-left: 15px"
+        class="p-button-raised"
         autofocus
         @click.prevent="displaySaveDialog = true"
       />
