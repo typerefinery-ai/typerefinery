@@ -104,7 +104,6 @@
     </Dialog>
   </div>
 </template>
-
 <script>
   import { getModule } from "vuex-module-decorators"
   import { Codemirror } from "vue-codemirror"
@@ -235,6 +234,14 @@
           const payload = { data, themeIdx }
           await themesModule.setGlobalTheme(payload)
         }
+        //Updating Initial Data
+        this.initialData = {
+          code: this.code,
+          label: this.label,
+          icon: this.icon,
+          description: this.description,
+        }
+        this.setFormDirty(false)
       },
       handleLabel({ target: { value } }) {
         clearTimeout(this.debounce)
@@ -328,6 +335,7 @@
               themesModule.addGlobalTheme(data)
               this.showDialog = false
               this.themeName = ""
+              this.setFormDirty(false)
             }
           } else if (scope === "local") {
             if (!this.checkExists("local", this.themeName)) {
@@ -335,6 +343,7 @@
               projectsModule.addLocalTheme({ projectIdx, data })
               this.showDialog = false
               this.themeName = ""
+              this.setFormDirty(false)
             }
           }
         } catch (err) {
@@ -344,7 +353,6 @@
     },
   }
 </script>
-
 <style lang="scss">
   .theme-container {
     padding: 2rem 1.75rem;
@@ -352,11 +360,9 @@
       margin-top: -0.75rem;
     }
   }
-
   div.save-theme-dialog.p-dialog {
     .p-dialog-content {
       padding-bottom: 1.5rem;
-
       input {
         width: 100%;
       }
