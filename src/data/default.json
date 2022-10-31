@@ -322,7 +322,7 @@
       "20": { "name": "installed", "color": "olive" },
       "30": { "name": "stopping", "color": "blue" },
       "60": { "name": "stopped", "color": "purple" },
-      "90": { "name": "starting", "color": "yellow" },
+      "90": { "name": "starting", "color": "blue" },
       "120": { "name": "started", "color": "green" }
     },
     "serviceTypeEnum": {
