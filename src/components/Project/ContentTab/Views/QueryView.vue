@@ -23,7 +23,7 @@
           <label for="query">{{ $t(`components.tab.query`) }}</label>
           <div id="query_view_cm" class="shadow-3">
             <codemirror
-              :model-value="query"
+              v-model="query"
               placeholder="Add your query here.."
               :style="{ height: '320px' }"
               :autofocus="true"

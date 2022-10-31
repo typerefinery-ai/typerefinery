@@ -104,6 +104,7 @@
           "cancel": "Cancel",
           "delete": "Delete",
           "save": "Save",
+          "saveas": "Save as",
           "flowName": "Workflow Name",
           "select": "Select project",
           "default-project": "Default Project",
@@ -274,9 +275,14 @@
       }
     },
     "tabquery": {
+      "label": "Name",
       "connection": "Connections",
       "select": "Select a connection",
-      "db": "Database"
+      "db": "Database",
+      "save-query-as": "Save query as",
+      "query-name": "Enter query name...",
+      "save-as-local": "Save as Local",
+      "save-as-global": "Save as Global"
     },
     "tabtheme": {
       "label": "Name",
@@ -336,7 +342,6 @@
     "minimize": "Minimize",
     "maximize": "Maximize",
     "close": "Close",
-    "restore": "Restore",
     "hide-content-tools": "Hide Content Tools",
     "show-content-tools": "Show Content Tools",
     "project": "Project",

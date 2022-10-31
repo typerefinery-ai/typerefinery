@@ -72,6 +72,7 @@
         </div>
       </div>
     </Fieldset> -->
+
     <Fieldset
       :legend="$t(`components.dialog.connections.info.connection-detail`)"
     >
@@ -129,12 +130,16 @@
     </Fieldset>
     <div class="col-12 mt-2">
       <Button
-        label="Save"
+        :label="$t(`components.dialog.projects.info.save`)"
         :disabled="Boolean(error) || v$.$invalid"
         class="p-button-raised mr-2"
         @click="saveConnection"
       />
-      <Button label="Save as" class="p-button-raised" @click="handleDialog" />
+      <Button
+        :label="$t(`components.dialog.projects.info.saveas`)"
+        class="p-button-raised"
+        @click="handleDialog"
+      />
     </div>
     <!-- Dialog -->
     <Dialog
@@ -174,6 +179,7 @@
     </Dialog>
   </div>
 </template>
+
 <script>
   import { getModule } from "vuex-module-decorators"
   import { required } from "@vuelidate/validators"
@@ -189,6 +195,7 @@
   import Connections from "@/store/Modules/Connections"
   const projectsModule = getModule(Projects)
   const connectionsModule = getModule(Connections)
+
   export default {
     name: "ConnectionContent",
     components: { InputText, Fieldset, Button, Dialog },
@@ -274,6 +281,7 @@
           database,
         }
       },
+
       handleInput(key, value) {
         this.setFormDirty(!(this.initialData[key].trim() === value.trim()))
       },
@@ -287,6 +295,7 @@
       //     const { parent, id } = this.tab
       //     const projects = projectsModule.getProjects
       //     const projectIdx = projects.findIndex((el) => el.id === parent)
+
       //     if (projectIdx != -1) {
       //       const connections = projectsModule.getLocalConnections(projectIdx)
       //       const connectionIdx = connections.findIndex((el) => el.id === id)
@@ -461,27 +470,34 @@
     // },
   }
 </script>
+
 <style scoped lang="scss">
   .connection-wrapper {
     padding: 1rem 1.75rem;
+
     .connection-form {
       margin-top: -0.75rem;
     }
+
     .asterisk {
       position: relative;
       bottom: 3px;
       color: #908b8b;
     }
+
     .field > label {
       display: block;
     }
+
     input {
       width: 100%;
     }
   }
+
   div.save-connection-dialog.p-dialog {
     .p-dialog-content {
       padding-bottom: 1.5rem;
+
       input {
         width: 100%;
       }
