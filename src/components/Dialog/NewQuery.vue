@@ -89,7 +89,7 @@
         /> -->
         <codemirror
           v-model="query"
-          placeholder="Code goes here..."
+          :placeholder="$t(`components.dialog.new-query.add-query`)"
           :style="{ height: '20vh' }"
           :autofocus="true"
           :indent-with-tab="true"

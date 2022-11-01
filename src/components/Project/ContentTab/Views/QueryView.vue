@@ -24,7 +24,7 @@
           <div id="query_view_cm" class="shadow-3">
             <codemirror
               v-model="query"
-              placeholder="Add your query here.."
+              :placeholder="$t(`components.dialog.new-query.add-query`)"
               :style="{ height: '320px' }"
               :autofocus="true"
               :indent-with-tab="true"
