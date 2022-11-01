@@ -162,6 +162,7 @@
   import Projects from "@/store/Modules/Projects"
   import Connections from "@/store/Modules/Connections"
   import AppData from "@/store/Modules/AppData"
+  import { errorToast, successToast } from "@/utils/toastService"
   const projectsModule = getModule(Projects)
   const connectionsModule = getModule(Connections)
   const appDataModule = getModule(AppData)
@@ -366,8 +367,10 @@
           } else {
             projectsModule.addLocalConnection(data)
           }
+          successToast(this, "Successfully Created!")
         } catch (err) {
           console.log(err)
+          errorToast(this)
         }
 
         this.$emit("close")

@@ -38,6 +38,7 @@
   import Button from "primevue/button"
   import Projects from "@/store/Modules/Projects"
   import AppData from "@/store/Modules/AppData"
+  import { errorToast, successToast } from "@/utils/toastService"
   const projectsModule = getModule(Projects)
   const appDataModule = getModule(AppData)
 
@@ -111,11 +112,18 @@
           }
 
           this.loading = true
-          appDataModule.removeSelectedTreeNodes(ids)
-          appDataModule.toggleTreeNode()
-          projectsModule.removeExpandedNodesByKeys(eKeys)
-          projectsModule.removeSelectedNodesByKeys(sKeys)
-          projectsModule.deleteProjectData(payload)
+          try {
+            appDataModule.removeSelectedTreeNodes(ids)
+            appDataModule.toggleTreeNode()
+            projectsModule.removeExpandedNodesByKeys(eKeys)
+            projectsModule.removeSelectedNodesByKeys(sKeys)
+            await projectsModule.deleteProjectData(payload)
+            successToast(this, "Successfully Deleted")
+          } catch (err) {
+            console.log(err)
+            errorToast(this)
+          }
+
           this.$emit("close")
         }
       },

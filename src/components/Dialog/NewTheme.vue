@@ -136,6 +136,7 @@
   import Settings from "@/store/Modules/Settings"
   const settingsModule = getModule(Settings)
   import Themes from "@/store/Modules/Theme"
+  import { errorToast, successToast } from "@/utils/toastService"
   const themesModule = getModule(Themes)
 
   export default {
@@ -299,8 +300,10 @@
           } else {
             projectsModule.addLocalTheme(data)
           }
+          successToast(this, "Successfully Created!")
         } catch (err) {
           console.log(err)
+          errorToast(this)
         }
 
         this.$emit("close")

@@ -218,8 +218,7 @@
   import Themes from "@/store/Modules/Theme"
   import Connections from "@/store/Modules/Connections"
   import Queries from "@/store/Modules/Queries"
-  import AppDataStore from "@/store/Modules/AppData"
-  const appDataModule = getModule(AppDataStore)
+  import { successToast, errorToast } from "@/utils/toastService"
   const queriesModule = getModule(Queries)
   const settingsModule = getModule(Settings)
   const connectionsModule = getModule(Connections)
@@ -413,6 +412,7 @@
           this.createInitialData(projectId, data.id)
         } catch (err) {
           console.log(err)
+          errorToast(this)
           this.loading = false
           this.showError = true
         }
@@ -441,6 +441,7 @@
           }
         } catch (error) {
           console.log(error)
+          errorToast(this)
         }
       },
       async createInitialData(projectid, flowid) {
@@ -505,6 +506,7 @@
           await this.createData(payload)
         } catch (err) {
           console.log(err)
+          errorToast(this)
           this.loading = false
           this.showError = true
         }
@@ -548,6 +550,7 @@
           },
         }
         projectsModule.addNewProject(projectData)
+        successToast(this, "Project Created")
         this.$emit("close")
         this.loading = false
         this.showError = false

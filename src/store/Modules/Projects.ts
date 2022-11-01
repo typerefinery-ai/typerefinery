@@ -635,6 +635,7 @@ export default class Projects extends VuexModule {
       ]),
         this.context.commit("deleteProject", data)
     } catch (err) {
+      throw new Error()
       console.log(err)
     }
   }
