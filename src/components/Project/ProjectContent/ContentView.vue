@@ -275,12 +275,14 @@
 
         .p-tabview {
           .p-tabview-panels {
-            height: calc(100% - 39px);
+            height: 92vh;
             padding: 0;
+            overflow: auto;
           }
 
           .p-tabview-panel {
-            height: 100%;
+            height: 92%;
+            overflow: auto;
           }
         }
       }

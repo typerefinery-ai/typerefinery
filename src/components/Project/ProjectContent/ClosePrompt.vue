@@ -40,5 +40,3 @@
     emits: ["close", "confirm"],
   }
 </script>
-
-<style></style>

@@ -72,7 +72,6 @@
         </div>
       </div>
     </Fieldset> -->
-
     <Fieldset
       :legend="$t(`components.dialog.connections.info.connection-detail`)"
     >
@@ -179,7 +178,6 @@
     </Dialog>
   </div>
 </template>
-
 <script>
   import { getModule } from "vuex-module-decorators"
   import { required } from "@vuelidate/validators"
@@ -195,7 +193,6 @@
   import Connections from "@/store/Modules/Connections"
   const projectsModule = getModule(Projects)
   const connectionsModule = getModule(Connections)
-
   export default {
     name: "ConnectionContent",
     components: { InputText, Fieldset, Button, Dialog },
@@ -281,7 +278,6 @@
           database,
         }
       },
-
       handleInput(key, value) {
         this.setFormDirty(!(this.initialData[key].trim() === value.trim()))
       },
@@ -295,7 +291,6 @@
       //     const { parent, id } = this.tab
       //     const projects = projectsModule.getProjects
       //     const projectIdx = projects.findIndex((el) => el.id === parent)
-
       //     if (projectIdx != -1) {
       //       const connections = projectsModule.getLocalConnections(projectIdx)
       //       const connectionIdx = connections.findIndex((el) => el.id === id)
@@ -400,7 +395,6 @@
             connectionIdx,
             projectIdx,
           })
-          this.setFormDirty(false)
         } else {
           // global
           const connections = connectionsModule.getGlobalConnections
@@ -416,8 +410,17 @@
           }
           const payload = { data, connectionIdx }
           await connectionsModule.setGlobalConnection(payload)
-          this.setFormDirty(false)
         }
+        //Updating Initial Data
+        this.initialData = {
+          host: this.v$.host.$model,
+          port: this.v$.port.$model,
+          database: this.v$.database.$model,
+          label: this.v$.label.$model,
+          icon: this.icon,
+          description: this.description,
+        }
+        this.setFormDirty(false)
       },
       async saveNewConnection(scope) {
         const { parent: projectId } = this.tab
@@ -445,6 +448,7 @@
               connectionsModule.addGlobalConnection(data)
               this.showDialog = false
               this.connectionName = ""
+              this.setFormDirty(false)
             }
           } else if (scope === "local") {
             if (!this.checkExists("local", this.connectionName)) {
@@ -452,6 +456,7 @@
               projectsModule.addLocalConnection({ projectIdx, data })
               this.showDialog = false
               this.connectionName = ""
+              this.setFormDirty(false)
             }
           }
         } catch (err) {
@@ -470,34 +475,27 @@
     // },
   }
 </script>
-
 <style scoped lang="scss">
   .connection-wrapper {
     padding: 1rem 1.75rem;
-
     .connection-form {
       margin-top: -0.75rem;
     }
-
     .asterisk {
       position: relative;
       bottom: 3px;
       color: #908b8b;
     }
-
     .field > label {
       display: block;
     }
-
     input {
       width: 100%;
     }
   }
-
   div.save-connection-dialog.p-dialog {
     .p-dialog-content {
       padding-bottom: 1.5rem;
-
       input {
         width: 100%;
       }
