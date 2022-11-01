@@ -36,6 +36,7 @@
         "services": "Services"
       },
       "services": {
+        "status": "Showing services according to status",
         "info": {
           "name": "Name",
           "enabled": "Enabled",

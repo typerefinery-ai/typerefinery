@@ -47,7 +47,6 @@ export default class Services extends VuexModule {
       const services = await ipc.getServices()
       this.context.commit("setServices", services)
     }
-    // console.log(services)
     // this.services = []
     // services.forEach((service: any) => {
     //   this.services.push(service)
@@ -136,6 +135,11 @@ export default class Services extends VuexModule {
   @Mutation
   setServices(payload) {
     this.data.services = payload
+  }
+
+  @Mutation
+  setSelectedServices(payload) {
+    this.data.selectedStatus = payload
   }
 
   // @Mutation
