@@ -424,6 +424,11 @@
       //   this.algorithmdata = algorithmcode
       // },
       async handlequerystore(isFormValid) {
+        this.submitted = true
+        // stop here if form is invalid
+        if (!isFormValid) {
+          return
+        }
         const projectIdx = projectsModule.getProjects.findIndex(
           (el) => el.id == this.projectselected
         )
@@ -448,11 +453,6 @@
             // endpoint: "",
             // database: "",
           },
-        }
-        this.submitted = true
-        // stop here if form is invalid
-        if (!isFormValid) {
-          return
         }
 
         try {
