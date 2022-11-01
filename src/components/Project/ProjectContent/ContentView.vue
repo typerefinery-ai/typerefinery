@@ -19,19 +19,19 @@
               <i class="pi pi-times" @click.stop="handleClosePrompt(tab)"></i>
             </div>
           </template>
-
           <!-- tab 1 -->
           <content-tab
             :pane-id="paneId"
             :focus="focus"
             :tools-visible="contentToolsVisible"
             :tab="tab"
+            :dirty-tabs="dirtyTabs"
             @toggle="toggleContentTools"
             @input="handleFormState"
+            @check-tab-if-dirty="checkTabIfDirty"
           />
         </TabPanel>
       </TabView>
-
       <div
         v-show="!contentToolsVisible && !focus"
         v-tooltip="$t(`tooltips.show-content-tools`)"
@@ -40,7 +40,6 @@
       >
         <i class="pi pi-angle-double-down"></i>
       </div>
-
       <menu-bar
         v-if="focus && paneId === panes[panes.length - 1].id"
         :menu-bar-visible="contentToolsVisible"
@@ -54,7 +53,6 @@
     />
   </div>
 </template>
-
 <script>
   import { getModule } from "vuex-module-decorators"
   import TabView from "primevue/tabview"
@@ -74,14 +72,12 @@
   const appDataModule = getModule(AppData)
   const themesModule = getModule(Themes)
   const queriesModule = getModule(Queries)
-
   TabView.methods.onTabClick = function (event, i) {
     this.$emit("tab-click", {
       originalEvent: event,
       index: i,
     })
   }
-
   export default {
     name: "ContentView",
     components: {
@@ -91,7 +87,6 @@
       TabPanel,
       ClosePrompt,
     },
-
     props: {
       focus: { type: Boolean, required: true },
       tabs: { type: Array, required: true },
@@ -108,7 +103,6 @@
         dialogTab: {},
       }
     },
-
     computed: {
       allTabs() {
         return this.tabs.map((el) => ({
@@ -122,7 +116,6 @@
           : appDataModule.data.selectedSplitNodes.activeNode
       },
     },
-
     watch: {
       focus(isTrue) {
         if (isTrue) this.contentToolsVisible = false
@@ -142,7 +135,6 @@
           this.activeIndex = index
       },
     },
-
     methods: {
       getLabel(tab) {
         const projects = projectsModule.getProjects
@@ -195,16 +187,13 @@
         //   this.activeIndex = e.index
         // }
       },
-
       toggleContentTools() {
         this.contentToolsVisible = !this.contentToolsVisible
         settingsModule.resizeView()
       },
-
       splitView(idx) {
         this.$emit("split-view", idx)
       },
-
       handleClosePrompt(tab) {
         if (this.dirtyTabs[tab.id]) {
           this.showDialog = true
@@ -213,13 +202,14 @@
           this.closeTab(tab)
         }
       },
-
+      checkTabIfDirty(tabId) {
+        return true
+      },
       handleConfirm() {
         this.closeTab(this.dialogTab)
         this.handleFormState({ id: this.dialogTab.id, isDirty: false })
         this.showDialog = false
       },
-
       closeTab(tab) {
         if (!tab.id) return
         if (tab.type == "output") {
@@ -231,7 +221,6 @@
         }
         projectsModule.updateSelectedNode({ key: tab.key })
       },
-
       handleFormState({ id, isDirty }) {
         if (this.dirtyTabs[id] && !isDirty) {
           delete this.dirtyTabs[id]
@@ -242,18 +231,15 @@
     },
   }
 </script>
-
 <style lang="scss">
   #body {
     .content-area {
       .tabs-wrapper {
         position: relative;
         height: 100%;
-
         .tab-item {
           display: flex;
           align-items: center;
-
           .pi-times {
             margin-left: 10px;
             font-size: 90%;
@@ -261,32 +247,27 @@
             top: 1px;
           }
         }
-
         .icon-wrapper-down {
           position: absolute;
           top: 12px;
           right: 10px;
           cursor: pointer;
         }
-
         .tab-view-wrapper {
           height: 100%;
         }
-
         .p-tabview {
           .p-tabview-panels {
             height: 92vh;
             padding: 0;
             overflow: auto;
           }
-
           .p-tabview-panel {
             height: 92%;
             overflow: auto;
           }
         }
       }
-
       .mini-circle {
         font-size: 0.8rem;
         margin-left: 0.5rem;

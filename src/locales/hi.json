@@ -59,7 +59,6 @@
         "maps": "नक़्शे"
       }
     },
-
     "chat": {
       "send": "भेजें",
       "messageplaceholder": "अपना संदेश यहां टंकित करें...",
@@ -75,11 +74,8 @@
       "transform": "ट्रांसफॉर्म",
       "project": {
         "header": "परियोजना ",
-
         "name": "नाम",
-
         "description": "विवरण",
-
         "icon": "आइकन"
       }
     },
@@ -107,6 +103,7 @@
           "delete": "हटाएं",
           "save": "सेव करे",
           "saveas": "सेव अस",
+          "save-project": "परियोजना सहेजी गई",
           "flowName": "कार्यप्रवाह नाम",
           "select": "प्रोजेक्ट चयन करें",
           "delete-project": "प्रोजेक्ट हटाएं",
@@ -134,7 +131,10 @@
           "connection-detail": "कनेक्शन की जानकारी",
           "database-detail": "डेटाबेस की जानकारी",
           "enter-connection-description": "कनेक्शन विवरण दर्ज करें",
-          "label": "लेबल"
+          "label": "लेबल",
+          "save-connection": "कनेक्शन सहेजा गया",
+          "connection-save-locally": "कनेक्शन स्थानीय रूप से सहेजा गया",
+          "connection-save-globally": "कनेक्शन वैश्विक रूप से सहेजा गया"
         },
         "panelheader": "कनेक्शन",
         "updated-header": "कनेक्शन अपडेट करें",
@@ -282,7 +282,10 @@
       "save-query-as": "क्वेरी सहेजें",
       "query-name": "क्वेरी नाम दर्ज करें...",
       "save-as-local": "स्थानीय के रूप में सहेजें",
-      "save-as-global": "वैश्विक के रूप में सहेजें"
+      "save-as-global": "वैश्विक के रूप में सहेजें",
+      "save-query": "क्वेरी सहेजी गई",
+      "query-save-locally": "क्वेरी स्थानीय रूप से सहेजा गया",
+      "query-save-globally": "क्वेरी वैश्विक रूप से सहेजा गया"
     },
     "tabtheme": {
       "label": "नाम",
@@ -295,7 +298,10 @@
       "des": "विवरण",
       "save-as-local": "स्थानीय के रूप में सहेजें",
       "save-as-global": "वैश्विक के रूप में सहेजें",
-      "save-theme-as": "सहेजें"
+      "save-theme-as": "सहेजें",
+      "save-theme": "थीम सहेजा गया",
+      "theme-save-locally": "थीम स्थानीय रूप से सहेजा गया",
+      "theme-save-globally": "थीम वैश्विक रूप से सहेजा गया"
     },
     "algorithm": {
       "label": "एल्गोरिथम",

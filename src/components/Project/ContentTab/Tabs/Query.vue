@@ -51,7 +51,6 @@
         <i class="pi pi-angle-double-up"></i>
       </div>
     </div>
-
     <splitpanes
       :dbl-click-splitter="false"
       :push-other-panes="false"
@@ -61,11 +60,9 @@
         <!-- <div class="content-area-window" :class="{ show: activeView === 'D' }">
           <data-view :tab="tab" :view="activeView" />
         </div>
-
         <div class="content-area-window" :class="{ show: activeView === 'A' }">
           <algorithm-view :tab="tab" :view="activeView" />
         </div> -->
-
         <div class="content-area-window" :class="{ show: activeView === 'Q' }">
           <query-view
             :tab="tab"
@@ -74,11 +71,9 @@
             @on-input="handleInput"
           />
         </div>
-
         <!-- <div class="content-area-window" :class="{ show: activeView === 'T' }">
           <transformer-view :tab="tab" :view="activeView" />
         </div> -->
-
         <!-- <div class="content-area-window" :class="{ show: activeView === 'G' }">
           <Button class="p-button-raised m-3 hidden" @click="showD3Chart"
             >Show D3 Graph</Button
@@ -101,7 +96,6 @@
               @set-node-data="setNodeData"
             />
           </div>
-
           <div class="graph-toolbar shadow-4">
             <div class="graph-toolbar-button">
               <full-icon :size="15" />
@@ -116,7 +110,6 @@
           </div>
         </div> -->
       </pane>
-
       <pane :ref="`p-${tab.id}-${paneId}`" size="25" max-size="50">
         <side-panel
           :tab="tab"
@@ -130,6 +123,7 @@
     <div class="col">
       <Button
         :label="$t(`components.dialog.projects.info.save`)"
+        :disabled="checkTabIfDirty()"
         class="p-button-raised mr-2"
         autofocus
         @click.prevent="saveHandler"
@@ -181,7 +175,6 @@
     </div>
   </Dialog>
 </template>
-
 <script>
   // import FullIcon from "vue-material-design-icons/Fullscreen.vue"
   // import MinusIcon from "vue-material-design-icons/MagnifyMinus.vue"
@@ -199,7 +192,6 @@
   import Dialog from "primevue/dialog"
   import { nanoid } from "nanoid"
   import axios from "@/axios"
-
   // import Graph from "../../../Graph/Graph.vue"
   import renderD3 from "../../../Transformer/D3/d3"
   import renderWebcola from "../../../Transformer/WebCola/webcola"
@@ -208,7 +200,7 @@
   import Projects from "@/store/Modules/Projects"
   import AppData from "@/store/Modules/AppData"
   import Queries from "@/store/Modules/Queries"
-
+  import { errorToast, successToast } from "@/utils/toastService"
   const settingsModule = getModule(Settings)
   const queriesModule = getModule(Queries)
   const projectsModule = getModule(Projects)
@@ -235,8 +227,9 @@
       focus: { type: Boolean, required: true },
       tab: { type: Object, required: true },
       paneId: { type: String, required: true },
+      dirtyTabs: { type: Object, required: true },
     },
-    emits: ["toggle", "input"],
+    emits: ["toggle", "input", "check-tab-if-dirty"],
     data() {
       return {
         selectedProject: null,
@@ -274,7 +267,6 @@
         return Boolean(this.tab.parent)
       },
     },
-
     watch: {
       focus(isTrue) {
         if (isTrue) this.handleSplitterClick()
@@ -283,8 +275,10 @@
     mounted() {
       this.setInitialData()
     },
-
     methods: {
+      checkTabIfDirty() {
+        return !this.dirtyTabs[this.tab.id]
+      },
       handleView(view) {
         this.activeView = view
         setTimeout(() => settingsModule.resizeView(), 0)
@@ -300,7 +294,6 @@
         }
         this.checkDirtyNode(key, value)
       },
-
       setInitialData() {
         const { parent, id } = this.tab
         const projects = projectsModule.getProjects
@@ -317,7 +310,6 @@
           const queryIdx = queries.findIndex((el) => el.queryid === id)
           queryData = queriesModule.data.list[queryIdx]
         }
-
         this.payload = {
           label: queryData.label,
           query: queryData.query,
@@ -351,7 +343,6 @@
         this.loading = true
         const projectData = JSON.parse(JSON.stringify(this.queryData))
         const currentData = JSON.parse(JSON.stringify(this.payload))
-
         const { parent, id } = this.tab
         const projects = projectsModule.getProjects
         const projectIdx = projects.findIndex((el) => el.id === parent)
@@ -436,17 +427,16 @@
             await queriesModule.setGlobalQuery(payload)
           }
         }
-
         this.queryData = { ...this.payload }
         this.setFormDirty(false)
         this.loading = false
         this.displaySaveDialog = false
+        successToast(this, this.$t("components.tabquery.save-query"))
       },
       async saveNewQuery(scope) {
         if (this.loading === true) {
           return
         }
-
         if (this.validatePayload(scope, true) === false) {
           return
         }
@@ -467,8 +457,8 @@
             data: "",
           }
           await axios.post(`/datastore/query`, payload)
-
           queriesModule.addGlobalQuery(payload)
+          successToast(this, this.$t("components.tabquery.query-save-globally"))
         } else {
           const projects = projectsModule.getProjects
           const projectIdx = projects.findIndex(
@@ -493,8 +483,13 @@
             try {
               await axios.post("/datastore/query", data.data)
               projectsModule.addNewQuery(data)
+              successToast(
+                this,
+                this.$t("components.tabquery.query-save-locally")
+              )
             } catch (err) {
               console.log(err)
+              errorToast(this)
             }
           }
         }
@@ -520,7 +515,6 @@
           return false
         } else {
           // Check for the existing name
-
           if (scope === "global") {
             const queries = JSON.parse(
               JSON.stringify(queriesModule.getGlobalQueries)
@@ -528,7 +522,6 @@
             const check = queries.filter(
               (query) => query.label.trim() === this.payload.label.trim()
             )
-
             this.error = {
               label: {
                 valid: !isOnDialog
@@ -546,7 +539,6 @@
                 : this.tab.id === check[0].id
               : check.length === 0
           }
-
           // Local
           const projects = projectsModule.getProjects
           const projectIdx = projects.findIndex(
@@ -558,7 +550,6 @@
           const check = queries.filter(
             (query) => query.label.trim() === this.payload.label.trim()
           )
-
           this.error = {
             label: {
               valid: !isOnDialog
@@ -613,7 +604,6 @@
     },
   }
 </script>
-
 <style lang="scss" scoped>
   @import "./Query.scss";
 </style>

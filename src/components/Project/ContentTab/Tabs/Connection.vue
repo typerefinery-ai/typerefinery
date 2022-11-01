@@ -130,7 +130,7 @@
     <div class="col-12 mt-2">
       <Button
         :label="$t(`components.dialog.projects.info.save`)"
-        :disabled="Boolean(error) || v$.$invalid"
+        :disabled="checkTabIfDirty() || Boolean(error) || v$.$invalid"
         class="p-button-raised mr-2"
         @click="saveConnection"
       />
@@ -188,6 +188,7 @@
   import Dialog from "primevue/dialog"
   import { nanoid } from "nanoid"
   import axios from "@/axios"
+  import { errorToast, successToast } from "@/utils/toastService"
   // import Dropdown from "primevue/dropdown"
   import Projects from "@/store/Modules/Projects"
   import Connections from "@/store/Modules/Connections"
@@ -198,8 +199,9 @@
     components: { InputText, Fieldset, Button, Dialog },
     props: {
       tab: { type: Object, required: true },
+      dirtyTabs: { type: Object, required: true },
     },
-    emits: ["input"],
+    emits: ["input", "check-tab-if-dirty"],
     setup() {
       return { v$: useVuelidate() }
     },
@@ -243,6 +245,9 @@
       this.setInitialData()
     },
     methods: {
+      checkTabIfDirty() {
+        return !this.dirtyTabs[this.tab.id]
+      },
       setInitialData() {
         const { parent, id } = this.tab
         const projects = projectsModule.getProjects
@@ -421,6 +426,10 @@
           description: this.description,
         }
         this.setFormDirty(false)
+        successToast(
+          this,
+          this.$t("components.dialog.connections.info.save-connection")
+        )
       },
       async saveNewConnection(scope) {
         const { parent: projectId } = this.tab
@@ -449,6 +458,12 @@
               this.showDialog = false
               this.connectionName = ""
               this.setFormDirty(false)
+              successToast(
+                this,
+                this.$t(
+                  "components.dialog.connections.info.connection-save-globally"
+                )
+              )
             }
           } else if (scope === "local") {
             if (!this.checkExists("local", this.connectionName)) {
@@ -457,10 +472,17 @@
               this.showDialog = false
               this.connectionName = ""
               this.setFormDirty(false)
+              successToast(
+                this,
+                this.$t(
+                  "components.dialog.connections.info.connection-save-locally"
+                )
+              )
             }
           }
         } catch (err) {
           console.log(err)
+          errorToast(this)
         }
       },
     },
