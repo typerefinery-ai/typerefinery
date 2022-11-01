@@ -10,6 +10,7 @@
     <project v-else />
     <!-- App Settings -->
     <settings v-if="settingsDialogVisible" />
+    <Toast />
   </template>
 </template>
 <script>
@@ -19,6 +20,7 @@
   import Maps from "@/components/Maps"
   import Chat from "@/components/Chat"
   import * as electronHelpers from "@/utils/electron"
+  import Toast from "primevue/toast"
   // import CodeEditor from "@/components/CodeEditor/MonacoEditor"
   import Loader from "@/components/Loader"
   import Settings from "@/components/Settings/Settings.vue"
@@ -36,7 +38,7 @@
   const queriesModule = getModule(QueriesStore)
   export default {
     name: "Home",
-    components: { Project, Charts, Maps, Settings, Chat, Loader },
+    components: { Project, Charts, Maps, Settings, Chat, Loader, Toast },
     computed: {
       settingsDialogVisible() {
         return settingsModule.data.settingsDialogVisible

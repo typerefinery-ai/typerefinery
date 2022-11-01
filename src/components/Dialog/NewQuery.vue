@@ -223,6 +223,7 @@
   import Connections from "@/store/Modules/Connections"
   import axios from "@/axios"
   import Queries from "@/store/Modules/Queries"
+  import { errorToast, successToast } from "@/utils/toastService"
   // import Algorithms from "@/store/Modules/Algorithms"
   // import Transformers from "@/store/Modules/Transformers"
   const settingsModule = getModule(Settings)
@@ -475,8 +476,10 @@
           } else {
             projectsModule.addNewQuery(data)
           }
+          successToast(this, "Successfully Created!")
         } catch (err) {
           console.log(err)
+          errorToast(this)
         }
 
         this.$emit("close")
