@@ -43,11 +43,11 @@ const Projects = new VuexPersistence({
   reducer: (state: any) => ({ Projects: state.Projects }),
 })
 
-const Services = new VuexPersistence({
-  key: "services",
-  storage: window.localStorage,
-  reducer: (state: any) => ({ Services: state.Services }),
-})
+// const Services = new VuexPersistence({
+//   key: "services",
+//   storage: window.localStorage,
+//   reducer: (state: any) => ({ Services: state.Services }),
+// })
 
 const Settings = new VuexPersistence({
   key: "settings",
@@ -69,7 +69,7 @@ export default createStore({
     Connections.plugin,
     FlowMessage.plugin,
     Projects.plugin,
-    Services.plugin,
+    // Services.plugin,
     Settings.plugin,
     Themes.plugin,
     Queries.plugin,

@@ -7,7 +7,7 @@ import sampleData from "@/data/default.json"
   name: "Services",
   store: store,
   dynamic: true,
-  preserveState: localStorage.getItem("services") !== null,
+  // preserveState: localStorage.getItem("services") !== null,
 })
 export default class Services extends VuexModule {
   data = sampleData.services
