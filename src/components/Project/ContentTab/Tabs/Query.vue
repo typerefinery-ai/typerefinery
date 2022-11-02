@@ -1,6 +1,6 @@
 <template>
   <div class="window-wrapper">
-    <div v-show="toolsVisible" class="content-tools-wrapper">
+    <!-- <div v-show="toolsVisible" class="content-tools-wrapper">
       <div class="content-tools">
         <Button
           :label="$t(`components.tab.query`)"
@@ -9,8 +9,9 @@
             'p-button-text p-button-plain': activeView !== 'Q',
           }"
           @click="handleView('Q')"
-        />
-        <!-- <Button
+        /> -->
+
+    <!-- <Button
           :label="$t(`components.tab.algorithm`)"
           class="p-button-raised"
           :class="{
@@ -42,7 +43,7 @@
           }"
           @click="handleView('G')"
         /> -->
-      </div>
+    <!-- </div>
       <div
         v-tooltip="$t(`tooltips.hide-content-tools`)"
         class="icon-wrapper hover:text-primary"
@@ -50,7 +51,8 @@
       >
         <i class="pi pi-angle-double-up"></i>
       </div>
-    </div>
+    </div> -->
+
     <splitpanes
       :dbl-click-splitter="false"
       :push-other-panes="false"
@@ -254,6 +256,7 @@
             isOnDialog: false,
           },
         },
+        dirtyStack: new Set(),
       }
     },
     computed: {
@@ -324,7 +327,22 @@
         }
       },
       checkDirtyNode(key, value) {
-        this.setFormDirty(!(this.queryData[key].trim() === value.trim()))
+        const oldDirtyStackSize = this.dirtyStack.size
+        if (this.queryData[key].trim() !== value.trim()) {
+          this.dirtyStack.add(key)
+        } else {
+          if (this.dirtyStack.has(key) === true) {
+            this.dirtyStack.delete(key)
+          }
+        }
+        const newDirtyStackSize = this.dirtyStack.size
+        if (newDirtyStackSize === 0) {
+          this.setFormDirty(false)
+        } else {
+          if (oldDirtyStackSize === 0) {
+            this.setFormDirty(true)
+          }
+        }
       },
       setFormDirty(val = true) {
         const payload = { id: this.tab.id, isDirty: val }
