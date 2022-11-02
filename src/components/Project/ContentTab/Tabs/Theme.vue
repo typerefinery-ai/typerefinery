@@ -22,7 +22,7 @@
             v-model.trim="icon"
             aria-describedby="label"
             :placeholder="$t(`components.tabtheme.icon-placeholder`)"
-            @input="handleInput('label', $event.target.value)"
+            @input="handleInput('icon', $event.target.value)"
           />
         </div>
       </div>
@@ -58,7 +58,7 @@
       <div class="col-12">
         <Button
           :label="$t(`components.dialog.projects.info.save`)"
-          :disabled="Boolean(error) || !label.length"
+          :disabled="checkTabIfDirty() || Boolean(error) || !label.length"
           class="p-button-raised mr-2"
           @click="saveTheme"
         />
@@ -116,6 +116,7 @@
   import Projects from "@/store/Modules/Projects"
   import InputText from "primevue/inputtext"
   import Themes from "@/store/Modules/Theme"
+  import { errorToast, successToast } from "@/utils/toastService"
   import axios from "@/axios"
   const settingsModule = getModule(Settings)
   const projectsModule = getModule(Projects)
@@ -130,8 +131,9 @@
     },
     props: {
       tab: { type: Object, required: true },
+      dirtyTabs: { type: Object, required: true },
     },
-    emits: ["input"],
+    emits: ["input", "check-tab-if-dirty"],
     data() {
       return {
         code: "",
@@ -165,6 +167,9 @@
       this.setInitialData()
     },
     methods: {
+      checkTabIfDirty() {
+        return !this.dirtyTabs[this.tab.id]
+      },
       handleInput(key, value) {
         this.setFormDirty(!(this.initialData[key].trim() === value.trim()))
       },
@@ -242,6 +247,7 @@
           description: this.description,
         }
         this.setFormDirty(false)
+        successToast(this, this.$t("components.tabtheme.save-theme"))
       },
       handleLabel({ target: { value } }) {
         clearTimeout(this.debounce)
@@ -259,7 +265,9 @@
               (el) => el.label.toLowerCase() === value.toLowerCase().trim()
             )
             if (themeExists) {
-              this.error = `Theme with label "${value}" already exists.`
+              this.error = this.$t("components.tabtheme.theme-error", {
+                error: `${value}`,
+              })
             } else {
               this.error = ""
             }
@@ -271,7 +279,12 @@
               (el) => el.label.toLowerCase() === value.toLowerCase().trim()
             )
             if (themeExists) {
-              this.error = `Theme with label "${value}" already exists.`
+              this.error = this.error = this.$t(
+                "components.tabtheme.theme-error",
+                {
+                  error: `${value}`,
+                }
+              )
             } else {
               this.error = ""
             }
@@ -288,7 +301,12 @@
             (el) => el.label.toLowerCase() === label.toLowerCase().trim()
           )
           if (themeExists) {
-            this.dialogError = `Theme with label "${label}" already exists.`
+            this.dialogError = this.error = this.$t(
+              "components.tabtheme.theme-error",
+              {
+                error: `${label}`,
+              }
+            )
             return true
           } else {
             this.dialogError = ""
@@ -300,7 +318,12 @@
             (el) => el.label.toLowerCase() === label.toLowerCase().trim()
           )
           if (themeExists) {
-            this.dialogError = `Theme with label "${label}" already exists.`
+            this.dialogError = this.error = this.$t(
+              "components.tabtheme.theme-error",
+              {
+                error: `${label}`,
+              }
+            )
             return true
           } else {
             this.dialogError = ""
@@ -336,6 +359,10 @@
               this.showDialog = false
               this.themeName = ""
               this.setFormDirty(false)
+              successToast(
+                this,
+                this.$t("components.tabtheme.theme-save-globally")
+              )
             }
           } else if (scope === "local") {
             if (!this.checkExists("local", this.themeName)) {
@@ -344,10 +371,15 @@
               this.showDialog = false
               this.themeName = ""
               this.setFormDirty(false)
+              successToast(
+                this,
+                this.$t("components.tabtheme.theme-save-locally")
+              )
             }
           }
         } catch (err) {
           console.log(err)
+          errorToast(this)
         }
       },
     },

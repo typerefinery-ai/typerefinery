@@ -8,7 +8,6 @@
       "chats": "Chat",
       "editor": "Editor"
     },
-
     "project": {
       "new-project": "New Project",
       "new-theme": "New Theme",
@@ -61,7 +60,6 @@
         "sampleData": "Sample Data"
       }
     },
-
     "chat": {
       "send": "Send",
       "messageplaceholder": "Type your message here...",
@@ -77,11 +75,8 @@
       "transform": "Transform",
       "project": {
         "header": "Project Details",
-
         "name": "Name",
-
         "description": "Description",
-
         "icon": "Icon"
       }
     },
@@ -109,6 +104,8 @@
           "delete": "Delete",
           "save": "Save",
           "saveas": "Save as",
+          "save-project": "Sucessfully Project Saved",
+          "project-error": "Project with label %{error} already exist",
           "flowName": "Workflow Name",
           "select": "Select project",
           "default-project": "Default Project",
@@ -138,7 +135,11 @@
           "connection-detail": "Connection Details",
           "database-detail": "Database Details",
           "enter-connection-description": "Enter Connection Description",
-          "label": "Label"
+          "label": "Label",
+          "save-connection": "Sucessfully Connection Saved",
+          "connection-error": "Connection with label %{error} already exist",
+          "connection-save-locally": "Sucessfully Connection Saved Locally",
+          "connection-save-globally": "Sucessfully Connection Saved Globally"
         },
         "panelheader": "Connection",
         "updated-header": "Update Connection",
@@ -291,7 +292,11 @@
       "save-query-as": "Save query as",
       "query-name": "Enter query name...",
       "save-as-local": "Save as Local",
-      "save-as-global": "Save as Global"
+      "save-as-global": "Save as Global",
+      "save-query": "Sucessfully Query Saved",
+      "query-save-locally": " Sucessfully Query Saved Locally",
+      "query-save-globally": "Sucessfully Query Saved Globally",
+      "query-error": "Query with label %{error} already exist"
     },
     "tabtheme": {
       "label": "Name",
@@ -304,7 +309,11 @@
       "des": "Description",
       "save-as-local": "Save as Local",
       "save-as-global": "Save as Global",
-      "save-theme-as": "Save theme as"
+      "save-theme-as": "Save theme as",
+      "save-theme": "Sucessfully Theme Saved",
+      "theme-save-locally": "Sucessfully Theme Saved Locally",
+      "theme-save-globally": "Sucessfully Theme Saved Globally",
+      "theme-error": "Theme with label %{error} already exist"
     },
     "algorithm": {
       "label": "Algorithm",
@@ -341,7 +350,6 @@
       "theme": "Theme"
     }
   },
-
   "tooltips": {
     "hide-menu-bar": "Hide Menu Bar",
     "show-menu-bar": "Show Menu Bar",

@@ -56,7 +56,7 @@
     </Fieldset>
     <Button
       :label="$t(`components.dialog.projects.info.save`)"
-      :disabled="Boolean(error) || !label.length"
+      :disabled="checkTabIfDirty() || Boolean(error) || !label.length"
       icon="pi pi-check"
       autofocus
       @click="saveProject"
@@ -69,6 +69,7 @@
   import InputText from "primevue/inputtext"
   import Fieldset from "primevue/fieldset"
   import Projects from "@/store/Modules/Projects"
+  import { errorToast, successToast } from "@/utils/toastService"
   const projectsModule = getModule(Projects)
   export default {
     name: "ProjectContent",
@@ -79,8 +80,9 @@
     },
     props: {
       tab: { type: Object, required: true },
+      dirtyTabs: { type: Object, required: true },
     },
-    emits: ["input"],
+    emits: ["input", "check-tab-if-dirty"],
     data() {
       return {
         debounce: null,
@@ -88,7 +90,6 @@
         label: "",
         icon: "",
         description: "",
-
         error: "",
         initialData: {
           icon: "",
@@ -98,7 +99,6 @@
         //submitted: false,
       }
     },
-
     computed: {
       project() {
         const { id } = this.tab
@@ -115,8 +115,10 @@
     mounted() {
       this.setInitialData()
     },
-
     methods: {
+      checkTabIfDirty() {
+        return !this.dirtyTabs[this.tab.id]
+      },
       setInitialData() {
         const { id } = this.tab
         const projectIdx = projectsModule.getProjects.findIndex(
@@ -155,6 +157,10 @@
         this.project.label = this.label
         await projectsModule.setProjectData(data)
         this.setFormDirty(false)
+        successToast(
+          this,
+          this.$t("components.dialog.projects.info.save-project")
+        )
       },
       handleLabel(e) {
         clearTimeout(this.debounce)
@@ -169,7 +175,12 @@
             (el) => el.label.toLowerCase() === e.target.value.toLowerCase()
           )
           if (projectExits) {
-            this.error = `Theme with label "${e.target.value}" already exists.`
+            this.error = this.$t(
+              "components.dialog.projects.info.project-error",
+              {
+                error: `${e.target.value}`,
+              }
+            )
           } else {
             this.error = ""
           }
