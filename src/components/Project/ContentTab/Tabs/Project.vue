@@ -26,8 +26,8 @@
           <div class="field">
             <label for="des"
               >{{ $t(`components.tab.project.description`)
-              }}<span class="asterisk">*</span></label
-            >
+              }}<span class="asterisk"></span
+            ></label>
             <InputText
               id="description"
               v-model="project.description"
@@ -41,8 +41,8 @@
           <div class="field">
             <label for="icon"
               >{{ $t(`components.tab.project.icon`)
-              }}<span class="asterisk">*</span></label
-            >
+              }}<span class="asterisk"></span
+            ></label>
             <InputText
               id="icon"
               v-model="project.icon"

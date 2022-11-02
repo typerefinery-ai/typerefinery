@@ -143,7 +143,10 @@
         "updated-header": "Update Connection",
         "save-as-local": "Save as Local",
         "save-as-global": "Save as Global",
-        "save-connection-as": "Save connection as"
+        "save-connection-as": "Save connection as",
+        "db-placeholder": "Enter database name",
+        "label-placeholder": "Enter connection label",
+        "icon-placeholder": "Enter connection icon"
       },
       "new-query": {
         "query": "Query",
@@ -171,7 +174,8 @@
           "cancel": "Cancel",
           "save": "Save",
           "download": "Download"
-        }
+        },
+        "add-query": "Add your query here..."
       },
       "new-theme": {
         "theme": "Theme",
@@ -191,7 +195,8 @@
         },
         "panel2": {
           "theme": "Theme"
-        }
+        },
+        "add-theme": "Add your theme here..."
       },
       "new-transformer": {
         "header": "New Transformer ",

@@ -47,7 +47,7 @@
               id="database"
               v-model.trim="v$.database.$model"
               aria-describedby="database"
-              placeholder="Enter database name"
+              :placeholder="$t(`components.dialog.connections.db-placeholder`)"
               :class="{ 'p-invalid': v$.database.$error }"
               @input="handleInput('database', $event.target.value)"
             />
@@ -86,7 +86,9 @@
               id="label"
               :model-value="v$.label.$model"
               aria-describedby="label"
-              placeholder="Enter connection label"
+              :placeholder="
+                $t(`components.dialog.connections.label-placeholder`)
+              "
               :class="{ 'p-invalid': v$.label.$error }"
               @input="handleLabel($event)"
             />
@@ -102,7 +104,9 @@
               id="icon"
               v-model.trim="icon"
               aria-describedby="icon"
-              placeholder="Enter connection icon"
+              :placeholder="
+                $t(`components.dialog.connections.icon-placeholder`)
+              "
               @input="handleInput('icon', $event.target.value)"
             />
           </div>
