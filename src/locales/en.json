@@ -104,8 +104,7 @@
           "save": "Save",
           "saveas": "Save as",
           "save-project": "Sucessfully Project Saved",
-          "project-error-label": "Project with label",
-          "project-error-exist": "alredy exist",
+          "project-error": "Project with label %{error} already exist",
           "flowName": "Workflow Name",
           "select": "Select project",
           "default-project": "Default Project",
@@ -137,8 +136,7 @@
           "enter-connection-description": "Enter Connection Description",
           "label": "Label",
           "save-connection": "Sucessfully Connection Saved",
-          "connection-error-label": "Connection with label",
-          "connection-error-exist": "alredy exist",
+          "connection-error": "Connection with label %{error} already exist",
           "connection-save-locally": "Sucessfully Connection Saved Locally",
           "connection-save-globally": "Sucessfully Connection Saved Globally"
         },
@@ -292,8 +290,7 @@
       "save-query": "Sucessfully Query Saved",
       "query-save-locally": " Sucessfully Query Saved Locally",
       "query-save-globally": "Sucessfully Query Saved Globally",
-      "query-error-label": "Query with label",
-      "query-error-exist": "alredy exist"
+      "query-error": "Query with label %{error} already exist"
     },
     "tabtheme": {
       "label": "Name",
@@ -310,8 +307,7 @@
       "save-theme": "Sucessfully Theme Saved",
       "theme-save-locally": "Sucessfully Theme Saved Locally",
       "theme-save-globally": "Sucessfully Theme Saved Globally",
-      "theme-error-label": "Theme with label",
-      "theme-error-exist": "alredy exist"
+      "theme-error": "Theme with label %{error} already exist"
     },
     "algorithm": {
       "label": "Algorithm",

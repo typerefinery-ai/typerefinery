@@ -265,12 +265,9 @@
               (el) => el.label.toLowerCase() === value.toLowerCase().trim()
             )
             if (themeExists) {
-              this.error =
-                this.$t("components.tabtheme.theme-error-label") +
-                " " +
-                `${value}` +
-                " " +
-                this.$t("components.tabtheme.theme-error-exist")
+              this.error = this.$t("components.tabtheme.theme-error", {
+                error: `${value}`,
+              })
             } else {
               this.error = ""
             }
@@ -282,12 +279,12 @@
               (el) => el.label.toLowerCase() === value.toLowerCase().trim()
             )
             if (themeExists) {
-              this.error =
-                this.$t("components.tabtheme.theme-error-label") +
-                " " +
-                `${value}` +
-                " " +
-                this.$t("components.tabtheme.theme-error-exist")
+              this.error = this.error = this.$t(
+                "components.tabtheme.theme-error",
+                {
+                  error: `${value}`,
+                }
+              )
             } else {
               this.error = ""
             }
@@ -304,12 +301,12 @@
             (el) => el.label.toLowerCase() === label.toLowerCase().trim()
           )
           if (themeExists) {
-            this.dialogError =
-              this.$t("components.tabtheme.theme-error-label") +
-              " " +
-              `${label}` +
-              " " +
-              this.$t("components.tabtheme.theme-error-exist")
+            this.dialogError = this.error = this.$t(
+              "components.tabtheme.theme-error",
+              {
+                error: `${label}`,
+              }
+            )
             return true
           } else {
             this.dialogError = ""
@@ -321,12 +318,12 @@
             (el) => el.label.toLowerCase() === label.toLowerCase().trim()
           )
           if (themeExists) {
-            this.dialogError =
-              this.$t("components.tabtheme.theme-error-label") +
-              " " +
-              `${label}` +
-              " " +
-              this.$t("components.tabtheme.theme-error-exist")
+            this.dialogError = this.error = this.$t(
+              "components.tabtheme.theme-error",
+              {
+                error: `${label}`,
+              }
+            )
             return true
           } else {
             this.dialogError = ""

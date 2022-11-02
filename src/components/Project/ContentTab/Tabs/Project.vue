@@ -175,12 +175,12 @@
             (el) => el.label.toLowerCase() === e.target.value.toLowerCase()
           )
           if (projectExits) {
-            this.error =
-              this.$t("components.dialog.projects.info.project-error-label") +
-              " " +
-              `${e.target.value}` +
-              " " +
-              this.$t("components.dialog.projects.info.project-error-exist")
+            this.error = this.$t(
+              "components.dialog.projects.info.project-error",
+              {
+                error: `${e.target.value}`,
+              }
+            )
           } else {
             this.error = ""
           }

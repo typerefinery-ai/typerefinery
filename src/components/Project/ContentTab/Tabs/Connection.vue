@@ -329,16 +329,12 @@
               (el) => el.label.toLowerCase() === value.toLowerCase().trim()
             )
             if (connectionExists) {
-              this.error =
-                this.$t(
-                  "components.dialog.connections.info.connection-error-label"
-                ) +
-                " " +
-                `${value}` +
-                " " +
-                this.$t(
-                  "components.dialog.connections.info.connection-error-exist"
-                )
+              this.error = this.$t(
+                "components.dialog.connections.info.connection-error",
+                {
+                  error: `${value}`,
+                }
+              )
             } else {
               this.error = ""
             }
@@ -350,16 +346,12 @@
               (el) => el.label.toLowerCase() === value.toLowerCase().trim()
             )
             if (connectionExists) {
-              this.error =
-                this.$t(
-                  "components.dialog.connections.info.connection-error-label"
-                ) +
-                " " +
-                `${value}` +
-                " " +
-                this.$t(
-                  "components.dialog.connections.info.connection-error-exist"
-                )
+              this.error = this.$t(
+                "components.dialog.connections.info.connection-error",
+                {
+                  error: `${value}`,
+                }
+              )
             } else {
               this.error = ""
             }
@@ -376,16 +368,12 @@
             (el) => el.label.toLowerCase() === label.toLowerCase().trim()
           )
           if (connectionExists) {
-            this.dialogError =
-              this.$t(
-                "components.dialog.connections.info.connection-error-label"
-              ) +
-              " " +
-              `${label}` +
-              " " +
-              this.$t(
-                "components.dialog.connections.info.connection-error-exist"
-              )
+            this.dialogError = this.$t(
+              "components.dialog.connections.info.connection-error",
+              {
+                error: `${label}`,
+              }
+            )
             return true
           } else {
             this.dialogError = ""
@@ -397,16 +385,12 @@
             (el) => el.label.toLowerCase() === label.toLowerCase().trim()
           )
           if (connectionExists) {
-            this.dialogError =
-              this.$t(
-                "components.dialog.connections.info.connection-error-label"
-              ) +
-              " " +
-              `${label}` +
-              " " +
-              this.$t(
-                "components.dialog.connections.info.connection-error-exist"
-              )
+            this.dialogError = this.$t(
+              "components.dialog.connections.info.connection-error",
+              {
+                error: `${label}`,
+              }
+            )
             return true
           } else {
             this.dialogError = ""

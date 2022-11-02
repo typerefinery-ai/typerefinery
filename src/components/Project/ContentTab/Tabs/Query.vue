@@ -529,12 +529,12 @@
                     ? true
                     : this.tab.id === check[0].id
                   : check.length === 0,
-                message:
-                  this.$t("components.tabquery.query-error-label") +
-                  " " +
-                  `${this.payload.label}` +
-                  " " +
-                  this.$t("components.tabquery.query-error-exist"),
+                message: (this.error = this.$t(
+                  "components.tabquery.query-error",
+                  {
+                    error: `${this.payload.label}`,
+                  }
+                )),
                 isOnDialog,
               },
             }
@@ -562,12 +562,9 @@
                   ? true
                   : this.tab.id === check[0].id
                 : check.length === 0,
-              message:
-                this.$t("components.tabquery.query-error-label") +
-                " " +
-                `${this.payload.label}` +
-                " " +
-                this.$t("components.tabquery.query-error-exist"),
+              message: this.$t("components.tabquery.query-error", {
+                error: `${this.payload.label}`,
+              }),
               isOnDialog,
             },
           }
