@@ -529,7 +529,12 @@
                     ? true
                     : this.tab.id === check[0].id
                   : check.length === 0,
-                message: `Query with label "${this.payload.label}" already exists.`,
+                message:
+                  this.$t("components.tabquery.query-error-label") +
+                  " " +
+                  `${this.payload.label}` +
+                  " " +
+                  this.$t("components.tabquery.query-error-exist"),
                 isOnDialog,
               },
             }
@@ -557,7 +562,12 @@
                   ? true
                   : this.tab.id === check[0].id
                 : check.length === 0,
-              message: `Query with label "${this.payload.label}" already exists.`,
+              message:
+                this.$t("components.tabquery.query-error-label") +
+                " " +
+                `${this.payload.label}` +
+                " " +
+                this.$t("components.tabquery.query-error-exist"),
               isOnDialog,
             },
           }

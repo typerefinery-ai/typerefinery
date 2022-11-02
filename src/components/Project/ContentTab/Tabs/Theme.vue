@@ -265,7 +265,12 @@
               (el) => el.label.toLowerCase() === value.toLowerCase().trim()
             )
             if (themeExists) {
-              this.error = `Theme with label "${value}" already exists.`
+              this.error =
+                this.$t("components.tabtheme.theme-error-label") +
+                " " +
+                `${value}` +
+                " " +
+                this.$t("components.tabtheme.theme-error-exist")
             } else {
               this.error = ""
             }
@@ -277,7 +282,12 @@
               (el) => el.label.toLowerCase() === value.toLowerCase().trim()
             )
             if (themeExists) {
-              this.error = `Theme with label "${value}" already exists.`
+              this.error =
+                this.$t("components.tabtheme.theme-error-label") +
+                " " +
+                `${value}` +
+                " " +
+                this.$t("components.tabtheme.theme-error-exist")
             } else {
               this.error = ""
             }
@@ -294,7 +304,12 @@
             (el) => el.label.toLowerCase() === label.toLowerCase().trim()
           )
           if (themeExists) {
-            this.dialogError = `Theme with label "${label}" already exists.`
+            this.dialogError =
+              this.$t("components.tabtheme.theme-error-label") +
+              " " +
+              `${label}` +
+              " " +
+              this.$t("components.tabtheme.theme-error-exist")
             return true
           } else {
             this.dialogError = ""
@@ -306,7 +321,12 @@
             (el) => el.label.toLowerCase() === label.toLowerCase().trim()
           )
           if (themeExists) {
-            this.dialogError = `Theme with label "${label}" already exists.`
+            this.dialogError =
+              this.$t("components.tabtheme.theme-error-label") +
+              " " +
+              `${label}` +
+              " " +
+              this.$t("components.tabtheme.theme-error-exist")
             return true
           } else {
             this.dialogError = ""

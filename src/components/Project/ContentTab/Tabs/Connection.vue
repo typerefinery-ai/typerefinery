@@ -329,7 +329,16 @@
               (el) => el.label.toLowerCase() === value.toLowerCase().trim()
             )
             if (connectionExists) {
-              this.error = `Connection with label "${value}" already exists.`
+              this.error =
+                this.$t(
+                  "components.dialog.connections.info.connection-error-label"
+                ) +
+                " " +
+                `${value}` +
+                " " +
+                this.$t(
+                  "components.dialog.connections.info.connection-error-exist"
+                )
             } else {
               this.error = ""
             }
@@ -341,7 +350,16 @@
               (el) => el.label.toLowerCase() === value.toLowerCase().trim()
             )
             if (connectionExists) {
-              this.error = `Connection with label "${value}" already exists.`
+              this.error =
+                this.$t(
+                  "components.dialog.connections.info.connection-error-label"
+                ) +
+                " " +
+                `${value}` +
+                " " +
+                this.$t(
+                  "components.dialog.connections.info.connection-error-exist"
+                )
             } else {
               this.error = ""
             }
@@ -358,7 +376,16 @@
             (el) => el.label.toLowerCase() === label.toLowerCase().trim()
           )
           if (connectionExists) {
-            this.dialogError = `Connection with label "${label}" already exists.`
+            this.dialogError =
+              this.$t(
+                "components.dialog.connections.info.connection-error-label"
+              ) +
+              " " +
+              `${label}` +
+              " " +
+              this.$t(
+                "components.dialog.connections.info.connection-error-exist"
+              )
             return true
           } else {
             this.dialogError = ""
@@ -370,7 +397,16 @@
             (el) => el.label.toLowerCase() === label.toLowerCase().trim()
           )
           if (connectionExists) {
-            this.dialogError = `Connection with label "${label}" already exists.`
+            this.dialogError =
+              this.$t(
+                "components.dialog.connections.info.connection-error-label"
+              ) +
+              " " +
+              `${label}` +
+              " " +
+              this.$t(
+                "components.dialog.connections.info.connection-error-exist"
+              )
             return true
           } else {
             this.dialogError = ""
