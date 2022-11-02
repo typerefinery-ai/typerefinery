@@ -8,7 +8,7 @@
       :key="item.name"
       class="menu-item service-button"
       :status="item.value"
-      @click="OpenServices"
+      @click="OpenServices(item.value)"
     >
       <i class="pi pi-cog"></i>&nbsp;
       <span class="service-button-text">{{ item.count }}</span>
@@ -27,8 +27,19 @@
   </span>
   <!-- if prop variant is set to table then load template from Table.vue -->
   <span v-else-if="variant == 'table'">
+    <label for="name">{{ $t("components.setting.services.status") }}</label>
+    <div class="servicelist">
+      <Dropdown
+        v-model="selected"
+        :options="serviceStatusList"
+        option-label="name"
+        option-value="value"
+      >
+      </Dropdown>
+    </div>
+
     <Accordion :active-index="activeIndex">
-      <AccordionTab v-for="service in serviceList" :key="service.id">
+      <AccordionTab v-for="service in listOfServices" :key="service.id">
         <template #header>
           <div class="service-header">
             <i :class="service.icon"></i>
@@ -137,6 +148,8 @@
     data() {
       return {
         activeIndex: -1,
+        selected: "ALL",
+        listOfServices: [],
       }
     },
     computed: {
@@ -156,10 +169,22 @@
         return servicesModule.serviceCountByStatus
       },
     },
-    created() {
-      servicesModule.getServices()
+    watch: {
+      selected() {
+        this.serviceListByStatus()
+      },
     },
+    // created() {
+    //   servicesModule.getServices()
+    // },
     mounted() {
+      console.log("moun", this.serviceCountByStatus)
+      // //if global.asas === null
+      // this.selected = globa.this.serviceListByStatus()
+      if (servicesModule.data.selectedStatus) {
+        this.selected = servicesModule.data.selectedStatus
+      }
+      this.serviceListByStatus()
       if (this.field) {
         const serviceIndex = servicesModule.serviceList.findIndex(
           (s) => s.id === this.field
@@ -170,8 +195,23 @@
       }
     },
     methods: {
-      OpenServices() {
+      OpenServices(status) {
+        servicesModule.setSelectedServices(status)
         settingsModule.openSettingsDialog("services")
+        // console.log("before", this.selected)
+        // this.selected = status
+        // console.log("after", this.selected)
+        // this.preValueOfSelected = status
+      },
+      serviceListByStatus() {
+        if (this.selected && this.selected === "ALL") {
+          this.listOfServices = servicesModule.data.services
+        } else {
+          const data = servicesModule.data.services.filter(
+            (el) => el.status == this.selected
+          )
+          this.listOfServices = data
+        }
       },
     },
   }
@@ -185,6 +225,9 @@
     .menu-item {
       width: min-content;
     }
+  }
+  .servicelist {
+    padding: 5px;
   }
   #service-panel {
     box-shadow: none;

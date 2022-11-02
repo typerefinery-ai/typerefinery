@@ -36,6 +36,7 @@
         "services": "सेवाएँ"
       },
       "services": {
+        "status": "स्थिति के अनुसार सेवाएं दिखा रहा है",
         "info": {
           "name": "नाम",
           "enabled": "सक्षम",
@@ -142,7 +143,10 @@
         "updated-header": "कनेक्शन अपडेट करें",
         "save-as-local": "स्थानीय के रूप में सहेजें",
         "save-as-global": "वैश्विक के रूप में सहेजें",
-        "save-connection-as": "सहेजें"
+        "save-connection-as": "सहेजें",
+        "db-placeholder": "डेटाबेस का नाम दर्ज करें",
+        "label-placeholder": "कनेक्शन लेबल दर्ज करें",
+        "icon-placeholder": "कनेक्शन आइकन दर्ज करें"
       },
       "new-query": {
         "query": "क्वेरी",
@@ -170,7 +174,8 @@
           "cancel": "रद्द करना",
           "save": "सेव करे",
           "download": "डाउनलोड "
-        }
+        },
+        "add-query": "अपनी क्वेरी यहां भरें..."
       },
       "new-theme": {
         "theme": "थीम",
@@ -190,7 +195,8 @@
         },
         "panel2": {
           "theme": "थीम"
-        }
+        },
+        "add-theme": "अपनी थीम यहाँ भरें..."
       },
       "new-transformer": {
         "header": "नया ट्रांसफार्मर",

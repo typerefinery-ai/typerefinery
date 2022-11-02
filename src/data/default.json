@@ -313,7 +313,9 @@
   },
   "services": {
     "services": [],
+    "selectedStatus": null,
     "serviceStatusEnum": {
+      "ALL": { "name": "ALL", "color": "black" },
       "-10": { "name": "invalidconfig", "color": "red" },
       "-1": { "name": "error", "color": "red" },
       "0": { "name": "disabled", "color": "gray" },
@@ -363,11 +365,6 @@
       {
         "id": "chat",
         "label": "Chat",
-        "enabled": false
-      },
-      {
-        "id": "editor",
-        "label": "Editor",
         "enabled": false
       },
       {

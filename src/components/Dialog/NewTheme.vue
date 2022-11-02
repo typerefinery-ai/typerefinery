@@ -78,7 +78,7 @@
         }}</label>
         <codemirror
           v-model="themecode"
-          placeholder="Code goes here.."
+          :placeholder="$t(`components.dialog.new-theme.add-theme`)"
           :style="{ height: '20vh' }"
           :autofocus="true"
           :indent-with-tab="true"
