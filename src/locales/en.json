@@ -103,8 +103,12 @@
           "description": "Description",
           "icon": "Icon",
           "cancel": "Cancel",
+          "confirm": "Confirm",
+          "prompt-header": "Are you sure?",
+          "prompt-info": "You have unsaved changes. If you leave you will lose these changes.",
           "delete": "Delete",
           "save": "Save",
+          "saveas": "Save as",
           "flowName": "Workflow Name",
           "select": "Select project",
           "default-project": "Default Project",
@@ -140,7 +144,10 @@
         "updated-header": "Update Connection",
         "save-as-local": "Save as Local",
         "save-as-global": "Save as Global",
-        "save-connection-as": "Save connection as"
+        "save-connection-as": "Save connection as",
+        "db-placeholder": "Enter database name",
+        "label-placeholder": "Enter connection label",
+        "icon-placeholder": "Enter connection icon"
       },
       "new-query": {
         "query": "Query",
@@ -168,7 +175,8 @@
           "cancel": "Cancel",
           "save": "Save",
           "download": "Download"
-        }
+        },
+        "add-query": "Add your query here..."
       },
       "new-theme": {
         "theme": "Theme",
@@ -188,7 +196,8 @@
         },
         "panel2": {
           "theme": "Theme"
-        }
+        },
+        "add-theme": "Add your theme here..."
       },
       "new-transformer": {
         "header": "New Transformer ",
@@ -275,9 +284,14 @@
       }
     },
     "tabquery": {
+      "label": "Name",
       "connection": "Connections",
       "select": "Select a connection",
-      "db": "Database"
+      "db": "Database",
+      "save-query-as": "Save query as",
+      "query-name": "Enter query name...",
+      "save-as-local": "Save as Local",
+      "save-as-global": "Save as Global"
     },
     "tabtheme": {
       "label": "Name",
@@ -337,7 +351,6 @@
     "minimize": "Minimize",
     "maximize": "Maximize",
     "close": "Close",
-    "restore": "Restore",
     "hide-content-tools": "Hide Content Tools",
     "show-content-tools": "Show Content Tools",
     "project": "Project",

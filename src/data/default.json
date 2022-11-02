@@ -368,11 +368,6 @@
         "enabled": false
       },
       {
-        "id": "editor",
-        "label": "Editor",
-        "enabled": false
-      },
-      {
         "id": "charts",
         "label": "Charts",
         "enabled": false

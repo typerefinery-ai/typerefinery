@@ -31,7 +31,7 @@
         <InputText
           id="name"
           :value="v$.name.$model"
-          :class="{ 'p-invalid': v$.name.$invalid && submitted && validname }"
+          :class="{ 'p-invalid': v$.name.$invalid && submitted && invalidname }"
           @input="projectName($event.target.value, !v$.$invalid)"
         />
         <small
@@ -39,7 +39,7 @@
           class="p-error"
           >{{ v$.name.required.$message.replace("Value", "Name") }}</small
         >
-        <small v-if="validname" class="p-error"
+        <small v-if="invalidname" class="p-error"
           >This Project name already taken...Try another</small
         >
       </div>
@@ -190,6 +190,7 @@
       />
       <Button
         :label="$t(`components.dialog.projects.info.save`)"
+        :disabled="invalidname"
         :icon="`pi ${loading ? 'pi-spin pi-spinner' : 'pi-check'}`"
         :style="{ 'pointer-events': loading ? 'none' : 'auto' }"
         autofocus
@@ -218,8 +219,7 @@
   import Themes from "@/store/Modules/Theme"
   import Connections from "@/store/Modules/Connections"
   import Queries from "@/store/Modules/Queries"
-  import AppDataStore from "@/store/Modules/AppData"
-  const appDataModule = getModule(AppDataStore)
+  import { successToast, errorToast } from "@/utils/toastService"
   const queriesModule = getModule(Queries)
   const settingsModule = getModule(Settings)
   const connectionsModule = getModule(Connections)
@@ -246,7 +246,7 @@
         type: "",
         name: "Project",
         disabled: true,
-        validname: false,
+        invalidname: false,
         expanded: "",
         description: "",
         icon: "",
@@ -348,9 +348,9 @@
         (el) => el.label == this.name
       )
       if (projectexists) {
-        this.validname = true
+        this.invalidname = true
       } else {
-        this.validname = false
+        this.invalidname = false
       }
     },
     methods: {
@@ -362,9 +362,9 @@
           (el) => el.label == this.v$.name.$model
         )
         if (projectexists) {
-          this.validname = true
+          this.invalidname = true
         } else {
-          this.validname = false
+          this.invalidname = false
         }
         if (!isFormValid) {
           return
@@ -413,6 +413,7 @@
           this.createInitialData(projectId, data.id)
         } catch (err) {
           console.log(err)
+          errorToast(this)
           this.loading = false
           this.showError = true
         }
@@ -441,6 +442,7 @@
           }
         } catch (error) {
           console.log(error)
+          errorToast(this)
         }
       },
       async createInitialData(projectid, flowid) {
@@ -505,6 +507,7 @@
           await this.createData(payload)
         } catch (err) {
           console.log(err)
+          errorToast(this)
           this.loading = false
           this.showError = true
         }
@@ -548,6 +551,7 @@
           },
         }
         projectsModule.addNewProject(projectData)
+        successToast(this, "Project Created")
         this.$emit("close")
         this.loading = false
         this.showError = false

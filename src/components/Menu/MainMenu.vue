@@ -158,13 +158,13 @@
             type: "experimental",
             enabled: settingsModule.getFeatureStatus("chat"),
           },
-          {
-            label: this.$t("components.mainmenu.editor"),
-            icon: "pi pi-code",
-            to: "/home/editor",
-            type: "experimental",
-            enabled: settingsModule.getFeatureStatus("editor"),
-          },
+          // {
+          //   label: this.$t("components.mainmenu.editor"),
+          //   icon: "pi pi-code",
+          //   to: "/home/editor",
+          //   type: "experimental",
+          //   enabled: settingsModule.getFeatureStatus("editor"),
+          // },
         ].filter((el) => {
           if (el.type === "regular") return el
           else return el.enabled

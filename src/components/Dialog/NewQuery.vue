@@ -89,7 +89,7 @@
         /> -->
         <codemirror
           v-model="query"
-          placeholder="Code goes here..."
+          :placeholder="$t(`components.dialog.new-query.add-query`)"
           :style="{ height: '20vh' }"
           :autofocus="true"
           :indent-with-tab="true"
@@ -223,6 +223,7 @@
   import Connections from "@/store/Modules/Connections"
   import axios from "@/axios"
   import Queries from "@/store/Modules/Queries"
+  import { errorToast, successToast } from "@/utils/toastService"
   // import Algorithms from "@/store/Modules/Algorithms"
   // import Transformers from "@/store/Modules/Transformers"
   const settingsModule = getModule(Settings)
@@ -423,6 +424,11 @@
       //   this.algorithmdata = algorithmcode
       // },
       async handlequerystore(isFormValid) {
+        this.submitted = true
+        // stop here if form is invalid
+        if (!isFormValid) {
+          return
+        }
         const projectIdx = projectsModule.getProjects.findIndex(
           (el) => el.id == this.projectselected
         )
@@ -448,11 +454,6 @@
             // database: "",
           },
         }
-        this.submitted = true
-        // stop here if form is invalid
-        if (!isFormValid) {
-          return
-        }
 
         try {
           const payload = {
@@ -475,8 +476,10 @@
           } else {
             projectsModule.addNewQuery(data)
           }
+          successToast(this, "Successfully Created!")
         } catch (err) {
           console.log(err)
+          errorToast(this)
         }
 
         this.$emit("close")

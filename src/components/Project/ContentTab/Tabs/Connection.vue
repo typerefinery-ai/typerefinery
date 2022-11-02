@@ -47,7 +47,7 @@
               id="database"
               v-model.trim="v$.database.$model"
               aria-describedby="database"
-              placeholder="Enter database name"
+              :placeholder="$t(`components.dialog.connections.db-placeholder`)"
               :class="{ 'p-invalid': v$.database.$error }"
               @input="handleInput('database', $event.target.value)"
             />
@@ -86,7 +86,9 @@
               id="label"
               :model-value="v$.label.$model"
               aria-describedby="label"
-              placeholder="Enter connection label"
+              :placeholder="
+                $t(`components.dialog.connections.label-placeholder`)
+              "
               :class="{ 'p-invalid': v$.label.$error }"
               @input="handleLabel($event)"
             />
@@ -102,7 +104,9 @@
               id="icon"
               v-model.trim="icon"
               aria-describedby="icon"
-              placeholder="Enter connection icon"
+              :placeholder="
+                $t(`components.dialog.connections.icon-placeholder`)
+              "
               @input="handleInput('icon', $event.target.value)"
             />
           </div>
@@ -129,12 +133,16 @@
     </Fieldset>
     <div class="col-12 mt-2">
       <Button
-        label="Save"
+        :label="$t(`components.dialog.projects.info.save`)"
         :disabled="Boolean(error) || v$.$invalid"
         class="p-button-raised mr-2"
         @click="saveConnection"
       />
-      <Button label="Save as" class="p-button-raised" @click="handleDialog" />
+      <Button
+        :label="$t(`components.dialog.projects.info.saveas`)"
+        class="p-button-raised"
+        @click="handleDialog"
+      />
     </div>
     <!-- Dialog -->
     <Dialog
@@ -391,7 +399,6 @@
             connectionIdx,
             projectIdx,
           })
-          this.setFormDirty(false)
         } else {
           // global
           const connections = connectionsModule.getGlobalConnections
@@ -407,8 +414,17 @@
           }
           const payload = { data, connectionIdx }
           await connectionsModule.setGlobalConnection(payload)
-          this.setFormDirty(false)
         }
+        //Updating Initial Data
+        this.initialData = {
+          host: this.v$.host.$model,
+          port: this.v$.port.$model,
+          database: this.v$.database.$model,
+          label: this.v$.label.$model,
+          icon: this.icon,
+          description: this.description,
+        }
+        this.setFormDirty(false)
       },
       async saveNewConnection(scope) {
         const { parent: projectId } = this.tab
@@ -436,6 +452,7 @@
               connectionsModule.addGlobalConnection(data)
               this.showDialog = false
               this.connectionName = ""
+              this.setFormDirty(false)
             }
           } else if (scope === "local") {
             if (!this.checkExists("local", this.connectionName)) {
@@ -443,6 +460,7 @@
               projectsModule.addLocalConnection({ projectIdx, data })
               this.showDialog = false
               this.connectionName = ""
+              this.setFormDirty(false)
             }
           }
         } catch (err) {
