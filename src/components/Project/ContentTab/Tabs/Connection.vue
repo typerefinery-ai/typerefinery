@@ -230,6 +230,7 @@
           host: "",
           database: "",
         },
+        dirtyStack: new Set(),
       }
     },
     validations() {
@@ -288,7 +289,22 @@
         }
       },
       handleInput(key, value) {
-        this.setFormDirty(!(this.initialData[key].trim() === value.trim()))
+        const oldDirtyStackSize = this.dirtyStack.size
+        if (this.initialData[key].trim() !== value.trim()) {
+          this.dirtyStack.add(key)
+        } else {
+          if (this.dirtyStack.has(key) === true) {
+            this.dirtyStack.delete(key)
+          }
+        }
+        const newDirtyStackSize = this.dirtyStack.size
+        if (newDirtyStackSize === 0) {
+          this.setFormDirty(false)
+        } else {
+          if (oldDirtyStackSize === 0) {
+            this.setFormDirty(true)
+          }
+        }
       },
       setFormDirty(val = true) {
         const payload = { id: this.tab.id, isDirty: val }
