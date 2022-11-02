@@ -358,6 +358,7 @@
     "toggle-focus": "Toggle Focus",
     "minimize": "Minimize",
     "maximize": "Maximize",
+    "restore": "Restore",
     "close": "Close",
     "hide-content-tools": "Hide Content Tools",
     "show-content-tools": "Show Content Tools",
