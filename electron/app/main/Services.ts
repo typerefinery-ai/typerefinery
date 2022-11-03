@@ -45,6 +45,8 @@ const serviceManager = new ServiceManager(
     sendServiceList,
   }
 )
+//starts services automatically
+serviceManager.startAll()
 
 function getServicePage(service: Service) {
   const execservice = service.options.execconfig?.execservice?.id
@@ -195,7 +197,9 @@ function getServicesPage(services: Service[]) {
       <td>${execservice}</td>
       <td>${serviceStatusName}</td>
       <td>${configured.toUpperCase()}</td>
-      <td><a href="http://localhost:${service.port}" target="_blank">${service.port}</a></td>
+      <td><a href="http://localhost:${service.port}" target="_blank">${
+        service.port
+      }</a></td>
       <td>
         <button onclick="triggerServiceAPI('${
           service.id
