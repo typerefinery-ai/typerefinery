@@ -98,12 +98,12 @@
         />
       </div>
       <div class="field">
-        <label
+        <!-- <label
           for="expand"
           :class="{ 'p-error': v$.connectionselected.$invalid && submitted }"
           >{{ $t("components.dialog.new-query.panel1.label2") }}*</label
-        >
-        <Dropdown
+        > -->
+        <!-- <Dropdown
           v-model="v$.connectionselected.$model"
           :options="connectionList"
           option-label="label"
@@ -127,7 +127,7 @@
               "Connection"
             )
           }}</small
-        >
+        > -->
       </div>
       <!-- <div class="field">
         <label
@@ -271,7 +271,7 @@
     validations() {
       return {
         // projectselected: { required },
-        connectionselected: { required },
+        // connectionselected: { required },
         name: { required },
         // description: { required },
         // icon: { required },
@@ -286,29 +286,29 @@
           key: el.id,
         }))
       },
-      connectionList() {
-        let projectIdx = projectsModule.getProjects.findIndex(
-          (el) => el.id == this.projectselected
-        )
-        const localConnections =
-          projectIdx == -1 ? [] : projectsModule.getLocalConnections(projectIdx)
-        return [
-          {
-            label: "Global",
-            code: "global",
-            items: connectionsModule.getGlobalConnections.map((el) => {
-              return { label: el.label, key: el.id, scope: el.scope }
-            }),
-          },
-          {
-            label: "Local",
-            code: "local",
-            items: localConnections.map((el) => {
-              return { label: el.label, key: el.id, scope: el.scope }
-            }),
-          },
-        ]
-      },
+      // connectionList() {
+      //   let projectIdx = projectsModule.getProjects.findIndex(
+      //     (el) => el.id == this.projectselected
+      //   )
+      //   const localConnections =
+      //     projectIdx == -1 ? [] : projectsModule.getLocalConnections(projectIdx)
+      //   return [
+      //     {
+      //       label: "Global",
+      //       code: "global",
+      //       items: connectionsModule.getGlobalConnections.map((el) => {
+      //         return { label: el.label, key: el.id, scope: el.scope }
+      //       }),
+      //     },
+      //     {
+      //       label: "Local",
+      //       code: "local",
+      //       items: localConnections.map((el) => {
+      //         return { label: el.label, key: el.id, scope: el.scope }
+      //       }),
+      //     },
+      //   ]
+      // },
       // transformerList() {
       //   let projectIdx = projectsModule.getProjects.findIndex(
       //     (el) => el.id == this.projectselected
@@ -367,22 +367,22 @@
       querycloseDialog() {
         this.$emit("close")
       },
-      handleConnection({ value }) {
-        const projectIdx = projectsModule.getProjects.findIndex(
-          (el) => el.id == this.projectselected
-        )
-        let connection
-        if (value.scope == "local") {
-          connection = projectsModule
-            .getLocalConnections(projectIdx)
-            .find((el) => el.id == value.key)
-        } else {
-          connection = connectionsModule.getGlobalConnections.find((el) => {
-            return el.id == value.key
-          })
-        }
-        this.connectiondata = connection
-      },
+      // handleConnection({ value }) {
+      //   const projectIdx = projectsModule.getProjects.findIndex(
+      //     (el) => el.id == this.projectselected
+      //   )
+      //   let connection
+      //   if (value.scope == "local") {
+      //     connection = projectsModule
+      //       .getLocalConnections(projectIdx)
+      //       .find((el) => el.id == value.key)
+      //   } else {
+      //     connection = connectionsModule.getGlobalConnections.find((el) => {
+      //       return el.id == value.key
+      //     })
+      //   }
+      //   this.connectiondata = connection
+      // },
       // handleTransformer(el) {
       //   this.setTransformerCode(el.value)
       // },
@@ -439,7 +439,7 @@
             label: this.name,
             id,
             description: this.description,
-            connectionid: this.connectiondata.id,
+            // connectionid: this.connectiondata.id,
             icon: this.icon,
             query: this.query,
             type: "query",
@@ -461,7 +461,7 @@
             label: this.name,
             type: "query",
             projectid: this.projectselected,
-            connectionid: this.connectiondata.id,
+            // connectionid: this.connectiondata.id,
             icon: this.icon,
             query: this.query,
             description: this.description,

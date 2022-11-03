@@ -43,11 +43,49 @@
               class="pi pi-trash"
               @click="deleteNode(slotProps.node)"
             ></i>
+            <i
+              v-if="slotProps.node.type === 'query'"
+              id="delete_node"
+              class="pi pi-trash"
+              @click="deleteNode(slotProps.node)"
+            ></i>
+            <i
+              v-if="slotProps.node.type === 'connection'"
+              id="delete_node"
+              class="pi pi-trash"
+              @click="deleteNode(slotProps.node)"
+            ></i>
+            <i
+              v-if="slotProps.node.type === 'theme'"
+              id="delete_node"
+              class="pi pi-trash"
+              @click="deleteNode(slotProps.node)"
+            ></i>
           </span>
           <span v-else role="treeitem" class="label_wrapper"
             >{{ slotProps.node.label
             }}<i
               v-if="slotProps.node.type === 'project'"
+              id="delete_node"
+              class="pi pi-trash"
+              @click="deleteNode(slotProps.node)"
+            ></i>
+            <i
+              v-if="slotProps.node.type === 'query' && !slotProps.node.parent"
+              id="delete_node"
+              class="pi pi-trash"
+              @click="deleteNode(slotProps.node)"
+            ></i>
+            <i
+              v-if="
+                slotProps.node.type === 'connection' && !slotProps.node.parent
+              "
+              id="delete_node"
+              class="pi pi-trash"
+              @click="deleteNode(slotProps.node)"
+            ></i>
+            <i
+              v-if="slotProps.node.type === 'theme' && !slotProps.node.parent"
               id="delete_node"
               class="pi pi-trash"
               @click="deleteNode(slotProps.node)"
