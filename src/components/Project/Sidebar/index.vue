@@ -38,59 +38,27 @@
             </b>
             <i id="label_icon" class="pi pi-circle-fill"></i>
             <i
-              v-if="slotProps.node.type === 'project'"
-              id="delete_node"
-              class="pi pi-trash"
-              @click="deleteNode(slotProps.node)"
-            ></i>
-            <i
-              v-if="slotProps.node.type === 'query'"
-              id="delete_node"
-              class="pi pi-trash"
-              @click="deleteNode(slotProps.node)"
-            ></i>
-            <i
-              v-if="slotProps.node.type === 'connection'"
-              id="delete_node"
-              class="pi pi-trash"
-              @click="deleteNode(slotProps.node)"
-            ></i>
-            <i
-              v-if="slotProps.node.type === 'theme'"
+              v-if="
+                showDeleteButton(slotProps.node.type, slotProps.node.parent)
+              "
               id="delete_node"
               class="pi pi-trash"
               @click="deleteNode(slotProps.node)"
             ></i>
           </span>
           <span v-else role="treeitem" class="label_wrapper"
-            >{{ slotProps.node.label
-            }}<i
-              v-if="slotProps.node.type === 'project'"
-              id="delete_node"
-              class="pi pi-trash"
-              @click="deleteNode(slotProps.node)"
-            ></i>
-            <i
-              v-if="slotProps.node.type === 'query' && !slotProps.node.parent"
-              id="delete_node"
-              class="pi pi-trash"
-              @click="deleteNode(slotProps.node)"
-            ></i>
+            ><span class="selected-node" role="treeitem"
+              >{{ slotProps.node.label }}
+            </span>
             <i
               v-if="
-                slotProps.node.type === 'connection' && !slotProps.node.parent
+                showDeleteButton(slotProps.node.type, slotProps.node.parent)
               "
               id="delete_node"
               class="pi pi-trash"
               @click="deleteNode(slotProps.node)"
             ></i>
-            <i
-              v-if="slotProps.node.type === 'theme' && !slotProps.node.parent"
-              id="delete_node"
-              class="pi pi-trash"
-              @click="deleteNode(slotProps.node)"
-            ></i
-          ></span>
+          </span>
         </template>
       </Tree>
       <delete-tree-node-popup
@@ -319,6 +287,13 @@
     methods: {
       deleteCloseModal() {
         this.deletedialog = false
+      },
+      showDeleteButton(type, parent) {
+        if (parent) {
+          return false
+        }
+        const nodeTypes = ["query", "connection", "theme", "project"]
+        return nodeTypes.includes(type)
       },
       isSelected(id) {
         if (
