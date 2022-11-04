@@ -27,54 +27,54 @@ jobs:
         if: "startsWith(github.ref, 'refs/tags/')"
         run: echo "skipped"
 
-  # unit-test:
-  #   needs: [branch-naming-rules]
-  #   name: ${{ matrix.friendlyName }}
-  #   runs-on: ${{ matrix.os }}
+  unit-test:
+    needs: [branch-naming-rules]
+    name: ${{ matrix.friendlyName }}
+    runs-on: ${{ matrix.os }}
 
-  #   strategy:
-  #     matrix:
-  #       node: [18.3.0]
-  #       os: [macos-latest, ubuntu-latest, windows-latest]
-  #       include:
-  #         - os: ubuntu-latest
-  #           friendlyName: Unit Test - Ubuntu
-  #         - os: macos-latest
-  #           friendlyName: Unit Test - MacOS
-  #         - os: windows-latest
-  #           friendlyName: Unit Test - Windows
-  #   steps:
-  #     - name: Check out Git repository
-  #       uses: actions/checkout@v3
+    strategy:
+      matrix:
+        node: [18.3.0]
+        os: [macos-latest, ubuntu-latest, windows-latest]
+        include:
+          - os: ubuntu-latest
+            friendlyName: Unit Test - Ubuntu
+          - os: macos-latest
+            friendlyName: Unit Test - MacOS
+          - os: windows-latest
+            friendlyName: Unit Test - Windows
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v3
 
-  #     - name: Install Node.js, NPM and Yarn
-  #       uses: actions/setup-node@v3
-  #       with:
-  #         node-version: ${{ matrix.node }}
+      - name: Install Node.js, NPM and Yarn
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node }}
 
-  #     - name: Get npm cache directory
-  #       id: npm-cache-dir
-  #       run: |
-  #         echo "::set-output name=dir::$(npm config get cache)"
+      - name: Get npm cache directory
+        id: npm-cache-dir
+        run: |
+          echo "::set-output name=dir::$(npm config get cache)"
 
-  #     - name: Cache node modules
-  #       uses: actions/cache@v3
-  #       id: npm-cache # use this to check for `cache-hit` ==> if: steps.npm-cache.outputs.cache-hit != 'true'
-  #       with:
-  #         path: ${{ steps.npm-cache-dir.outputs.dir }}
-  #         key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-  #         restore-keys: |
-  #           ${{ runner.os }}-node-
+      - name: Cache node modules
+        uses: actions/cache@v3
+        id: npm-cache # use this to check for `cache-hit` ==> if: steps.npm-cache.outputs.cache-hit != 'true'
+        with:
+          path: ${{ steps.npm-cache-dir.outputs.dir }}
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
-  #     - name: Run Install
-  #       run: |
-  #         npm install
-  #     - name: Run Lint
-  #       run: |
-  #         npm run lint:style
-  #     - name: Run Typecheck
-  #       run: |
-  #         npm run typecheck
+      - name: Run Install
+        run: |
+          npm install
+      - name: Run Lint
+        run: |
+          npm run lint:style
+      - name: Run Typecheck
+        run: |
+          npm run typecheck
 
   functional-test:
     needs: [unit-test]
