@@ -75,7 +75,6 @@
   import Projects from "@/store/Modules/Projects"
   import Settings from "@/store/Modules/Settings"
   import Connections from "@/store/Modules/Connections"
-  import FlowMessage from "@/store/Modules/FlowMessage"
   import DeleteTreeNodePopup from "@/components/Dialog/DeleteProjectPopup.vue"
   // import Transformers from "@/store/Modules/Transformers"
   // import Algorithms from "@/store/Modules/Algorithms"
@@ -86,7 +85,6 @@
   const settingsModule = getModule(Settings)
   const projectsModule = getModule(Projects)
   const connectionsModule = getModule(Connections)
-  const flowMessageModule = getModule(FlowMessage)
   const queriesModule = getModule(Queries)
   // const transformersModule = getModule(Transformers)
   // const algorithmsModule = getModule(Algorithms)
@@ -200,19 +198,17 @@
                     type: "outputs",
                     // parentIdx: projectIdx,
                     icon: "pi pi-fw pi-server",
-                    children: flowMessageModule.data.list
-                      .filter((el) => el.projectId === project.id)
-                      .map((o) => {
-                        return {
-                          key: o.stepId,
-                          id: o.stepId,
-                          type: "output",
-                          label: "Output_Viz",
-                          icon: "pi pi-fw pi-file",
-                          parent: project.id,
-                          // parentIdx: projectIdx,
-                        }
-                      }),
+                    children: project.flowoutputlist.map((output) => {
+                      const id = `${output.stepId}.${output.projectId}`
+                      return {
+                        key: id,
+                        id,
+                        type: "output",
+                        label: "Output_Viz",
+                        icon: "pi pi-fw pi-file",
+                        parent: output.projectId,
+                      }
+                    }),
                   },
                 ],
               },
@@ -268,8 +264,10 @@
       selectionKeys() {
         return projectsModule.data.selectedNode
       },
-      activeNode() {
-        return appDataModule.data.selectedTreeNodes.activeNode
+      activeNodes() {
+        const { selectedTreeNodes: T, selectedSplitNodes: S } =
+          appDataModule.data
+        return [T.activeNode, S.activeNode]
       },
     },
     mounted() {
@@ -283,9 +281,11 @@
         this.deletedialog = false
       },
       isSelected(id) {
+        const { selectedTreeNodes: T, selectedSplitNodes: S } =
+          appDataModule.data
         if (
-          this.activeNode === id &&
-          appDataModule.data.selectedTreeNodes.list.includes(id)
+          this.activeNodes.includes(id) &&
+          (T.list.includes(id) || S.list.includes(id))
         ) {
           return true
         }
