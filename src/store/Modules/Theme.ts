@@ -111,6 +111,7 @@ export default class Connections extends VuexModule {
       this.context.commit("addGlobalThemes", data)
     } catch (err) {
       console.log(err)
+      this.context.commit("addGlobalThemes", {})
     }
   }
   @Action
@@ -123,6 +124,7 @@ export default class Connections extends VuexModule {
       this.context.commit("updateGlobalTheme", { data, themeIdx })
     } catch (err) {
       console.log(err)
+      this.context.commit("updateGlobalTheme", {})
     }
   }
   @Action

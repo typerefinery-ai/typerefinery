@@ -85,6 +85,7 @@ export default class Connections extends VuexModule {
       this.context.commit("addGlobalConnections", data)
     } catch (err) {
       console.log(err)
+      this.context.commit("addGlobalConnections", {})
     }
   }
 
@@ -98,6 +99,7 @@ export default class Connections extends VuexModule {
       this.context.commit("updateGlobalConnection", { data, connectionIdx })
     } catch (err) {
       console.log(err)
+      this.context.commit("updateGlobalConnection", {})
     }
   }
   @Action

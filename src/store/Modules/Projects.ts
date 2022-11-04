@@ -529,10 +529,13 @@ export default class Projects extends VuexModule {
         },
       }
     })
-    if (projects.length > 0) {
-      this.context.commit("addInitialProjects", data)
-    } else {
-      this.context.commit("openSampleDataPopup")
+    try {
+      if (projects.length > 0) {
+        this.context.commit("addInitialProjects", data)
+      }
+    } catch (err) {
+      console.log(err)
+      this.context.commit("addInitialProjects", {})
     }
   }
 
@@ -572,6 +575,7 @@ export default class Projects extends VuexModule {
       this.context.commit("updateTheme", themeData)
     } catch (err) {
       console.log(err)
+      this.context.commit("updateTheme", {})
     }
   }
   // Connection
@@ -587,6 +591,7 @@ export default class Projects extends VuexModule {
       this.context.commit("updateConnection", connectionData)
     } catch (err) {
       console.log(err)
+      this.context.commit("updateConnection", {})
     }
   }
 
@@ -617,6 +622,7 @@ export default class Projects extends VuexModule {
       this.context.commit("updateQuery", data)
     } catch (err) {
       console.log(err)
+      this.context.commit("updateQuery", {})
     }
   }
 
@@ -651,7 +657,6 @@ export default class Projects extends VuexModule {
         this.context.commit("deleteProject", data)
     } catch (err) {
       throw new Error()
-      console.log(err)
     }
   }
 }
