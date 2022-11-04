@@ -84,7 +84,7 @@ jobs:
     env:
       NODE_ENV: development
       NODE_OPTIONS: "--max_old_space_size=4096"
-
+      CYPRESS_CACHE_FOLDER: cypress/cache
     strategy:
       matrix:
         node: [18.3.0]
@@ -116,12 +116,16 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
 
+      - name: Cache Cypress Binary
+        id: cache-cypress-binary
+        uses: actions/cache@v3
+        with:
+          path: cypress/cache
+          key: cypress-binary-${{ hashFiles('package-lock.json') }}
+
       - name: Run Install
         run: |
           npm install
-      - name: Cypress Install
-        run: |
-          npm install cypress
       - name: Cypress run
         uses: cypress-io/github-action@v4
         with:
