@@ -466,6 +466,7 @@
           description: this.description,
         }
         this.setFormDirty(false)
+        this.dirtyStack = new Set()
         successToast(
           this,
           this.$t("components.dialog.connections.info.save-connection")
