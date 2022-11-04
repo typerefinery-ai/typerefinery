@@ -174,9 +174,9 @@
         this.serviceListByStatus()
       },
     },
-    // created() {
-    //   servicesModule.getServices()
-    // },
+    created() {
+      servicesModule.getServices()
+    },
     mounted() {
       console.log("moun", this.serviceCountByStatus)
       // //if global.asas === null
