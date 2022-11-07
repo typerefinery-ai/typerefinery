@@ -51,7 +51,7 @@ export default class Connections extends VuexModule {
     this.data.list = connection
   }
 
-  @Action
+  @Action({ rawError: true })
   async createInitialConnection() {
     try {
       const connection = {
@@ -75,7 +75,7 @@ export default class Connections extends VuexModule {
     }
   }
 
-  @Action
+  @Action({ rawError: true })
   async getInitialConnections() {
     try {
       const res = await axios.get("/datastore/connection")
@@ -89,7 +89,7 @@ export default class Connections extends VuexModule {
     }
   }
 
-  @Action
+  @Action({ rawError: true })
   async setGlobalConnection({ data, connectionIdx }) {
     const connections = this.context.getters["getGlobalConnections"]
     const connection = connections[connectionIdx]
@@ -102,7 +102,7 @@ export default class Connections extends VuexModule {
       this.context.commit("updateGlobalConnection", {})
     }
   }
-  @Action
+  @Action({ rawError: true })
   async deleteGlobalConnection(data) {
     const connections = this.context.getters["getGlobalConnections"]
     const connection = connections.find((el) => el.id === data.id)
