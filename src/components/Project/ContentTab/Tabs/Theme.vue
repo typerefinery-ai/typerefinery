@@ -263,6 +263,7 @@
           description: this.description,
         }
         this.setFormDirty(false)
+        this.dirtyStack = new Set()
         successToast(this, this.$t("components.tabtheme.save-theme"))
       },
       handleLabel({ target: { value } }) {

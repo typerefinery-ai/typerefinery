@@ -22,12 +22,11 @@
   import MainMenu from "@/components/Menu/MainMenu.vue"
   import MenuBar from "@/components/Menu/MenuBar.vue"
   import Settings from "@/store/Modules/Settings"
-  import FlowMessage from "@/store/Modules/FlowMessage"
   const projectsModule = getModule(Projects)
   import AppData from "@/store/Modules/AppData"
+  import axios from "@/axios"
   import * as websocket from "websocket"
   const settingsModule = getModule(Settings)
-  const flowModule = getModule(FlowMessage)
   const appDataModule = getModule(AppData)
   export default {
     name: "Project",
@@ -72,47 +71,55 @@
         client.onerror = function (error) {
           console.log("WebSocket Client Error: " + error)
         }
-        client.onmessage = (e) => {
+        client.onmessage = async (e) => {
           console.log(e)
           if (typeof e.data === "string") {
-            // console.log("Received: '" + e.data + "'")
-            // console.log(JSON.parse(e.data))
             const response = JSON.parse(e.data)
-            // console.log(response)
-            // const data = this.context.state.data
-            // if (data.dtcreated && response.type === "publish") {
-            //   const d1 = new Date(this.context.state.data.dtcreated)
-            //   const d2 = new Date(response.data.dtcreated)
-            //   console.log({ d1: d1.getTime(), d2: d2.getTime() })
-            //   if (d1.getTime() !== d2.getTime()) {
-            //     console.log("setting state....!!!!!!!!!!!!")
-            //     this.context.commit("setData", response.data)
-            //   }
-            // } else if (response.type === "publish") {
-            //   console.log("setting state for the first time+++++++")
-            //   this.context.commit("setData", response.data)
-            // }
 
             if (response.type === "publish") {
-              console.log(response)
-              flowModule.setData(response.data)
+              try {
+                const { data: projects } = await axios.get("/datastore/project")
+                const project = projects.find(
+                  (el) => el.projectid === response.data.projectId
+                )
+                let payload = {
+                  ...project,
+                  flowoutputlist: JSON.stringify([response.data]),
+                }
+                // update the project with flowoutput
+                await axios.put(
+                  `/datastore/project/${response.data.projectId}`,
+                  payload
+                )
+                payload.flowoutputlist = [response.data]
+                projectsModule.updateProjectOutput(payload)
+              } catch (err) {
+                console.log(err)
+              }
+              // Open Output & update the tree
+              const nodeId = `${response.data.stepId}.${response.data.projectId}`
+              // Select Node in tree
               appDataModule.setSelectedSplitNodes({
-                id: response.data.stepId,
+                id: nodeId,
                 type: "output",
-                label: "Output",
-                key: response.data.stepId,
+                label: "Output_Viz",
+                key: nodeId,
+                parent: response.data.projectId,
+                icon: "pi pi-fw pi-file",
               })
+              // Expand Output (parent)
               projectsModule.updateExpandedNodes({
                 key: `0-3-0-${response.data.projectId}`,
                 value: true,
               })
+              // Set selected state
               projectsModule.updateSelectedNode({
-                key: response.data.stepId,
+                key: nodeId,
                 value: true,
               })
-              appDataModule.setActiveSplitNode(response.data.stepId)
+              // set active state
+              appDataModule.setActiveSplitNode(nodeId)
               appDataModule.toggleSplitNode()
-              // this.context.commit("setData", response.data)
             }
 
             sendSubscribe()
@@ -121,9 +128,7 @@
 
         function sendSubscribe() {
           if (client.readyState === client.OPEN) {
-            // console.log("sending subscribe")
             client.send(JSON.stringify(subscribe_insert))
-            // console.log("sending subscribe done")
           }
         }
       },
