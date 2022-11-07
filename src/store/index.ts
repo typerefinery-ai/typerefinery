@@ -31,11 +31,11 @@ const Themes = new VuexPersistence({
   storage: window.localStorage,
   reducer: (state: any) => ({ Themes: state.Themes }),
 })
-const FlowMessage = new VuexPersistence({
-  key: "flowMessage",
-  storage: window.localStorage,
-  reducer: (state: any) => ({ FlowMessage: state.FlowMessage }),
-})
+// const FlowMessage = new VuexPersistence({
+//   key: "flowMessage",
+//   storage: window.localStorage,
+//   reducer: (state: any) => ({ FlowMessage: state.FlowMessage }),
+// })
 
 const Projects = new VuexPersistence({
   key: "projects",
@@ -67,7 +67,7 @@ export default createStore({
     AppData.plugin,
     Auth.plugin,
     Connections.plugin,
-    FlowMessage.plugin,
+    // FlowMessage.plugin,
     Projects.plugin,
     // Services.plugin,
     Settings.plugin,

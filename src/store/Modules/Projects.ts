@@ -166,6 +166,14 @@ export default class Projects extends VuexModule {
   }
 
   @Mutation
+  updateProjectOutput(data) {
+    const projects = JSON.parse(JSON.stringify(this.data.list))
+    const projectIdx = this.data.list.findIndex((el) => el.id == data.projectid)
+    projects[projectIdx]["flowoutputlist"] = data.flowoutputlist
+    this.data.list = projects
+  }
+
+  @Mutation
   updateQuery(data) {
     const { projectIdx, queryIdx, field, value } = data
     const projects = JSON.parse(JSON.stringify(this.data.list))
@@ -472,6 +480,7 @@ export default class Projects extends VuexModule {
         label: p.label,
         description: p.description,
         icon: p.icon,
+        flowoutputlist: JSON.parse(p.flowoutputlist),
         connections: {
           type: "connections",
           icon: "",
@@ -510,7 +519,12 @@ export default class Projects extends VuexModule {
           outputs: {
             type: "outputs",
             icon: "",
-            list: [],
+            list: JSON.parse(p.flowoutputlist)?.map(() => ({
+              type: "output",
+              id: `${p.stepId}.${p.projectId}`,
+              label: "Output_Viz",
+              scope: "local",
+            })),
           },
         },
       }

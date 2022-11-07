@@ -11,6 +11,7 @@ class Project(SQLModel, table=True):
     icon: Optional[str] = Field(default=None, index=True)
     data: str
     flowid: str
+    flowoutputlist: str = Field(default=None)
 
 class ProjectUtils():
 
@@ -34,6 +35,7 @@ class ProjectUtils():
         aproject.icon = project.icon
         aproject.data = project.data
         aproject.flowid = project.flowid
+        aproject.flowoutputlist = project.flowoutputlist
         session.add(aproject)
         session.commit()
         session.refresh(aproject)

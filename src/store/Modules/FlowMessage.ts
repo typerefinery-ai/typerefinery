@@ -14,7 +14,9 @@ export default class FlowMessage extends VuexModule {
 
   @Mutation
   setData(item) {
-    const idx = this.data.list.findIndex((el) => el.stepId === item.stepId)
+    const idx = this.data.list.findIndex(
+      (el) => el.projectId === item.projectId
+    )
     if (idx === -1) {
       this.data.list.push(item)
     } else {
