@@ -7,7 +7,8 @@ from typing import Optional
 class Queries(SQLModel, table=True, tablename="query"):
     queryid: str = Field(default=None, primary_key=True)
     projectid: Optional[str] = Field(default=None, index=True)
-    connectionid: Optional[str] = Field(default=None, index=True)
+    # removed connection dropdown from global query
+    #connectionid: Optional[str] = Field(default=None, index=True)
     scope: str = Field(index=True)
     icon: Optional[str] = Field(default=None, index=True)
     label: str = Field(index=True)
@@ -33,7 +34,7 @@ class QueryUtils():
     with Session(engine) as session:
       aquery = self.read_query(queryid=queryid, engine=engine)
       if aquery:
-        aquery.connectionid = query.connectionid
+        #aquery.connectionid = query.connectionid
         aquery.projectid = query.projectid
         aquery.scope = query.scope
         aquery.icon = query.icon

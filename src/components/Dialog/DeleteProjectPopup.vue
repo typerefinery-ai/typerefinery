@@ -38,9 +38,15 @@
   import Button from "primevue/button"
   import Projects from "@/store/Modules/Projects"
   import AppData from "@/store/Modules/AppData"
+  import Queries from "@/store/Modules/Queries"
+  import Connections from "@/store/Modules/Connections"
+  import Themes from "@/store/Modules/Theme"
   import { errorToast, successToast } from "@/utils/toastService"
   const projectsModule = getModule(Projects)
   const appDataModule = getModule(AppData)
+  const queryModule = getModule(Queries)
+  const connectionModule = getModule(Connections)
+  const themeModule = getModule(Themes)
 
   export default {
     name: "DeleteTreeNodePopup",
@@ -84,23 +90,6 @@
         const queryid = []
         const themeid = []
 
-        nodeData.children.forEach((el) => {
-          eKeys.push(el.key)
-          el.children.forEach((el) => {
-            if (el.type == "connection") {
-              connectionid.push(el.id)
-            }
-            if (el.type == "query") {
-              queryid.push(el.id)
-            }
-            if (el.type == "theme") {
-              themeid.push(el.id)
-            }
-            sKeys.push(el.key)
-            ids.push(el.id)
-          })
-        })
-
         if (nodeData.type == "project") {
           const payload = {
             key: nodeData.key,
@@ -111,6 +100,22 @@
             themeid,
           }
 
+          nodeData.children.forEach((el) => {
+            eKeys.push(el.key)
+            el.children.forEach((el) => {
+              if (el.type == "connection") {
+                connectionid.push(el.id)
+              }
+              if (el.type == "query") {
+                queryid.push(el.id)
+              }
+              if (el.type == "theme") {
+                themeid.push(el.id)
+              }
+              sKeys.push(el.key)
+              ids.push(el.id)
+            })
+          })
           this.loading = true
           try {
             appDataModule.removeSelectedTreeNodes(ids)
@@ -123,7 +128,70 @@
             console.log(err)
             errorToast(this)
           }
+          this.$emit("close")
+        }
 
+        if (nodeData.type == "connection") {
+          const payload = {
+            key: nodeData.key,
+            id: nodeData.id,
+            ...this.tab,
+          }
+          this.loading = true
+          try {
+            appDataModule.removeSelectedTreeNodes(ids)
+            appDataModule.toggleTreeNode()
+            projectsModule.removeExpandedNodesByKeys(eKeys)
+            projectsModule.removeSelectedNodesByKeys(sKeys)
+            await connectionModule.deleteGlobalConnection(payload)
+            successToast(this, "Successfully Deleted")
+          } catch (err) {
+            console.log(err)
+            errorToast(this)
+          }
+          this.$emit("close")
+        }
+
+        if (nodeData.type == "theme") {
+          const payload = {
+            key: nodeData.key,
+            id: nodeData.id,
+            ...this.tab,
+          }
+          this.loading = true
+          try {
+            appDataModule.removeSelectedTreeNodes(ids)
+            appDataModule.toggleTreeNode()
+            projectsModule.removeExpandedNodesByKeys(eKeys)
+            projectsModule.removeSelectedNodesByKeys(sKeys)
+            await themeModule.deleteGlobalTheme(payload)
+
+            successToast(this, "Successfully Deleted")
+          } catch (err) {
+            console.log(err)
+            errorToast(this)
+          }
+          this.$emit("close")
+        }
+
+        if (nodeData.type == "query") {
+          const payload = {
+            key: nodeData.key,
+            id: nodeData.id,
+            ...this.tab,
+          }
+          this.loading = true
+          try {
+            appDataModule.removeSelectedTreeNodes(ids)
+            appDataModule.toggleTreeNode()
+            projectsModule.removeExpandedNodesByKeys(eKeys)
+            projectsModule.removeSelectedNodesByKeys(sKeys)
+            await queryModule.deleteGlobalQuery(payload)
+            successToast(this, "Successfully Deleted")
+          } catch (err) {
+            console.log(err)
+            errorToast(this)
+          }
           this.$emit("close")
         }
       },

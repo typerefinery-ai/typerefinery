@@ -69,6 +69,14 @@ export default class Connections extends VuexModule {
     this.data = themes
   }
 
+  @Mutation
+  deleteThemeGlobally(data) {
+    const themes = JSON.parse(JSON.stringify(this.data.list))
+    const themeIdx = themes.findIndex((el) => el.id == data.id)
+    themes.splice(themeIdx, 1)
+    this.data.list = themes
+  }
+
   @Action
   async createInitialTheme() {
     try {
@@ -113,6 +121,18 @@ export default class Connections extends VuexModule {
     try {
       await axios.put(`/datastore/theme/${data.id}`, payload)
       this.context.commit("updateGlobalTheme", { data, themeIdx })
+    } catch (err) {
+      console.log(err)
+    }
+  }
+  @Action
+  async deleteGlobalTheme(data) {
+    const themes = this.context.getters["getGlobalThemes"]
+    const theme = themes.find((el) => el.id === data.id)
+    const payload = { ...theme, ...data }
+    try {
+      await axios.delete(`/datastore/theme/${data.id}`, payload)
+      this.context.commit("deleteThemeGlobally", data)
     } catch (err) {
       console.log(err)
     }

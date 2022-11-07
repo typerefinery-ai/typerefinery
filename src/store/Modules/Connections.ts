@@ -43,6 +43,14 @@ export default class Connections extends VuexModule {
     this.data = connections
   }
 
+  @Mutation
+  deleteConnectionGlobally(data) {
+    const connection = JSON.parse(JSON.stringify(this.data.list))
+    const connectionIdx = connection.findIndex((el) => el.id == data.id)
+    connection.splice(connectionIdx, 1)
+    this.data.list = connection
+  }
+
   @Action
   async createInitialConnection() {
     try {
@@ -88,6 +96,18 @@ export default class Connections extends VuexModule {
     try {
       await axios.put(`/datastore/connection/${data.id}`, payload)
       this.context.commit("updateGlobalConnection", { data, connectionIdx })
+    } catch (err) {
+      console.log(err)
+    }
+  }
+  @Action
+  async deleteGlobalConnection(data) {
+    const connections = this.context.getters["getGlobalConnections"]
+    const connection = connections.find((el) => el.id === data.id)
+    const payload = { ...connection, ...data }
+    try {
+      await axios.delete(`/datastore/connection/${data.id}`, payload)
+      this.context.commit("deleteConnectionGlobally", data)
     } catch (err) {
       console.log(err)
     }

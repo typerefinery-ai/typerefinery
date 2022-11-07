@@ -34,6 +34,13 @@ export default class Queries extends VuexModule {
     queries.list[queryIdx][field] = value
     this.data = queries
   }
+  @Mutation
+  deleteQueryGlobally(data) {
+    const queries = JSON.parse(JSON.stringify(this.data.list))
+    const queryIdx = queries.findIndex((el) => el.id == data.id)
+    queries.splice(queryIdx, 1)
+    this.data.list = queries
+  }
 
   @Action
   async createInitialQuery() {
@@ -87,7 +94,7 @@ export default class Queries extends VuexModule {
       type: query.type,
       label: query.label,
       scope: "global",
-      connectionid: query.connectionid,
+      // connectionid: query.connectionid,
       query: query.query,
       data: "",
       [data.field]: data.value,
@@ -95,6 +102,31 @@ export default class Queries extends VuexModule {
     try {
       await axios.put(`/datastore/query/${data.id}`, payload)
       this.context.commit("updateGlobalQuery", data)
+    } catch (err) {
+      console.log(err)
+    }
+  }
+  @Action
+  async deleteGlobalQuery(data) {
+    const queries = this.context.getters["getGlobalQueries"]
+    const query = queries.find((el) => el.id === data.id)
+    const payload = {
+      queryid: query.id,
+      id: query.id,
+      projectid: null,
+      icon: query.icon,
+      description: query.description,
+      type: query.type,
+      label: query.label,
+      scope: "global",
+      // connectionid: query.connectionid,
+      query: query.query,
+      data: "",
+      [data.field]: data.value,
+    }
+    try {
+      await axios.delete(`/datastore/query/${data.id}`, payload)
+      this.context.commit("deleteQueryGlobally", data)
     } catch (err) {
       console.log(err)
     }

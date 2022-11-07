@@ -38,21 +38,27 @@
             </b>
             <i id="label_icon" class="pi pi-circle-fill"></i>
             <i
-              v-if="slotProps.node.type === 'project'"
+              v-if="
+                showDeleteButton(slotProps.node.type, slotProps.node.parent)
+              "
               id="delete_node"
               class="pi pi-trash"
               @click="deleteNode(slotProps.node)"
             ></i>
           </span>
           <span v-else role="treeitem" class="label_wrapper"
-            >{{ slotProps.node.label
-            }}<i
-              v-if="slotProps.node.type === 'project'"
+            ><span class="selected-node" role="treeitem"
+              >{{ slotProps.node.label }}
+            </span>
+            <i
+              v-if="
+                showDeleteButton(slotProps.node.type, slotProps.node.parent)
+              "
               id="delete_node"
               class="pi pi-trash"
               @click="deleteNode(slotProps.node)"
-            ></i
-          ></span>
+            ></i>
+          </span>
         </template>
       </Tree>
       <delete-tree-node-popup
@@ -279,6 +285,13 @@
     methods: {
       deleteCloseModal() {
         this.deletedialog = false
+      },
+      showDeleteButton(type, parent) {
+        if (parent) {
+          return false
+        }
+        const nodeTypes = ["query", "connection", "theme", "project"]
+        return nodeTypes.includes(type)
       },
       isSelected(id) {
         const { selectedTreeNodes: T, selectedSplitNodes: S } =
