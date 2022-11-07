@@ -1,13 +1,14 @@
 // https://docs.cypress.io/api/introduction/api.html
 
 describe("Main Menu Tabs", () => {
-
   it("visits the app root url", () => {
-    cy.visit("/").reload();
+    cy.visit("/")
   })
 
   it("Has Project tab in main menu.", () => {
-    cy.get(".sidebar-fixed").should('exist').get(".main-menu-wrapper")
+    cy.get(".sidebar-fixed")
+      .should("exist")
+      .get(".main-menu-wrapper")
       .should("be.visible")
       .and(($menu) => {
         expect($menu.find(".p-tabmenuitem")).to.contain("Project")

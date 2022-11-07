@@ -2,7 +2,7 @@
 
 describe("App Menu Items", () => {
   it("visits the app root url", () => {
-    cy.visit("/").reload();
+    cy.visit("/")
   })
   // it("Has popUp", () => {
   //   cy.get(".p-button-text").click()

@@ -149,6 +149,8 @@ jobs:
       - name: Generate Reports
         run: |
           npm run posttest
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # # This workaround is required for running npm install
       # - name: Set permissions
       #   run: |

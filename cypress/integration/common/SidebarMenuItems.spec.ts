@@ -1,11 +1,11 @@
 describe("Project Tab", () => {
   it("visits the app root url", () => {
-    cy.visit("/").reload();
+    cy.visit("/")
   })
   // it("Has popUp", () => {
   //   cy.get(".p-button-text").click()
   // })
-  it("Has Setting Button", () => {;
+  it("Has Setting Button", () => {
     cy.get(".sidebar-fixed-items").eq(1).click()
     cy.contains("General").click()
     cy.contains("Profile").click()
