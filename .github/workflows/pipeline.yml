@@ -121,7 +121,8 @@ jobs:
         uses: actions/cache@v3
         with:
           path: cypress/cache
-          key: cypress-binary-${{ hashFiles('package-lock.json') }}
+          # key: cypress-binary-${{ hashFiles('package-lock.json') }}
+           key: ${{ runner.os }}cypress-${{ hashFiles('package-lock.json') }}
 
       - name: Run Install
         run: |
@@ -135,7 +136,7 @@ jobs:
           build: |
             npm run build
           start: |
-            npm run preview:ci
+            npm run preview:wait:ci
           command: |
             npm run test:ci
           record: true
