@@ -448,6 +448,7 @@
         this.queryData = { ...this.payload }
         this.setFormDirty(false)
         this.loading = false
+        this.dirtyStack = new Set()
         this.displaySaveDialog = false
         successToast(this, this.$t("components.tabquery.save-query"))
       },
