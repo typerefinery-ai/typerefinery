@@ -464,6 +464,7 @@
             icon: this.icon,
             data: "",
             flowid: flowid,
+            flowoutputlist: JSON.stringify([]),
           }
           const connection = {
             ...connectionData,
@@ -520,6 +521,7 @@
           label: this.name,
           description: this.description,
           icon: this.icon,
+          flowoutputlist: [],
           connections: {
             type: "connections",
             icon: "",
