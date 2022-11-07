@@ -2,7 +2,7 @@
   <div>
     <Dialog
       v-model:visible="displayDeletePopup"
-      :header="$t(`components.dialog.projects.info.delete-project`)"
+      :header="$t(`components.dialog.popup.heading`)"
       :modal="true"
       :closable="false"
       :style="{ width: '350px' }"
@@ -67,14 +67,7 @@
       }
     },
     mounted() {
-      if (this.node.label == "Sample Project") {
-        this.popupmessage = this.$t(
-          "components.dialog.projects.info.delete-sample-project-popup"
-        )
-      } else
-        this.popupmessage = this.$t(
-          "components.dialog.projects.info.delete-project-popup"
-        )
+      this.popupmessage = this.$t("components.dialog.popup.message")
     },
     methods: {
       closeDeleteDialog() {
@@ -206,7 +199,7 @@
   .confirmation-content {
     display: flex;
     align-items: center;
-    justify-content: center;
+    // justify-content: center;
   }
   .p-dialog .p-button {
     min-width: 6rem;
