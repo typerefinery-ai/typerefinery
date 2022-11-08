@@ -405,6 +405,7 @@ app.get("/services/status", (req, res, next) => {
       !availableServiceList.includes(service.id)
     ) {
       console.log(service.id, "Line 392")
+      service.start()
       serviceId = service.id
       result = false
       break
