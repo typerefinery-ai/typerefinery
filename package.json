@@ -48,7 +48,7 @@
     "preview": "vite preview --port 3000 --host 0.0.0.0",
     "preview:ci": "concurrently -k \"cross-env BROWSER=none npm run services\" \"cross-env BROWSER=none npm run preview\"",
     "preview:wait:ci": "concurrently -k \"cross-env BROWSER=none npm run services\" \"cross-env BROWSER=none npm run delayed-client\"",
-    "delayed-client": "wait-on -c .waiton.json --verbose http-get://localhost:3001/services/status && npm run preview",
+    "delayed-client": "concurrently -k  \"cd services && .\\fastapi.bat setup && cd..\"  \"cross-env BROWSER=none wait-on -c .waiton.json --verbose http-get://localhost:3001/services/status && npm run preview\"",
     "test:e2e:ci2": "start-server-and-test preview 8080 'cypress run'",
     "test:e2e:ci3": "start-server-and-test dev2 http-get://localhost:3000 test:ci",
     "test:e2e:ci": "concurrently -k \"cross-env BROWSER=none npm run preview\" \"wait-on -c .waiton.json http://localhost:8080 && cypress run\"",
