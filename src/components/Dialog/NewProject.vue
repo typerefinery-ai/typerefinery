@@ -141,9 +141,11 @@
 
       <!-- Select Query -->
       <div class="field">
-        <label for="expand">{{
-          $t("components.dialog.new-query.query") + "*"
-        }}</label>
+        <label
+          for="expand"
+          :class="{ 'p-error': v$.selected.$invalid && submitted }"
+          >{{ $t("components.dialog.new-query.query") + "*" }}</label
+        >
         <Dropdown
           v-model="selected"
           :options="queryList"
@@ -151,7 +153,16 @@
           option-group-label="label"
           option-group-children="items"
           :placeholder="$t(`components.dialog.new-query.panel1.select-query`)"
+          :class="{ 'p-error': v$.selected.$invalid && submitted }"
         />
+        <small
+          v-if="
+            (v$.selected.$invalid && submitted) ||
+            v$.selected.$pending.$response
+          "
+          class="p-error"
+          >{{ v$.selected.required.$message.replace("Value", "Query") }}</small
+        >
       </div>
       <!-- Select Theme -->
       <div class="field">
@@ -262,21 +273,9 @@
           { label: "Custom", key: "custom" },
         ],
         projectType: { label: "Default", key: "default" },
-        connectionselected: {
-          label: "Global Connection",
-          key: "defaultconnection",
-          scope: "global",
-        },
-        themeselected: {
-          label: "Global Theme",
-          key: "defaulttheme",
-          scope: "global",
-        },
-        selected: {
-          label: "Global Query",
-          key: "defaultquery",
-          scope: "global",
-        },
+        connectionselected: null,
+        themeselected: null,
+        selected: null,
         displayModal: true,
         loading: false,
         showError: false,

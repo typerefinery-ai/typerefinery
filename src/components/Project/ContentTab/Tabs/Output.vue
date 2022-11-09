@@ -56,7 +56,7 @@
         const project = projectsModule.getProjects.find(
           (el) => el.id === this.tab.parent
         )
-        if (project.flowoutputlist.length) {
+        if (project && project.flowoutputlist.length) {
           const file_name = project.flowoutputlist[0].path
           let path = `http://localhost:8000${file_name}`
           return path
