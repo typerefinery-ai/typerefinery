@@ -23,6 +23,6 @@
       "expected_status": 200,
       "retries": 30
     },
-    "depend_on": ["python"]
+    "depend_on": ["node"]
   }
 }
