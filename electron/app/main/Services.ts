@@ -391,6 +391,7 @@ app.get("/services/status", (req, res, next) => {
     "node",
     "python",
     "fastapi",
+    "totaljs-flow",
   ]
 
   // return ready if all enabled services are started.
