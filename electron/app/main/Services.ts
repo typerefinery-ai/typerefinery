@@ -390,6 +390,7 @@ app.get("/services/status", (req, res, next) => {
     "java",
     "node",
     "python",
+    "fastapi",
   ]
 
   // return ready if all enabled services are started.
