@@ -382,7 +382,7 @@ app.listen(servicePort, () => {
 
 app.get("/services/status", (req, res, next) => {
   logger.log("Service status")
-  // TODO: Some services status will not be STARTED. The status will be AVAILABLE.
+  // some services status will not be STARTED. The status will be AVAILABLE.
   const availableServiceList = [
     "typedb-sample",
     "typedb-init",
@@ -390,29 +390,12 @@ app.get("/services/status", (req, res, next) => {
     "java",
     "node",
     "python",
-    "fastapi",
-    "totaljs-flow",
   ]
 
   // return ready if all enabled services are started.
   const services = serviceManager.getServices()
   let result = true
   let serviceId = ""
-  // Initially Start Python.
-
-  // if (services[services.length - 1].id === "python") {
-  //   // check if the python is not started
-  //   if (services[services.length - 1].status !== "10") {
-  //     console.log("Python service is getting Started.")
-  //     if (!services[services.length - 1].isRunning) {
-  //       services[services.length - 1].start()
-  //     }
-  //     return res.status(503).json({
-  //       status: "not ready",
-  //       message: `Python is not started.`,
-  //     })
-  //   }
-  // }
   for (const i in services) {
     const service = services[i]
     if (
@@ -420,7 +403,7 @@ app.get("/services/status", (req, res, next) => {
       !service.isStarted &&
       !availableServiceList.includes(service.id)
     ) {
-      console.log(service.id, " - Service Id Failed to Start")
+      console.log(service.id, " - service not started.")
       //service.start()
       serviceId = service.id
       result = false
