@@ -995,6 +995,17 @@ export class Service extends EventEmitter<ServiceEvent> {
               this.#log(
                 `checking services ${service.id} status ${service.status} and setup ${service.isSetup}.`
               )
+
+              // Make sure all system services are configured.
+
+              if (
+                service.status == ServiceStatus.AVAILABLE &&
+                service.isSetup
+              ) {
+                depend_on_services_started = true
+                break
+              }
+              //Make sure all the services are started.
               if (service.status != ServiceStatus.STARTED) {
                 depend_on_services_started = false
                 break

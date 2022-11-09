@@ -419,7 +419,7 @@ app.get("/services/status", (req, res, next) => {
       !availableServiceList.includes(service.id)
     ) {
       console.log(service.id, " - Service Id Failed to Start")
-      service.start()
+      //service.start()
       serviceId = service.id
       result = false
       break

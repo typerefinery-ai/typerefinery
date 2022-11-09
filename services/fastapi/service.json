@@ -21,7 +21,8 @@
       "type": "http",
       "url": "http://localhost:${SERVICE_PORT}/healthcheck",
       "expected_status": 200
-    }
+    },
+    "depend_on": ["python"]
   },
   "actions": {
     "stop": {
