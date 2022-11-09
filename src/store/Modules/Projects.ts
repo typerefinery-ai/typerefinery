@@ -549,6 +549,7 @@ export default class Projects extends VuexModule {
       data: "",
       flowid: project.wirings.list[0].id,
       label: project.label,
+      flowoutputlist: JSON.stringify(project.flowoutputlist),
       [data.field]: data.value,
     }
     try {
