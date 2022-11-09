@@ -42,9 +42,22 @@
       <AccordionTab v-for="service in listOfServices" :key="service.id">
         <template #header>
           <div class="service-header">
-            <i :class="service.icon"></i>
-            <span class="service-title">{{ service.name }}</span>
-            <span class="service-status" :status="service.status"></span>
+            <div>
+              <i :class="service.icon"></i>
+              <span class="service-title">{{ service.name }}</span>
+            </div>
+            <!-- button -->
+            <div class="service-block">
+              <span class="service-restart">
+                <Button
+                  :icon="`pi ${loading ? 'pi-spin pi-refresh' : 'pi-refresh'}`"
+                  :style="{ 'pointer-events': loading ? 'none' : 'auto' }"
+                  @click.stop="restartService(service)"
+                />
+              </span>
+
+              <span class="service-status" :status="service.status"></span>
+            </div>
           </div>
         </template>
 
@@ -126,6 +139,8 @@
   import Checkbox from "primevue/checkbox"
   import InputText from "primevue/inputtext"
   import Textarea from "primevue/textarea"
+  import Button from "primevue/button"
+  import { errorToast, successToast } from "@/utils/toastService"
   import Settings from "@/store/Modules/Settings"
   import Services from "@/store/Modules/Services"
   const settingsModule = getModule(Settings)
@@ -137,6 +152,7 @@
       Accordion,
       AccordionTab,
       Dropdown,
+      Button,
       Checkbox,
       InputText,
       Textarea,
@@ -147,6 +163,7 @@
     },
     data() {
       return {
+        loading: false,
         activeIndex: -1,
         selected: "ALL",
         listOfServices: [],
@@ -195,6 +212,25 @@
       }
     },
     methods: {
+      restartService(service) {
+        this.loading = true
+        servicesModule.restartService(service.id)
+        this.serviceListByStatus()
+        const newService = servicesModule.data.services.filter(
+          (el) => el.id == service.id
+        )
+        const acceptedStatus = ["10", "120"]
+        if (
+          newService.length > 0 &&
+          acceptedStatus.includes(newService[0].status)
+        ) {
+          this.loading = false
+          successToast(this, "Successfully Started")
+        } else {
+          this.loading = false
+          errorToast(this, "Something went wrong")
+        }
+      },
       OpenServices(status) {
         servicesModule.setSelectedServices(status)
         settingsModule.openSettingsDialog("services")
@@ -246,12 +282,20 @@
     vertical-align: top;
     width: 100%;
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     flex-direction: row;
+    justify-content: space-between;
   }
-
+  .service-block {
+    display: flex;
+    align-items: center;
+  }
   .service-title {
     padding-left: 1rem;
+  }
+  .service-restart {
+    // padding-left: 1rem;
+    margin-right: 1rem;
   }
 
   .service-status {
