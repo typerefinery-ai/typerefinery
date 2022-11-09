@@ -61,6 +61,7 @@ export const sharedAppIpc = {
   restartService: new IPCMethod<[string], any[]>("restartService"),
   stopService: new IPCMethod<[string], any[]>("stopService"),
   startService: new IPCMethod<[string], any[]>("startService"),
+  startAll: new IPCMethod<[], any[]>("startAll"),
 }
 
 export type AppIPC = {

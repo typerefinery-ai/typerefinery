@@ -1,10 +1,14 @@
 <template>
-  <div>
+  <div class="top-bar">
+    <p v-if="showRetry">
+      Taking too long? <span class="btn-link" @click="handleClick">Retry</span>
+    </p>
+    <div v-else>Services starting...</div>
     <loader-menu />
   </div>
   <div class="container">
     <div class="row">
-      <div class="col-xl-4 pt-5">
+      <div class="col-xl-4">
         <div class="placeholder wave">
           <div class="menuitem"></div>
           <div class="menubar"></div>
@@ -23,21 +27,54 @@
 </template>
 <script>
   import loaderMenu from "./loaderMenu.vue"
-
+  import { getModule } from "vuex-module-decorators"
+  import Services from "@/store/Modules/Services"
   import * as electronHelpers from "@/utils/electron"
+  const serviceModule = getModule(Services)
   export default {
     name: "Loadingpage",
     components: {
       loaderMenu,
+    },
+    data() {
+      return {
+        showRetry: false,
+        timer: null,
+      }
     },
     computed: {
       isElectron() {
         return electronHelpers.isElectron()
       },
     },
+    mounted() {
+      this.timer = setTimeout(() => {
+        this.showRetry = true
+      }, 60000)
+    },
+    beforeUnmount() {
+      clearTimeout(this.timer)
+    },
+    methods: {
+      handleClick() {
+        serviceModule.startAllServices()
+        localStorage.clear()
+      },
+    },
   }
 </script>
 <style scoped lang="scss">
+  .top-bar {
+    display: flex;
+    justify-content: space-between;
+    margin: 5px 25px 0;
+    align-items: center;
+
+    .btn-link {
+      color: #1d4ed8;
+      cursor: pointer;
+    }
+  }
   .container {
     .placeholder {
       margin: 15px;

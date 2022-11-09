@@ -411,6 +411,10 @@ function addIpcEvents(window: BrowserWindow) {
       }
       return true
     },
+    startAll(): any {
+      logger.log(`ipc startAll`)
+      serviceManager.startAll()
+    },
   }
 
   Object.values(sharedAppIpc).forEach((method) => method.clean())
