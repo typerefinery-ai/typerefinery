@@ -1,5 +1,9 @@
 <template>
-  <div class="menu-bar" :class="{ focus: focus }">
+  <div
+    :style="{ position: 'relative', top: 0, right: 0 }"
+    class="menu-bar"
+    :class="{ focus: focus }"
+  >
     <!-- menu icons -->
 
     <window-controls v-if="isElectron" />
@@ -41,15 +45,3 @@
     },
   }
 </script>
-
-<style lang="scss">
-  #body {
-    .menu-bar {
-      display: flex;
-      position: absolute;
-      right: 5px;
-      top: 5px;
-      -webkit-app-region: no-drag;
-    }
-  }
-</style>
