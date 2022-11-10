@@ -19,6 +19,7 @@
       "url": "http://127.0.0.1:${SERVICE_PORT}/",
       "expected_status": 404,
       "retries": 30
-    }
+    },
+    "depend_on": ["node"]
   }
 }
