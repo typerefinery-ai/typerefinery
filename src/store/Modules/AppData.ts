@@ -140,20 +140,20 @@ export default class AppData extends VuexModule {
     this.data.sidebarVisible = !this.data.sidebarVisible
   }
 
-  // Initial Data
-  @Mutation
-  setInitialDataCreated() {
-    this.data.initialDataCreated = true
-  }
+  // // Initial Data
+  // @Mutation
+  // setInitialDataCreated() {
+  //   this.data.initialDataCreated = true
+  // }
 
-  // services
-  @Mutation
-  setServicesStarted() {
-    this.data.servicesStarted = true
-  }
+  // // services
+  // @Mutation
+  // setServicesStarted() {
+  //   this.data.servicesStarted = true
+  // }
 
-  @Mutation
-  setServicesStopped() {
-    this.data.servicesStarted = false
-  }
+  // @Mutation
+  // setServicesStopped() {
+  //   this.data.servicesStarted = false
+  // }
 }

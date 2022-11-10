@@ -2,7 +2,6 @@
 import { Module, VuexModule, Mutation, Action } from "vuex-module-decorators"
 import store from "../index"
 import sampleData from "@/data/default.json"
-
 @Module({
   name: "Services",
   store: store,
@@ -45,6 +44,15 @@ export default class Services extends VuexModule {
     const { ipc } = window
     if (ipc && ipc.startAll) {
       await ipc.startAll()
+    }
+  }
+
+  @Action({ rawError: true })
+  async stopAllServices() {
+    // @ts-expect-error ts-migrate(2339) FIXME: Property 'ipc' does not exist on type 'Window & typeof globalThis'
+    const { ipc } = window
+    if (ipc && ipc.stopAll) {
+      await ipc.stopAll()
     }
   }
 
@@ -142,12 +150,12 @@ export default class Services extends VuexModule {
   // }
 
   @Mutation
-  setServices(payload) {
+  setServices(payload: any) {
     this.data.services = payload
   }
 
   @Mutation
-  setSelectedServices(payload) {
+  setSelectedServices(payload: any) {
     this.data.selectedStatus = payload
   }
 
@@ -213,4 +221,15 @@ export default class Services extends VuexModule {
   //   this.services[idx].logoutput =
   //     this.services[idx].logoutput + "\n" + logstring
   // }
+
+  // services
+  @Mutation
+  setServicesStarted() {
+    this.data.servicesStarted = true
+  }
+
+  @Mutation
+  setServicesStopped() {
+    this.data.servicesStarted = false
+  }
 }

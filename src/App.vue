@@ -9,7 +9,9 @@
   import { getModule } from "vuex-module-decorators"
   // import * as themeHelpers from "@/utils/theme"
   import AppData from "@/store/Modules/AppData"
+  import Services from "@/store/Modules/Services"
   const appDataModule = getModule(AppData)
+  const servicesModule = getModule(Services)
 
   export default defineComponent({
     name: "App",
@@ -28,7 +30,7 @@
       this.checkServiceStatus()
       // @ts-expect-error ts-migrate(2339) FIXME: Property 'api' does not exist on type 'Window & typeof globalThis'
       window.api?.response("sendServiceStopped", () => {
-        appDataModule.setServicesStopped()
+        servicesModule.setServicesStopped()
       })
     },
 
@@ -48,10 +50,10 @@
             (el: { status: string }) => el.status === "120"
           )
           if (!reqServicesStarted) {
-            appDataModule.setServicesStopped()
+            servicesModule.setServicesStopped()
             this.setServiceLoaded()
           } else {
-            appDataModule.setServicesStarted()
+            servicesModule.setServicesStarted()
           }
         }
       },
@@ -62,7 +64,7 @@
             const idx = this.servicesToCheck.indexOf(id)
             this.servicesToCheck.splice(idx, 1)
             if (this.servicesToCheck.length === 0) {
-              appDataModule.setServicesStarted()
+              servicesModule.setServicesStarted()
             }
           }
         })
