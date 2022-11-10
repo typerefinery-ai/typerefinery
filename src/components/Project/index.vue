@@ -21,13 +21,19 @@
   import Projects from "@/store/Modules/Projects"
   import MainMenu from "@/components/Menu/MainMenu.vue"
   import MenuBar from "@/components/Menu/MenuBar.vue"
-  import Settings from "@/store/Modules/Settings"
-  const projectsModule = getModule(Projects)
-  import AppData from "@/store/Modules/AppData"
   import axios from "@/axios"
   import * as websocket from "websocket"
-  const settingsModule = getModule(Settings)
-  const appDataModule = getModule(AppData)
+  import SettingsStore from "@/store/Modules/Settings"
+  import ConnectionsStore from "@/store/Modules/Connections"
+  import AppDataStore from "@/store/Modules/AppData"
+  import QueriesStore from "@/store/Modules/Queries"
+  import Themes from "@/store/Modules/Theme"
+  const projectsModule = getModule(Projects)
+  const settingsModule = getModule(SettingsStore)
+  const connectionsModule = getModule(ConnectionsStore)
+  const themesModule = getModule(Themes)
+  const appDataModule = getModule(AppDataStore)
+  const queriesModule = getModule(QueriesStore)
   export default {
     name: "Project",
     components: { ProjectContent, MenuBar, MainMenu },
@@ -44,9 +50,43 @@
       },
     },
     mounted() {
+      this.checkInitialData()
       this.initTMS()
     },
     methods: {
+      checkInitialData() {
+        const themeExist = themesModule.data.list.find(
+          (el) => el.id == "defaulttheme"
+        )
+        const queryExist = queriesModule.data.list.find(
+          (el) => el.id == "defaultquery"
+        )
+        const connectionExist = connectionsModule.data.list.find(
+          (el) => el.id == "defaultconnection"
+        )
+        if (!themeExist || !queryExist || !connectionExist) {
+          this.setInitialData()
+        } else {
+          this.getInitialData()
+        }
+      },
+      async setInitialData() {
+        try {
+          await connectionsModule.createInitialConnection()
+          await themesModule.createInitialTheme()
+          await queriesModule.createInitialQuery()
+          // load data
+          this.getInitialData()
+        } catch (err) {
+          console.log(err)
+        }
+      },
+      getInitialData() {
+        projectsModule.getStoreData()
+        connectionsModule.getInitialConnections()
+        themesModule.getInitialThemes()
+        queriesModule.getInitialQueries()
+      },
       toggleMainMenu() {
         this.mainMenuVisible = !this.mainMenuVisible
       },

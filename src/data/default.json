@@ -17,9 +17,7 @@
     "transformerDialog": false,
     "algorithmDialog": false,
     "resizingFlow": false,
-    "sidebarVisible": true,
-    "initialDataCreated": false,
-    "servicesStarted": false
+    "sidebarVisible": true
   },
   "auth": {
     "username": "TypeRefinery User",
@@ -330,7 +328,8 @@
     "serviceTypeEnum": {
       "10": { "name": "local", "icon": "pi pi-cog" },
       "20": { "name": "online", "icon": "pi pi-globe" }
-    }
+    },
+    "servicesStarted": false
   },
   "settings": {
     "language": "en",

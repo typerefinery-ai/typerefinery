@@ -56,9 +56,11 @@
       clearTimeout(this.timer)
     },
     methods: {
-      handleClick() {
-        serviceModule.startAllServices()
+      async handleClick() {
+        await serviceModule.stopAllServices()
+        await serviceModule.startAllServices()
         localStorage.clear()
+        window.location.reload()
       },
     },
   }

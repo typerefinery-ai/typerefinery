@@ -195,7 +195,6 @@
       servicesModule.getServices()
     },
     mounted() {
-      console.log("moun", this.serviceCountByStatus)
       // //if global.asas === null
       // this.selected = globa.this.serviceListByStatus()
       if (servicesModule.data.selectedStatus) {
