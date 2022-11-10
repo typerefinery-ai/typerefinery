@@ -379,3 +379,49 @@ app.post("/service/file", express.json({ type: "*/*" }), (req, res, next) => {
 app.listen(servicePort, () => {
   logger.log(`Server running on port ${servicePort}`)
 })
+
+app.get("/services/status", (req, res, next) => {
+  logger.log("Service status")
+  // some services status will not be STARTED. The status will be AVAILABLE.
+  const availableServiceList = [
+    "typedb-sample",
+    "typedb-init",
+    "archive",
+    "java",
+    "node",
+    "python",
+  ]
+
+  // return ready if all enabled services are started.
+  const services = serviceManager.getServices()
+  const pythonServiceIndex = services.length - 1
+  let result = true
+  let serviceId = ""
+  for (const i in services) {
+    const service = services[i]
+    if (
+      service?.options?.enabled &&
+      !service.isStarted &&
+      !availableServiceList.includes(service.id)
+    ) {
+      console.log(service.id, " - service not started.")
+      
+      // in case if python is installed and available then start the fastapi
+      if (service.id == "fastapi") {
+        if (services[pythonServiceIndex].status == ServiceStatus.AVAILABLE) {
+          service.start()
+        }
+      }
+
+      //service.start()
+      serviceId = service.id
+      result = false
+      break
+    }
+  }
+
+  res.status(result ? 200 : 503).json({
+    status: result ? "ready" : "not ready",
+    message: result ? "Services are started" : `${serviceId} is not started.`,
+  })
+})

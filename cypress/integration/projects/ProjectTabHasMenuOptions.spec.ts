@@ -1,14 +1,15 @@
 // https://docs.cypress.io/api/introduction/api.html
 
-describe("Projecty Tab", () => {
+describe("Project Tab", () => {
   it("visits the app root url", () => {
     cy.visit("/")
   })
-  it("Has popUp", () => {
-    cy.get(".p-button-text").click()
-  })
+  // it("Has popUp", () => {
+  //   cy.get(".p-button-text").click()
+  // })
 
   it("Has Sub Menu Buttons.", () => {
+    // New Buttons
     cy.get(".p-menuitem-link[href='#/home/project']").click()
     cy.get(".main-submenu")
       .should("be.visible")
@@ -16,7 +17,7 @@ describe("Projecty Tab", () => {
         expect($tab.find(".main-submenu--item")).to.contain("New Project")
         expect($tab.find(".main-submenu--item")).to.contain("New Query")
         expect($tab.find(".main-submenu--item")).to.contain("New Connection")
-        // expect($tab.find(".main-submenu--item")).to.contain("New Transformer")
+        expect($tab.find(".main-submenu--item")).to.contain("New Theme")
       })
   })
 })

@@ -85,7 +85,7 @@ export interface ExecConfig {
   commandline?: string
   commandlinecli?: string
   datapath?: string
-  serviceorder?: 0
+  serviceorder?: 99
   depend_on?: string[]
   serviceport?: number
   servicehost?: string
@@ -672,9 +672,11 @@ export class Service extends EventEmitter<ServiceEvent> {
       return
     }
 
+    this.#log(`waiting for dependent services`)
     // wait untill all depend_on services are started
     await this.#waitForDependOnServices()
 
+    this.#log(`do service setup`)
     //run setup if it exists
     await this.#doSetup()
 
@@ -927,6 +929,7 @@ export class Service extends EventEmitter<ServiceEvent> {
         }
       } else {
         this.#log(`service ${this.#id} has already has been configured.`)
+        this.#setStatus(ServiceStatus.AVAILABLE)
       }
     }
   }
@@ -986,7 +989,7 @@ export class Service extends EventEmitter<ServiceEvent> {
       ) {
         const dependOnServices = this.#options.execconfig.depend_on
         this.#log(`waiting for depend_on services ${dependOnServices}`)
-        const interval = setInterval(() => {
+        const interval = setInterval(async () => {
           let depend_on_services_started = true
           for (let i = 0; i < dependOnServices.length; i++) {
             const depend_on_service = dependOnServices[i]
@@ -995,6 +998,17 @@ export class Service extends EventEmitter<ServiceEvent> {
               this.#log(
                 `checking services ${service.id} status ${service.status} and setup ${service.isSetup}.`
               )
+
+              // Make sure all system services are configured.
+              if (
+                service.status == ServiceStatus.AVAILABLE &&
+                service.isSetup
+              ) {
+                this.#log(`service ${service.id} is available and ready.`)
+                depend_on_services_started = true
+                break
+              }
+              //Make sure all the services are started.
               if (service.status != ServiceStatus.STARTED) {
                 depend_on_services_started = false
                 break
@@ -1002,7 +1016,7 @@ export class Service extends EventEmitter<ServiceEvent> {
             }
           }
           if (depend_on_services_started) {
-            this.#log(`services started`)
+            this.#log(`all dependent services started`)
             clearInterval(interval)
             resolve(true)
           }

@@ -42,7 +42,7 @@ export default class Queries extends VuexModule {
     this.data.list = queries
   }
 
-  @Action
+  @Action({ rawError: true })
   async createInitialQuery() {
     try {
       const query = {
@@ -67,7 +67,7 @@ export default class Queries extends VuexModule {
     }
   }
 
-  @Action
+  @Action({ rawError: true })
   async getInitialQueries() {
     try {
       const res = await axios.get("/datastore/query")
@@ -77,10 +77,11 @@ export default class Queries extends VuexModule {
       this.context.commit("addGlobalQueries", data)
     } catch (err) {
       console.log(err)
+      this.context.commit("addGlobalQueries", {})
     }
   }
 
-  @Action
+  @Action({ rawError: true })
   async setGlobalQuery(data) {
     const queries = this.context.getters["getGlobalQueries"]
     const query = queries[data.queryIdx]
@@ -104,9 +105,10 @@ export default class Queries extends VuexModule {
       this.context.commit("updateGlobalQuery", data)
     } catch (err) {
       console.log(err)
+      this.context.commit("updateGlobalQuery", {})
     }
   }
-  @Action
+  @Action({ rawError: true })
   async deleteGlobalQuery(data) {
     const queries = this.context.getters["getGlobalQueries"]
     const query = queries.find((el) => el.id === data.id)

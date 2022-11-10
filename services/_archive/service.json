@@ -8,6 +8,7 @@
   "icon": "pi pi-globe",
   "servicetype": 10,
   "execconfig": {
+    "serviceorder": 1,
     "executable": {
       "win32": "7za.exe",
       "default": "7za"
