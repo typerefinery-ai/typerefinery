@@ -178,6 +178,7 @@ class ServiceManager {
 
   // start all services
   async startAll() {
+    
     const orderedServiceList = this.#services.sort(
       (service1: Service, service2: Service) => {
         const serviceorder1 = service1.options.execconfig?.serviceorder ?? 99
