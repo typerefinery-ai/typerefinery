@@ -394,7 +394,6 @@ app.get("/services/status", (req, res, next) => {
 
   // return ready if all enabled services are started.
   const services = serviceManager.getServices()
-  const pythonServiceIndex = services.length - 1
   let result = true
   let serviceId = ""
   for (const i in services) {
@@ -405,15 +404,6 @@ app.get("/services/status", (req, res, next) => {
       !availableServiceList.includes(service.id)
     ) {
       console.log(service.id, " - service not started.")
-      
-      // in case if python is installed and available then start the fastapi
-      if (service.id == "fastapi") {
-        if (services[pythonServiceIndex].status == ServiceStatus.AVAILABLE) {
-          service.start()
-        }
-      }
-
-      //service.start()
       serviceId = service.id
       result = false
       break

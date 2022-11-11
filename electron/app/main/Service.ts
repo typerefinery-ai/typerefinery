@@ -1001,7 +1001,7 @@ export class Service extends EventEmitter<ServiceEvent> {
 
               // Make sure all system services are configured.
               if (
-                service.status == ServiceStatus.AVAILABLE &&
+                (service.status == ServiceStatus.AVAILABLE || service.status == ServiceStatus.INSTALLED) &&
                 service.isSetup
               ) {
                 this.#log(`service ${service.id} is available and ready.`)
