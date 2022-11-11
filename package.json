@@ -216,7 +216,7 @@
       "oneClick": true,
       "perMachine": false,
       "allowToChangeInstallationDirectory": false,
-      "deleteAppDataOnUninstall": false,
+      "deleteAppDataOnUninstall": true,
       "runAfterFinish": true,
       "installerHeaderIcon": "dist/main/assets/icon.ico",
       "installerIcon": "dist/main/assets/icon.ico",
@@ -244,6 +244,7 @@
       "repo": "typerefinery",
       "owner": "innovolve-ai",
       "releaseType": "release"
-    }
+    },
+    "beforePack": "./myBeforePackHook.js"
   }
 }
