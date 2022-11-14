@@ -54,7 +54,7 @@
     "test:e2e:ci": "concurrently -k \"cross-env BROWSER=none npm run preview\" \"wait-on -c .waiton.json http://localhost:8080 && cypress run\"",
     "typecheck": "vue-tsc --noEmit && vue-tsc --noEmit -p tsconfig.vitest.json --composite false",
     "test": "npm run report:clean && cypress run",
-    "test:ci": " npm run report:clean && cypress run --browser chrome  --config baseUrl=http://localhost:3000",
+    "test:ci": "npm run report:clean && cypress run --browser chrome  --config baseUrl=http://localhost:3000",
     "report:clean": "rm -rf cypress/results cypress/screenshots cypress/videos cypress/reports || true",
     "report:merge": "echo merge && mochawesome-merge cypress/results/*.json -o cypress/reports/report.json",
     "report:generate": "echo generate && marge cypress/reports/report.json -f report -o cypress/reports",
