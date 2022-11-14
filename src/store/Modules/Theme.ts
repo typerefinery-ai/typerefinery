@@ -96,7 +96,6 @@ export default class Connections extends VuexModule {
       this.context.commit("addGlobalTheme", theme)
     } catch (error) {
       console.log(error)
-      this.context.commit("addGlobalTheme", {})
     }
   }
 

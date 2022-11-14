@@ -63,7 +63,6 @@ export default class Queries extends VuexModule {
       this.context.commit("addGlobalQuery", query)
     } catch (error) {
       console.log(error)
-      this.context.commit("addGlobalQuery", {})
     }
   }
 

@@ -71,7 +71,6 @@ export default class Connections extends VuexModule {
       this.context.commit("addGlobalConnection", connection)
     } catch (error) {
       console.log(error)
-      this.context.commit("addGlobalConnection", {})
     }
   }
 

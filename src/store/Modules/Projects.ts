@@ -458,7 +458,6 @@ export default class Projects extends VuexModule {
       window.location.reload()
     } catch (error) {
       console.log(error)
-      this.context.commit("addNewProject", {})
     }
   }
 
