@@ -14,9 +14,10 @@ describe("Main Menu Tabs", () => {
         expect($menu.find(".p-tabmenuitem")).to.contain("Project")
       })
   })
-  // it("Has popUp", () => {
-  //   cy.get(".p-button-text").click()
-  // })
+  //To test failure test cases.
+  it("Has popUp", () => {
+    cy.get(".p-button-text").click()
+  })
   it("Has Setting Button", () => {
     cy.get(".sidebar-fixed-items").eq(1).click()
     cy.contains("General").click()
