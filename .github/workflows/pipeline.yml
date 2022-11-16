@@ -147,7 +147,7 @@ jobs:
           COMMIT_INFO_MESSAGE: ${{ github.event.inputs.title }}
 
       - name: Generate Reports
-      if: always()
+        if: always()
         run: |
           npm run posttest
 
