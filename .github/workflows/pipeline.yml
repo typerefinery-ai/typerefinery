@@ -165,12 +165,12 @@ jobs:
       #   run: |
       #     docker compose --profile reports up reports
 
-      # - name: Deploy Reports to gh-pages
-      #   if: always()
-      #   uses: JamesIves/github-pages-deploy-action@v4.2.5
-      #   with:
-      #     branch: gh-pages
-      #     folder: cypress/reports
+      - name: Deploy Reports to gh-pages
+        if: always()
+        uses: JamesIves/github-pages-deploy-action@v4.2.5
+        with:
+          branch: gh-pages
+          folder: cypress/reports
 
   release:
     needs: [unit-test]
