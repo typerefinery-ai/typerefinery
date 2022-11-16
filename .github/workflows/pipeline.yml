@@ -147,9 +147,10 @@ jobs:
           COMMIT_INFO_MESSAGE: ${{ github.event.inputs.title }}
 
       - name: Generate Reports
+      if: always()
         run: |
           npm run posttest
-          
+
       # # This workaround is required for running npm install
       # - name: Set permissions
       #   run: |
