@@ -167,6 +167,11 @@ jobs:
       #   run: |
       #     docker compose --profile reports up reports
 
+      - name: Install rsync 📚
+        if: always()
+        run: |
+          apt-get update && apt-get install -y rsync
+
       - name: Deploy Reports to gh-pages
         if: always()
         uses: JamesIves/github-pages-deploy-action@v4.2.5
