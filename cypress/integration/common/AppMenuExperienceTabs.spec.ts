@@ -1,7 +1,6 @@
 // https://docs.cypress.io/api/introduction/api.html
 
 describe("Main Menu Tabs", () => {
-  
   it("visits the app root url", () => {
     cy.visit("/")
   })
@@ -16,9 +15,9 @@ describe("Main Menu Tabs", () => {
       })
   })
   //To test failure test cases.
-  it("Has popUp", () => {
-    cy.get(".p-button-text").click()
-  })
+  // it("Has popUp", () => {
+  //   cy.get(".p-button-text").click()
+  // })
   it("Has Setting Button", () => {
     cy.get(".sidebar-fixed-items").eq(1).click()
     cy.contains("General").click()
