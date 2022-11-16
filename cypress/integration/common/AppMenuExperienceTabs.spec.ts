@@ -1,6 +1,7 @@
 // https://docs.cypress.io/api/introduction/api.html
 
 describe("Main Menu Tabs", () => {
+  
   it("visits the app root url", () => {
     cy.visit("/")
   })
