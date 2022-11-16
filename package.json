@@ -58,9 +58,9 @@
     "report:clean": "rm -rf cypress/results cypress/screenshots cypress/videos cypress/reports || true",
     "report:merge": "echo merge && mochawesome-merge cypress/results/*.json -o cypress/reports/report.json",
     "report:generate": "echo generate && marge cypress/reports/report.json -f report -o cypress/reports",
-    "report:moveScreenshots": "echo moveScreenshots && cp -r cypress/screenshots cypress/reports/screenshots 2>/dev/null || true",
-    "report:moveVideos": "echo moveVideos && cp -r cypress/videos cypress/reports/videos 2>/dev/null || true",
-    "report:moveData": "echo moveData && cp -r cypress/results/data cypress/reports/data 2>/dev/null || true",
+    "report:moveScreenshots": "echo moveScreenshots && cp -r cypress/screenshots cypress/reports/screenshots",
+    "report:moveVideos": "echo moveVideos && cp -r cypress/videos cypress/reports/videos ",
+    "report:moveData": "echo moveData && cp -r cypress/results/data cypress/reports/data ",
     "posttest": "npm run report:merge && npm run report:generate && npm run report:moveScreenshots && npm run report:moveVideos && npm run report:moveData",
     "services": "npx ts-node --esm electron/app/main/Services.ts",
     "servicesprod": "cross-env NODE_ENV=production npx ts-node --esm electron/app/main/Services.ts"
