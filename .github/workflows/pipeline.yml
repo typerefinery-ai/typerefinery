@@ -114,6 +114,7 @@ jobs:
           path: ${{ steps.npm-cache-dir.outputs.dir }}
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
+          
             ${{ runner.os }}-node-
 
       - name: Cache Cypress Binary
@@ -177,7 +178,7 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@v4.2.5
         with:
           branch: gh-pages
-          folder: cypress/reports
+          folder: cypress/reports          
 
   release:
     needs: [unit-test]
