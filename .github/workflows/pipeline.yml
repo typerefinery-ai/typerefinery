@@ -149,6 +149,7 @@ jobs:
       - name: Generate Reports
         run: |
           npm run posttest
+          
       # # This workaround is required for running npm install
       # - name: Set permissions
       #   run: |
