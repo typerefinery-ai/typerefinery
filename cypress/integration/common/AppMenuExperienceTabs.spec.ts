@@ -2,7 +2,7 @@
 
 describe("Main Menu Tabs", () => {
   it("visits the app root url", () => {
-    cy.visit("/")
+    cy.visit("/");
   })
 
   it("Has Project tab in main menu.", () => {
