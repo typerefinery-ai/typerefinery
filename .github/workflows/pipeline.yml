@@ -88,10 +88,10 @@ jobs:
     strategy:
       matrix:
         node: [18.3.0]
-        os: [windows-latest]
+        os: [ubuntu-latest]
         include:
-          - os: windows-latest
-            friendlyName: Functional Test - Windows
+          - os: ubuntu-latest
+            friendlyName: Functional Test - Ubuntu
 
     steps:
       - name: Check out Git repository
