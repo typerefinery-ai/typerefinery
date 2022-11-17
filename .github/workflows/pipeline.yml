@@ -114,7 +114,6 @@ jobs:
           path: ${{ steps.npm-cache-dir.outputs.dir }}
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
-          
             ${{ runner.os }}-node-
 
       - name: Cache Cypress Binary
@@ -128,6 +127,7 @@ jobs:
       - name: Run Install
         run: |
           npm install
+      
       - name: Cypress run
         uses: cypress-io/github-action@v4
         with:
@@ -167,11 +167,6 @@ jobs:
       #   continue-on-error: true
       #   run: |
       #     docker compose --profile reports up reports
-
-      - name: Install rsync 📚
-        if: always()
-        run: |
-          apt-get update && apt-get install -y rsync
 
       - name: Deploy Reports to gh-pages
         if: always()
