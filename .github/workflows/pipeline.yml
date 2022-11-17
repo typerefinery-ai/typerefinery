@@ -88,10 +88,10 @@ jobs:
     strategy:
       matrix:
         node: [18.3.0]
-        os: [ubuntu-latest]
+        os: [windows-latest]
         include:
-          - os: ubuntu-latest
-            friendlyName: Functional Test - Ubuntu
+          - os: windows-latest
+            friendlyName: Functional Test - Windows
 
     steps:
       - name: Check out Git repository
@@ -173,7 +173,7 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@v4.2.5
         with:
           branch: gh-pages
-          folder: cypress/reports          
+          folder: 'cypress/reports'       
 
   release:
     needs: [unit-test]
