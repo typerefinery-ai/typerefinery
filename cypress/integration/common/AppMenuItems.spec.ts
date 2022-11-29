@@ -4,9 +4,9 @@ describe("App Menu Items", () => {
   it("visits the app root url", () => {
     cy.visit("/")
   })
-  it("Has popUp", () => {
-    cy.get(".p-button-text").click()
-  })
+  // it("Has popUp", () => {
+  //   cy.get(".p-button-text").click()
+  // })
   it("Has Github link in Help menu.", () => {
     cy.get("#help-button").click()
     cy.get(".p-menu")

@@ -178,9 +178,34 @@ class ServiceManager {
 
   // start all services
   async startAll() {
-    for (const service of this.#services) {
+    
+    const orderedServiceList = this.#services.sort(
+      (service1: Service, service2: Service) => {
+        const serviceorder1 = service1.options.execconfig?.serviceorder ?? 99
+        const serviceorder2 = service2.options.execconfig?.serviceorder ?? 99
+
+        if (serviceorder1 < serviceorder2) {
+          return -1
+        } else if (serviceorder2 < serviceorder1) {
+          return 1
+        }
+        return 0
+      }
+    )
+
+    for (const service of orderedServiceList) {
+      this.#logger.log(
+        `ordered service ${service.id} : ${
+          service.options.execconfig?.serviceorder ?? 99
+        }`
+      )
+    }
+    for (const service of orderedServiceList) {
       this.#logger.log(`starting service ${service.id}`)
       await service.start()
+      this.#logger.log(
+        `service started ${service.id} : ${service.status} : ${service.isSetup}`
+      )
     }
     this.#logger.log("all services started.")
   }

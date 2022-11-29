@@ -77,7 +77,7 @@ export default class Connections extends VuexModule {
     this.data.list = themes
   }
 
-  @Action
+  @Action({ rawError: true })
   async createInitialTheme() {
     try {
       const theme = {
@@ -96,11 +96,10 @@ export default class Connections extends VuexModule {
       this.context.commit("addGlobalTheme", theme)
     } catch (error) {
       console.log(error)
-      this.context.commit("addGlobalTheme", {})
     }
   }
 
-  @Action
+  @Action({ rawError: true })
   async getInitialThemes() {
     try {
       const res = await axios.get("/datastore/theme")
@@ -113,7 +112,7 @@ export default class Connections extends VuexModule {
       console.log(err)
     }
   }
-  @Action
+  @Action({ rawError: true })
   async setGlobalTheme({ data, themeIdx }) {
     const themes = this.context.getters["getGlobalThemes"]
     const theme = themes[themeIdx]
@@ -125,7 +124,7 @@ export default class Connections extends VuexModule {
       console.log(err)
     }
   }
-  @Action
+  @Action({ rawError: true })
   async deleteGlobalTheme(data) {
     const themes = this.context.getters["getGlobalThemes"]
     const theme = themes.find((el) => el.id === data.id)

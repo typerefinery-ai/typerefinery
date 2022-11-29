@@ -348,7 +348,7 @@ export default class Projects extends VuexModule {
   //   }
   // }
 
-  @Action
+  @Action({ rawError: true })
   async createSampleProject() {
     try {
       const projectid = "s_project"
@@ -458,11 +458,10 @@ export default class Projects extends VuexModule {
       window.location.reload()
     } catch (error) {
       console.log(error)
-      this.context.commit("addNewProject", {})
     }
   }
 
-  @Action
+  @Action({ rawError: true })
   async getStoreData() {
     const responses = await Promise.all([
       axios.get("/datastore/project"),
@@ -529,15 +528,17 @@ export default class Projects extends VuexModule {
         },
       }
     })
-    if (projects.length > 0) {
-      this.context.commit("addInitialProjects", data)
-    } else {
-      this.context.commit("openSampleDataPopup")
+    try {
+      if (projects.length > 0) {
+        this.context.commit("addInitialProjects", data)
+      }
+    } catch (err) {
+      console.log(err)
     }
   }
 
   // Project
-  @Action
+  @Action({ rawError: true })
   async setProjectData(data) {
     const projects = this.context.getters["getProjects"]
     const project = projects.find((el) => el.id === data.id)
@@ -560,7 +561,7 @@ export default class Projects extends VuexModule {
     }
   }
   // Theme
-  @Action
+  @Action({ rawError: true })
   async setThemeData(themeData) {
     const { data, themeIdx, projectIdx } = themeData
     const themesGetter = this.context.getters["getLocalThemes"]
@@ -575,7 +576,7 @@ export default class Projects extends VuexModule {
     }
   }
   // Connection
-  @Action
+  @Action({ rawError: true })
   async setConnectionData(connectionData) {
     const { data, connectionIdx, projectIdx } = connectionData
     const connectionsGetter = this.context.getters["getLocalConnections"]
@@ -590,7 +591,7 @@ export default class Projects extends VuexModule {
     }
   }
 
-  @Action
+  @Action({ rawError: true })
   async setQueryData(data) {
     const queriesGetter = this.context.getters["getQueries"]
     const projects = this.context.getters["getProjects"]
@@ -621,7 +622,7 @@ export default class Projects extends VuexModule {
   }
 
   //delete Project
-  @Action
+  @Action({ rawError: true })
   async deleteProjectData(data) {
     const projects = this.context.getters["getProjects"]
     const project = projects.find((el) => el.id === data.id)
@@ -651,7 +652,6 @@ export default class Projects extends VuexModule {
         this.context.commit("deleteProject", data)
     } catch (err) {
       throw new Error()
-      console.log(err)
     }
   }
 }
