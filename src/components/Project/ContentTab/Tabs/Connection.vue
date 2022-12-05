@@ -41,7 +41,7 @@
               :class="{ 'p-invalid': v$.port.$invalid && submitted }"
               aria-describedby="port"
               placeholder="Eg: 1729"
-              @input="handleInput('port', $event.target.value)"
+              @input="handleInput('port', $event.target.value, !v$.$invalid)"
             />
             <small
               v-if="
@@ -308,10 +308,15 @@
           database,
         }
       },
-      handleInput(key, value) {
+      handleInput(key, value, isFormValid) {
         const oldDirtyStackSize = this.dirtyStack.size
         if (this.initialData[key].trim() !== value.trim()) {
           this.dirtyStack.add(key)
+          this.submitted = true
+          // stop here if form is invalid
+          if (!isFormValid) {
+            return
+          }
         } else {
           if (this.dirtyStack.has(key) === true) {
             this.dirtyStack.delete(key)
