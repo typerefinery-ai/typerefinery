@@ -97,7 +97,11 @@
         <small
           v-if="(v$.port.$invalid && submitted) || v$.port.$pending.$response"
           class="p-error"
-          >{{ v$.port.required.$message.replace("Value", "Port") }}</small
+          >{{
+            v$.port.required.$invalid
+              ? v$.port.required.$message.replace("Value", "Port")
+              : v$.port.numeric.$message.replace("Value", "Port")
+          }}</small
         >
       </div>
       <div class="field">
@@ -150,7 +154,7 @@
 
 <script>
   import { getModule } from "vuex-module-decorators"
-  import { required } from "@vuelidate/validators"
+  import { required, numeric } from "@vuelidate/validators"
   import { useVuelidate } from "@vuelidate/core"
   import { nanoid } from "nanoid"
   import axios from "@/axios"
@@ -207,7 +211,7 @@
         // description: { required },
         // icon: { required },
         host: { required },
-        port: { required },
+        port: { required, numeric },
         database: { required },
       }
     },
