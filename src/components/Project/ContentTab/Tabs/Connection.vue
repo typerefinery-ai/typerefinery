@@ -14,6 +14,7 @@
             <InputText
               id="host"
               v-model.trim="v$.host.$model"
+              type="text"
               aria-describedby="host"
               placeholder="Eg: localhost"
               :class="{ 'p-invalid': v$.host.$error }"
@@ -23,18 +24,36 @@
         </div>
         <div class="col-6 p-fluid">
           <div class="field">
-            <label for="port">
+            <label
+              for="port"
+              :class="{ 'p-error': v$.port.$invalid && submitted }"
+            >
               {{ $t("components.dialog.connections.info.port")
               }}<span class="asterisk">*</span></label
             >
+            <!-- <label for="port">
+              {{ $t("components.dialog.connections.info.port")
+              }}<span class="asterisk">*</span></label
+            > -->
             <InputText
               id="port"
-              v-model.trim="v$.port.$model"
+              v-model="v$.port.$model"
+              :class="{ 'p-invalid': v$.port.$invalid && submitted }"
               aria-describedby="port"
               placeholder="Eg: 1729"
-              :class="{ 'p-invalid': v$.port.$error }"
-              @input="handleInput('port', $event.target.value)"
+              @input="handleInput('port', $event.target.value, !v$.$invalid)"
             />
+            <small
+              v-if="
+                (v$.port.$invalid && submitted) || v$.port.$pending.$response
+              "
+              class="p-error"
+              >{{
+                v$.port.required.$invalid
+                  ? v$.port.required.$message.replace("Value", "Port")
+                  : v$.port.numeric.$message.replace("Value", "Port")
+              }}</small
+            >
           </div>
         </div>
         <div class="col-12 p-fluid">
@@ -136,7 +155,7 @@
         :label="$t(`components.dialog.projects.info.save`)"
         :disabled="checkTabIfDirty() || Boolean(error) || v$.$invalid"
         class="p-button-raised mr-2"
-        @click="saveConnection"
+        @click="saveConnection(!v$.$invalid)"
       />
       <Button
         :label="$t(`components.dialog.projects.info.saveas`)"
@@ -182,9 +201,9 @@
     </Dialog>
   </div>
 </template>
-<script>
+<script lang="ts">
   import { getModule } from "vuex-module-decorators"
-  import { required } from "@vuelidate/validators"
+  import { required, numeric } from "@vuelidate/validators"
   import useVuelidate from "@vuelidate/core"
   import InputText from "primevue/inputtext"
   import Button from "primevue/button"
@@ -212,13 +231,14 @@
     data() {
       return {
         host: "localhost",
-        port: 1729,
+        port: 1729 as number,
         database: "typerefinery",
         label: "",
         icon: "",
         description: "",
         debounce: null,
         showDialog: false,
+        submitted: false,
         connectionName: "",
         error: "",
         dialogError: "",
@@ -236,7 +256,7 @@
     validations() {
       return {
         host: { required },
-        port: { required },
+        port: { required, numeric },
         database: { required },
         label: { required },
       }
@@ -288,10 +308,15 @@
           database,
         }
       },
-      handleInput(key, value) {
+      handleInput(key, value, isFormValid) {
         const oldDirtyStackSize = this.dirtyStack.size
         if (this.initialData[key].trim() !== value.trim()) {
           this.dirtyStack.add(key)
+          this.submitted = true
+          // stop here if form is invalid
+          if (!isFormValid) {
+            return
+          }
         } else {
           if (this.dirtyStack.has(key) === true) {
             this.dirtyStack.delete(key)
@@ -418,7 +443,7 @@
           }
         }
       },
-      async saveConnection() {
+      async saveConnection(isFormValid) {
         if (this.error) return
         const { parent, id } = this.tab
         const projects = projectsModule.getProjects
@@ -440,6 +465,11 @@
             connectionIdx,
             projectIdx,
           })
+          this.submitted = true
+          // stop here if form is invalid
+          if (!isFormValid) {
+            return
+          }
         } else {
           // global
           const connections = connectionsModule.getGlobalConnections
@@ -455,6 +485,11 @@
           }
           const payload = { data, connectionIdx }
           await connectionsModule.setGlobalConnection(payload)
+          this.submitted = true
+          // stop here if form is invalid
+          if (!isFormValid) {
+            return
+          }
         }
         //Updating Initial Data
         this.initialData = {
