@@ -201,7 +201,7 @@
     </Dialog>
   </div>
 </template>
-<script lang="ts">
+<script>
   import { getModule } from "vuex-module-decorators"
   import { required, numeric } from "@vuelidate/validators"
   import useVuelidate from "@vuelidate/core"
@@ -530,27 +530,32 @@
           icon: this.icon,
           description: this.description,
         }
-        try {
-          restapi.post("/datastore/connection", data).then(() => {
-            if (scope === "global") {
-              // add to global connections
-              connectionsModule.addGlobalConnection(data)
-              this.stateSaveSuccess(
-                "components.dialog.connections.info.connection-save-globally"
-              )
-            } else {
-              // add to local connections
-              projectsModule.addLocalConnection({ projectIdx, data })
+        if (scope === "global") {
+          // add to global connections
+          connectionsModule.createGlobalConnection(data).then(() => {
+            this.stateSaveSuccess(
+              "components.dialog.connections.info.connection-save-globally"
+            )
+          }).catch(err => {
+            console.log(err)
+            this.stateSaveFailed(
+              "components.dialog.connections.info.connection-save-global-failed"
+            )
+          })
+        } else {
+          // add to local connections
+          projectsModule
+            .createLocalConnection({ projectIdx, data })
+            .then(() => {
               this.stateSaveSuccess(
                 "components.dialog.connections.info.connection-save-locally"
               )
-            }
+            }).catch(err => {
+            console.log(err)
+            this.stateSaveFailed(
+              "components.dialog.connections.info.connection-save-locally-failed"
+            )
           })
-        } catch (err) {
-          console.log(err)
-          this.stateSaveFailed(
-            "components.dialog.connections.info.connection-save-failed"
-          )
         }
       },
       stateSaveSuccess(messageid) {

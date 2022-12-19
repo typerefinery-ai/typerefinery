@@ -211,6 +211,17 @@ export default class Projects extends VuexModule {
     const { projectIdx, data } = connectionData
     this.data.list[projectIdx].connections.list.push(data)
   }
+
+  @Action({ rawError: true })
+  async createLocalConnection(connection) {
+    try {
+      await restapi.post(`/datastore/connection`, connection)
+      this.context.commit("addLocalConnection", connection)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   @Mutation
   addLocalTheme(themeData) {
     const { projectIdx, data } = themeData

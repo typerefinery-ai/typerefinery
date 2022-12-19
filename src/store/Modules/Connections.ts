@@ -2,6 +2,7 @@
 import restapi from "@/utils/restapi"
 import { Module, VuexModule, Mutation, Action } from "vuex-module-decorators"
 import store from "../index"
+
 // import sampleData from "@/data/default.json"
 
 @Module({
@@ -24,7 +25,19 @@ export default class Connections extends VuexModule {
 
   @Mutation
   addGlobalConnection(connection) {
-    if (connection.type === "connection") this.data.list.push(connection)
+    if (connection.type === "connection") {
+      this.data.list.push(connection)
+    }
+  }
+
+  @Action({ rawError: true })
+  async createGlobalConnection(connection) {
+    try {
+      await restapi.post(`/datastore/connection`, connection)
+      this.context.commit("addGlobalConnection", connection)
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   // @Mutation
