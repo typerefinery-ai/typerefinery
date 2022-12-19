@@ -443,7 +443,7 @@
           }
         }
       },
-      async saveConnection(isFormValid) {
+      saveConnection(isFormValid) {
         if (this.error) return
         const { parent, id } = this.tab
         const projects = projectsModule.getProjects
@@ -460,16 +460,19 @@
             icon: this.icon,
             description: this.description,
           }
-          await projectsModule.setConnectionData({
-            data,
-            connectionIdx,
-            projectIdx,
-          })
-          this.submitted = true
-          // stop here if form is invalid
-          if (!isFormValid) {
-            return
-          }
+          projectsModule
+            .setConnectionData({
+              data,
+              connectionIdx,
+              projectIdx,
+            })
+            .then(() => {
+              this.submitted = true
+              // stop here if form is invalid
+              if (!isFormValid) {
+                return
+              }
+            })
         } else {
           // global
           const connections = connectionsModule.getGlobalConnections
@@ -484,12 +487,13 @@
             description: this.description,
           }
           const payload = { data, connectionIdx }
-          await connectionsModule.setGlobalConnection(payload)
-          this.submitted = true
-          // stop here if form is invalid
-          if (!isFormValid) {
-            return
-          }
+          connectionsModule.setGlobalConnection(payload).then(() => {
+            this.submitted = true
+            // stop here if form is invalid
+            if (!isFormValid) {
+              return
+            }
+          })
         }
         //Updating Initial Data
         this.initialData = {
@@ -507,7 +511,7 @@
           this.$t("components.dialog.connections.info.save-connection")
         )
       },
-      async saveNewConnection(scope) {
+      saveNewConnection(scope) {
         const { parent: projectId } = this.tab
         const projects = projectsModule.getProjects
         const projectIdx = projects.findIndex((el) => el.id === projectId)
@@ -527,50 +531,44 @@
           description: this.description,
         }
         try {
-          if (scope === "global") {
-            if (!this.checkExists("global", this.connectionName)) {
-              await restapi.post("/datastore/connection", data)
+          restapi.post("/datastore/connection", data).then(() => {
+            if (scope === "global") {
+              // add to global connections
               connectionsModule.addGlobalConnection(data)
-              this.showDialog = false
-              this.connectionName = ""
-              this.setFormDirty(false)
-              successToast(
-                this,
-                this.$t(
-                  "components.dialog.connections.info.connection-save-globally"
-                )
+              this.stateSaveSuccess(
+                "components.dialog.connections.info.connection-save-globally"
               )
-            }
-          } else if (scope === "local") {
-            if (!this.checkExists("local", this.connectionName)) {
-              await restapi.post("/datastore/connection", data)
+            } else {
+              // add to local connections
               projectsModule.addLocalConnection({ projectIdx, data })
-              this.showDialog = false
-              this.connectionName = ""
-              this.setFormDirty(false)
-              successToast(
-                this,
-                this.$t(
-                  "components.dialog.connections.info.connection-save-locally"
-                )
+              this.stateSaveSuccess(
+                "components.dialog.connections.info.connection-save-locally"
               )
             }
-          }
+          })
         } catch (err) {
           console.log(err)
-          errorToast(this)
+          this.stateSaveFailed(
+            "components.dialog.connections.info.connection-save-failed"
+          )
         }
       },
+      stateSaveSuccess(messageid) {
+        //this is called after a save to update toast, hide dialog and reset form
+        var successMessage = this.$t(messageid)
+        this.connectionName = ""
+        this.showDialog = false
+        // this.connectionName = ""
+        this.setFormDirty(false)
+        successToast(this, successMessage)
+      },
+      stateSaveFailed(messageid) {
+        //this is called after a save to update toast, hide dialog and reset form
+        var successMessage = this.$t(messageid)
+        errorToast(this)
+        successToast(this, successMessage)
+      },
     },
-    // methods: {
-    //   async handeInput({ target: { value } }, field) {
-    //     clearTimeout(this.debounce)
-    //     this.debounce = setTimeout(async () => {
-    //       const payload = { field, value, ...this.tab }
-    //       await projectsModule.setConnectionData(payload)
-    //     }, 600)
-    //   },
-    // },
   }
 </script>
 <style scoped lang="scss">

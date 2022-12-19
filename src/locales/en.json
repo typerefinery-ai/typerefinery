@@ -136,7 +136,8 @@
           "save-connection": "Sucessfully Connection Saved",
           "connection-error": "Connection with label %{error} already exist",
           "connection-save-locally": "Sucessfully Connection Saved Locally",
-          "connection-save-globally": "Sucessfully Connection Saved Globally"
+          "connection-save-globally": "Sucessfully Connection Saved Globally",
+          "connection-save-failed": "Could not save connection"
         },
         "panelheader": "Connection",
         "updated-header": "Update Connection",
