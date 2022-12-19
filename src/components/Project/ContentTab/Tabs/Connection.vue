@@ -210,7 +210,6 @@
   import Fieldset from "primevue/fieldset"
   import Dialog from "primevue/dialog"
   import { nanoid } from "nanoid"
-  import restapi from "@/utils/restapi"
   import { errorToast, successToast } from "@/utils/toastService"
   // import Dropdown from "primevue/dropdown"
   import Projects from "@/store/Modules/Projects"
@@ -231,7 +230,7 @@
     data() {
       return {
         host: "localhost",
-        port: 1729 as number,
+        port: 1729,
         database: "typerefinery",
         label: "",
         icon: "",
