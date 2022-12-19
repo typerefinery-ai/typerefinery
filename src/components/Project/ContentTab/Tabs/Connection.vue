@@ -210,7 +210,7 @@
   import Fieldset from "primevue/fieldset"
   import Dialog from "primevue/dialog"
   import { nanoid } from "nanoid"
-  import axios from "@/axios"
+  import restapi from "@/utils/restapi"
   import { errorToast, successToast } from "@/utils/toastService"
   // import Dropdown from "primevue/dropdown"
   import Projects from "@/store/Modules/Projects"
@@ -529,7 +529,7 @@
         try {
           if (scope === "global") {
             if (!this.checkExists("global", this.connectionName)) {
-              await axios.post("/datastore/connection", data)
+              await restapi.post("/datastore/connection", data)
               connectionsModule.addGlobalConnection(data)
               this.showDialog = false
               this.connectionName = ""
@@ -543,7 +543,7 @@
             }
           } else if (scope === "local") {
             if (!this.checkExists("local", this.connectionName)) {
-              await axios.post("/datastore/connection", data)
+              await restapi.post("/datastore/connection", data)
               projectsModule.addLocalConnection({ projectIdx, data })
               this.showDialog = false
               this.connectionName = ""

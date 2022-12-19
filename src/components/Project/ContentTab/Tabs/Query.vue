@@ -193,7 +193,7 @@
   import SidePanel from "../SidePanel"
   import Dialog from "primevue/dialog"
   import { nanoid } from "nanoid"
-  import axios from "@/axios"
+  import restapi from "@/utils/restapi"
   // import Graph from "../../../Graph/Graph.vue"
   import renderD3 from "../../../Transformer/D3/d3"
   import renderWebcola from "../../../Transformer/WebCola/webcola"
@@ -475,7 +475,7 @@
             query: this.payload.query,
             data: "",
           }
-          await axios.post(`/datastore/query`, payload)
+          await restapi.post(`/datastore/query`, payload)
           queriesModule.addGlobalQuery(payload)
           successToast(this, this.$t("components.tabquery.query-save-globally"))
         } else {
@@ -500,7 +500,7 @@
               },
             }
             try {
-              await axios.post("/datastore/query", data.data)
+              await restapi.post("/datastore/query", data.data)
               projectsModule.addNewQuery(data)
               successToast(
                 this,

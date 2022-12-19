@@ -21,7 +21,7 @@
   import Projects from "@/store/Modules/Projects"
   import MainMenu from "@/components/Menu/MainMenu.vue"
   import MenuBar from "@/components/Menu/MenuBar.vue"
-  import axios from "@/axios"
+  import restapi from "@/utils/restapi"
   import * as websocket from "websocket"
   import SettingsStore from "@/store/Modules/Settings"
   import ConnectionsStore from "@/store/Modules/Connections"
@@ -118,7 +118,9 @@
 
             if (response.type === "publish") {
               try {
-                const { data: projects } = await axios.get("/datastore/project")
+                const { data: projects } = await restapi.get(
+                  "/datastore/project"
+                )
                 const project = projects.find(
                   (el) => el.projectid === response.data.projectId
                 )
@@ -127,7 +129,7 @@
                   flowoutputlist: JSON.stringify([response.data]),
                 }
                 // update the project with flowoutput
-                await axios.put(
+                await restapi.put(
                   `/datastore/project/${response.data.projectId}`,
                   payload
                 )

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Module, VuexModule, Mutation, Action } from "vuex-module-decorators"
 import store from "../index"
-import axios from "@/axios"
+import axios from "@/utils/restapi"
 
 @Module({
   name: "Themes",

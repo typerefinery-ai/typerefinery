@@ -221,7 +221,7 @@
   import Projects from "@/store/Modules/Projects"
   import Settings from "@/store/Modules/Settings"
   import Connections from "@/store/Modules/Connections"
-  import axios from "@/axios"
+  import restapi from "@/utils/restapi"
   import Queries from "@/store/Modules/Queries"
   import { errorToast, successToast } from "@/utils/toastService"
   // import Algorithms from "@/store/Modules/Algorithms"
@@ -468,7 +468,7 @@
             scope: projectIdx == -1 ? "global" : "local",
             data: "",
           }
-          await axios.post("/datastore/query", payload)
+          await restapi.post("/datastore/query", payload)
           this.submitted = true
           // projectsModule.addNewQuery(data)
           if (projectIdx == -1) {

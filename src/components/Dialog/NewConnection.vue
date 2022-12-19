@@ -157,7 +157,7 @@
   import { required, numeric } from "@vuelidate/validators"
   import { useVuelidate } from "@vuelidate/core"
   import { nanoid } from "nanoid"
-  import axios from "@/axios"
+  import restapi from "@/utils/restapi"
   import Dialog from "primevue/dialog"
   import Dropdown from "primevue/dropdown"
   import InputText from "primevue/inputtext"
@@ -365,7 +365,7 @@
             description: this.description,
             type: "connection",
           }
-          await axios.post("/datastore/connection", payload)
+          await restapi.post("/datastore/connection", payload)
           if (projectIndex == -1) {
             connectionsModule.addGlobalConnection(data.data)
           } else {

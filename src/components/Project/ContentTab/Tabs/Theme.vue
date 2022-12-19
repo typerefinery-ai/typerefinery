@@ -117,7 +117,7 @@
   import InputText from "primevue/inputtext"
   import Themes from "@/store/Modules/Theme"
   import { errorToast, successToast } from "@/utils/toastService"
-  import axios from "@/axios"
+  import restapi from "@/utils/restapi"
   const settingsModule = getModule(Settings)
   const projectsModule = getModule(Projects)
   const themesModule = getModule(Themes)
@@ -371,7 +371,7 @@
         try {
           if (scope === "global") {
             if (!this.checkExists("global", this.themeName)) {
-              await axios.post("/datastore/theme", data)
+              await restapi.post("/datastore/theme", data)
               themesModule.addGlobalTheme(data)
               this.showDialog = false
               this.themeName = ""
@@ -383,7 +383,7 @@
             }
           } else if (scope === "local") {
             if (!this.checkExists("local", this.themeName)) {
-              await axios.post("/datastore/theme", data)
+              await restapi.post("/datastore/theme", data)
               projectsModule.addLocalTheme({ projectIdx, data })
               this.showDialog = false
               this.themeName = ""

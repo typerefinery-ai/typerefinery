@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import axios from "@/axios"
+import restapi from "@/utils/restapi"
 import { Module, VuexModule, Mutation, Action } from "vuex-module-decorators"
 import store from "../index"
 // import sampleData from "@/data/default.json"
@@ -67,7 +67,7 @@ export default class Connections extends VuexModule {
         host: "localhost",
         database: "typerefinery",
       }
-      await axios.post(`/datastore/connection`, connection)
+      await restapi.post(`/datastore/connection`, connection)
       this.context.commit("addGlobalConnection", connection)
     } catch (error) {
       console.log(error)
@@ -77,7 +77,7 @@ export default class Connections extends VuexModule {
   @Action({ rawError: true })
   async getInitialConnections() {
     try {
-      const res = await axios.get("/datastore/connection")
+      const res = await restapi.get("/datastore/connection")
       const data = res.data
         .filter((el) => el.scope === "global")
         .map((el) => ({ ...el, id: el.connectionid }))
@@ -93,7 +93,7 @@ export default class Connections extends VuexModule {
     const connection = connections[connectionIdx]
     const payload = { ...connection, ...data }
     try {
-      await axios.put(`/datastore/connection/${data.id}`, payload)
+      await restapi.put(`/datastore/connection/${data.id}`, payload)
       this.context.commit("updateGlobalConnection", { data, connectionIdx })
     } catch (err) {
       console.log(err)
@@ -105,7 +105,7 @@ export default class Connections extends VuexModule {
     const connection = connections.find((el) => el.id === data.id)
     const payload = { ...connection, ...data }
     try {
-      await axios.delete(`/datastore/connection/${data.id}`, payload)
+      await restapi.delete(`/datastore/connection/${data.id}`, payload)
       this.context.commit("deleteConnectionGlobally", data)
     } catch (err) {
       console.log(err)

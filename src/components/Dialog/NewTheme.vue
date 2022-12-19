@@ -121,7 +121,7 @@
   import { javascript } from "@codemirror/lang-javascript"
   import { oneDark } from "@codemirror/theme-one-dark"
   import { nanoid } from "nanoid"
-  import axios from "@/axios"
+  import restapi from "@/utils/restapi"
   import Dialog from "primevue/dialog"
   import Dropdown from "primevue/dropdown"
   import InputText from "primevue/inputtext"
@@ -294,7 +294,7 @@
             description: this.description,
             theme: this.themecode,
           }
-          await axios.post("/datastore/theme", payload)
+          await restapi.post("/datastore/theme", payload)
           if (projectIndex == -1) {
             themesModule.addGlobalTheme(data.data)
           } else {

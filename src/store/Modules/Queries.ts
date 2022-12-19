@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import axios from "@/axios"
+import axios from "@/utils/restapi"
 import { Module, VuexModule, Mutation, Action } from "vuex-module-decorators"
 import store from "../index"
 // import sampleData from "@/data/default.json"
