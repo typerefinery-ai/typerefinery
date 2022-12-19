@@ -80,7 +80,7 @@
       // async getData() {
       // try {
       //   const origin = `http://localhost:8000`
-      //   const { data } = await axios.get(origin + this.path)
+      //   const { data } = await restapi.get(origin + this.path)
       // this.svgPath = data
       //   console.log(data)
       // } catch (err) {

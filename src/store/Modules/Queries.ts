@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import axios from "@/utils/restapi"
+import restapi from "@/utils/restapi"
 import { Module, VuexModule, Mutation, Action } from "vuex-module-decorators"
 import store from "../index"
 // import sampleData from "@/data/default.json"
@@ -59,7 +59,7 @@ export default class Queries extends VuexModule {
           "match $a isa log, has logName 'L1';\n$b isa event, has eventName $c;\n$d (owner: $a, item: $b) isa trace,\nhas traceId $e, has index $f;\noffset 0; limit 10;",
         data: "",
       }
-      await axios.post(`/datastore/query`, query)
+      await restapi.post(`/datastore/query`, query)
       this.context.commit("addGlobalQuery", query)
     } catch (error) {
       console.log(error)
@@ -69,7 +69,7 @@ export default class Queries extends VuexModule {
   @Action({ rawError: true })
   async getInitialQueries() {
     try {
-      const res = await axios.get("/datastore/query")
+      const res = await restapi.get("/datastore/query")
       const data = res.data
         .filter((el) => el.scope === "global")
         .map((el) => ({ ...el, id: el.queryid }))
@@ -99,7 +99,7 @@ export default class Queries extends VuexModule {
       [data.field]: data.value,
     }
     try {
-      await axios.put(`/datastore/query/${data.id}`, payload)
+      await restapi.put(`/datastore/query/${data.id}`, payload)
       this.context.commit("updateGlobalQuery", data)
     } catch (err) {
       console.log(err)
@@ -124,7 +124,7 @@ export default class Queries extends VuexModule {
       [data.field]: data.value,
     }
     try {
-      await axios.delete(`/datastore/query/${data.id}`, payload)
+      await restapi.delete(`/datastore/query/${data.id}`, payload)
       this.context.commit("deleteQueryGlobally", data)
     } catch (err) {
       console.log(err)

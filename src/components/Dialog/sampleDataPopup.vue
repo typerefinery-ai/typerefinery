@@ -75,7 +75,7 @@
             overwrite: true,
           }
           const url = "http://localhost:8000/flow/createsample"
-          await axios.post(url, payload)
+          await restapi.post(url, payload)
           await servicesModule.restartService("totaljs-flow")
           this.createInitialData(projectId)
         } catch (err) {
@@ -134,11 +134,11 @@
             theme: JSON.parse(JSON.stringify(this.themecode)),
           }
           const baseURL = "http://localhost:8000/datastore/"
-          await axios.all([
-            axios.post(`${baseURL}project`, project),
-            axios.post(`${baseURL}connection`, connection),
-            axios.post(`${baseURL}query`, query),
-            axios.post(`${baseURL}theme`, theme),
+          await restapi.all([
+            restapi.post(`${baseURL}project`, project),
+            restapi.post(`${baseURL}connection`, connection),
+            restapi.post(`${baseURL}query`, query),
+            restapi.post(`${baseURL}theme`, theme),
           ])
           await this.createData(projectid)
         } catch (err) {

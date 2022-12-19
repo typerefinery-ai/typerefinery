@@ -408,7 +408,7 @@
             readme: "Typerefinery flow",
           }
           const url = "http://localhost:8000/flow/create"
-          const { data } = await axios.post(url, payload)
+          const { data } = await restapi.post(url, payload)
           this.createInitialData(projectId, data.id)
         } catch (err) {
           console.log(err)
@@ -422,7 +422,7 @@
           const date = new Date().toISOString()
           const payload = { flowid, projectid, date }
           const url = "http://localhost:8000/flow/createsample"
-          await axios.post(url, payload)
+          await restapi.post(url, payload)
           servicesModule.stopService("totaljs-flow")
           // @ts-expect-error ts-migrate(2339) FIXME: Property 'api' does not exist on type 'Window & typeof globalThis'
           window.api?.response("sendServiceStatus", ({ id, output }) => {
@@ -491,11 +491,11 @@
             scope: "local",
           }
           const baseURL = "http://localhost:8000/datastore/"
-          await axios.all([
-            axios.post(`${baseURL}project`, project),
-            axios.post(`${baseURL}connection`, connection),
-            axios.post(`${baseURL}query`, query),
-            axios.post(`${baseURL}theme`, theme),
+          await restapi.all([
+            restapi.post(`${baseURL}project`, project),
+            restapi.post(`${baseURL}connection`, connection),
+            restapi.post(`${baseURL}query`, query),
+            restapi.post(`${baseURL}theme`, theme),
           ])
           const payload = {
             projectid,

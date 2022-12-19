@@ -56,7 +56,7 @@
         const origin = new URL(query.endpoint).origin
         if (query.dataPath) {
           try {
-            const { data } = await axios.get(origin + query.dataPath)
+            const { data } = await restapi.get(origin + query.dataPath)
             this.graphData = data
             this.renderGraph()
           } catch (err) {

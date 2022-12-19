@@ -44,7 +44,7 @@ export default class Connections extends VuexModule {
   //     // [themeDataParsed.field]: themeDataParsed.value,
   //   }
   //   try {
-  //     await axios.post(`/datastore/theme/`, payload)
+  //     await restapi.post(`/datastore/theme/`, payload)
   //     // const output = {
   //     //   ...themeData,
   //     //   projectIdx: themeData.parentIdx,
@@ -92,7 +92,7 @@ export default class Connections extends VuexModule {
         description: "",
         theme: `{\n  "attribute": {\n    "colorlist": "Oranges",\n    "cindex": 7,\n    "tcolorlist": "Greys",\n    "tindex": 0\n  },\n  "entity": {\n    "colorlist": "Blue-Green",\n    "cindex": 7,\n    "tcolorlist": "Greys",\n    "tindex": 0\n  },\n  "relation": {\n    "colorlist": "Blue-Green",\n    "cindex": 6,\n    "tcolorlist": "Greys",\n    "tindex": 7\n  },\n  "shadow": {\n    "colorlist": "Yellows",\n    "cindex": 2,\n    "tcolorlist": "Greys",\n    "tindex": 7\n  }\n}`,
       }
-      await axios.post(`/datastore/theme`, theme)
+      await restapi.post(`/datastore/theme`, theme)
       this.context.commit("addGlobalTheme", theme)
     } catch (error) {
       console.log(error)
@@ -102,7 +102,7 @@ export default class Connections extends VuexModule {
   @Action({ rawError: true })
   async getInitialThemes() {
     try {
-      const res = await axios.get("/datastore/theme")
+      const res = await restapi.get("/datastore/theme")
       const data = res.data
         .filter((el) => el.scope === "global")
         .map((el) => ({ ...el, id: el.themeid }))
@@ -118,7 +118,7 @@ export default class Connections extends VuexModule {
     const theme = themes[themeIdx]
     const payload = { ...theme, ...data }
     try {
-      await axios.put(`/datastore/theme/${data.id}`, payload)
+      await restapi.put(`/datastore/theme/${data.id}`, payload)
       this.context.commit("updateGlobalTheme", { data, themeIdx })
     } catch (err) {
       console.log(err)
@@ -130,7 +130,7 @@ export default class Connections extends VuexModule {
     const theme = themes.find((el) => el.id === data.id)
     const payload = { ...theme, ...data }
     try {
-      await axios.delete(`/datastore/theme/${data.id}`, payload)
+      await restapi.delete(`/datastore/theme/${data.id}`, payload)
       this.context.commit("deleteThemeGlobally", data)
     } catch (err) {
       console.log(err)

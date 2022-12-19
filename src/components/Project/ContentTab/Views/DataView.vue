@@ -106,7 +106,7 @@
         if (this.path) {
           try {
             this.data = "loading..."
-            const { data } = await axios.get(this.origin + this.path)
+            const { data } = await restapi.get(this.origin + this.path)
             this.data = JSON.stringify(data, null, "\t")
           } catch (err) {
             this.data = "Unable to fetch data"

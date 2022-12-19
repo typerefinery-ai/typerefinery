@@ -78,7 +78,7 @@
       async signUp() {
         /* commented part use for db connection.. */
 
-        //     let result = await axios.post("http://localhost:4000/user",{
+        //     let result = await restapi.post("http://localhost:4000/user",{
         //     email:this.email,
         //    password:this.password,
         //    name:this.name

@@ -334,7 +334,7 @@ export default class Projects extends VuexModule {
   //       algorithmrequirements: "argparse\nloguru",
   //       returnoutput: "log",
   //     }
-  //     const response = await axios.post(query.endpoint, payload)
+  //     const response = await restapi.post(query.endpoint, payload)
   //     const outputExists =
   //       response.headers["output.exists"].toLowerCase() == "true"
   //     let path = ""
@@ -354,7 +354,7 @@ export default class Projects extends VuexModule {
       const projectid = "s_project"
       // STEP 1 : create sample flow
       const payload = { name: "string", overwrite: true }
-      await axios.post("/flow/createsample", payload)
+      await restapi.post("/flow/createsample", payload)
       // STEP 2 : restart flow service
       // @ts-expect-error ts-migrate(2339) FIXME: Property 'ipc' does not exist on type 'Window & typeof globalThis'
       const { ipc } = window
@@ -411,10 +411,10 @@ export default class Projects extends VuexModule {
       }
       const baseURL = "http://localhost:8000/datastore/"
       await Promise.all([
-        axios.post(`${baseURL}project`, project),
-        axios.post(`${baseURL}connection`, connection),
-        axios.post(`${baseURL}query`, query),
-        axios.post(`${baseURL}theme`, theme),
+        restapi.post(`${baseURL}project`, project),
+        restapi.post(`${baseURL}connection`, connection),
+        restapi.post(`${baseURL}query`, query),
+        restapi.post(`${baseURL}theme`, theme),
       ])
       // STEP 4 : add data to the store
       const projectData = {
@@ -464,10 +464,10 @@ export default class Projects extends VuexModule {
   @Action({ rawError: true })
   async getStoreData() {
     const responses = await Promise.all([
-      axios.get("/datastore/project"),
-      axios.get("/datastore/connection"),
-      axios.get("/datastore/query"),
-      axios.get("/datastore/theme"),
+      restapi.get("/datastore/project"),
+      restapi.get("/datastore/connection"),
+      restapi.get("/datastore/query"),
+      restapi.get("/datastore/theme"),
     ])
     const [projects, connections, queries, themes] = responses.map(
       (el) => el.data
@@ -554,7 +554,7 @@ export default class Projects extends VuexModule {
       [data.field]: data.value,
     }
     try {
-      await axios.put(`/datastore/project/${data.id}`, payload)
+      await restapi.put(`/datastore/project/${data.id}`, payload)
       this.context.commit("updateProject", data)
     } catch (err) {
       console.log(err)
@@ -569,7 +569,7 @@ export default class Projects extends VuexModule {
     const theme = themes[themeIdx]
     const payload = { ...theme, ...data }
     try {
-      await axios.put(`/datastore/theme/${data.id}`, payload)
+      await restapi.put(`/datastore/theme/${data.id}`, payload)
       this.context.commit("updateTheme", themeData)
     } catch (err) {
       console.log(err)
@@ -584,7 +584,7 @@ export default class Projects extends VuexModule {
     const connection = connections[connectionIdx]
     const payload = { ...connection, ...data }
     try {
-      await axios.put(`/datastore/connection/${data.id}`, payload)
+      await restapi.put(`/datastore/connection/${data.id}`, payload)
       this.context.commit("updateConnection", connectionData)
     } catch (err) {
       console.log(err)
@@ -613,7 +613,7 @@ export default class Projects extends VuexModule {
       [data.field]: data.value,
     }
     try {
-      await axios.put(`/datastore/query/${data.id}`, payload)
+      await restapi.put(`/datastore/query/${data.id}`, payload)
       data = { ...data, projectIdx, queryIdx }
       this.context.commit("updateQuery", data)
     } catch (err) {
@@ -638,15 +638,15 @@ export default class Projects extends VuexModule {
     }
     try {
       await Promise.all([
-        axios.delete(`/datastore/project/${data.id}`, payload),
+        restapi.delete(`/datastore/project/${data.id}`, payload),
         data.connectionid.map((el) => {
-          axios.delete(`/datastore/connection/${el}`, payload)
+          restapi.delete(`/datastore/connection/${el}`, payload)
         }),
         data.queryid.map((el) => {
-          axios.delete(`/datastore/query/${el}`, payload)
+          restapi.delete(`/datastore/query/${el}`, payload)
         }),
         data.themeid.map((el) => {
-          axios.delete(`/datastore/theme/${el}`, payload)
+          restapi.delete(`/datastore/theme/${el}`, payload)
         }),
       ]),
         this.context.commit("deleteProject", data)
