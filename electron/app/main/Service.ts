@@ -817,7 +817,16 @@ export class Service extends EventEmitter<ServiceEvent> {
     ) {
       return true
     }
-    return os.isPathExist(this.#setupstatefile)
+    return (
+      //if setup config exist check if setup state file exist
+      (this.#options.execconfig.setup
+        ? os.isPathExist(this.#setupstatefile)
+        : false) ||
+      //if setup archive config exist check if setup archive exist
+      (this.#options.execconfig.setuparchive
+        ? os.isPathExist(this.#setuparchiveOutputPath)
+        : false)
+    )
   }
 
   // extract service archive
