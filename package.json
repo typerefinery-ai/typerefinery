@@ -40,7 +40,7 @@
     "dev": "vite --host localhost",
     "electron": "wait-on -c .waiton.json --verbose http-get://localhost:3000 && cross-env NODE_ENV=dev electron ./dist/main/index.cjs",
     "electron:pack": "electron-builder --dir",
-    "electron:dev": "concurrently -k \"npm run build && npm run dev\" \"npm run electron\"",
+    "electron:dev": "concurrently -k \"npm run build && npm run dev\" \"npm run services\" \"wait-on -c .waiton.json http-get://localhost:3001/services/status && npm run electron:run\"",
     "electron:builder": "electron-builder",
     "electron:start": "npm run build && npm run electron:run",
     "electron:run": "electron ./dist/main/index.cjs",
