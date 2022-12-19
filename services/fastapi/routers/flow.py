@@ -82,7 +82,7 @@ async def flow_create(request: Request, response: Response, body: FlowSchema):
 
 class CreateSample(BaseModel):
   projectid: str | None = Field(
-      default="", title="projectid", 
+      default="", title="projectid",
   )
   flowid: str | None = Field(
       default="", title="flowid"
@@ -90,7 +90,7 @@ class CreateSample(BaseModel):
   date: str | None = Field(
       default="", title="Date"
   )
-     
+
 @Logger.catch
 @router.post("/flow/createsample")
 async def flow_createsample(request: Request, response: Response, body: CreateSample):
@@ -143,7 +143,7 @@ async def flow_createsample(request: Request, response: Response, body: CreateSa
 
     FLOW_DATABASE_JSON = {"variables": {}}
     SAMPLEFLOWS_JSON = json.loads(SAMPLEFLOWS)
-        
+
     FLOW_DATABASE_JSON[flowid] = SAMPLEFLOWS_JSON
     FLOW_DATABASE_JSON[flowid]["id"] = flowid
     FLOW_DATABASE_JSON[flowid]["name"] = flowid
