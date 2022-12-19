@@ -29,7 +29,10 @@
     "LOCAL_SERVICES_USERDATA_PATH": "services"
   },
   "scripts": {
-    "build": "vue-tsc --noEmit && vite build && node scripts/build.mjs",
+    "build1": "vue-tsc --noEmit",
+    "build2": "vite build",
+    "build3": "node scripts/build.mjs",
+    "build": "npm run build1 && npm run build2 && npm run build3",
     "test:unit": "vitest",
     "test:e2e": "start-server-and-test preview 8080 'cypress open'",
     "lint:script": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
