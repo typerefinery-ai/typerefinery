@@ -38,7 +38,7 @@
   import { getModule } from "vuex-module-decorators"
   import Dialog from "primevue/dialog"
   import Button from "primevue/button"
-  import axios from "axios"
+  import restapi from "@/utils/restapi"
   import Projects from "@/store/Modules/Projects"
   import Services from "@/store/Modules/Services"
   const projectsModule = getModule(Projects)
@@ -74,7 +74,7 @@
             name: "string",
             overwrite: true,
           }
-          const url = "http://localhost:8000/flow/createsample"
+          const url = "/flow/createsample"
           await restapi.post(url, payload)
           await servicesModule.restartService("totaljs-flow")
           this.createInitialData(projectId)
@@ -133,8 +133,8 @@
             description: "",
             theme: JSON.parse(JSON.stringify(this.themecode)),
           }
-          const baseURL = "http://localhost:8000/datastore/"
-          await restapi.all([
+          const baseURL = "/datastore/"
+          await Promise.all([
             restapi.post(`${baseURL}project`, project),
             restapi.post(`${baseURL}connection`, connection),
             restapi.post(`${baseURL}query`, query),

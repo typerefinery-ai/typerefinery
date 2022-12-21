@@ -46,9 +46,11 @@
           const requiredServices = services.filter((el: { id: string }) =>
             this.servicesToCheck.includes(el.id)
           )
+          console.log(requiredServices, "requiredServices")
           const reqServicesStarted = requiredServices.every(
             (el: { status: string }) => el.status === "120"
           )
+          console.log(reqServicesStarted, "reqServicesStarted")
           if (!reqServicesStarted) {
             servicesModule.setServicesStopped()
             this.setServiceLoaded()
@@ -60,6 +62,7 @@
       setServiceLoaded() {
         // @ts-expect-error ts-migrate(2339) FIXME: Property 'api' does not exist on type 'Window & typeof globalThis'
         window.api?.response("sendServiceStatus", ({ id, output }) => {
+          console.log(id, output, "output")
           if (this.servicesToCheck.includes(id) && output === "120") {
             const idx = this.servicesToCheck.indexOf(id)
             this.servicesToCheck.splice(idx, 1)

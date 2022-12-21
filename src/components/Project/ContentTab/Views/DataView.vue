@@ -29,7 +29,7 @@
   import { javascript } from "@codemirror/lang-javascript"
   import { oneDark } from "@codemirror/theme-one-dark"
   import * as d3 from "d3"
-  import axios from "axios"
+  import restapi from "@/utils/restapi"
   import Button from "primevue/button"
   import Settings from "@/store/Modules/Settings"
   import Projects from "@/store/Modules/Projects"
