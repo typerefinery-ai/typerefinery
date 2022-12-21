@@ -816,17 +816,23 @@ export class Service extends EventEmitter<ServiceEvent> {
       !this.#options.execconfig.setuparchive
     ) {
       return true
+    } else if (this.#options.execconfig.setup) {
+      this.#log(
+        `isSetup setupstatefile: ${this.#setupstatefile} = ${os.isPathExist(
+          this.#setupstatefile
+        )}`
+      )
+      return os.isPathExist(this.#setupstatefile)
+    } else if (this.#options.execconfig.setuparchive) {
+      this.#log(
+        `isSetup setupstatefile: ${
+          this.#setuparchiveOutputPath
+        } =${os.isPathExist(this.#setuparchiveOutputPath)}`
+      )
+      return os.isPathExist(this.#setuparchiveOutputPath)
     }
-    return (
-      //if setup config exist check if setup state file exist
-      (this.#options.execconfig.setup
-        ? os.isPathExist(this.#setupstatefile)
-        : false) ||
-      //if setup archive config exist check if setup archive exist
-      (this.#options.execconfig.setuparchive
-        ? os.isPathExist(this.#setuparchiveOutputPath)
-        : false)
-    )
+    this.#log(`can't determine if service is setup`)
+    return false
   }
 
   // extract service archive
@@ -1010,7 +1016,8 @@ export class Service extends EventEmitter<ServiceEvent> {
 
               // Make sure all system services are configured.
               if (
-                (service.status == ServiceStatus.AVAILABLE || service.status == ServiceStatus.INSTALLED) &&
+                (service.status == ServiceStatus.AVAILABLE ||
+                  service.status == ServiceStatus.INSTALLED) &&
                 service.isSetup
               ) {
                 this.#log(`service ${service.id} is available and ready.`)
