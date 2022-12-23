@@ -50,15 +50,17 @@
     mounted() {
       this.timer = setTimeout(() => {
         this.showRetry = true
-      }, 60000)
+      }, 120000)
     },
     beforeUnmount() {
       clearTimeout(this.timer)
     },
     methods: {
       async handleClick() {
-        await serviceModule.stopAllServices()
-        await serviceModule.startAllServices()
+        // await serviceModule.stopAllServices()
+        // await serviceModule.startAllServices()
+        
+        // Clearing the local storage and refreshing the app.
         localStorage.clear()
         window.location.reload()
       },
