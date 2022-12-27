@@ -1,9 +1,5 @@
 <template>
   <div class="top-bar">
-    <p v-if="showRetry">
-      Taking too long? <span class="btn-link" @click="handleClick">Retry</span>
-    </p>
-    <div v-else>Services starting...</div>
     <loader-menu />
   </div>
   <div class="container">
@@ -18,12 +14,55 @@
         <div class="placeholder wave">
           <div class="project-block">
             <div class="sidebar"></div>
-            <div class="workflow"></div>
+            <div class="workflow">
+              <section v-if="showRetry" class="loader">
+                <span class="loader-text pi pi-spin pi-spinner"></span>
+                <span class="loader-text">
+                  Sorry, it is taking longer than expected.
+                </span>
+                <span class="loader-text">
+                  You can
+                  <span class="btn-link" @click="handleClick">refresh</span>
+                  or quit the application and open them again.
+                </span>
+              </section>
+              <section v-else class="loader">
+                <span class="loader-text pi pi-spin pi-spinner"></span>
+                <span class="loader-text">
+                  Services are getting installed on your machine.
+                </span>
+                <span class="loader-text">
+                  Please be patient. This might take a few minutes.
+                </span>
+              </section>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
+  <!-- <div class="container">
+    <div v-if="showRetry" class="loader">
+      <div class="loader-text pi pi-spin pi-spinner"></div>
+      <div class="loader-text">
+        Sorry, it is taking longer than expected.
+      </div>
+      <div class="loader-text">
+        You can 
+        <span class="btn-link" @click="handleClick">refresh</span>  
+        or quit the application and open them again.
+      </div>
+    </div>
+    <div v-else class="loader">
+      <div class="loader-text pi pi-spin pi-spinner"></div>
+      <div class="loader-text">
+        Services are getting installed on your machine.
+      </div>
+      <div class="loader-text">
+        Please be patient. This might take a few minutes.
+      </div>
+    </div>
+  </div> -->
 </template>
 <script>
   import loaderMenu from "./loaderMenu.vue"
@@ -68,18 +107,31 @@
   }
 </script>
 <style scoped lang="scss">
+  .loader-text {
+    text-align: center;
+  }
+  .loader {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
   .top-bar {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     margin: 5px 25px 0;
     align-items: center;
-
-    .btn-link {
-      color: #1d4ed8;
-      cursor: pointer;
-    }
+  }
+  .btn-link {
+    color: #1d4ed8;
+    cursor: pointer;
   }
   .container {
+    
+    // display: flex;
+    // align-items: center;
+    // justify-content: center;
+    // height: 100vh;
+    font-family: 'Roboto';
     .placeholder {
       margin: 15px;
       padding: 10px;
@@ -114,6 +166,9 @@
         width: 72%;
         height: 81vh;
         margin: -10px 1px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
       .menuitem {
         float: left;
