@@ -218,7 +218,7 @@
   import { oneDark } from "@codemirror/theme-one-dark"
   import { javascript } from "@codemirror/lang-javascript"
   import * as electronHelpers from "@/utils/electron"
-  import axios from "axios"
+  import restapi from "@/utils/restapi"
   import Dialog from "primevue/dialog"
   import Dropdown from "primevue/dropdown"
   import Panel from "primevue/panel"
@@ -407,7 +407,7 @@
             color: "#61C83B",
             readme: "Typerefinery flow",
           }
-          const url = "http://localhost:8000/flow/create"
+          const url = "/flow/create"
           const { data } = await restapi.post(url, payload)
           this.createInitialData(projectId, data.id)
         } catch (err) {
@@ -421,7 +421,7 @@
         try {
           const date = new Date().toISOString()
           const payload = { flowid, projectid, date }
-          const url = "http://localhost:8000/flow/createsample"
+          const url = "/flow/createsample"
           await restapi.post(url, payload)
           servicesModule.stopService("totaljs-flow")
           // @ts-expect-error ts-migrate(2339) FIXME: Property 'api' does not exist on type 'Window & typeof globalThis'
@@ -490,8 +490,8 @@
             connectionid: projectid + "_con",
             scope: "local",
           }
-          const baseURL = "http://localhost:8000/datastore/"
-          await restapi.all([
+          const baseURL = "/datastore/"
+          await Promise.all([
             restapi.post(`${baseURL}project`, project),
             restapi.post(`${baseURL}connection`, connection),
             restapi.post(`${baseURL}query`, query),
@@ -505,6 +505,7 @@
             theme,
           }
           await this.createData(payload)
+          this.loading = false
         } catch (err) {
           console.log(err)
           errorToast(this)

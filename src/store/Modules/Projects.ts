@@ -420,7 +420,7 @@ export default class Projects extends VuexModule {
         description: "",
         theme: `{\n  "attribute": {\n    "colorlist": "Oranges",\n    "cindex": 7,\n    "tcolorlist": "Greys",\n    "tindex": 0\n  },\n  "entity": {\n    "colorlist": "Blue-Green",\n    "cindex": 7,\n    "tcolorlist": "Greys",\n    "tindex": 0\n  },\n  "relation": {\n    "colorlist": "Blue-Green",\n    "cindex": 6,\n    "tcolorlist": "Greys",\n    "tindex": 7\n  },\n  "shadow": {\n    "colorlist": "Yellows",\n    "cindex": 2,\n    "tcolorlist": "Greys",\n    "tindex": 7\n  }\n}`,
       }
-      const baseURL = "http://localhost:8000/datastore/"
+      const baseURL = "/datastore/"
       await Promise.all([
         restapi.post(`${baseURL}project`, project),
         restapi.post(`${baseURL}connection`, connection),
@@ -474,72 +474,72 @@ export default class Projects extends VuexModule {
 
   @Action({ rawError: true })
   async getStoreData() {
-    const responses = await Promise.all([
-      restapi.get("/datastore/project"),
-      restapi.get("/datastore/connection"),
-      restapi.get("/datastore/query"),
-      restapi.get("/datastore/theme"),
-    ])
-    const [projects, connections, queries, themes] = responses.map(
-      (el) => el.data
-    )
-    const data = projects.map((p) => {
-      return {
-        type: "project",
-        id: p.projectid,
-        label: p.label,
-        description: p.description,
-        icon: p.icon,
-        flowoutputlist: JSON.parse(p.flowoutputlist),
-        connections: {
-          type: "connections",
-          icon: "",
-          list: connections
-            .filter((c) => c.projectid === p.projectid)
-            .map((c) => ({ ...c, id: c.connectionid })),
-        },
-        queries: {
-          type: "queries",
-          icon: "",
-          list: queries
-            .filter((q) => q.projectid === p.projectid)
-            .map((q) => ({ ...q, id: q.queryid })),
-        },
-        themes: {
-          type: "themes",
-          icon: "",
-          list: themes
-            .filter((t) => t.projectid === p.projectid)
-            .map((t) => ({ ...t, id: t.themeid })),
-        },
-        wirings: {
-          type: "wirings",
-          icon: "",
-          list: [
-            {
-              type: "wiring",
-              id: p.flowid,
-              label: "Workflow",
-              icon: "Workflow",
-              scope: "local",
-              description: "",
-              data: [],
-            },
-          ],
-          outputs: {
-            type: "outputs",
-            icon: "",
-            list: JSON.parse(p.flowoutputlist)?.map(() => ({
-              type: "output",
-              id: `${p.stepId}.${p.projectId}`,
-              label: "Output_Viz",
-              scope: "local",
-            })),
-          },
-        },
-      }
-    })
     try {
+      const responses = await Promise.all([
+        restapi.get("/datastore/project"),
+        restapi.get("/datastore/connection"),
+        restapi.get("/datastore/query"),
+        restapi.get("/datastore/theme"),
+      ])
+      const [projects, connections, queries, themes] = responses.map(
+        (el) => el.data
+      )
+      const data = projects.map((p) => {
+        return {
+          type: "project",
+          id: p.projectid,
+          label: p.label,
+          description: p.description,
+          icon: p.icon,
+          flowoutputlist: JSON.parse(p.flowoutputlist),
+          connections: {
+            type: "connections",
+            icon: "",
+            list: connections
+              .filter((c) => c.projectid === p.projectid)
+              .map((c) => ({ ...c, id: c.connectionid })),
+          },
+          queries: {
+            type: "queries",
+            icon: "",
+            list: queries
+              .filter((q) => q.projectid === p.projectid)
+              .map((q) => ({ ...q, id: q.queryid })),
+          },
+          themes: {
+            type: "themes",
+            icon: "",
+            list: themes
+              .filter((t) => t.projectid === p.projectid)
+              .map((t) => ({ ...t, id: t.themeid })),
+          },
+          wirings: {
+            type: "wirings",
+            icon: "",
+            list: [
+              {
+                type: "wiring",
+                id: p.flowid,
+                label: "Workflow",
+                icon: "Workflow",
+                scope: "local",
+                description: "",
+                data: [],
+              },
+            ],
+            outputs: {
+              type: "outputs",
+              icon: "",
+              list: JSON.parse(p.flowoutputlist)?.map(() => ({
+                type: "output",
+                id: `${p.stepId}.${p.projectId}`,
+                label: "Output_Viz",
+                scope: "local",
+              })),
+            },
+          },
+        }
+      })
       if (projects.length > 0) {
         this.context.commit("addInitialProjects", data)
       }
