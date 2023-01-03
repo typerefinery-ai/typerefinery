@@ -242,15 +242,12 @@ Function SetPath
 Function SetEnvPath
 {
   $VAR = $args[0]
-  $PATHS = $args[1..($args.Length-1)] # -join ( $IsWindows ? ";" : ":")
+  $PATHS = $args[1..($args.Length-1)]
   $PATH_SEPARATOR = ( $IsWindows ? ";" : ":")
   $PATHS_STRING = ""
   $CURRENT_VAR = ( Get-ChildItem env:${VAR} -ErrorAction SilentlyContinue )
 
   $SKIP = $False
-
-  echo "..."
-  echo $PATHS
 
   if ( $CURRENT_VAR ) {
     $CURRENT = ( Get-ChildItem env:${VAR} ).value
@@ -258,13 +255,19 @@ Function SetEnvPath
     printSectionLine "Current ${VAR}=$CURRENT"
 
     # for each path in $PATHS check if not already in $CURRENT_VAR and join to $PATHS_STRING
-    foreach ( $APATH in $PATHS ) {
+    foreach ($APATH in $PATHS) {
       if ( $CURRENT -notlike "*${APATH}*" ) {
-        $PATHS_STRING = "${PATHS_STRING}${PATH_SEPARATOR}${APATH}"
+        # if ${PATHS_STRING} is empty, then don't add the separator
+        if ( [string]::IsNullOrEmpty($PATHS_STRING) ) {
+          $PATHS_STRING = "${APATH}"
+        } else {
+          $PATHS_STRING = "${PATHS_STRING}${PATH_SEPARATOR}${APATH}"
+        }
       } else {
         printSectionLine "Skipping ${APATH} already in ${VAR}"
       }
     }
+
     echo "PATHS_STRING ${PATHS_STRING}"
 
     # if $PATHS_STRING is empty, then skip
@@ -274,12 +277,20 @@ Function SetEnvPath
 
   } else {
     $CURRENT = ""
+    $PATHS_STRING = $PATHS -join ( $IsWindows ? ";" : ":")
   }
 
   if ( -not($SKIP) ) {
-    printSectionLine "Setting ${VAR} to ${PATHS}"
+    printSectionLine "Setting ${VAR} to ${PATHS_STRING}"
 
-    New-Item env:${VAR} -Value "${PATHS}" -Force | Out-Null
+    # if ${CURRENT} is empty, then don't add the separator
+    if ( [string]::IsNullOrEmpty(${CURRENT}) ) {
+      $NEW_UPDATE = "${PATHS_STRING}"
+    } else {
+      $NEW_UPDATE = "${PATHS_STRING}${PATH_SEPARATOR}${CURRENT}"
+    }
+
+    New-Item env:${VAR} -Value "${NEW_UPDATE}" -Force | Out-Null
 
     $NEW = ( Get-ChildItem env:${VAR} ).value
     printSectionLine "New ${VAR}=$NEW"
