@@ -74,11 +74,14 @@ export interface ExecConfig {
   execservice?: ExecService
   executable?: {
     win32?: string
+    darwin?: string
+    linux?: string
     default?: string
   }
   setuparchive?: {
-    name: string
-    output: string
+    win32?: SetupArchive
+    darwin?: SetupArchive
+    linux?: SetupArchive
   }
   setup?: string[]
   env?: any
@@ -90,6 +93,11 @@ export interface ExecConfig {
   serviceport?: number
   servicehost?: string
   healthcheck?: HealthCheck
+}
+
+export interface SetupArchive {
+  name: string
+  output: string
 }
 
 export interface ExecService {
@@ -229,36 +237,63 @@ export class Service extends EventEmitter<ServiceEvent> {
     this.#ensurePathToFile(this.#servicepidfile)
 
     // compile archive file if set
-    if (
-      this.#options.execconfig?.setuparchive?.name &&
-      this.#options.execconfig?.setuparchive?.output
-    ) {
-      this.#log(
-        `service ${this.#id} archive ${
-          this.#options.execconfig?.setuparchive?.name
-        } with destination ${this.#options.execconfig?.setuparchive?.output}.`
-      )
-      this.#setuparchiveFile = path.join(
-        this.#servicepath,
-        this.#options.execconfig?.setuparchive.name
-      )
-      this.#setuparchiveOutputPath = path.join(
-        this.#servicepath,
-        this.#options.execconfig?.setuparchive.output
-      )
-      this.#log(
-        `service ${this.#id} archive file ${
-          this.#setuparchiveFile
-        } with output path ${this.#setuparchiveOutputPath}.`
-      )
-      // set status to archived if setuparchiveOutputPath does not exist
-      if (!this.isSetup && !fs.existsSync(this.#setuparchiveOutputPath)) {
-        this.#setStatus(ServiceStatus.ARCHIVED)
+    if (this.hasSetupArchive) {
+      const setupArchive = this.getArchiveForPlatform
+      if (setupArchive) {
+        this.#log(
+          `service ${this.#id} archive ${setupArchive.name} with destination ${
+            setupArchive.output
+          }.`
+        )
+        this.#setuparchiveFile = path.join(this.#servicepath, setupArchive.name)
+        this.#setuparchiveOutputPath = path.join(
+          this.#servicepath,
+          setupArchive.output
+        )
+        this.#log(
+          `service ${this.#id} archive file ${
+            this.#setuparchiveFile
+          } with output path ${this.#setuparchiveOutputPath}.`
+        )
+        // set status to archived if setuparchiveOutputPath does not exist
+        if (!this.isSetup && !fs.existsSync(this.#setuparchiveOutputPath)) {
+          this.#setStatus(ServiceStatus.ARCHIVED)
+        }
+      } else {
+        this.#log(
+          `service ${this.#id} archive config ${setupArchive} is invalid.`
+        )
       }
     }
 
     this.#log(`service ${this.#id} loaded with status ${this.#status}.`)
     this.#checkRunning()
+  }
+
+  get getArchiveForPlatform(): SetupArchive | undefined {
+    if (this.#options.execconfig?.setuparchive) {
+      const platfromSpecificArchive: SetupArchive =
+        this.#options.execconfig?.setuparchive[this.platform]
+
+      if (platfromSpecificArchive) {
+        return platfromSpecificArchive
+      }
+    }
+  }
+
+  get hasSetupArchive(): boolean {
+    // check if setuparchive is set
+    if (this.#options.execconfig?.setuparchive) {
+      //check if any of the configs have name and output set
+      const platfromSpecificArchive = this.getArchiveForPlatform
+
+      if (platfromSpecificArchive) {
+        if (platfromSpecificArchive.name && platfromSpecificArchive.output) {
+          return true
+        }
+      }
+    }
+    return false
   }
 
   #ensurePath(dir: string) {
@@ -352,7 +387,23 @@ export class Service extends EventEmitter<ServiceEvent> {
   get port() {
     return this.#serviceport
   }
+  get isWindows() {
+    return process.platform === "win32"
+  }
+  get isMacOS() {
+    return process.platform === "darwin"
+  }
+  get isLinux() {
+    return process.platform === "linux"
+  }
 
+  get platform(): string {
+    return process.platform == "win32" ||
+      process.platform == "darwin" ||
+      process.platform == "linux"
+      ? process.platform
+      : "default"
+  }
   #getSimpleInfo() {
     return {
       id: this.#id,
@@ -513,9 +564,7 @@ export class Service extends EventEmitter<ServiceEvent> {
         }
       } else if (this.#options.execconfig.executable) {
         // if service is being executed by a file
-        const platform =
-          process.platform == "win32" ? process.platform : "default"
-        serviceExecutable = this.#options.execconfig.executable[platform]
+        serviceExecutable = this.#options.execconfig.executable[this.platform]
         if (serviceExecutable == null) {
           serviceExecutable = this.#options.execconfig.executable.default
         }
@@ -955,7 +1004,7 @@ export class Service extends EventEmitter<ServiceEvent> {
       const pid = fs.readFileSync(this.#servicepidfile, "utf8")
 
       //check if service pid is runnin on linux
-      if (process.platform == "win32") {
+      if (this.isWindows) {
         os.runCommandWithCallBack(
           'tasklist /fi "PID eq ' + pid + '"',
           [],
