@@ -1,3 +1,5 @@
 
 # python cache files
 **/__pycache__/
+**/site-packages/
+**/bin
