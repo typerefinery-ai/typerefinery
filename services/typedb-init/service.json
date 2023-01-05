@@ -9,9 +9,9 @@
   "servicetype": 10,
   "execconfig": {
     "execservice": { "id": "typedb", "cli": true },
-    "setup": [
-      "--script=${SERVICE_PATH}\\init.tql"
-    ],
+    "setup": {
+      "default": ["--script=${SERVICE_PATH}\\init.tql"]
+    },
     "commandline": "",
     "serviceport": 8000,
     "depend_on": [

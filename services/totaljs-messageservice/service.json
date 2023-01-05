@@ -9,9 +9,9 @@
   "servicetype": 10,
   "execconfig": {
     "execservice": { "id": "node" },
-    "setup": [
-      "${EXEC_SERVICE_PATH}\\node-v18.6.0-win-x64\\node_modules\\npm\\bin\\npm-cli.js i total4"
-    ],
+    "setup": {
+      "default": ["${EXEC_SERVICE_PATH}\\node-v18.6.0-win-x64\\node_modules\\npm\\bin\\npm-cli.js i total4"]
+    },
     "commandline": "index.js",
     "serviceport": 8112,
     "healthcheck": {
