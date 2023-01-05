@@ -75,6 +75,7 @@
     "@codemirror/lang-python": "^6.0.0",
     "@codemirror/theme-one-dark": "^6.0.0",
     "@mdi/font": "5.9.55",
+    "@particle/unpack-file": "^3.0.2",
     "@rauschma/stringio": "^1.4.0",
     "@sentry/electron": "^3.0.7",
     "@sentry/integrations": "^7.1.1",

@@ -8,7 +8,7 @@ import net from "net"
 import EventEmitter from "eventemitter3"
 import kill from "tree-kill"
 import { os } from "./Utils"
-import extract from "extract-zip"
+import { unpackZip, unpackTarGz } from "@particle/unpack-file"
 
 export interface ServiceConfig {
   servicepath: string
@@ -908,7 +908,11 @@ export class Service extends EventEmitter<ServiceEvent> {
   // extract service archive
   async #doExtract(archive: string, destination: string) {
     try {
-      await extract(archive, { dir: destination })
+      if (archive.endsWith(".zip")) {
+        await unpackZip(archive, destination)
+      } else if (archive.endsWith(".tar.gz")) {
+        await unpackTarGz(archive, destination)
+      }
     } catch (err) {
       this.#log(`unable to extracted setup archive ${err}`)
     }
