@@ -72,6 +72,9 @@ PrintInfo
 
 printSectionBanner "Starting ${SERVICE_NAME} service"
 
+SetEnvVar "SERVICE_DATA_PATH" "${SERVICE_DATA_PATH}"
+SetEnvVar "SERVICE_PORT" "${SERVICE_PORT}"
+
 if ( $SETUP ) {
   StartSetup
 } else {
