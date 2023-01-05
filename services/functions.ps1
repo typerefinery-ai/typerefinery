@@ -298,3 +298,24 @@ Function SetEnvPath
     printSectionLine "Skipping update ${VAR} already set."
   }
 }
+
+Function TestPython {
+  printSectionBanner "Python Test 1"
+  python --version
+  printSectionBanner "Python Test 2"
+  python -c "print('Hello World')"
+  printSectionBanner "Python Test 3"
+  python -c "import sys; print(sys.path)"
+  printSectionBanner "Python Test 4"
+  python -c "import sys, ssl; print('{:s}\n{:s}'.format(sys.version, ssl.OPENSSL_VERSION))"
+  printSectionBanner "Python Test 5"
+  python -c "import ssl; print(ssl._ssl)"
+  printSectionBanner "Python Pip Test 1"
+  python -m pip --version
+  printSectionBanner "Pip Test 1"
+  pip --version
+  printSectionBanner "Python Site Test 1"
+  python -m site --user-site
+  printSectionBanner "Python Site Test 2"
+  python -c "import site; print(site.getsitepackages())"
+}
