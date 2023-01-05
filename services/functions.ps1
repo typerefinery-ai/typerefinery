@@ -220,6 +220,36 @@ Function Do-DebugOff
 
 }
 
+
+Function SetEnvVar
+{
+  [Cmdletbinding()]
+  param
+  (
+    [Parameter(ValueFromPipeline)]
+    [string]$VAR = $args[0],
+    [string]$VALUE = $args[1]
+  )
+
+  printSectionLine "Setting $VAR to ${VALUE}"
+
+  $CURRENT_VAR = ( Get-ChildItem env:${VAR} -ErrorAction SilentlyContinue )
+  if ( $CURRENT_VAR ) {
+    $CURRENT = ( Get-ChildItem env:${VAR} ).value
+
+    printSectionLine "Current ${VAR}=$CURRENT"
+  }
+  New-Item env:${VAR} -Value "${VALUE}" -Force | Out-Null
+
+  if ( $CURRENT_VAR ) {
+    $CURRENT = ( Get-ChildItem env:${VAR} ).value
+
+    printSectionLine "New ${VAR}=$CURRENT"
+  }
+
+}
+
+
 Function SetPath
 {
   [Cmdletbinding()]
