@@ -4,9 +4,11 @@ Param(
   [string]$PYTHON_HOME = ( Join-Path "${PWD}" "_python" "${OS}"),
   [string]$PYTHON_PATH = ( Join-Path "${PWD}" "_python" "${OS}" "bin"),
   [string]$PYTHON = ( Join-Path "${PWD}" "_python" "${OS}" "bin" "python"),
-  [string]$SERVER_HOME = ( Join-Path "${PWD}" "${SERVICE_NAME}" ),
+  [string]$SERVER_HOME = ( Join-Path "${PWD}" "${SERVICE_NAME}"),
+  [string]$SERVER_REQUIREMENTS = ( Join-Path "${SERVER_HOME}" "requirements.txt" ),
   [string]$PYTHONPACKAGES = ( Join-Path "${SERVER_HOME}" "__packages__" ),
-  [switch]$SETUP = $false
+  [switch]$SETUP = $false,
+  [switch]$DEBUG = $false
 )
 
 . "${PWD}\functions.ps1"
@@ -26,16 +28,26 @@ Function PrintInfo
 
 Function StartServer
 {
-  python -I -m uvicorn main:app --reload --host localhost --app-dir "${SERVER_HOME}"
+
+  if ($DEBUG) {
+    TestPython
+  }
+
+  Set-Location -Path "${SERVER_HOME}"
+  echo "Starting ${SERVICE_NAME} service in ${PWD}"
+  python -m uvicorn main:app --reload --host localhost --app-dir "${SERVER_HOME}"
+  cd -
 }
 
 Function StartSetup
 {
   cd "${PYTHON_HOME}"
   try {
-  # python get-pip.py
-  python -m pip install uvicorn[standard]
-  python -m pip install --target="${PYTHONPACKAGES}" -r "${SERVER_HOME}\requirements.txt"
+    if ( $IsWindows ) {
+     python get-pip.py
+    }
+    python -m pip install uvicorn
+    python -m pip install --target="${PYTHONPACKAGES}" -r "${SERVER_REQUIREMENTS}"
   }
   finally {
     cd -
@@ -45,24 +57,18 @@ Function StartSetup
 # SetPath "${PYTHON_HOME}"
 SetEnvPath "PATH" "${PYTHON_PATH}"
 
-# SetEnvPath "PYTHONPATH" "${PYTHONPACKAGES}" "${PYTHON}"
-SetEnvPath "PYTHONPATH" "${PYTHONPACKAGES}"
+SetEnvPath "PYTHONPATH" "${SERVER_HOME}" "${PYTHONPACKAGES}"
 SetEnvPath "PYTHONHOME" "${PYTHON_HOME}"
-# SetEnvPath "PYTHON_PATH" "${PYTHONPACKAGES}" "${PYTHON}"
-# SetEnvPath "PYTHON_HOME" "${PYTHON_HOME}"
+SetEnvPath "PYTHONUSERBASE" "${PYTHONPACKAGES}"
 
-printSectionLine "PYTHONHOME ${env:PYTHONHOME}"
-printSectionLine "PYTHONPATH ${env:PYTHONPATH}"
+printSectionLine "PYTHONHOME: ${env:PYTHONHOME}"
+printSectionLine "PYTHONPATH: ${env:PYTHONPATH}"
+printSectionLine "PYTHONUSERBASE: ${env:PYTHONUSERBASE}"
 
-python --version
-python -m pip debug
-# python -m pip --version
-
-
-# if ( $SETUP ) {
-#   StartSetup
-# } else {
-#   StartServer
-# }
+if ( $SETUP ) {
+  StartSetup
+} else {
+  StartServer
+}
 
 
