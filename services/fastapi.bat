@@ -50,7 +50,7 @@ if "%1" == "sample"  goto startsample
 echo   Invalid argument: %1. Possible commands are:
 echo   Server:          server [--help]
 echo   Script Basic:    scriptbasic [--help]
-echo   Script Group:    scriptbasic [--help]
+echo   Script Group:    scriptgroup [--help]
 echo   Server PROD:     serverprod [--help]
 echo   Setup:           setup [--help]
 echo   Sample:          sample [--help]
