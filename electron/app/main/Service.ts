@@ -83,7 +83,12 @@ export interface ExecConfig {
     darwin?: SetupArchive
     linux?: SetupArchive
   }
-  setup?: string[]
+  setup?: {
+    win32?: string[]
+    darwin?: string[]
+    linux?: string[]
+    default?: string[]
+  }
   env?: any
   commandline?: string
   commandlinecli?: string
@@ -178,7 +183,7 @@ export class Service extends EventEmitter<ServiceEvent> {
     this.#serviceport = this.#options.execconfig?.serviceport || 0
     this.#servicehost = this.#options.execconfig?.servicehost || "localhost"
     this.#healthCheck = this.#options.execconfig?.healthcheck
-    this.#setup = this.#options.execconfig?.setup || []
+    this.#setup = this.getSetupForPlatfrom
     this.#setStatus(ServiceStatus.LOADED)
     if (this.#options.enabled === false) {
       this.#setStatus(ServiceStatus.DISABLED)
@@ -268,6 +273,22 @@ export class Service extends EventEmitter<ServiceEvent> {
 
     this.#log(`service ${this.#id} loaded with status ${this.#status}.`)
     this.#checkRunning()
+  }
+
+  get getSetupForPlatfrom(): string[] {
+    if (this.#options.execconfig?.setup) {
+      const platfromSpecificSetup: string[] =
+        this.#options.execconfig?.setup[this.platform]
+      const platfromSpecificSetupDefault: string[] =
+        this.#options.execconfig?.setup?.default || []
+
+      if (platfromSpecificSetup) {
+        return platfromSpecificSetup
+      } else if (platfromSpecificSetupDefault) {
+        return platfromSpecificSetupDefault
+      }
+    }
+    return []
   }
 
   get getArchiveForPlatform(): SetupArchive | undefined {
@@ -566,7 +587,7 @@ export class Service extends EventEmitter<ServiceEvent> {
         // if service is being executed by a file
         serviceExecutable = this.#options.execconfig.executable[this.platform]
         if (serviceExecutable == null) {
-          serviceExecutable = this.#options.execconfig.executable.default
+          serviceExecutable = this.#options.execconfig.executable.default || ""
         }
         return serviceExecutable
       }
