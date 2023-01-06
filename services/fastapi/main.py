@@ -61,6 +61,7 @@ from routers import algorithm
 from routers import transformer
 from routers import datastore
 from routers import flow
+from routers import messageservice
 
 # include routes
 app.include_router(admin.router)
@@ -70,3 +71,4 @@ app.include_router(algorithm.router)
 app.include_router(transformer.router)
 app.include_router(datastore.router)
 app.include_router(flow.router)
+app.include_router(messageservice.router)
