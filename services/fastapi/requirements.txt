@@ -8,4 +8,4 @@ pydantic
 sqlmodel
 strawberry-graphql
 requests
-websockets
+websocket-client
