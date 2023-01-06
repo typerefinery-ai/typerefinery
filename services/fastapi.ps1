@@ -1,6 +1,7 @@
 Param(
   [string]$APP_NAME = "TypeRefinery",
   [string]$SERVICES_HOME = "services",
+  [string]$CURRENT_PATH = "${PWD}",
   [string]$SERVICE_NAME = "fastapi",
   [string]$OS = ( $IsWindows ? "windows" : ( $IsMacOS ? "darwin" : "linux" ) ),
   [string]$PYTHON_HOME = ( Join-Path "${PWD}" "_python" "${OS}"),
@@ -44,8 +45,12 @@ Function StartServer
   printSectionLine "${SERVICE_NAME} - SERVICE_DATA_PATH=${SERVICE_DATA_PATH}"
   printSectionLine "${SERVICE_NAME} - SERVICE_LOG_PATH=${SERVICE_LOG_PATH}"
   printSectionLine "${SERVICE_NAME} - SERVICE_PATH=${SERVICE_PATH}"
-  python -m uvicorn --reload --reload-exclude "req-*.py" --host localhost --app-dir "${SERVER_HOME}" main:app
-  cd -
+  try {
+    & python -m uvicorn --reload --reload-exclude "req-*.py" --host localhost --app-dir "${SERVER_HOME}" main:app
+  } finally {
+    Set-Location -Path "${CURRENT_PATH}"
+  }
+
 }
 
 Function StartSample
@@ -60,23 +65,25 @@ Function StartSample
   printSectionLine "${SERVICE_NAME} - SERVICE_DATA_PATH=${SERVICE_DATA_PATH}"
   printSectionLine "${SERVICE_NAME} - SERVICE_LOG_PATH=${SERVICE_LOG_PATH}"
   printSectionLine "${SERVICE_NAME} - SERVICE_PATH=${SERVICE_PATH}"
-  python -m http.server 8081 --directory "${SCRIPS_PATH}"
-  cd -
+  try {
+    python -m http.server 8081 --directory "${SCRIPS_PATH}"
+  } finally {
+    Set-Location -Path "${CURRENT_PATH}"
+  }
 }
 
 
 Function StartSetup
 {
-  cd "${PYTHON_HOME}"
+  Set-Location -Path "${PYTHON_HOME}"
   try {
     if ( $IsWindows ) {
-     python get-pip.py
+      python get-pip.py
     }
     python -m pip install uvicorn
     python -m pip install --target="${PYTHONPACKAGES}" -r "${SERVER_REQUIREMENTS}"
-  }
-  finally {
-    cd -
+  } finally {
+    Set-Location -Path "${CURRENT_PATH}"
   }
 }
 
@@ -85,7 +92,11 @@ Function RunScriptBasic
   echo "${SERVICE_NAME} - SERVICE_DATA_PATH=${SERVICE_DATA_PATH}"
   echo "${SERVICE_NAME} - SERVICE_LOG_PATH=${SERVICE_LOG_PATH}"
   echo "${SERVICE_NAME} - SERVICE_PATH=${SERVICE_PATH}"
-  python ${SERVICE_PATH}/scripts/G_to_WebCola.py "localhost" 1729 "typerefinery" "match $a isa log, has logName 'L1'; $b isa event, has eventName $c; $d (owner: $a, item: $b) isa trace, has traceId $e, has index $f; offset 0;"
+  try {
+    python ${SERVICE_PATH}/scripts/G_to_WebCola.py "localhost" 1729 "typerefinery" "match $a isa log, has logName 'L1'; $b isa event, has eventName $c; $d (owner: $a, item: $b) isa trace, has traceId $e, has index $f; offset 0;"
+  } finally {
+    Set-Location -Path "${CURRENT_PATH}"
+  }
 
 }
 
@@ -94,8 +105,13 @@ Function RunScriptGroup
   echo "${SERVICE_NAME} - SERVICE_DATA_PATH=${SERVICE_DATA_PATH}"
   echo "${SERVICE_NAME} - SERVICE_LOG_PATH=${SERVICE_LOG_PATH}"
   echo "${SERVICE_NAME} - SERVICE_PATH=${SERVICE_PATH}"
-  python ${SERVICE_PATH}/scripts/WebCola_Groups3.py "localhost" 1729 "typerefinery" "match $a isa log, has logName 'L1'; $b isa event, has eventName $c; $d (owner: $a, item: $b) isa trace, has traceId $e, has index $f; offset 0;"
-  python ${SERVICE_PATH}/scripts/Collapse_Group.py ${SERVICE_PATH}/scripts/WebCola_Groups3.py.output ${SERVICE_PATH}/scripts/WebCola_Groups3.py.output.collapsed
+  try {
+    python ${SERVICE_PATH}/scripts/WebCola_Groups3.py "localhost" 1729 "typerefinery" "match $a isa log, has logName 'L1'; $b isa event, has eventName $c; $d (owner: $a, item: $b) isa trace, has traceId $e, has index $f; offset 0;"
+    python ${SERVICE_PATH}/scripts/Collapse_Group.py ${SERVICE_PATH}/scripts/WebCola_Groups3.py.output ${SERVICE_PATH}/scripts/WebCola_Groups3.py.output.collapsed
+  } finally {
+    Set-Location -Path "${CURRENT_PATH}"
+  }
+
 
 }
 
