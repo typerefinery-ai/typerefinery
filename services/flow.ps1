@@ -2,7 +2,7 @@ Param(
   [string]$APP_NAME = "TypeRefinery",
   [string]$SERVICE_NAME = "totaljs-flow",
   [string]$CURRENT_PATH = "${PWD}",
-  [string]$OS = ( $IsWindows ? "windows" : ( $IsMacOS ? "darwin" : "linux" ) ),
+  [string]$OS = ( $IsWindows ? "win32" : ( $IsMacOS ? "darwin" : "linux" ) ),
   [string]$CPU_ARCH = "x64",
   [string]$NODE_VERSION = "v18.6.0",
   [string]$NODE_SERVICE_NAME = "_node",

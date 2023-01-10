@@ -2,7 +2,7 @@ Param(
   [string]$APP_NAME = "TypeRefinery",
   [string]$SERVICE_NAME = "_node",
   [string]$CURRENT_PATH = "${PWD}",
-  [string]$OS = ( $IsWindows ? "windows" : ( $IsMacOS ? "darwin" : "linux" ) ),
+  [string]$OS = ( $IsWindows ? "win32" : ( $IsMacOS ? "darwin" : "linux" ) ),
   [string]$CPU_ARCH = "x64",
   [string]$NODE_VERSION = "v18.6.0",
   [string]$NODE_PLATFORM_HOME = "node-${NODE_VERSION}-${OS}-${CPU_ARCH}",
