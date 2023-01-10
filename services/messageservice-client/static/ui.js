@@ -82,10 +82,15 @@ window.addEventListener(
   }
 )
 
+function payload_insert(data) {
+  console.log("payload_insert", data)
+}
+
 // connect to websocket
 window.MessageService.Client.connect(
   document.querySelector("meta[name=messagehost]").content,
   function () {
-    console.log("connected.")
+    console.log("tms connected.")
+    window.MessageService.Client.subscribe("payload_insert", payload_insert)
   }
 )
