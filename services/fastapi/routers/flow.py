@@ -7,6 +7,7 @@ from pydantic import BaseModel, Field
 from datetime import datetime
 import random
 import requests
+from config import CONFIG
 
 router = APIRouter()
 
@@ -18,6 +19,10 @@ import sys
 sys.path.append("..")
 from utils import UTILS
 UTILS = UTILS()
+
+#http://localhost:8111/fapi
+CONFIG.FLOW_HOST = os.getenv("FLOW_HOST", "http://localhost:8111")
+CONFIG.FLOW_API = os.getenv("FLOW_API", "/fapi")
 
 # {
 #     "icon": "fa fa-satellite",
@@ -64,12 +69,12 @@ class FlowSchema(BaseModel):
 @Logger.catch
 @router.post("/flow/create")
 async def flow_create(request: Request, response: Response, body: FlowSchema):
-    service_url_create = "http://localhost:8111/fapi/stream_save/"
+    service_url_create = f"{CONFIG.FLOW_HOST}{CONFIG.FLOW_API}/stream_save/"
     Logger.info(f"proxy flow: {service_url_create}")
     service_reponse = requests.post(service_url_create , data=body.dict())
     if service_reponse.status_code == 200:
         print(service_reponse.json())
-        service_url_get = "http://localhost:8111/fapi/streams/"
+        service_url_get = f"{CONFIG.FLOW_HOST}{CONFIG.FLOW_API}/streams/"
         service_reponse = requests.get(service_url_get)
         # for each object in response json find last object that has same reference as body.reference and return it
         return_object = None
