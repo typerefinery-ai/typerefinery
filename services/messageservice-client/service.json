@@ -2,7 +2,7 @@
   "id": "messageserviceclient",
   "name": "Messageservice Client",
   "description": "Sample WebSocket server that echos back all received messages.",
-  "enabled": false,
+  "enabled": true,
   "status": "30",
   "logoutput": "",
   "icon": "pi pi-globe",
@@ -19,7 +19,7 @@
       ]
     },
     "commandline": "-m uvicorn main:app --host localhost --port ${SERVICE_PORT} --app-dir ${SERVICE_PATH}",
-    "serviceport": 8000,
+    "serviceport": 8113,
     "healthcheck": {
       "type": "http",
       "url": "http://localhost:${SERVICE_PORT}/",
