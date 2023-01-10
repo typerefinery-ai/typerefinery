@@ -1,4 +1,4 @@
-name: TMS Example
+name: TMS Message Service
 
 allow_tms: true
 # secret_tms                    : typerefinery
