@@ -1,5 +1,6 @@
 Param(
   [string]$SERVICE_NAME = "wsecho",
+  [string]$CURRENT_PATH = "${PWD}",
   [string]$OS = ( $IsWindows ? "win32" : ( $IsMacOS ? "darwin" : "linux" ) ),
   [string]$PYTHON_HOME = ( Join-Path "${PWD}" "_python" "${OS}"),
   [string]$PYTHON_BIN = ( $IsWindows ? "" : "bin" ),
@@ -38,8 +39,12 @@ Function StartServer
 
   Set-Location -Path "${SERVER_HOME}"
   echo "Starting ${SERVICE_NAME} service in ${PWD}"
-  python -m uvicorn main:app --reload --host localhost --port ${SERVICE_PORT} --app-dir "${SERVER_HOME}"
-  cd -
+  try {
+    python -m uvicorn main:app --reload --host localhost --port ${SERVICE_PORT} --app-dir "${SERVER_HOME}"
+  } finally {
+    Set-Location -Path "${CURRENT_PATH}"
+  }
+
 }
 
 Function StartSetup
@@ -49,11 +54,11 @@ Function StartSetup
     if ( $IsWindows ) {
      python get-pip.py
     }
-    # python -m pip install uvicorn
+    python -m pip install uvicorn
     python -m pip install --target="${PYTHONPACKAGES}" -r "${SERVER_REQUIREMENTS}"
   }
   finally {
-    cd -
+    Set-Location -Path "${CURRENT_PATH}"
   }
 }
 
