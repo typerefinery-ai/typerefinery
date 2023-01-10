@@ -106,7 +106,7 @@ window.MessageService.Client = MessageService.Client || {}
           ns.publishers[item.id] = item.schema
         }
         //sync subscribers
-        ns.syncSubscribers(true)
+        ns.syncSubscribers()
         ns.metaReady = true
         // call connect callback with websocket and metadata
         if (callback) {
@@ -229,7 +229,10 @@ window.MessageService.Client = MessageService.Client || {}
     ns.clearSyncSubscribersTimeout()
     var keys = Object.keys(ns.subscribers)
     if (force || keys.length) {
-      ns.sendData(JSON.stringify({ type: "subscribers", subscribers: keys }), force)
+      ns.sendData(
+        JSON.stringify({ type: "subscribers", subscribers: keys }),
+        force
+      )
     } else {
       ns.sendData(JSON.stringify({ type: "subscribers", subscribers: [] }))
     }
