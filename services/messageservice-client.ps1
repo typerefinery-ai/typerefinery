@@ -50,7 +50,7 @@ Function StartSetup
     if ( $IsWindows ) {
      python get-pip.py
     }
-    # python -m pip install uvicorn
+    python -m pip install uvicorn
     python -m pip install --target="${PYTHONPACKAGES}" -r "${SERVER_REQUIREMENTS}"
   }
   finally {
