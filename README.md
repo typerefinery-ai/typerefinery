@@ -19,8 +19,12 @@ This template should help get you started developing `Electron` app using `Vue 3
 
 ## Prerequisites
 
-- Install powershell 7 or above , windows-terminal
+- Install powershell 7 (latest release)
+- On Windows install Windows terminal (latest release)
 - setup git for EOL to lf
+- setup node 16.13.0 (latest release)
+
+You can follow this guide to get you started [Setup Your Windows Devbox Like a Pro](https://aem.design/blog/2022/05/22/setup-your-windows-devbox-like-a-pro).
 
 ## Run Setup
 
