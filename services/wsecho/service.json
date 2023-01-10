@@ -10,9 +10,11 @@
   "execconfig": {
     "execservice": { "id": "python" },
     "setup": {
-      "default": [
+      "win32": [
         "get-pip.py",
-        "-m pip install uvicorn[standard]",
+        "-m pip install --target=${SERVICE_PATH}\\__packages__ -r ${SERVICE_PATH}\\requirements.txt"
+      ],
+      "default": [
         "-m pip install --target=${SERVICE_PATH}\\__packages__ -r ${SERVICE_PATH}\\requirements.txt"
       ]
     },
