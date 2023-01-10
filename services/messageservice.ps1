@@ -51,10 +51,13 @@ Function StartServer
   }
 
   Set-Location -Path "${SERVER_HOME}"
-  Invoke-Expression -Command "${NODE_PROGRAM_PATH} -v"
-  Invoke-Expression -Command "${NPM_PROGRAM_PATH} -v"
-  Invoke-Expression -Command "${NPM_PROGRAM_PATH} start"
-  Set-Location -Path "${CURRENT_PATH}"
+  try {
+    Invoke-Expression -Command "${NODE_PROGRAM_PATH} -v"
+    Invoke-Expression -Command "${NPM_PROGRAM_PATH} -v"
+    Invoke-Expression -Command "${NPM_PROGRAM_PATH} start"
+  } finally {
+    Set-Location -Path "${CURRENT_PATH}"
+  }
 }
 
 
@@ -62,10 +65,13 @@ Function StartServer
 Function StartSetup
 {
   Set-Location -Path ${SERVICE_HOME}
-  Invoke-Expression -Command "${NODE_PROGRAM_PATH} -v"
-  Invoke-Expression -Command "${NPM_PROGRAM_PATH} -v"
-  Invoke-Expression -Command "${NPM_PROGRAM_PATH} install total4"
-  Set-Location -Path "${CURRENT_PATH}"
+  try {
+    Invoke-Expression -Command "${NODE_PROGRAM_PATH} -v"
+    Invoke-Expression -Command "${NPM_PROGRAM_PATH} -v"
+    Invoke-Expression -Command "${NPM_PROGRAM_PATH} install total4"
+  } finally {
+    Set-Location -Path "${CURRENT_PATH}"
+  }
 }
 
 PrintInfo
