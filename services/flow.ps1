@@ -6,14 +6,15 @@ Param(
   [string]$CPU_ARCH = "x64",
   [string]$NODE_VERSION = "v18.6.0",
   [string]$NODE_SERVICE_NAME = "_node",
-  [string]$NODE_PLATFORM_HOME = "node-${NODE_VERSION}-${OS}-${CPU_ARCH}",
+  [string]$NODE_OS = ( $IsWindows ? "win" : ( $IsMacOS ? "darwin" : "linux" ) ),
+  [string]$NODE_PLATFORM_HOME = "node-${NODE_VERSION}-${NODE_OS}-${CPU_ARCH}",
   [string]$NODE_PLATFORM_ARCHIVE = ( $IsWindows ? "${NODE_PLATFORM_HOME}.zip" : "${NODE_PLATFORM_HOME}.tar.gz" ) ,
+  [string]$NODE_PROGRAM_PATH = ( Join-Path "${PWD}" "${NODE_SERVICE_NAME}" "node-${NODE_VERSION}-${NODE_OS}-${CPU_ARCH}" "bin" "node"),
+  [string]$NPM_PROGRAM_PATH = ( Join-Path "${PWD}" "${NODE_SERVICE_NAME}" "node-${NODE_VERSION}-${NODE_OS}-${CPU_ARCH}" "bin" "npm"),
   [string]$SERVICE_HOME = ( Join-Path "${PWD}" "${SERVICE_NAME}"),
   [string]$SERVER_HOME = ( Join-Path "${PWD}" "${SERVICE_NAME}"),
   [string]$SERVICE_DATA_PATH = "./database",
   [string]$SERVICE_PORT = "8111",
-  [string]$NODE_PROGRAM_PATH = ( Join-Path "${PWD}" "${NODE_SERVICE_NAME}" "node-${NODE_VERSION}-${OS}-${CPU_ARCH}" "bin" "node"),
-  [string]$NPM_PROGRAM_PATH = ( Join-Path "${PWD}" "${NODE_SERVICE_NAME}" "node-${NODE_VERSION}-${OS}-${CPU_ARCH}" "bin" "npm"),
   [switch]$SETUP = $false,
   [switch]$DEBUG = $false
 )
