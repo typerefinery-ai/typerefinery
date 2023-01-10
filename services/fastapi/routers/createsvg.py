@@ -47,7 +47,7 @@ async def execute_createsvg(request: Request, response: Response, body: CodeRequ
     # generate unique request id
     requestid = f'{datetime.timestamp(datetime.now())}.{str(random.randint(1, 100000))}'
     # get new name for a new script
-    new_output_name = f'req-{requestid}.svg'
+    new_output_name = f'req-{requestid}.html'
     new_output = os.path.join(CONFIG.APP_USER_DATA_LOCATION, "generated", f"{CREATESVG_DATA_FOLDER}", new_output_name)
     new_output_url = f"/{CREATESVG_ENDPOINT_NAME}/{new_output_name}/output"
     new_output_log = f'{new_output}.log'
@@ -134,4 +134,4 @@ async def read_createsvg_output(script: str):
   returnfile = os.path.join(CONFIG.APP_USER_DATA_LOCATION, "generated", f"{CREATESVG_DATA_FOLDER}", f'{script}')
   # return contents of logfile withoput encoding
   with open(returnfile, "r") as new_file:
-    return Response(content=new_file.read(), media_type="image/svg+xml")
+    return Response(content=new_file.read(), media_type="text/html")
