@@ -72,7 +72,7 @@ Function StartServer
 
     SetEnvPath "G_CP" ( Join-Path "${SERVER_HOME}" "server" "conf" ) ( Join-Path "${SERVER_HOME}" "server" "lib" "common" "*" ) ( Join-Path "${SERVER_HOME}" "server" "lib" "prod" "*" )
 
-    java ${SERVER_JAVAOPTS} -cp "${env:G_CP}" -D"typedb.dir=${SERVER_HOME}" "com.vaticle.typedb.core.server.TypeDBServer" --storage.data="${SERVICE_STORAGE_DATA_PATH}"
+    java ${env:SERVER_JAVAOPTS} -cp "${env:G_CP}" -D"typedb.dir=${SERVER_HOME}" "com.vaticle.typedb.core.server.TypeDBServer" --storage.data="${SERVICE_STORAGE_DATA_PATH}"
 
   } finally {
     Set-Location -Path "${CURRENT_PATH}"
@@ -87,7 +87,7 @@ Function StartCluster
 
     SetEnvPath "G_CP" ( Join-Path "${SERVER_HOME}" "server" "conf" ) ( Join-Path "${SERVER_HOME}" "server" "lib" "common" "*" ) ( Join-Path "${SERVER_HOME}" "server" "lib" "prod" "*" )
 
-    java ${SERVER_JAVAOPTS} -cp "${G_CP}" -Dtypedb.dir="${SERVER_HOME}" com.vaticle.typedb.core.server.TypeDBClusterServer --storage.data="${SERVICE_STORAGE_DATA_PATH}"
+    java ${env:SERVER_JAVAOPTS} -cp "${env:G_CP}" -D"typedb.dir=${SERVER_HOME}" "com.vaticle.typedb.core.server.TypeDBClusterServer" --storage.data="${SERVICE_STORAGE_DATA_PATH}"
 
   } finally {
     Set-Location -Path "${CURRENT_PATH}"
@@ -103,14 +103,29 @@ Function StartServerProd
 
     SetEnvPath "G_CP" ( Join-Path "${SERVER_HOME}" "server" "conf" ) ( Join-Path "${SERVER_HOME}" "server" "lib" "common" "*" ) ( Join-Path "${SERVER_HOME}" "server" "lib" "prod" "*" )
 
-    java ${SERVER_JAVAOPTS} -cp "${G_CP}" -Dtypedb.dir="${SERVER_HOME}" com.vaticle.typedb.core.server.TypeDBServer --storage.data="${SERVICE_STORAGE_DATA_PATH}"
+    java ${env:SERVER_JAVAOPTS} -cp "${env:G_CP}" -D"typedb.dir=${SERVER_HOME}" "com.vaticle.typedb.core.server.TypeDBServer" --storage.data="${SERVICE_STORAGE_DATA_PATH}"
 
   } finally {
     Set-Location -Path "${CURRENT_PATH}"
   }
 }
 
+Function StartConsole
+{
 
+  Set-Location -Path "${SERVER_HOME}"
+  try {
+
+    SetEnvPath "G_CP" ( Join-Path "${SERVER_HOME}" "console" "conf" ) ( Join-Path "${SERVER_HOME}" "console" "lib" "*" )
+
+    printSectionLine "G_CP: ${env:G_CP}"
+
+    java ${env:CONSOLE_JAVAOPTS} -cp "${env:G_CP}" -D"typedb.dir=${SERVER_HOME}" "com.vaticle.typedb.console.TypeDBConsole"
+
+  } finally {
+    Set-Location -Path "${CURRENT_PATH}"
+  }
+}
 
 
 
