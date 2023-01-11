@@ -11,7 +11,9 @@ import { os } from "./Utils"
 import { unpackZip, unpackTarGz } from "@particle/unpack-file"
 
 export interface ServiceConfig {
+  servicehome: string
   servicepath: string
+  servicesdataroot: string
   options: SericeConfigFile
   events: ServiceEvents
 }
@@ -131,6 +133,7 @@ export interface SericeConfigFile {
 export class Service extends EventEmitter<ServiceEvent> {
   #process?: ChildProcess
   #id: string
+  #servicehome: string
   #servicepath: string
   #execservicepath = ""
   #servicedatapath: string
@@ -157,6 +160,7 @@ export class Service extends EventEmitter<ServiceEvent> {
   constructor(
     logsDir: string,
     logger: Logger,
+    servicehome: string,
     servicepath: string,
     servicedatapath: string,
     options: SericeConfigFile,
@@ -167,6 +171,7 @@ export class Service extends EventEmitter<ServiceEvent> {
     this.#options = options
     this.#abortController = new AbortController()
     this.#servicepath = servicepath
+    this.#servicehome = servicehome
     this.#servicedatapath = servicedatapath
     // if server has datapath set ensure the sub path exist in the server data path
     if (this.#options.execconfig.datapath) {
@@ -230,14 +235,14 @@ export class Service extends EventEmitter<ServiceEvent> {
     // set service setup check
     this.#setupstatefile = path.join(
       this.#servicedatapath,
-      path.basename(this.#servicepath) + ".setup"
+      path.basename(this.#servicehome) + ".setup"
     )
     this.#ensurePathToFile(this.#setupstatefile)
 
     // set service pid and check if its not running
     this.#servicepidfile = path.join(
       this.#servicedatapath,
-      path.basename(this.#servicepath) + ".pid"
+      path.basename(this.#servicehome) + ".pid"
     )
     this.#ensurePathToFile(this.#servicepidfile)
 
@@ -895,9 +900,9 @@ export class Service extends EventEmitter<ServiceEvent> {
       return os.isPathExist(this.#setupstatefile)
     } else if (this.#options.execconfig.setuparchive) {
       this.#log(
-        `isSetup setupstatefile: ${
+        `isSetup archive setupstatefile: ${
           this.#setuparchiveOutputPath
-        } =${os.isPathExist(this.#setuparchiveOutputPath)}`
+        } = ${os.isPathExist(this.#setuparchiveOutputPath)}`
       )
       return os.isPathExist(this.#setuparchiveOutputPath)
     }
@@ -1048,7 +1053,7 @@ export class Service extends EventEmitter<ServiceEvent> {
         )
       } else {
         os.runCommandWithCallBack(
-          "ps -p " + pid + " -o pid=",
+          "ps -p " + pid + " -o pid= || echo 'No such process'",
           [],
           { signal: this.#abortController.signal },
           (data) => {
