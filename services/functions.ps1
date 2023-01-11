@@ -259,12 +259,12 @@ Function SetPath
     [string]$PATH = $args[0]
   )
 
-  # printSectionLine "Setting PATH to ${PATH}"
-  # printSectionLine "Current PATH to ${env:PATH}"
+  printSectionLine "Setting PATH to ${PATH}"
+  printSectionLine "Current PATH to ${env:PATH}"
 
-  # $env:PATH = "${PATH}"
+  $env:PATH = "${PATH}"
 
-  SetEnvPath "PATH" $PATH
+  #SetEnvPath "PATH" $PATH
 
 }
 
