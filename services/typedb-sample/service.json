@@ -10,12 +10,26 @@
   "execconfig": {
     "execservice": { "id": "python" },
     "setup": {
+      "win32": [
+        "-m pip install --target=${SERVICE_PATH}\\__packages__ -r ${SERVICE_PATH}\\requirements.txt",
+        "${SERVICE_PATH}\\basic_upload.py"
+      ],
+      "darwin": [
+        "-m pip install --target=${SERVICE_PATH}/__packages__ -r ${SERVICE_PATH}/requirements.txt",
+        "${SERVICE_PATH}/basic_upload.py"
+      ],
+      "linux": [
+        "-m pip install --target=${SERVICE_PATH}/__packages__ -r ${SERVICE_PATH}/requirements.txt",
+        "${SERVICE_PATH}/basic_upload.py"
+      ],
       "default": [
         "-m pip install --target=${SERVICE_PATH}\\__packages__ -r ${SERVICE_PATH}\\requirements.txt",
         "${SERVICE_PATH}\\basic_upload.py"
       ]
     },
-    "commandline": "",
+    "commandline": {
+      "default": ""
+    },
     "serviceport": 8000,
     "depend_on": [
       "typedb"

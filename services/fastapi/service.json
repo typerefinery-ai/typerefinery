@@ -10,12 +10,17 @@
   "execconfig": {
     "execservice": { "id": "python" },
     "setup": {
+      "win32": ["-m pip install --ignore-installed --target=${SERVICE_PATH}\\__packages__ -r ${SERVICE_PATH}\\requirements.txt"],
+      "darwin": ["-m pip install --ignore-installed --target=${SERVICE_PATH}/__packages__ -r ${SERVICE_PATH}/requirements.txt"],
+      "linux": ["-m pip install --ignore-installed --target=${SERVICE_PATH}/__packages__ -r ${SERVICE_PATH}/requirements.txt"],
       "default": ["-m pip install --ignore-installed --target=${SERVICE_PATH}\\__packages__ -r ${SERVICE_PATH}\\requirements.txt"]
     },
     "env": {
       "PYTHONPATH": "${SERVICE_PATH}"
     },
-    "commandline": "-m uvicorn --host localhost --port ${SERVICE_PORT} --app-dir ${SERVICE_PATH} main:app",
+    "commandline": {
+      "default": "-m uvicorn --host localhost --port ${SERVICE_PORT} --app-dir ${SERVICE_PATH} main:app"
+    },
     "serviceport": 8000,
     "healthcheck": {
       "type": "http",

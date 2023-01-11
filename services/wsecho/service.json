@@ -24,7 +24,9 @@
         "-m pip install --ignore-installed --target=${SERVICE_PATH}\\__packages__ -r ${SERVICE_PATH}\\requirements.txt"
       ]
     },
-    "commandline": "-m uvicorn main:app --host localhost --port ${SERVICE_PORT} --app-dir ${SERVICE_PATH}",
+    "commandline": {
+      "default": "-m uvicorn main:app --host localhost --port ${SERVICE_PORT} --app-dir ${SERVICE_PATH}"
+    },
     "serviceport": 8000,
     "healthcheck": {
       "type": "http",
