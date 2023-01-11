@@ -25,8 +25,8 @@
     },
     "executable": {
       "win32": "node-v18.6.0-win-x64\\node.exe",
-      "darwin": "node-v18.6.0-darwin-x64\\node",
-      "linux": "node-v18.6.0-linux-x64\\node",
+      "darwin": "node-v18.6.0-darwin-x64/node",
+      "linux": "node-v18.6.0-linux-x64/node",
       "default": "node-v18.6.0-win-x64\\node"
     }
   }

@@ -10,21 +10,21 @@
   "execconfig": {
     "serviceorder": 1,
     "executable": {
-      "win32": "win32\\python.exe",
-      "darwin": "darwin\\bin\\python",
-      "linux": "linux\\bin\\python",
-      "default": "win32\\python.exe"
+      "win32": "python.exe",
+      "darwin": "bin/python",
+      "linux": "bin/python",
+      "default": "python.exe"
     },
     "setup": {
       "win32": [
         "get-pip.py --no-warn-script-location",
-        "-m pip install --no-warn-script-location -r requirements.txt"
+        "-m pip install --ignore-installed --no-warn-script-location -r ${SERVICE_PATH}\\requirements.txt"
       ],
       "darwin": [
-        "-m pip install --no-warn-script-location -r requirements.txt"
+        "-m pip install --ignore-installed --no-warn-script-location -r ${SERVICE_PATH}/requirements.txt"
       ],
       "linux": [
-        "-m pip install --no-warn-script-location -r requirements.txt"
+        "-m pip install --ignore-installed --no-warn-script-location -r ${SERVICE_PATH}/requirements.txt"
       ]
     }
   }

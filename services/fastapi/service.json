@@ -10,7 +10,7 @@
   "execconfig": {
     "execservice": { "id": "python" },
     "setup": {
-      "default": ["-m pip install --target=${SERVICE_PATH}\\__packages__ -r ${SERVICE_PATH}\\requirements.txt"]
+      "default": ["-m pip install --ignore-installed --target=${SERVICE_PATH}\\__packages__ -r ${SERVICE_PATH}\\requirements.txt"]
     },
     "env": {
       "PYTHONPATH": "${SERVICE_PATH}"
