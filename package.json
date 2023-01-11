@@ -189,6 +189,7 @@
     "stylelint": "^14.5.1",
     "stylelint-config-recommended": "^7.0.0",
     "stylelint-config-standard": "^25.0.0",
+    "ts-node": "^10.9.1",
     "typed-emitter": "^2.1.0",
     "typescript": "~4.7.2",
     "vite": "^2.9.13",
