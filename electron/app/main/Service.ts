@@ -92,8 +92,18 @@ export interface ExecConfig {
     default?: string[]
   }
   env?: any
-  commandline?: string
-  commandlinecli?: string
+  commandline?: {
+    win32?: string
+    darwin?: string
+    linux?: string
+    default?: string
+  }
+  commandlinecli?: {
+    win32?: string
+    darwin?: string
+    linux?: string
+    default?: string
+  }
   datapath?: string
   serviceorder?: 99
   depend_on?: string[]
@@ -519,11 +529,17 @@ export class Service extends EventEmitter<ServiceEvent> {
     if (this.#options && this.#options.execconfig) {
       // if service is being executed by another service
       if (this.#options.execconfig.commandlinecli) {
-        // if service is being executed by a file
-        serviceCommandCli = this.#getServiceCommand(
-          this.#options.execconfig.commandlinecli,
-          this
-        )
+        serviceCommandCli =
+          this.#options.execconfig.commandlinecli[this.platform]
+        if (serviceCommandCli == null) {
+          serviceCommandCli =
+            this.#options.execconfig.commandlinecli["default"] || ""
+        }
+        if (serviceCommandCli == "") {
+          this.#warn("service commandlinecli is defined but is empty.")
+        }
+        // if service is being executed by a file, expand variables
+        serviceCommandCli = this.#getServiceCommand(serviceCommandCli, this)
       } else {
         if (!silent) {
           this.#warn("service does not have cli commandline")
@@ -546,11 +562,15 @@ export class Service extends EventEmitter<ServiceEvent> {
     if (this.#options && this.#options.execconfig) {
       // if service is being executed by another service
       if (this.#options.execconfig.commandline) {
-        // if service is being executed by a file
-        serviceCommand = this.#getServiceCommand(
-          this.#options.execconfig.commandline,
-          this
-        )
+        serviceCommand = this.#options.execconfig.commandline[this.platform]
+        if (serviceCommand == null) {
+          serviceCommand = this.#options.execconfig.commandline["default"] || ""
+        }
+        if (serviceCommand == "") {
+          this.#warn("service commandline is defined but is empty.")
+        }
+        // if service is being executed by a file, expand variables
+        serviceCommand = this.#getServiceCommand(serviceCommand, this)
       } else {
         if (!silent) {
           this.#warn("service does not have a commandline")
