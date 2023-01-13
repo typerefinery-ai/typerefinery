@@ -66,7 +66,7 @@
     "report:moveData": "echo moveData && cp -r cypress/results/data cypress/reports/data 2>/dev/null || true",
     "posttest": "npm run report:merge && npm run report:generate && npm run report:moveScreenshots && npm run report:moveVideos && npm run report:moveData",
     "services": "cross-env SERVICES_AUTOSTART=true npx ts-node --esm electron/app/main/Services.ts",
-    "servicesprod": "cross-env NODE_ENV=production npx ts-node --esm electron/app/main/Services.ts"
+    "servicesprod": "cross-env SERVICES_AUTOSTART=true NODE_ENV=production npx ts-node --esm electron/app/main/Services.ts"
   },
   "main": "dist/main/index.cjs",
   "dependencies": {
