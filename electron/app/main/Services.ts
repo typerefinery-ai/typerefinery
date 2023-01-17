@@ -46,7 +46,10 @@ const serviceManager = new ServiceManager(
   }
 )
 //starting services aotomatically
-serviceManager.startAll()
+const isAutoStart = process.env.SERVICES_AUTOSTART === "true"
+if (isAutoStart) {
+  serviceManager.startAll()
+}
 
 function getServicePage(service: Service) {
   const execservice = service.options.execconfig?.execservice?.id

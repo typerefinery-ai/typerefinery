@@ -9,8 +9,18 @@
   "servicetype": 10,
   "execconfig": {
     "execservice": { "id": "java" },
-    "commandline": "-Xms256m -Xmx1024m -cp \"${SERVICE_PATH}\\server\\conf\\;${SERVICE_PATH}\\server\\lib\\common\\*;${SERVICE_PATH}\\server\\lib\\prod\\*;\" -Dtypedb.dir=\"${SERVICE_PATH}\" com.vaticle.typedb.core.server.TypeDBServer --storage.data=\"${SERVICE_DATA_PATH}\"",
-    "commandlinecli": "-Xms256m -Xmx1024m -cp \"${SERVICE_PATH}\\console\\conf\\;${SERVICE_PATH}\\console\\lib\\*;\" -D\"typedb.dir=${SERVICE_PATH}\" com.vaticle.typedb.console.TypeDBConsole ",
+    "commandline": {
+      "win32": "-Xms256m -Xmx1024m -cp \"${SERVICE_PATH}\\server\\conf\\;${SERVICE_PATH}\\server\\lib\\common\\*;${SERVICE_PATH}\\server\\lib\\prod\\*;\" -D\"typedb.dir=${SERVICE_PATH}\" com.vaticle.typedb.core.server.TypeDBServer --storage.data=\"${SERVICE_DATA_PATH}\"",
+      "darwin": "-Xms256m -Xmx1024m -cp \"${SERVICE_PATH}/server/conf/:${SERVICE_PATH}/server/lib/common/*:${SERVICE_PATH}/server/lib/prod/*:\" -D\"typedb.dir=${SERVICE_PATH}\" com.vaticle.typedb.core.server.TypeDBServer --storage.data=\"${SERVICE_DATA_PATH}\"",
+      "linux": "-Xms256m -Xmx1024m -cp \"${SERVICE_PATH}/server/conf/:${SERVICE_PATH}/server/lib/common/*:${SERVICE_PATH}/server/lib/prod/*:\" -D\"typedb.dir=\"${SERVICE_PATH}\" com.vaticle.typedb.core.server.TypeDBServer --storage.data=\"${SERVICE_DATA_PATH}\"",
+      "default": "-Xms256m -Xmx1024m -cp \"${SERVICE_PATH}\\server\\conf\\;${SERVICE_PATH}\\server\\lib\\common\\*;${SERVICE_PATH}\\server\\lib\\prod\\*;\" -D\"typedb.dir=${SERVICE_PATH}\" com.vaticle.typedb.core.server.TypeDBServer --storage.data=\"${SERVICE_DATA_PATH}\""
+    },
+    "commandlinecli": {
+      "win32": "-Xms256m -Xmx1024m -cp \"${SERVICE_PATH}\\console\\conf\\;${SERVICE_PATH}\\console\\lib\\*;\" -D\"typedb.dir=${SERVICE_PATH}\" com.vaticle.typedb.console.TypeDBConsole ",
+      "darwin": "-Xms256m -Xmx1024m -cp \"${SERVICE_PATH}/console/conf/:${SERVICE_PATH}/console/lib/*:\" -D\"typedb.dir=${SERVICE_PATH}\" com.vaticle.typedb.console.TypeDBConsole ",
+      "linux": "-Xms256m -Xmx1024m -cp \"${SERVICE_PATH}/console/conf/:${SERVICE_PATH}/console/lib/*:\" -D\"typedb.dir=${SERVICE_PATH}\" com.vaticle.typedb.console.TypeDBConsole ",
+      "default": "-Xms256m -Xmx1024m -cp \"${SERVICE_PATH}\\console\\conf\\;${SERVICE_PATH}\\console\\lib\\*;\" -D\"typedb.dir=${SERVICE_PATH}\" com.vaticle.typedb.console.TypeDBConsole "
+    },
     "datapath": "/server/data",
     "serviceorder": 1,
     "serviceport": 1729,

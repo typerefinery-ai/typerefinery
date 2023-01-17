@@ -21,6 +21,9 @@
     "flowstream",
     "iot"
   ],
-  "author": "Peter Širka",
-  "license": "MIT"
+  "author": "Max Barrass",
+  "license": "Apache 2.0",
+  "devDependencies": {
+    "ts-node": "^10.9.1"
+  }
 }

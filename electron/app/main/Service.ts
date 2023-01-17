@@ -8,10 +8,12 @@ import net from "net"
 import EventEmitter from "eventemitter3"
 import kill from "tree-kill"
 import { os } from "./Utils"
-import extract from "extract-zip"
+import { unpackZip, unpackTarGz } from "@particle/unpack-file"
 
 export interface ServiceConfig {
+  servicehome: string
   servicepath: string
+  servicesdataroot: string
   options: SericeConfigFile
   events: ServiceEvents
 }
@@ -74,22 +76,45 @@ export interface ExecConfig {
   execservice?: ExecService
   executable?: {
     win32?: string
+    darwin?: string
+    linux?: string
     default?: string
   }
   setuparchive?: {
-    name: string
-    output: string
+    win32?: SetupArchive
+    darwin?: SetupArchive
+    linux?: SetupArchive
   }
-  setup?: string[]
+  setup?: {
+    win32?: string[]
+    darwin?: string[]
+    linux?: string[]
+    default?: string[]
+  }
   env?: any
-  commandline?: string
-  commandlinecli?: string
+  commandline?: {
+    win32?: string
+    darwin?: string
+    linux?: string
+    default?: string
+  }
+  commandlinecli?: {
+    win32?: string
+    darwin?: string
+    linux?: string
+    default?: string
+  }
   datapath?: string
   serviceorder?: 99
   depend_on?: string[]
   serviceport?: number
   servicehost?: string
   healthcheck?: HealthCheck
+}
+
+export interface SetupArchive {
+  name: string
+  output: string
 }
 
 export interface ExecService {
@@ -118,6 +143,7 @@ export interface SericeConfigFile {
 export class Service extends EventEmitter<ServiceEvent> {
   #process?: ChildProcess
   #id: string
+  #servicehome: string
   #servicepath: string
   #execservicepath = ""
   #servicedatapath: string
@@ -144,6 +170,7 @@ export class Service extends EventEmitter<ServiceEvent> {
   constructor(
     logsDir: string,
     logger: Logger,
+    servicehome: string,
     servicepath: string,
     servicedatapath: string,
     options: SericeConfigFile,
@@ -154,6 +181,7 @@ export class Service extends EventEmitter<ServiceEvent> {
     this.#options = options
     this.#abortController = new AbortController()
     this.#servicepath = servicepath
+    this.#servicehome = servicehome
     this.#servicedatapath = servicedatapath
     // if server has datapath set ensure the sub path exist in the server data path
     if (this.#options.execconfig.datapath) {
@@ -170,7 +198,7 @@ export class Service extends EventEmitter<ServiceEvent> {
     this.#serviceport = this.#options.execconfig?.serviceport || 0
     this.#servicehost = this.#options.execconfig?.servicehost || "localhost"
     this.#healthCheck = this.#options.execconfig?.healthcheck
-    this.#setup = this.#options.execconfig?.setup || []
+    this.#setup = this.getSetupForPlatfrom
     this.#setStatus(ServiceStatus.LOADED)
     if (this.#options.enabled === false) {
       this.#setStatus(ServiceStatus.DISABLED)
@@ -217,48 +245,91 @@ export class Service extends EventEmitter<ServiceEvent> {
     // set service setup check
     this.#setupstatefile = path.join(
       this.#servicedatapath,
-      path.basename(this.#servicepath) + ".setup"
+      path.basename(this.#servicehome) + ".setup"
     )
     this.#ensurePathToFile(this.#setupstatefile)
 
     // set service pid and check if its not running
     this.#servicepidfile = path.join(
       this.#servicedatapath,
-      path.basename(this.#servicepath) + ".pid"
+      path.basename(this.#servicehome) + ".pid"
     )
     this.#ensurePathToFile(this.#servicepidfile)
 
     // compile archive file if set
-    if (
-      this.#options.execconfig?.setuparchive?.name &&
-      this.#options.execconfig?.setuparchive?.output
-    ) {
-      this.#log(
-        `service ${this.#id} archive ${
-          this.#options.execconfig?.setuparchive?.name
-        } with destination ${this.#options.execconfig?.setuparchive?.output}.`
-      )
-      this.#setuparchiveFile = path.join(
-        this.#servicepath,
-        this.#options.execconfig?.setuparchive.name
-      )
-      this.#setuparchiveOutputPath = path.join(
-        this.#servicepath,
-        this.#options.execconfig?.setuparchive.output
-      )
-      this.#log(
-        `service ${this.#id} archive file ${
-          this.#setuparchiveFile
-        } with output path ${this.#setuparchiveOutputPath}.`
-      )
-      // set status to archived if setuparchiveOutputPath does not exist
-      if (!this.isSetup && !fs.existsSync(this.#setuparchiveOutputPath)) {
-        this.#setStatus(ServiceStatus.ARCHIVED)
+    if (this.hasSetupArchive) {
+      const setupArchive = this.getArchiveForPlatform
+      if (setupArchive) {
+        this.#log(
+          `service ${this.#id} archive ${setupArchive.name} with destination ${
+            setupArchive.output
+          }.`
+        )
+        this.#setuparchiveFile = path.join(this.#servicepath, setupArchive.name)
+        this.#setuparchiveOutputPath = path.join(
+          this.#servicepath,
+          setupArchive.output
+        )
+        this.#log(
+          `service ${this.#id} archive file ${
+            this.#setuparchiveFile
+          } with output path ${this.#setuparchiveOutputPath}.`
+        )
+        // set status to archived if setuparchiveOutputPath does not exist
+        if (!this.isSetup && !fs.existsSync(this.#setuparchiveOutputPath)) {
+          this.#setStatus(ServiceStatus.ARCHIVED)
+        }
+      } else {
+        this.#log(
+          `service ${this.#id} archive config ${setupArchive} is invalid.`
+        )
       }
     }
 
     this.#log(`service ${this.#id} loaded with status ${this.#status}.`)
     this.#checkRunning()
+  }
+
+  get getSetupForPlatfrom(): string[] {
+    if (this.#options.execconfig?.setup) {
+      const platfromSpecificSetup: string[] =
+        this.#options.execconfig?.setup[this.platform]
+      const platfromSpecificSetupDefault: string[] =
+        this.#options.execconfig?.setup?.default || []
+
+      if (platfromSpecificSetup) {
+        return platfromSpecificSetup
+      } else if (platfromSpecificSetupDefault) {
+        return platfromSpecificSetupDefault
+      }
+    }
+    return []
+  }
+
+  get getArchiveForPlatform(): SetupArchive | undefined {
+    if (this.#options.execconfig?.setuparchive) {
+      const platfromSpecificArchive: SetupArchive =
+        this.#options.execconfig?.setuparchive[this.platform]
+
+      if (platfromSpecificArchive) {
+        return platfromSpecificArchive
+      }
+    }
+  }
+
+  get hasSetupArchive(): boolean {
+    // check if setuparchive is set
+    if (this.#options.execconfig?.setuparchive) {
+      //check if any of the configs have name and output set
+      const platfromSpecificArchive = this.getArchiveForPlatform
+
+      if (platfromSpecificArchive) {
+        if (platfromSpecificArchive.name && platfromSpecificArchive.output) {
+          return true
+        }
+      }
+    }
+    return false
   }
 
   #ensurePath(dir: string) {
@@ -352,7 +423,23 @@ export class Service extends EventEmitter<ServiceEvent> {
   get port() {
     return this.#serviceport
   }
+  get isWindows() {
+    return process.platform === "win32"
+  }
+  get isMacOS() {
+    return process.platform === "darwin"
+  }
+  get isLinux() {
+    return process.platform === "linux"
+  }
 
+  get platform(): string {
+    return process.platform == "win32" ||
+      process.platform == "darwin" ||
+      process.platform == "linux"
+      ? process.platform
+      : "default"
+  }
   #getSimpleInfo() {
     return {
       id: this.#id,
@@ -442,11 +529,17 @@ export class Service extends EventEmitter<ServiceEvent> {
     if (this.#options && this.#options.execconfig) {
       // if service is being executed by another service
       if (this.#options.execconfig.commandlinecli) {
-        // if service is being executed by a file
-        serviceCommandCli = this.#getServiceCommand(
-          this.#options.execconfig.commandlinecli,
-          this
-        )
+        serviceCommandCli =
+          this.#options.execconfig.commandlinecli[this.platform]
+        if (serviceCommandCli == null) {
+          serviceCommandCli =
+            this.#options.execconfig.commandlinecli["default"] || ""
+        }
+        if (serviceCommandCli == "") {
+          this.#warn("service commandlinecli is defined but is empty.")
+        }
+        // if service is being executed by a file, expand variables
+        serviceCommandCli = this.#getServiceCommand(serviceCommandCli, this)
       } else {
         if (!silent) {
           this.#warn("service does not have cli commandline")
@@ -469,11 +562,15 @@ export class Service extends EventEmitter<ServiceEvent> {
     if (this.#options && this.#options.execconfig) {
       // if service is being executed by another service
       if (this.#options.execconfig.commandline) {
-        // if service is being executed by a file
-        serviceCommand = this.#getServiceCommand(
-          this.#options.execconfig.commandline,
-          this
-        )
+        serviceCommand = this.#options.execconfig.commandline[this.platform]
+        if (serviceCommand == null) {
+          serviceCommand = this.#options.execconfig.commandline["default"] || ""
+        }
+        if (serviceCommand == "") {
+          this.#warn("service commandline is defined but is empty.")
+        }
+        // if service is being executed by a file, expand variables
+        serviceCommand = this.#getServiceCommand(serviceCommand, this)
       } else {
         if (!silent) {
           this.#warn("service does not have a commandline")
@@ -513,11 +610,9 @@ export class Service extends EventEmitter<ServiceEvent> {
         }
       } else if (this.#options.execconfig.executable) {
         // if service is being executed by a file
-        const platform =
-          process.platform == "win32" ? process.platform : "default"
-        serviceExecutable = this.#options.execconfig.executable[platform]
+        serviceExecutable = this.#options.execconfig.executable[this.platform]
         if (serviceExecutable == null) {
-          serviceExecutable = this.#options.execconfig.executable.default
+          serviceExecutable = this.#options.execconfig.executable.default || ""
         }
         return serviceExecutable
       }
@@ -825,9 +920,9 @@ export class Service extends EventEmitter<ServiceEvent> {
       return os.isPathExist(this.#setupstatefile)
     } else if (this.#options.execconfig.setuparchive) {
       this.#log(
-        `isSetup setupstatefile: ${
+        `isSetup archive setupstatefile: ${
           this.#setuparchiveOutputPath
-        } =${os.isPathExist(this.#setuparchiveOutputPath)}`
+        } = ${os.isPathExist(this.#setuparchiveOutputPath)}`
       )
       return os.isPathExist(this.#setuparchiveOutputPath)
     }
@@ -838,7 +933,11 @@ export class Service extends EventEmitter<ServiceEvent> {
   // extract service archive
   async #doExtract(archive: string, destination: string) {
     try {
-      await extract(archive, { dir: destination })
+      if (archive.endsWith(".zip")) {
+        await unpackZip(archive, destination)
+      } else if (archive.endsWith(".tar.gz")) {
+        await unpackTarGz(archive, destination)
+      }
     } catch (err) {
       this.#log(`unable to extracted setup archive ${err}`)
     }
@@ -955,7 +1054,7 @@ export class Service extends EventEmitter<ServiceEvent> {
       const pid = fs.readFileSync(this.#servicepidfile, "utf8")
 
       //check if service pid is runnin on linux
-      if (process.platform == "win32") {
+      if (this.isWindows) {
         os.runCommandWithCallBack(
           'tasklist /fi "PID eq ' + pid + '"',
           [],
@@ -974,7 +1073,7 @@ export class Service extends EventEmitter<ServiceEvent> {
         )
       } else {
         os.runCommandWithCallBack(
-          "ps -p " + pid + " -o pid=",
+          "ps -p " + pid + " -o pid= || echo 'No such process'",
           [],
           { signal: this.#abortController.signal },
           (data) => {

@@ -1,0 +1,4 @@
+
+# service specific folders
+__pycache__/
+__packages__/

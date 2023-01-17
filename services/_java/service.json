@@ -12,6 +12,8 @@
     "serviceorder": 1,
     "executable": {
       "win32": "jre17\\bin\\java.exe",
+      "darwin": "jre17/bin/java",
+      "linux": "jre17/bin/java",
       "default": "jre17\\bin\\java"
     }
   }

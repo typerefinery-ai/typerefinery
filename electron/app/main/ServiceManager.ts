@@ -93,11 +93,9 @@ class ServiceManager {
         new Service(
           this.#logsDir,
           this.#logger,
+          serviceConfig.servicehome,
           serviceConfig.servicepath,
-          path.join(
-            this.#servicesdataroot,
-            path.basename(serviceConfig.servicepath)
-          ),
+          serviceConfig.servicesdataroot,
           serviceConfig.options,
           this.#serviceEvents,
           this
@@ -137,9 +135,42 @@ class ServiceManager {
             )
 
             const servicePathResolved = path.resolve(path.dirname(file))
+
+            // detect if platfrom paths exist and use them as service path
+            const platfromPath =
+              process.platform == "win32" ||
+              process.platform == "darwin" ||
+              process.platform == "linux"
+                ? process.platform
+                : ""
+            let platformServicePath = servicePathResolved
+            let servicePlatformPathResolved = servicePathResolved
+            // data path is service path + service name
+            let servicesDataRootResolved = path.join(
+              this.#servicesdataroot,
+              path.basename(servicePathResolved)
+            )
+
+            if (platfromPath) {
+              platformServicePath = path.join(servicePathResolved, platfromPath)
+              if (
+                fs.existsSync(platformServicePath) &&
+                fs.statSync(platformServicePath).isDirectory()
+              ) {
+                servicePlatformPathResolved = platformServicePath
+                // data path is service path + service name + platform name
+                servicesDataRootResolved = path.join(
+                  this.#servicesdataroot,
+                  path.basename(servicePathResolved),
+                  path.basename(platformServicePath)
+                )
+              }
+            }
             // create new ServiceConfig object
             const serviceConfig: ServiceConfig = {
-              servicepath: servicePathResolved,
+              servicehome: servicePathResolved,
+              servicepath: servicePlatformPathResolved,
+              servicesdataroot: servicesDataRootResolved,
               options: serviceFileConfig,
               events: this.#serviceEvents,
             }
@@ -178,7 +209,6 @@ class ServiceManager {
 
   // start all services
   async startAll() {
-    
     const orderedServiceList = this.#services.sort(
       (service1: Service, service2: Service) => {
         const serviceorder1 = service1.options.execconfig?.serviceorder ?? 99
