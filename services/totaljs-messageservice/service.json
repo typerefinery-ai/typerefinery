@@ -21,7 +21,7 @@
     "serviceport": 8112,
     "healthcheck": {
       "type": "http",
-      "url": "http://127.0.0.1:${SERVICE_PORT}/",
+      "url": "http://localhost:${SERVICE_PORT}/",
       "expected_status": 404,
       "retries": 30
     },
