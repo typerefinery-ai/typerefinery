@@ -48,10 +48,6 @@ Function PrintInfo
 Function StartServer
 {
 
-  if ($DEBUG) {
-    TestPython
-  }
-
   Set-Location -Path "${SERVER_HOME}"
   Invoke-Expression -Command "${NODE_PROGRAM_PATH} -v"
   Invoke-Expression -Command "${NPM_PROGRAM_PATH} -v"
