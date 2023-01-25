@@ -1,0 +1,40 @@
+{
+  "id": "websight-mongo",
+  "name": "Websight Mongo",
+  "description": "Mongo instance for Websight",
+  "enabled": false,
+  "status": "-1",
+  "logoutput": "",
+  "icon": "pi pi-cog",
+  "servicetype": 10,
+  "serviceorder": 0,
+  "execconfig": {
+    "serviceorder": 1,
+    "setuparchive": {
+      "win32": {
+        "name": "win32.zip",
+        "output": "win32"
+      },
+      "darwin": {
+        "name": "drwin.zip",
+        "output": "drwin"
+      },
+      "linux": {
+        "name": "linux.zip",
+        "output": "linux"
+      }
+    },
+    "executable": {
+      "win32": "bin\\mongod.exe",
+      "darwin": "bin/mongod",
+      "linux": "bin/mongod",
+      "default": "bin\\mongod.exe"
+    },
+    "commandline": {
+      "win32": "--dbpath ${SERVICE_PATH}\\database",
+      "darwin": "--dbpath ${SERVICE_PATH}/database",
+      "linux": "--dbpath ${SERVICE_PATH}/database",
+      "default": "--dbpath ${SERVICE_PATH}\\database"
+    }
+  }
+}
