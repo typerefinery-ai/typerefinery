@@ -7,7 +7,9 @@ from pydantic import BaseModel, Field
 from datetime import datetime
 import random
 import requests
-# import websockets
+
+# import websocket
+from contextlib import closing
 from websocket import create_connection
 
 
@@ -37,11 +39,22 @@ async def flow_create(request: Request, response: Response, body: dict = Body(..
     service_url_create = "ws://localhost:8112/$tms"
     print(json.dumps(body))
     data = { "type": 'subscribe', "id": 'payload_insert', "data": { "payload":  json.dumps(body) } }
+    subscribers = { "type": "subscribers", "subscribers": [] }
 
     try:
-      ws = create_connection(service_url_create)
-      ws.send(json.dumps(data))
-      ws.close()
+      with closing(create_connection(service_url_create)) as conn:
+        welcomeMessage = conn.recv()
+        print("recived message:")
+        print(json.dumps(welcomeMessage))
+
+        print("sending subscribers:")
+        print(json.dumps(subscribers))
+        conn.send(json.dumps(subscribers))
+
+        print("sending payload:")
+        print(json.dumps(data))
+        conn.send(json.dumps(data))
+
     except Exception as e:
       data['error'] = str(e)
 
