@@ -1,0 +1,4 @@
+
+!config/logs
+config/logs/*.log
+config/temp/*_temp

@@ -1,0 +1,26 @@
+{
+  "id": "websight-nginx",
+  "name": "Websight Nginx",
+  "description": "Nginx instance for Websight",
+  "enabled": false,
+  "status": "-1",
+  "logoutput": "",
+  "icon": "pi pi-cog",
+  "servicetype": 10,
+  "serviceorder": 0,
+  "execconfig": {
+    "serviceorder": 1,
+    "executable": {
+      "win32": "nginx.exe",
+      "darwin": "bin/nginx",
+      "linux": "bin/nginx",
+      "default": "nginx.exe"
+    },
+    "commandline": {
+      "win32": "-p ${SERVICE_PATH}\\config",
+      "darwin": "-p ${SERVICE_PATH}/config",
+      "linux": "-p ${SERVICE_PATH}/config",
+      "default": "-p ${SERVICE_PATH}\\config"
+    }
+  }
+}
