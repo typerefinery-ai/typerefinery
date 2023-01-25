@@ -1,0 +1,17 @@
+{
+  "id":"pl.ds.websight:websight-bean-validation:slingosgifeature:1.0.5",
+  "title":"WebSight Bean Validation",
+  "description":"Provides support for Java Bean Validation (JSR 380). Allows to use constraint annotations from javax.validation package in Sling Models processed by WebSight Rest actions.",
+  "vendor":"Dynamic Solutions sp. z o.o. sp. k.",
+  "license":"Dynamic Solutions License",
+  "bundles":[
+    {
+      "id":"javax.validation:validation-api:2.0.1.Final",
+      "start-order":"5"
+    },
+    {
+      "id":"pl.ds.websight:websight-bean-validation:1.0.5",
+      "start-order":"20"
+    }
+  ]
+}

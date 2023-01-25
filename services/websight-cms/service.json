@@ -1,0 +1,44 @@
+{
+  "id": "typedb",
+  "name": "DB",
+  "description": "Database",
+  "enabled": true,
+  "status": "30",
+  "logoutput": "...",
+  "icon": "pi pi-database",
+  "servicetype": 10,
+  "execconfig": {
+    "execservice": { "id": "java" },
+    "commandline": {
+      "win32": "-Xms256m -Xmx1024m -cp \"${SERVICE_PATH}\\server\\conf\\;${SERVICE_PATH}\\server\\lib\\common\\*;${SERVICE_PATH}\\server\\lib\\prod\\*;\" -D\"typedb.dir=${SERVICE_PATH}\" com.vaticle.typedb.core.server.TypeDBServer --storage.data=\"${SERVICE_DATA_PATH}\"",
+      "darwin": "-Xms256m -Xmx1024m -cp \"${SERVICE_PATH}/server/conf/:${SERVICE_PATH}/server/lib/common/*:${SERVICE_PATH}/server/lib/prod/*:\" -D\"typedb.dir=${SERVICE_PATH}\" com.vaticle.typedb.core.server.TypeDBServer --storage.data=\"${SERVICE_DATA_PATH}\"",
+      "linux": "-Xms256m -Xmx1024m -cp \"${SERVICE_PATH}/server/conf/:${SERVICE_PATH}/server/lib/common/*:${SERVICE_PATH}/server/lib/prod/*:\" -D\"typedb.dir=\"${SERVICE_PATH}\" com.vaticle.typedb.core.server.TypeDBServer --storage.data=\"${SERVICE_DATA_PATH}\"",
+      "default": "-Xms256m -Xmx1024m -cp \"${SERVICE_PATH}\\server\\conf\\;${SERVICE_PATH}\\server\\lib\\common\\*;${SERVICE_PATH}\\server\\lib\\prod\\*;\" -D\"typedb.dir=${SERVICE_PATH}\" com.vaticle.typedb.core.server.TypeDBServer --storage.data=\"${SERVICE_DATA_PATH}\""
+    },
+    "commandlinecli": {
+      "win32": "-Xms256m -Xmx1024m -cp \"${SERVICE_PATH}\\console\\conf\\;${SERVICE_PATH}\\console\\lib\\*;\" -D\"typedb.dir=${SERVICE_PATH}\" com.vaticle.typedb.console.TypeDBConsole ",
+      "darwin": "-Xms256m -Xmx1024m -cp \"${SERVICE_PATH}/console/conf/:${SERVICE_PATH}/console/lib/*:\" -D\"typedb.dir=${SERVICE_PATH}\" com.vaticle.typedb.console.TypeDBConsole ",
+      "linux": "-Xms256m -Xmx1024m -cp \"${SERVICE_PATH}/console/conf/:${SERVICE_PATH}/console/lib/*:\" -D\"typedb.dir=${SERVICE_PATH}\" com.vaticle.typedb.console.TypeDBConsole ",
+      "default": "-Xms256m -Xmx1024m -cp \"${SERVICE_PATH}\\console\\conf\\;${SERVICE_PATH}\\console\\lib\\*;\" -D\"typedb.dir=${SERVICE_PATH}\" com.vaticle.typedb.console.TypeDBConsole "
+    },
+    "datapath": "/server/data",
+    "serviceorder": 1,
+    "serviceport": 1729,
+    "healthcheck": {
+      "type": "tcp",
+      "retries": 30
+    }
+  },
+  "actions": {
+    "stop": {
+      "name": "stop",
+      "path": "...",
+      "commanline": "..."
+    },
+    "start": {
+      "name": "start",
+      "path": "...",
+      "commanline": "..."
+    }
+  }
+}

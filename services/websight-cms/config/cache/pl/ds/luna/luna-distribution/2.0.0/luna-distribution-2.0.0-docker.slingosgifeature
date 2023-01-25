@@ -1,0 +1,12 @@
+{
+  "id":"pl.ds.luna:luna-distribution:slingosgifeature:docker:2.0.0",
+  "title":"Luna: Distribution",
+  "description":"Luna distribution that builds the Docker Image for the projects running on WebSight.",
+  "vendor":"Dynamic Solutions sp. z o.o. sp. k.",
+  "license":"Apache License Version 2.0",
+  "configurations":  {
+    "org.apache.sling.commons.log.LogManager":    {
+      "org.apache.sling.commons.log.file":""
+    }
+  }
+}
