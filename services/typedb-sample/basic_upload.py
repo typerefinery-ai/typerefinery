@@ -170,7 +170,7 @@ def main():
     parser = argparse.ArgumentParser(description="Script params",
                                  formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument("--host", nargs='?', default="localhost", help="server host")
-    parser.add_argument("--port", nargs='?', default="1729", help="server port")
+    parser.add_argument("--port", nargs='?', default="8729", help="server port")
     parser.add_argument("--db", nargs='?', default="typerefinery", help="server database")
     args = parser.parse_args()
 
