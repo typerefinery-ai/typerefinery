@@ -250,7 +250,7 @@
     "publish": {
       "provider": "github",
       "repo": "typerefinery",
-      "owner": "innovolve-ai",
+      "owner": "typerefinery-ai",
       "releaseType": "release"
     },
     "beforePack": "./myBeforePackHook.js"

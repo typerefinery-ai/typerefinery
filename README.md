@@ -1,11 +1,11 @@
 # TypeRefinery
 
-[![build_status](https://github.com/innovolve-ai/typerefinery/workflows/build-release/badge.svg)](https://github.com/innovolve-ai/typerefinery/actions?workflow=Build/release)
+[![build_status](https://github.com/typerefinery-ai/typerefinery/workflows/build-release/badge.svg)](https://github.com/typerefinery-ai/typerefinery/actions?workflow=Build/release)
 [![TypeRefinery](https://img.shields.io/endpoint?url=https://dashboard.cypress.io/badge/detailed/8v1kna&style=flat-square&logo=cypress)](https://dashboard.cypress.io/projects/8v1kna/runs)
-[![github license](https://img.shields.io/github/license/innovolve-ai/typerefinery)](https://github.com/innovolve-ai/typerefinery)
-[![github issues](https://img.shields.io/github/issues/innovolve-ai/typerefinery)](https://github.com/innovolve-ai/typerefinery)
-[![github last commit](https://img.shields.io/github/last-commit/innovolve-ai/typerefinery)](https://github.com/innovolve-ai/typerefinery)
-[![github repo size](https://img.shields.io/github/repo-size/innovolve-ai/typerefinery)](https://github.com/innovolve-ai/typerefinery)
+[![github license](https://img.shields.io/github/license/typerefinery-ai/typerefinery)](https://github.com/typerefinery-ai/typerefinery)
+[![github issues](https://img.shields.io/github/issues/typerefinery-ai/typerefinery)](https://github.com/typerefinery-ai/typerefinery)
+[![github last commit](https://img.shields.io/github/last-commit/typerefinery-ai/typerefinery)](https://github.com/typerefinery-ai/typerefinery)
+[![github repo size](https://img.shields.io/github/repo-size/typerefinery-ai/typerefinery)](https://github.com/typerefinery-ai/typerefinery)
 [![Gitter](https://badges.gitter.im/governance-foundation/community.svg)](https://gitter.im/governance-foundation/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 [![Gitter](https://img.shields.io/badge/forum-Google-orange)](https://groups.google.com/forum/#!forum/governance-foundation)
 
@@ -15,7 +15,7 @@ This template should help get you started developing `Electron` app using `Vue 3
 
 ## Main Window
 
-<img width="400px" src="https://raw.githubusercontent.com/innovolve-ai/typerefinery/master/public/assets/electron-app.png" />
+<img width="400px" src="https://raw.githubusercontent.com/typerefinery-ai/typerefinery/master/public/assets/electron-app.png" />
 
 ## Prerequisites
 
@@ -30,7 +30,7 @@ You can follow this guide to get you started [Setup Your Windows Devbox Like a P
 
 ```sh
 # clone the project
-git clone https://github.com/innovolve-ai/typerefinery.git
+git clone https://github.com/typerefinery-ai/typerefinery.git
 
 # enter the project directory
 cd typerefinery
