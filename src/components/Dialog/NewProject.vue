@@ -262,7 +262,7 @@
         description: "",
         icon: "",
         database: "typerefinery",
-        port: "1729",
+        port: process.env.TYPEDB_PORT || "8729",
         host: "localhost",
         query: "match\n   $a isa thing;",
         // flowName: "",

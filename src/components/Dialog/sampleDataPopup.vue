@@ -104,7 +104,7 @@
             type: "connection",
             scope: "local",
             description: "",
-            port: "1729",
+            port: process.env.TYPEDB_PORT || "8729",
             host: "localhost",
             database: "typerefinery",
           }
@@ -156,7 +156,7 @@
           icon: "Connection",
           scope: "local",
           description: "",
-          port: "1729",
+          port: "8729",
           host: "localhost",
           database: "typerefinery",
         }
