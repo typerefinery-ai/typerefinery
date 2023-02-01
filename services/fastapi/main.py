@@ -10,6 +10,7 @@ from loguru import logger as Logger
 
 import argparse
 
+
 def getArgs():
 
   parser = argparse.ArgumentParser(description="Script params",
@@ -34,6 +35,19 @@ CONFIG.APP_LOG_LOCATION = os.getenv("SERVICE_LOG_PATH", args.logdir)
 if CONFIG.APP_LOG_LOCATION == "":
   CONFIG.APP_LOG_LOCATION = CONFIG.APP_SCRIPT_PATH
 
+# load environment variables from .env file
+from dotenv import load_dotenv
+
+load_dotenv()
+
+CONFIG.APP_SERVICE_TYPEDB_HOST = os.getenv("TYPEDB_HOST", "localhost")
+CONFIG.APP_SERVICE_TYPEDB_PORT = os.getenv("TYPEDB_PORT", "8729")
+CONFIG.APP_SERVICE_TYPEDB_DB = os.getenv("TYPEDB_DB", "typerefinery")
+CONFIG.APP_SERVICE_FLOW_PORT = os.getenv("FLOW_PORT", "8111")
+CONFIG.APP_SERVICE_MESSAGESERVICE_PORT = os.getenv("MESSAGESERVICE_PORT", "8112")
+CONFIG.APP_SERVICE_CMS_PORT = os.getenv("CMS_PORT", "8113")
+CONFIG.APP_SERVICE_MONGO_PORT = os.getenv("MONGO_PORT", "8180")
+CONFIG.APP_SERVICE_NGINX_PORT = os.getenv("NGINX_PORT", "8114")
 
 # setup origins middleware to ensure CORS works
 app.add_middleware(

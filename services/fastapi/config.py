@@ -144,3 +144,70 @@ class CONFIG(object):
   def APP_SERVICE_NPM_EXECUTABLE(self, val):
     self.set('APP_SERVICE_NPM_EXECUTABLE', val)
 
+  # .env variables
+  @property
+  def APP_SERVICE_TYPEDB_HOST(self):
+    """Typedb Host."""
+    return self.get('APP_SERVICE_TYPEDB_HOST')
+  @APP_SERVICE_TYPEDB_HOST.setter
+  def APP_SERVICE_TYPEDB_HOST(self, val):
+    self.set('APP_SERVICE_TYPEDB_HOST', val)
+
+  @property
+  def APP_SERVICE_TYPEDB_PORT(self):
+    """Typedb Port."""
+    return self.get('APP_SERVICE_TYPEDB_PORT')
+  @APP_SERVICE_TYPEDB_PORT.setter
+  def APP_SERVICE_TYPEDB_PORT(self, val):
+    self.set('APP_SERVICE_TYPEDB_PORT', val)
+
+  @property
+  def APP_SERVICE_TYPEDB_DB(self):
+    """Typedb DB."""
+    return self.get('APP_SERVICE_TYPEDB_DB')
+  @APP_SERVICE_TYPEDB_DB.setter
+  def APP_SERVICE_TYPEDB_DB(self, val):
+    self.set('APP_SERVICE_TYPEDB_DB', val)
+
+  @property
+  def APP_SERVICE_FLOW_PORT(self):
+    """Flow ports."""
+    return self.get('APP_SERVICE_FLOW_PORT')
+  @APP_SERVICE_FLOW_PORT.setter
+  def APP_SERVICE_FLOW_PORT(self, val):
+    self.set('APP_SERVICE_FLOW_PORT', val)
+
+  @property
+  def APP_SERVICE_MESSAGESERVICE_PORT(self):
+    """Message service port."""
+    return self.get('APP_SERVICE_MESSAGESERVICE_PORT')
+  @APP_SERVICE_MESSAGESERVICE_PORT.setter
+  def APP_SERVICE_MESSAGESERVICE_PORT(self, val):
+    self.set('APP_SERVICE_MESSAGESERVICE_PORT', val)
+
+  @property
+  def APP_SERVICE_CMS_PORT(self):
+    """CMS port."""
+    return self.get('APP_SERVICE_CMS_PORT')
+  @APP_SERVICE_CMS_PORT.setter
+  def APP_SERVICE_CMS_PORT(self, val):
+    self.set('APP_SERVICE_CMS_PORT', val)
+
+  @property
+  def APP_SERVICE_MONGO_PORT(self):
+    """CMS port."""
+    return self.get('APP_SERVICE_MONGO_PORT')
+  @APP_SERVICE_MONGO_PORT.setter
+  def APP_SERVICE_MONGO_PORT(self, val):
+    self.set('APP_SERVICE_MONGO_PORT', val)
+
+  @property
+  def APP_SERVICE_NGINX_PORT(self):
+    """CMS port."""
+    return self.get('APP_SERVICE_NGINX_PORT')
+  @APP_SERVICE_NGINX_PORT.setter
+  def APP_SERVICE_NGINX_PORT(self, val):
+    self.set('APP_SERVICE_NGINX_PORT', val)
+
+
+
