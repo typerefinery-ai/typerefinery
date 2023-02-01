@@ -105,8 +105,8 @@
             scope: "local",
             description: "",
             port: process.env.TYPEDB_PORT || "8729",
-            host: "localhost",
-            database: "typerefinery",
+            host: process.env.TYPEDB_HOST || "localhost",
+            database: process.env.TYPEDB_DB || "typerefinery",
           }
           const query = {
             queryid: projectid + "_query",
@@ -156,9 +156,9 @@
           icon: "Connection",
           scope: "local",
           description: "",
-          port: "8729",
-          host: "localhost",
-          database: "typerefinery",
+          port: process.env.TYPEDB_PORT || "8729",
+          host: process.env.TYPEDB_HOST || "localhost",
+          database: process.env.TYPEDB_DB || "typerefinery",
         }
         const theme = {
           label: "S_Theme",

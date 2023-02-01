@@ -231,9 +231,9 @@
     },
     data() {
       return {
-        host: "localhost",
-        port: 8729,
-        database: "typerefinery",
+        port: process.env.TYPEDB_PORT || "8729",
+        host: process.env.TYPEDB_HOST || "localhost",
+        database: process.env.TYPEDB_DB || "typerefinery",
         label: "",
         icon: "",
         description: "",
