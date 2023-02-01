@@ -10,6 +10,7 @@
   "serviceorder": 0,
   "execconfig": {
     "serviceorder": 1,
+    "serviceport": 8114,
     "executable": {
       "win32": "nginx.exe",
       "darwin": "bin/nginx",

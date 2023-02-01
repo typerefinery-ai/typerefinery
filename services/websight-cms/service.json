@@ -17,7 +17,7 @@
     },
     "datapath": "/server/data",
     "serviceorder": 1,
-    "serviceport": 1729,
+    "serviceport": 8113,
     "healthcheck": {
       "type": "tcp",
       "retries": 30

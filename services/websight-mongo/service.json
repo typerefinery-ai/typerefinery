@@ -10,6 +10,7 @@
   "serviceorder": 0,
   "execconfig": {
     "serviceorder": 1,
+    "serviceport": 8180,
     "setuparchive": {
       "win32": {
         "name": "win32.zip",

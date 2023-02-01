@@ -12,19 +12,19 @@
     "setup": {
       "win32": [
         "-m pip install --target=${SERVICE_PATH}\\__packages__ -r ${SERVICE_PATH}\\requirements.txt",
-        "${SERVICE_PATH}\\basic_upload.py"
+        "${SERVICE_PATH}\\basic_upload.py --port 8179"
       ],
       "darwin": [
         "-m pip install --target=${SERVICE_PATH}/__packages__ -r ${SERVICE_PATH}/requirements.txt",
-        "${SERVICE_PATH}/basic_upload.py"
+        "${SERVICE_PATH}/basic_upload.py --port 8179"
       ],
       "linux": [
         "-m pip install --target=${SERVICE_PATH}/__packages__ -r ${SERVICE_PATH}/requirements.txt",
-        "${SERVICE_PATH}/basic_upload.py"
+        "${SERVICE_PATH}/basic_upload.py --port 8179"
       ],
       "default": [
         "-m pip install --target=${SERVICE_PATH}\\__packages__ -r ${SERVICE_PATH}\\requirements.txt",
-        "${SERVICE_PATH}\\basic_upload.py"
+        "${SERVICE_PATH}\\basic_upload.py --port 8179"
       ]
     },
     "commandline": {

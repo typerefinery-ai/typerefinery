@@ -28,7 +28,7 @@
     "commandline": {
       "default": "-m uvicorn main:app --host localhost --port ${SERVICE_PORT} --app-dir ${SERVICE_PATH}"
     },
-    "serviceport": 8113,
+    "serviceport": 8281,
     "healthcheck": {
       "type": "http",
       "url": "http://localhost:${SERVICE_PORT}/",
