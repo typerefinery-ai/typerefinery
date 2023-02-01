@@ -142,6 +142,7 @@
         "save-as-global": "वैश्विक के रूप में सहेजें",
         "save-connection-as": "सहेजें",
         "db-placeholder": "डेटाबेस का नाम दर्ज करें",
+        "port-placeholder": "पोर्ट नंबर दर्ज करें जैसे 8729",
         "label-placeholder": "कनेक्शन लेबल दर्ज करें",
         "icon-placeholder": "कनेक्शन आइकन दर्ज करें"
       },

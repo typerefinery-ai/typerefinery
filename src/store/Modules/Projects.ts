@@ -390,9 +390,9 @@ export default class Projects extends VuexModule {
         type: "connection",
         scope: "local",
         description: "",
-        port: "1729",
-        host: "localhost",
-        database: "typerefinery",
+        port: process.env.TYPEDB_PORT || "8729",
+        host: process.env.TYPEDB_HOST || "localhost",
+        database: process.env.TYPEDB_DB || "typerefinery",
       }
       const query = {
         queryid: projectid + "_query",
