@@ -9,3 +9,4 @@ sqlmodel
 strawberry-graphql
 requests
 websocket-client
+dotenv
