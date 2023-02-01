@@ -14,6 +14,8 @@ exports.install = function() {
 	ROUTE('GET      /fapi/streams_stats          *Streams      --> stats');
 	ROUTE('GET      /fapi/streams_pause/{id}/    *Streams      --> pause');
 	ROUTE('GET      /fapi/streams_restart/{id}/  *Streams      --> restart');
+	ROUTE('GET      /fapi/streams_export/{id}/   *Clipboard    --> export');
+  ROUTE('+POST    /fapi/streams_import/        *Clipboard    --> import', [60000 * 5]);
 
 	// FlowStream
 	ROUTE('+API    @api    -streams                          *Streams      --> query');
