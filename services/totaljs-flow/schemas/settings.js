@@ -71,7 +71,10 @@ if (PREF.backup)
 	CONF.backup = PREF.backup;
 
 if (!PREF.components)
-	PREF.components = 'https://cdn.totaljs.com/flowstream/components/db.json';
+	PREF.components = 'https://typerefinery-ai.github.io/flowcomponents/db.json';
+
+if (!PREF.components2)
+	PREF.components2 = 'https://cdn.totaljs.com/flowstream/components/db.json';
 
 if (!PREF.token)
 	PREF.token = GUID(30);

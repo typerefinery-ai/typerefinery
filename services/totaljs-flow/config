@@ -28,8 +28,8 @@ directory               (env)    : SERVICE_DATA_PATH
 // Typerefinery component have group @TypeRefinery making these appear at the top.
 //
 // Own list of components and the structure must be the same as https://cdn.totaljs.com/flowstream/components/db.json
-//flowstream_components         : https://innovolve-ai.github.io/flowcomponents/db.jso
+//flowstream_components         : https://typerefinery-ai.github.io/flowcomponents/db.json
 // main
-components                    : https://innovolve-ai.github.io/flowcomponents/db.json
+components                    : https://typerefinery-ai.github.io/flowcomponents/db.json
 // custom
 components2                   : https://cdn.totaljs.com/flowstream/components/db.json
