@@ -12,6 +12,9 @@ Param(
   [string]$SERVER_REQUIREMENTS = ( Join-Path "${SERVER_HOME}" "requirements.txt" ),
   [string]$PYTHONPACKAGES = ( Join-Path "${SERVER_HOME}" "__packages__" ),
   [string]$SCRIPS_PATH = ( Join-Path "${SERVER_HOME}" "scripts" ),
+  [string]$TYPEDB_HOST = "localhost",
+  [string]$TYPEDB_DB = "typerefinery",
+  [string]$TYPEDB_PORT = 8129,
   [switch]$RUNSCRIPTBASIC = $false,
   [switch]$RUNSCRIPTGROUP = $false,
   [switch]$SAMPLE = $false,
@@ -94,7 +97,7 @@ Function RunScriptBasic
   echo "${SERVICE_NAME} - SERVICE_LOG_PATH=${SERVICE_LOG_PATH}"
   echo "${SERVICE_NAME} - SERVICE_PATH=${SERVICE_PATH}"
   try {
-    python ${SERVICE_PATH}/scripts/G_to_WebCola.py "localhost" 1729 "typerefinery" "match $a isa log, has logName 'L1'; $b isa event, has eventName $c; $d (owner: $a, item: $b) isa trace, has traceId $e, has index $f; offset 0;"
+    python ${SERVICE_PATH}/scripts/G_to_WebCola.py ${TYPEDB_HOST} ${TYPEDB_PORT} ${TYPEDB_DB} "match $a isa log, has logName 'L1'; $b isa event, has eventName $c; $d (owner: $a, item: $b) isa trace, has traceId $e, has index $f; offset 0;"
   } finally {
     Set-Location -Path "${CURRENT_PATH}"
   }
@@ -107,7 +110,7 @@ Function RunScriptGroup
   echo "${SERVICE_NAME} - SERVICE_LOG_PATH=${SERVICE_LOG_PATH}"
   echo "${SERVICE_NAME} - SERVICE_PATH=${SERVICE_PATH}"
   try {
-    python ${SERVICE_PATH}/scripts/WebCola_Groups3.py "localhost" 1729 "typerefinery" "match $a isa log, has logName 'L1'; $b isa event, has eventName $c; $d (owner: $a, item: $b) isa trace, has traceId $e, has index $f; offset 0;"
+    python ${SERVICE_PATH}/scripts/WebCola_Groups3.py ${TYPEDB_HOST} ${TYPEDB_PORT} ${TYPEDB_DB} "match $a isa log, has logName 'L1'; $b isa event, has eventName $c; $d (owner: $a, item: $b) isa trace, has traceId $e, has index $f; offset 0;"
     python ${SERVICE_PATH}/scripts/Collapse_Group.py ${SERVICE_PATH}/scripts/WebCola_Groups3.py.output ${SERVICE_PATH}/scripts/WebCola_Groups3.py.output.collapsed
   } finally {
     Set-Location -Path "${CURRENT_PATH}"
