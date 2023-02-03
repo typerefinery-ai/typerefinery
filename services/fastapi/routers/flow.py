@@ -24,6 +24,36 @@ UTILS = UTILS()
 CONFIG.FLOW_HOST = os.getenv("FLOW_HOST", "http://localhost:8111")
 CONFIG.FLOW_API = os.getenv("FLOW_API", "/fapi")
 
+
+## import flow content into flowstream
+@Logger.catch
+@router.post("/flow/import")
+async def flow_import(request: Request, response: Response, body: dict = Body(...)):
+    service_url_create = f"{CONFIG.FLOW_HOST}{CONFIG.FLOW_API}/streams_import/"
+    Logger.info(f"proxy flow: {service_url_create}")
+    dataPayload = { "data": json.dumps(body) }
+    Logger.info(f"inserting flow: {dataPayload}")
+    service_reponse = requests.post(service_url_create , data=dataPayload)
+    return Response(content=json.dumps(service_reponse.json()), media_type="application/json", status_code=service_reponse.status_code)
+
+## export flow content for a given flowid from flowstream
+@Logger.catch
+@router.get("/flow/export/{flowid}")
+async def flow_export(flowid: str, request: Request, response: Response):
+    service_url_create = f"{CONFIG.FLOW_HOST}{CONFIG.FLOW_API}/streams_export/{flowid}"
+    Logger.info(f"proxy flow: {service_url_create}")
+    service_reponse = requests.get(service_url_create)
+    return Response(content=json.dumps(service_reponse.json()), media_type="application/json", status_code=service_reponse.status_code)
+
+## update flow meta into flowstream
+@Logger.catch
+@router.post("/flow/update")
+async def flow_update(request: Request, response: Response, body: dict = Body(...)):
+    service_url_create = f"{CONFIG.FLOW_HOST}{CONFIG.FLOW_API}/stream_save/"
+    Logger.info(f"proxy flow: {service_url_create}")
+    service_reponse = requests.post(service_url_create , data=body)
+    return Response(content=json.dumps(service_reponse.json()), media_type="application/json", status_code=service_reponse.status_code)
+
 # {
 #     "icon": "fa fa-satellite",
 #     "url": "https://localhost",
@@ -96,6 +126,7 @@ class CreateSample(BaseModel):
       default="", title="Date"
   )
 
+# TODO: update to load samles from files and use the import function
 @Logger.catch
 @router.post("/flow/createsample")
 async def flow_createsample(request: Request, response: Response, body: CreateSample):
