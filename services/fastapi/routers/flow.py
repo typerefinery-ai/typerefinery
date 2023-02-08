@@ -9,6 +9,10 @@ import random
 import requests
 from config import CONFIG
 
+# import websocket
+from contextlib import closing
+from websocket import create_connection
+
 router = APIRouter()
 
 from config import CONFIG
@@ -23,6 +27,42 @@ UTILS = UTILS()
 #http://localhost:8111/fapi
 CONFIG.FLOW_HOST = os.getenv("FLOW_HOST", "http://localhost:8111")
 CONFIG.FLOW_API = os.getenv("FLOW_API", "/fapi")
+
+## save design into flow over websocket
+@Logger.catch
+@router.post("/flow/{flowid}/save")
+async def flow_save(flowid: str, request: Request, response: Response, body: dict = Body(...)):
+    service_url_flow = f"ws://localhost:8111/flows/{flowid}"
+    dataPayloadWelcome = {"TYPE":"flow"}
+    dataPayloadRefresh = {"TYPE":"refresh"}
+    dataPayloadSave = { "TYPE": "save", "data": body }
+    returnData = { "wserror": None }
+    Logger.info(f"proxy flow: {service_url_flow}")
+    Logger.info(f"payload welcome: {dataPayloadWelcome}")
+    Logger.info(f"payload update: {dataPayloadSave}")
+
+    try:
+      with closing(create_connection(service_url_flow)) as conn:
+
+        # loop while waiting for welcome message
+        while True:
+          recivedData = conn.recv()
+          recivedJson = json.loads(recivedData)
+          print("recived message:")
+          print(json.dumps(recivedData))
+          if recivedJson['TYPE'] == "flow/errors":
+            break
+
+
+        print("sending save:")
+        conn.send(json.dumps(dataPayloadSave))
+
+    except Exception as e:
+      returnData['wserror'] = str(e)
+
+
+    return Response(content=json.dumps(returnData), media_type="application/json", status_code=200)
+
 
 
 ## import flow content into flowstream
