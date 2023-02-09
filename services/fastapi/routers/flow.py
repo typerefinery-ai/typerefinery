@@ -30,7 +30,40 @@ CONFIG.FLOW_API = os.getenv("FLOW_API", "/fapi")
 
 ## save design into flow over websocket
 @Logger.catch
-@router.post("/flow/{flowid}/save")
+@router.get("/flow/{flowid}/design")
+async def flow_design(flowid: str, request: Request, response: Response, body: dict = Body(...)):
+    service_url_flow = f"ws://localhost:8111/flows/{flowid}"
+    dataPayloadWelcome = {"TYPE":"flow"}
+    returnData = { "wserror": None }
+    Logger.info(f"proxy flow: {service_url_flow}")
+    Logger.info(f"payload welcome: {dataPayloadWelcome}")
+
+    try:
+      with closing(create_connection(service_url_flow)) as conn:
+
+        # loop while waiting for welcome message
+        while True:
+          recivedData = conn.recv()
+          recivedJson = json.loads(recivedData)
+          print("recived message:")
+          print(json.dumps(recivedData))
+          if recivedJson['TYPE'] == "flow/design":
+            break
+
+        returnData = recivedJson['data']
+
+        print("recived data:")
+        print(json.dumps(recivedData))
+
+
+    except Exception as e:
+      returnData['wserror'] = str(e)
+
+    return Response(content=json.dumps(returnData), media_type="application/json", status_code=200)
+
+## save design into flow over websocket
+@Logger.catch
+@router.post("/flow/{flowid}/design/save")
 async def flow_save(flowid: str, request: Request, response: Response, body: dict = Body(...)):
     service_url_flow = f"ws://localhost:8111/flows/{flowid}"
     dataPayloadWelcome = {"TYPE":"flow"}
