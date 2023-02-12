@@ -102,29 +102,43 @@ async def flow_save(flowid: str, request: Request, response: Response, body: dic
 @Logger.catch
 @router.post("/flow/import")
 async def flow_import(request: Request, response: Response, body: dict = Body(...)):
-    service_url_create = f"{CONFIG.FLOW_HOST}{CONFIG.FLOW_API}/streams_import/"
-    Logger.info(f"proxy flow: {service_url_create}")
+    service_url_proxy = f"{CONFIG.FLOW_HOST}{CONFIG.FLOW_API}/streams_import/"
+    Logger.info(f"proxy flow: {service_url_proxy}")
     dataPayload = { "data": json.dumps(body) }
     Logger.info(f"inserting flow: {dataPayload}")
-    service_reponse = requests.post(service_url_create , data=dataPayload)
+    service_reponse = requests.post(service_url_proxy , data=dataPayload, timeout=1)
     return Response(content=json.dumps(service_reponse.json()), media_type="application/json", status_code=service_reponse.status_code)
 
 ## export flow content for a given flowid from flowstream
 @Logger.catch
 @router.get("/flow/export/{flowid}")
 async def flow_export(flowid: str, request: Request, response: Response):
-    service_url_create = f"{CONFIG.FLOW_HOST}{CONFIG.FLOW_API}/streams_export/{flowid}"
-    Logger.info(f"proxy flow: {service_url_create}")
-    service_reponse = requests.get(service_url_create)
+    service_url_proxy = f"{CONFIG.FLOW_HOST}{CONFIG.FLOW_API}/streams_export/{flowid}"
+    Logger.info(f"proxy flow: {service_url_proxy}")
+    service_reponse = requests.get(service_url_proxy, timeout=1)
+    return Response(content=json.dumps(service_reponse.json()), media_type="application/json", status_code=service_reponse.status_code)
+
+## export flow content for a given flowid from flowstream
+@Logger.catch
+@router.get("/flow/read/{flowid}")
+async def flow_export(flowid: str, request: Request, response: Response):
+    service_url_proxy = f"{CONFIG.FLOW_HOST}{CONFIG.FLOW_API}/streams_read/{flowid}"
+    Logger.info(f"proxy flow: {service_url_proxy}")
+    failed = False
+    try:
+      service_reponse = requests.get(service_url_proxy, timeout=0.01)
+    except requests.exceptions.RequestException:
+      failed = True
+
     return Response(content=json.dumps(service_reponse.json()), media_type="application/json", status_code=service_reponse.status_code)
 
 ## update flow meta into flowstream
 @Logger.catch
 @router.post("/flow/update")
 async def flow_update(request: Request, response: Response, body: dict = Body(...)):
-    service_url_create = f"{CONFIG.FLOW_HOST}{CONFIG.FLOW_API}/stream_save/"
-    Logger.info(f"proxy flow: {service_url_create}")
-    service_reponse = requests.post(service_url_create , data=body)
+    service_url_proxy = f"{CONFIG.FLOW_HOST}{CONFIG.FLOW_API}/stream_save/"
+    Logger.info(f"proxy flow: {service_url_proxy}")
+    service_reponse = requests.post(service_url_proxy , data=body, timeout=1)
     return Response(content=json.dumps(service_reponse.json()), media_type="application/json", status_code=service_reponse.status_code)
 
 # {
@@ -178,7 +192,7 @@ async def flow_create(request: Request, response: Response, body: FlowSchema):
     if service_reponse.status_code == 200:
         print(service_reponse.json())
         service_url_get = f"{CONFIG.FLOW_HOST}{CONFIG.FLOW_API}/streams/"
-        service_reponse = requests.get(service_url_get)
+        service_reponse = requests.get(service_url_get, timeout=1)
         # for each object in response json find last object that has same reference as body.reference and return it
         return_object = None
         for project in service_reponse.json():
@@ -199,7 +213,7 @@ class CreateSample(BaseModel):
       default="", title="Date"
   )
 
-# TODO: update to load samles from files and use the import function
+# TODO: update to load samles from files and use the import api call
 @Logger.catch
 @router.post("/flow/createsample")
 async def flow_createsample(request: Request, response: Response, body: CreateSample):
