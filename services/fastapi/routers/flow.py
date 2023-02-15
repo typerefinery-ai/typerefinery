@@ -290,12 +290,3 @@ async def flowproxy_post(path: str, request: Request, response: Response, body: 
     Logger.info(f"proxy flow: {service_url_proxy}")
     service_reponse = requests.post(service_url_proxy , data=body, timeout=1)
     return Response(content=json.dumps(service_reponse.json()), media_type="application/json", status_code=service_reponse.status_code)
-
-
-@Logger.catch
-@router.get("/flowproxy/{path}")
-async def flowproxy_post(request: Request, response: Response, body: dict = Body(...)):
-    service_url_proxy = f"{CONFIG.FLOW_HOST}/{path}"
-    Logger.info(f"proxy flow: {service_url_proxy}")
-    service_reponse = requests.post(service_url_proxy , data=body, timeout=1)
-    return Response(content=json.dumps(service_reponse.json()), media_type="application/json", status_code=service_reponse.status_code)
