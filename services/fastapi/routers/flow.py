@@ -287,6 +287,22 @@ async def flow_createsample(request: Request, response: Response, body: CreateSa
 @router.post("/flowproxy/{path}")
 async def flowproxy_post(path: str, request: Request, response: Response, body: dict = Body(...)):
     service_url_proxy = f"{CONFIG.FLOW_HOST}/{path}"
-    Logger.info(f"proxy flow: {service_url_proxy}")
+    Logger.info(f"proxy flow post: {service_url_proxy}")
     service_reponse = requests.post(service_url_proxy , data=body, timeout=1)
+    return Response(content=json.dumps(service_reponse.json()), media_type="application/json", status_code=service_reponse.status_code)
+
+@Logger.catch
+@router.get("/flowproxy/{path}")
+async def flowproxy_get(path: str, request: Request, response: Response):
+    service_url_proxy = f"{CONFIG.FLOW_HOST}/{path}"
+    Logger.info(f"proxy flow get: {service_url_proxy}")
+    service_reponse = requests.get(service_url_proxy ,  timeout=1)
+    return Response(content=json.dumps(service_reponse.json()), media_type="application/json", status_code=service_reponse.status_code)
+
+@Logger.catch
+@router.put("/flowproxy/{path}")
+async def flowproxy_put(path: str, request: Request, response: Response, body: dict = Body(...)):
+    service_url_proxy = f"{CONFIG.FLOW_HOST}/{path}"
+    Logger.info(f"proxy flow put: {service_url_proxy}")
+    service_reponse = requests.put(service_url_proxy , data=body, timeout=1)
     return Response(content=json.dumps(service_reponse.json()), media_type="application/json", status_code=service_reponse.status_code)
