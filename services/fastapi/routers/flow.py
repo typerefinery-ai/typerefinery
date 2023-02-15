@@ -279,3 +279,14 @@ async def flow_createsample(request: Request, response: Response, body: CreateSa
         message["status"] = f"flow with id {flowid} added to database."
 
   return Response(content=json.dumps(message), media_type="application/json", status_code=200)
+
+
+
+# Proxy fastapi flow
+@Logger.catch
+@router.post("/flowproxy/{path}")
+async def flowproxy_post(path: str, request: Request, response: Response, body: dict = Body(...)):
+    service_url_proxy = f"{CONFIG.FLOW_HOST}/{path}"
+    Logger.info(f"proxy flow: {service_url_proxy}")
+    service_reponse = requests.post(service_url_proxy , data=body, timeout=1)
+    return Response(content=json.dumps(service_reponse.json()), media_type="application/json", status_code=service_reponse.status_code)
