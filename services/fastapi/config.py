@@ -7,7 +7,7 @@ class CONFIG(object):
   def __init__(self, path):
     self._config = {
       "origins_schemas": [ "http", "https" ],
-      "origins_ports": [ "3000", "3001", "8000", "8001" ],
+      "origins_ports": [ "3000", "3001", "8000", "8001", "8080" ],
       "origins_hosts": [ "localhost"],
       "allow_credentials": True,
       "allow_methods": ["*"],
