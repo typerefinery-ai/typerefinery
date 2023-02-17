@@ -10,8 +10,10 @@
   "execconfig": {
     "serviceorder": 1,
     "executable": {
-      "win32": "7za.exe",
-      "default": "7za"
+      "win32": "win32\\7za.exe",
+      "darwin": "darwin/7zz",
+      "linux": "linux/7zz",
+      "default": "win32\\7za"
     }
   }
 }

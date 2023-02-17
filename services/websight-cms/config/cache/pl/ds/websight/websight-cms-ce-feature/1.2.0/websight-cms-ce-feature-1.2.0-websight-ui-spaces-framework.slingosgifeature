@@ -1,0 +1,25 @@
+{
+  "id":"pl.ds.websight:websight-cms-ce-feature:slingosgifeature:websight-ui-spaces-framework:1.2.0",
+  "title":"WebSight CMS Community Edition: OSGi Sling Feature Model",
+  "description":"WebSight CMS Community Edition Feature that builds the Sling\n    OSGI Feature Model for the projects running on WebSight.",
+  "vendor":"Dynamic Solutions sp. z o.o. sp. k.",
+  "license":"Dynamic Solutions License",
+  "bundles":[
+    {
+      "id":"pl.ds.websight:websight-spaces-service:1.1.0",
+      "start-order":"25"
+    },
+    {
+      "id":"pl.ds.websight:websight-spaces-view:1.1.0",
+      "start-order":"25"
+    },
+    {
+      "id":"pl.ds.websight:websight-spaces-ui-components:1.1.0",
+      "start-order":"25"
+    },
+    {
+      "id":"pl.ds.websight:websight-ui-bootstrap:1.1.0",
+      "start-order":"25"
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+textarea[name=messageJson] {
+  width: -webkit-fill-available;
+  height: 200px;
+}
+select[name=publishers],select[name=subscribers],select[name=calls] {
+  width: -webkit-fill-available;
+}
+
+.grid {
+  border: 2px dotted rgb(96, 139, 168);
+  display: grid;
+  grid-template-columns: repeat(auto-fill,minmax(270px, 1fr));
+}
+
+label {
+  text-align: left;
+}
+
+div.field {
+  border: dotted 1px;
+  margin: 10px;
+  width: 250px;
+}
+
+div.field>* {
+  flex: 1 1 200px;
+  margin: 10px;
+}

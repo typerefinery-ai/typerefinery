@@ -1,0 +1,95 @@
+{
+  "id":"pl.ds.websight:websight-cms-ce-feature:slingosgifeature:websight-cm-features:1.2.0",
+  "title":"WebSight CMS Community Edition: OSGi Sling Feature Model",
+  "description":"WebSight CMS Community Edition Feature that builds the Sling\n    OSGI Feature Model for the projects running on WebSight.",
+  "vendor":"Dynamic Solutions sp. z o.o. sp. k.",
+  "license":"Dynamic Solutions License",
+  "bundles":[
+    {
+      "id":"pl.ds.websight:websight-assets-renditions:1.1.1",
+      "start-order":"25"
+    },
+    {
+      "id":"pl.ds.websight:websight-assets-space-service:1.3.0",
+      "start-order":"25"
+    },
+    {
+      "id":"pl.ds.websight:websight-assets-space-view:1.3.0",
+      "start-order":"25"
+    },
+    {
+      "id":"pl.ds.websight:websight-pages-editor-esm-services:1.1.0",
+      "start-order":"25"
+    },
+    {
+      "id":"pl.ds.websight:websight-pages-editor-service:1.1.0",
+      "start-order":"25"
+    },
+    {
+      "id":"pl.ds.websight:websight-pages-editor-view:1.1.0",
+      "start-order":"25"
+    },
+    {
+      "id":"pl.ds.websight:websight-pages-foundation-bundle:1.1.0",
+      "start-order":"25"
+    },
+    {
+      "id":"pl.ds.websight:websight-pages-foundation-app:1.1.0",
+      "start-order":"25"
+    },
+    {
+      "id":"pl.ds.websight:websight-pages-space-service:1.1.0",
+      "start-order":"25"
+    },
+    {
+      "id":"pl.ds.websight:websight-pages-space-view:1.1.0",
+      "start-order":"25"
+    },
+    {
+      "id":"pl.ds.websight:websight-webp-support:1.1.1",
+      "start-order":"25"
+    },
+    {
+      "id":"pl.ds.websight:websight-apps-simple-activator:1.1.0",
+      "start-order":"25"
+    }
+  ],
+  "configurations":  {
+    "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~websight-apps-activator":    {
+      "user.mapping":[
+        "websight-apps-simple-activator=[websight-webroot-publish]"
+      ]
+    },
+    "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~websight-assets-renditions":    {
+      "user.mapping":[
+        "websight-assets-renditions=[websight-assets-renditions-image-provider]"
+      ]
+    },
+    "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~websight-assets-space":    {
+      "user.mapping":[
+        "websight-assets-space-service=[websight-assets-download-tokens]"
+      ]
+    }
+  },
+  "repoinit:TEXT|true":[
+    "create service user websight-webroot-publish with path system/websight",
+    "",
+    "set ACL for websight-webroot-publish",
+    "    allow   jcr:read,ws:publish    on /apps",
+    "    allow   jcr:read,ws:publish    on /libs",
+    "end",
+    "",
+    "create service user websight-assets-renditions-image-provider with path system/websight",
+    "",
+    "# jcr:nodeTypeManagement is needed to set primary type of the Rendition node",
+    "set ACL for websight-assets-renditions-image-provider",
+    "    allow   jcr:read,jcr:write,jcr:nodeTypeManagement    on /content",
+    "end",
+    "",
+    "create service user websight-assets-download-tokens with path system/websight",
+    "",
+    "set ACL for websight-assets-download-tokens",
+    "    allow   jcr:read,jcr:write    on /var",
+    "end"
+  ]
+}

@@ -146,6 +146,7 @@
         "save-as-global": "Save as Global",
         "save-connection-as": "Save connection as",
         "db-placeholder": "Enter database name",
+        "port-placeholder": "Eg. 8729",
         "label-placeholder": "Enter connection label",
         "icon-placeholder": "Enter connection icon"
       },

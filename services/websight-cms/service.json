@@ -1,0 +1,38 @@
+{
+  "id": "websight-cms",
+  "name": "websight-cms",
+  "description": "Websight CMS",
+  "enabled": false,
+  "status": "-1",
+  "logoutput": "...",
+  "icon": "pi pi-cog",
+  "servicetype": 10,
+  "execconfig": {
+    "execservice": { "id": "java" },
+    "commandline": {
+      "win32": "",
+      "darwin": "",
+      "linux": "",
+      "default": ""
+    },
+    "datapath": "/server/data",
+    "serviceorder": 1,
+    "serviceport": 8113,
+    "healthcheck": {
+      "type": "tcp",
+      "retries": 30
+    }
+  },
+  "actions": {
+    "stop": {
+      "name": "stop",
+      "path": "...",
+      "commanline": "..."
+    },
+    "start": {
+      "name": "start",
+      "path": "...",
+      "commanline": "..."
+    }
+  }
+}

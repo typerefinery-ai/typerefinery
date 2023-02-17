@@ -36,7 +36,7 @@
         "icon": "connection",
         "scope": "global",
         "description": "",
-        "port": "1729",
+        "port": "8729",
         "host": "localhost",
         "database": "typerefinery"
       },
@@ -47,7 +47,7 @@
         "icon": "connection",
         "scope": "global",
         "description": "",
-        "port": "1729",
+        "port": "8729",
         "host": "localhost",
         "database": "typerefinery"
       }
@@ -76,7 +76,7 @@
               "icon": "Local Logs",
               "scope": "local",
               "description": "",
-              "port": "1729",
+              "port": "8729",
               "host": "localhost",
               "database": "typerefinery"
             }
@@ -103,7 +103,7 @@
                 "icon": "Local Logs",
                 "scope": "local",
                 "description": "",
-                "port": "1729",
+                "port": "8729",
                 "host": "localhost",
                 "database": "typerefinery"
               }

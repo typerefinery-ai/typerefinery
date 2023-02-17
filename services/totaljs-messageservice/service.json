@@ -9,14 +9,19 @@
   "servicetype": 10,
   "execconfig": {
     "execservice": { "id": "node" },
-    "setup": [
-      "${EXEC_SERVICE_PATH}\\node-v18.6.0-win-x64\\node_modules\\npm\\bin\\npm-cli.js i total4"
-    ],
-    "commandline": "index.js",
+    "setup": {
+      "win32": ["${EXEC_SERVICE_PATH}\\node_modules\\npm\\bin\\npm-cli.js i total4"],
+      "darwin": ["${EXEC_SERVICE_PATH}/libs/node_modules/npm/bin/npm-cli.js i total4"],
+      "linux": ["${EXEC_SERVICE_PATH}/libs/node_modules/npm/bin/npm-cli.js i total4"],
+      "default": ["${EXEC_SERVICE_PATH}\\node_modules\\npm\\bin\\npm-cli.js i total4"]
+    },
+    "commandline": {
+      "default": "index.js"
+    },
     "serviceport": 8112,
     "healthcheck": {
       "type": "http",
-      "url": "http://127.0.0.1:${SERVICE_PORT}/",
+      "url": "http://localhost:${SERVICE_PORT}/",
       "expected_status": 404,
       "retries": 30
     },

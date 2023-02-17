@@ -8,3 +8,5 @@ pydantic
 sqlmodel
 strawberry-graphql
 requests
+websocket-client
+python-dotenv

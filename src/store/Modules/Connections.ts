@@ -76,9 +76,9 @@ export default class Connections extends VuexModule {
         type: "connection",
         scope: "global",
         description: "",
-        port: "1729",
-        host: "localhost",
-        database: "typerefinery",
+        port: process.env.TYPEDB_PORT || "8729",
+        host: process.env.TYPEDB_HOST || "localhost",
+        database: process.env.TYPEDB_DB || "typerefinery",
       }
       await restapi.post(`/datastore/connection`, connection)
       this.context.commit("addGlobalConnection", connection)

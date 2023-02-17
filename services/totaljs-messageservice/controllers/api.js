@@ -19,4 +19,13 @@ exports.install = function () {
   ROUTE("POST      /api/svg/           *Svg --> insert")
   ROUTE("PUT       /api/svg/{id}/      *Svg --> update")
   ROUTE("DELETE    /api/svg/{id}/      *Svg --> remove")
+
+  // PAYLOAD
+
+  ROUTE("GET       /api/payload/           *Payload --> query")
+  ROUTE("GET       /api/payload/{id}/      *Payload --> read")
+  ROUTE("POST      /api/payload/           *Payload --> insert")
+  ROUTE("PUT       /api/payload/{id}/      *Payload --> update")
+  ROUTE("DELETE    /api/payload/{id}/      *Payload --> remove")
+
 }

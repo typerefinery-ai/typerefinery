@@ -40,8 +40,8 @@ def clean_and_load(server):
                 # logger.debug(f'Schema Define Statement - {schema_string}')
                 logger.debug(f'::::::::::::::::::::::::::::::::')
                 # logger.debug(f'define iterator -> {define_iterator}')
-                
-                        
+
+
                 write_transaction.commit()
 
 
@@ -55,12 +55,11 @@ if __name__ == '__main__':
     # define the database server and import details
     server = {
         "url": os.environ.get('TYPEDB_HOST', 'localhost'),
-        "port": os.environ.get('TYPEDB_PORT', '1729'),
-        "database": os.environ.get('TYPEDB_DB', 'pm_4'),
+        "port": os.environ.get('TYPEDB_PORT', '8729'),
+        "database": os.environ.get('TYPEDB_DB', 'typerefinery'),
         "schema": "./schema/alpha2.tql"
     }
-    
-    
+
+
     # clean db and load all of the files in the director
     clean_and_load(server)
-    

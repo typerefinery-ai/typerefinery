@@ -65,8 +65,9 @@
     "report:moveVideos": "echo moveVideos && cp -r cypress/videos cypress/reports/videos 2>/dev/null || true",
     "report:moveData": "echo moveData && cp -r cypress/results/data cypress/reports/data 2>/dev/null || true",
     "posttest": "npm run report:merge && npm run report:generate && npm run report:moveScreenshots && npm run report:moveVideos && npm run report:moveData",
-    "services": "npx ts-node --esm electron/app/main/Services.ts",
-    "servicesprod": "cross-env NODE_ENV=production npx ts-node --esm electron/app/main/Services.ts"
+    "services": "cross-env SERVICES_AUTOSTART=true npx ts-node --esm electron/app/main/Services.ts",
+    "servicesdebug": "cross-env SERVICES_AUTOSTART=false npx ts-node --esm electron/app/main/Services.ts",
+    "servicesprod": "cross-env SERVICES_AUTOSTART=true NODE_ENV=production npx ts-node --esm electron/app/main/Services.ts"
   },
   "main": "dist/main/index.cjs",
   "dependencies": {
@@ -75,6 +76,7 @@
     "@codemirror/lang-python": "^6.0.0",
     "@codemirror/theme-one-dark": "^6.0.0",
     "@mdi/font": "5.9.55",
+    "@particle/unpack-file": "^3.0.2",
     "@rauschma/stringio": "^1.4.0",
     "@sentry/electron": "^3.0.7",
     "@sentry/integrations": "^7.1.1",
@@ -188,6 +190,7 @@
     "stylelint": "^14.5.1",
     "stylelint-config-recommended": "^7.0.0",
     "stylelint-config-standard": "^25.0.0",
+    "ts-node": "^10.9.1",
     "typed-emitter": "^2.1.0",
     "typescript": "~4.7.2",
     "vite": "^2.9.13",
@@ -247,7 +250,7 @@
     "publish": {
       "provider": "github",
       "repo": "typerefinery",
-      "owner": "innovolve-ai",
+      "owner": "typerefinery-ai",
       "releaseType": "release"
     },
     "beforePack": "./myBeforePackHook.js"

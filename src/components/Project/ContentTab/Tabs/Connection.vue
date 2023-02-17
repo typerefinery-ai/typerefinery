@@ -40,7 +40,9 @@
               v-model="v$.port.$model"
               :class="{ 'p-invalid': v$.port.$invalid && submitted }"
               aria-describedby="port"
-              placeholder="Eg: 1729"
+              :placeholder="
+                $t(`components.dialog.connections.info.port-placeholder`)
+              "
               @input="handleInput('port', $event.target.value, !v$.$invalid)"
             />
             <small
@@ -229,9 +231,9 @@
     },
     data() {
       return {
-        host: "localhost",
-        port: 1729,
-        database: "typerefinery",
+        port: process.env.TYPEDB_PORT || "8729",
+        host: process.env.TYPEDB_HOST || "localhost",
+        database: process.env.TYPEDB_DB || "typerefinery",
         label: "",
         icon: "",
         description: "",

@@ -1,0 +1,5 @@
+uvicorn[standard]
+typedb-client
+argparse
+loguru
+websocket-client
