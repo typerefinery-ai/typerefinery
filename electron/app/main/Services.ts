@@ -76,7 +76,7 @@ function getServicePage(service: Service) {
           <div class="row align-items-center">
             <div class="col">
               <div class="lh-1">
-                <h1 class="h5 mb-0 text-white lh-1">Service: ${service.id}</h1>
+                <h1 class="h5 mb-0 text-white lh-1">Service: ${service.name}</h1>
               </div>
             </div>
             <div class="col">
@@ -92,6 +92,14 @@ function getServicePage(service: Service) {
 
       <div class="my-3 p-3 bg-body rounded shadow-sm">
         <h6 class="border-bottom pb-2 mb-3">Config</h6>
+        <div class="input-group input-group-sm mb-1">
+          <span class="input-group-text" id="inputGroup-sizing-sm">Id</span>
+          <input type="text" value="${service.id}" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+        </div>
+        <div class="input-group input-group-sm mb-1">
+          <span class="input-group-text" id="inputGroup-sizing-sm">Description</span>
+          <input type="text" value="${service.description}" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+        </div>
         <div class="input-group input-group-sm mb-1">
           <span class="input-group-text" id="inputGroup-sizing-sm">Enabled</span>
           <input type="text" value="${service.isEnabled}" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
@@ -127,6 +135,14 @@ function getServicePage(service: Service) {
         <div class="input-group input-group-sm mb-1">
           <span class="input-group-text" id="inputGroup-sizing-sm">Setup Status File</span>
           <input type="text" value="${service.setupstatefile}" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+        </div>
+        <div class="input-group input-group-sm mb-1">
+          <span class="input-group-text" id="inputGroup-sizing-sm">Archive File</span>
+          <input type="text" value="${service.getArchiveForPlatform?.name}" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+        </div>
+        <div class="input-group input-group-sm mb-1">
+          <span class="input-group-text" id="inputGroup-sizing-sm">Archive Output</span>
+          <input type="text" value="${service.setuparchiveOutputPath}" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
         </div>
         <div class="input-group input-group-sm mb-1">
           <span class="input-group-text" id="inputGroup-sizing-sm">Is Running</span>

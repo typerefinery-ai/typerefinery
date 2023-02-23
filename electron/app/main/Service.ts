@@ -143,6 +143,8 @@ export interface SericeConfigFile {
 export class Service extends EventEmitter<ServiceEvent> {
   #process?: ChildProcess
   #id: string
+  #name: string
+  #description: string
   #servicehome: string
   #servicepath: string
   #execservicepath = ""
@@ -180,6 +182,8 @@ export class Service extends EventEmitter<ServiceEvent> {
     super()
     this.#options = options
     this.#abortController = new AbortController()
+    this.#name = this.#options.name || this.#options.id
+    this.#description = this.#options.description || ""
     this.#servicepath = servicepath
     this.#servicehome = servicehome
     this.#servicedatapath = servicedatapath
@@ -288,6 +292,18 @@ export class Service extends EventEmitter<ServiceEvent> {
 
     this.#log(`service ${this.#id} loaded with status ${this.#status}.`)
     this.#checkRunning()
+  }
+
+  get name(): string {
+    return this.#name
+  }
+
+  get description(): string {
+    return this.#description
+  }
+
+  get setuparchiveOutputPath(): string {
+    return this.#setuparchiveOutputPath
   }
 
   get setupstatefile(): string {
