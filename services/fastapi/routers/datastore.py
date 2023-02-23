@@ -9,7 +9,7 @@ import random
 from typing import Optional
 from sqlmodel import Field, Session, SQLModel, create_engine, select
 import strawberry
-from strawberry.asgi import GraphQL
+from strawberry.fastapi import GraphQLRouter
 
 router = APIRouter()
 
@@ -214,6 +214,6 @@ class Query:
 
 schema = strawberry.Schema(query=Query)
 
-graphql_app = GraphQL(schema)
+graphql_app = GraphQLRouter(schema)
 router.add_route("/graphql", graphql_app)
-router.add_api_websocket_route("/graphql", graphql_app)
+router.add_api_websocket_route("/graphql", graphql_app, name='graphql_app')
