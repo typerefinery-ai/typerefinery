@@ -1100,7 +1100,11 @@ export class Service extends EventEmitter<ServiceEvent> {
         )
       }
     } else {
-      this.#setStatus(ServiceStatus.AVAILABLE)
+      if (this.isEnabled) {
+        this.#setStatus(ServiceStatus.AVAILABLE)
+      } else {
+        this.#setStatus(ServiceStatus.DISABLED)
+      }
     }
   }
 
