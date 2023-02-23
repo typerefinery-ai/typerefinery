@@ -345,6 +345,7 @@ export class Service extends EventEmitter<ServiceEvent> {
   // replace possible variables in a service command string
   #getServiceCommand(command: string, service: Service): string {
     return command
+      .replaceAll("${SERVICE_HOME}", service.#servicehome)
       .replaceAll("${SERVICE_PATH}", service.#servicepath)
       .replaceAll("${EXEC_SERVICE_PATH}", service.#execservicepath)
       .replaceAll("${SERVICE_DATA_PATH}", service.#servicedatapath)
@@ -356,6 +357,7 @@ export class Service extends EventEmitter<ServiceEvent> {
   get environmentVariables() {
     const envVar = {}
     // add default env vars
+    envVar["SERVICE_HOME"] = this.#servicehome
     envVar["SERVICE_PATH"] = this.#servicepath
     envVar["EXEC_SERVICE_PATH"] = this.#execservicepath
     envVar["SERVICE_DATA_PATH"] = this.#servicedatapath
