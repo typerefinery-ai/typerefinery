@@ -93,6 +93,10 @@ function getServicePage(service: Service) {
       <div class="my-3 p-3 bg-body rounded shadow-sm">
         <h6 class="border-bottom pb-2 mb-3">Config</h6>
         <div class="input-group input-group-sm mb-1">
+          <span class="input-group-text" id="inputGroup-sizing-sm">Enabled</span>
+          <input type="text" value="${service.isEnabled}" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+        </div>
+        <div class="input-group input-group-sm mb-1">
           <span class="input-group-text" id="inputGroup-sizing-sm">Status</span>
           <input type="text" value="${serviceStatusName}" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
         </div>
