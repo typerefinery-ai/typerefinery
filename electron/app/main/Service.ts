@@ -408,6 +408,10 @@ export class Service extends EventEmitter<ServiceEvent> {
     return this.#options
   }
 
+  get isEnabled() {
+    return this.#options.enabled
+  }
+
   get isStarted() {
     return this.#status === ServiceStatus.STARTED
   }
@@ -759,6 +763,12 @@ export class Service extends EventEmitter<ServiceEvent> {
 
   // start service and store its process id in a file based on os type
   async start() {
+    //quick fail if disabled
+    if (!this.isEnabled) {
+      this.#log(`service ${this.#id} is disabled`)
+      return
+    }
+
     //quick fail already started
     if (this.isStarted) {
       this.#log(
