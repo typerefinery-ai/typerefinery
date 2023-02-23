@@ -31,7 +31,7 @@ CONFIG.FLOW_API = os.getenv("FLOW_API", "/fapi")
 ## save design into flow over websocket
 @Logger.catch
 @router.get("/flow/{flowid}/design")
-async def flow_design(flowid: str, request: Request, response: Response, body: dict = Body(...)):
+async def flow_design(flowid: str, request: Request, response: Response):
     service_url_flow = f"ws://localhost:8111/flows/{flowid}"
     dataPayloadWelcome = {"TYPE":"flow"}
     returnData = { "wserror": None }
@@ -58,6 +58,7 @@ async def flow_design(flowid: str, request: Request, response: Response, body: d
 
     except Exception as e:
       returnData['wserror'] = str(e)
+      print(str(e))
 
     return Response(content=json.dumps(returnData), media_type="application/json", status_code=200)
 
@@ -88,6 +89,7 @@ async def flow_save(flowid: str, request: Request, response: Response, body: dic
 
 
         print("sending save:")
+        print(json.dumps(dataPayloadSave))
         conn.send(json.dumps(dataPayloadSave))
 
     except Exception as e:
