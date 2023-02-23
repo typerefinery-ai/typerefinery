@@ -7,7 +7,7 @@ import path from "path"
 import config from "../../../package.json"
 import fs from "fs"
 
-const pageAutoRefreshEverySeconds = 5
+const pageAutoRefreshEverySeconds = 5000
 
 const isProduction = process.env.NODE_ENV === "production"
 const APPDATA =
@@ -65,53 +65,98 @@ function getServicePage(service: Service) {
   <html>
   <head>
     <title>Service: ${service.id}</title>
-    <style>
-      pre {
-        font-family: monospace;
-        font-size: 12px;
-        min-width: 99%;
-        min-height: 100px;
-        max-height: 300px;
-        border: 1px solid #ccc;
-        padding: 5px;
-        overflow: scroll;
-      }
-    </style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
   </head>
-  <body>
-    <h1><a href="/services">Service</a>: ${service.id}</h1>
+  <body class="bg-dark">
+    <main class="container">
+      <div class="d-flex align-items-center p-3 my-3 text-white bg-primary rounded shadow-sm">
+        <div class="container align-middle">
+          <div class="row align-items-center">
+            <div class="col">
+              <div class="lh-1">
+                <h1 class="h5 mb-0 text-white lh-1">Service: ${service.id}</h1>
+              </div>
+            </div>
+            <div class="col">
+              <button type="button" class="btn btn-success" onclick="triggerServiceAPI('start')">Start</button>
+              <button type="button" class="btn btn-danger" onclick="triggerServiceAPI('stop')">Stop</button>
+            </div>
+            <div class="col text-end">
+              <small>Status @: ${getTimestamp()}, Refresh in (sec) <span id="refreshInPage">${pageAutoRefreshEverySeconds}</span></small>
+            </div>
+          </div>
+        </div>
+      </div>
 
-    <p>Status: ${serviceStatusName}</p>
-    <p>Port: ${service.port}</p>
-    <p>Exec Service: ${execservice}</p>
-    <p>Executable: ${service.getServiceExecutable()}</p>
-    <p>Command Line: ${service.getServiceCommand(true)}</p>
-    <p>Command Line Cli: ${service.getServiceCommandCli(true)}</p>
-    <p>Is Configured: ${service.isSetup}</p>
-    <p>Is Running: ${service.isRunning}</p>
-    <p>Env:</p>
-    <pre>${JSON.stringify(service.environmentVariables, null, "\t")}</pre>
-    <p>Setup: ${JSON.stringify(service.setup)}</p>
-    <p>
-      <button onclick="triggerServiceAPI('start')">Start</button>
-      <button onclick="triggerServiceAPI('stop')">Stop</button>
-    </p>
+      <div class="my-3 p-3 bg-body rounded shadow-sm">
+        <h6 class="border-bottom pb-2 mb-3">Config</h6>
+        <div class="input-group input-group-sm mb-1">
+          <span class="input-group-text" id="inputGroup-sizing-sm">Status</span>
+          <input type="text" value="${serviceStatusName}" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+        </div>
+        <div class="input-group input-group-sm mb-1">
+          <span class="input-group-text" id="inputGroup-sizing-sm">Port</span>
+          <input type="text" value="${service.port}" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+        </div>
+        <div class="input-group input-group-sm mb-1">
+          <span class="input-group-text" id="inputGroup-sizing-sm">Exec Service</span>
+          <input type="text" value="${execservice}" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+        </div>
+        <div class="input-group input-group-sm mb-1">
+          <span class="input-group-text" id="inputGroup-sizing-sm">Executable</span>
+          <input type="text" value="${service.getServiceExecutable()}" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+        </div>
+        <div class="input-group input-group-sm mb-1">
+          <span class="input-group-text" id="inputGroup-sizing-sm">Command Line</span>
+          <input type="text" value="${service.getServiceCommand(true)}" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+        </div>
+        <div class="input-group input-group-sm mb-1">
+          <span class="input-group-text" id="inputGroup-sizing-sm">Command Line Cli</span>
+          <input type="text" value="${service.getServiceCommandCli(true)}" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+        </div>
+        <div class="input-group input-group-sm mb-1">
+          <span class="input-group-text" id="inputGroup-sizing-sm">Is Configured</span>
+          <input type="text" value="${service.isSetup}" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+        </div>
+        <div class="input-group input-group-sm mb-1">
+          <span class="input-group-text" id="inputGroup-sizing-sm">Is Running</span>
+          <input type="text" value="${service.isRunning}" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+        </div>
+      </div>
 
-    <p>Status @: ${getTimestamp()}</p>
-    <p>Page Refresh In: <span id="refreshInPage">${pageAutoRefreshEverySeconds}</span></p>
+      <div class="my-3 p-3 bg-body rounded shadow-sm">
+        <h6 class="border-bottom pb-2 mb-3">Setup Command line</h6>
+        <div class="border border-1 bg-secondary-subtle p-3 fs-6">
+        <pre><code id="env" style="font-size: 8pt">${JSON.stringify(service.setup)}</code></pre>
+        </div>
+      </div>
 
-    <p>Error Log: <a href="#" onclick="loadLog('${service.errorLogFile.replaceAll(
-      pathSeparator,
-      "/"
-    )}')">${service.errorLogFile}</a></p>
-    <p>Console Log: <a href="#" onclick="loadLog('${service.errorLogFile.replaceAll(
-      pathSeparator,
-      "/"
-    )}')">${service.consoleLogFile}</a></p>
+      <div class="my-3 p-3 bg-body rounded shadow-sm">
+        <h6 class="border-bottom pb-2 mb-3">Environment Variables</h6>
+        <div class="border border-1 bg-secondary-subtle p-3 fs-6">
+        <pre><code id="env" style="font-size: 8pt">${JSON.stringify(service.environmentVariables, null, "\t")}</code></pre>
+        </div>
+      </div>
 
-    <h3>Log:</h3>
-    <p>Log Refresh In: <span id="refreshInLog">-</span></p>
-    <pre id="log"></pre>
+      <div class="my-3 p-3 bg-body rounded shadow-sm">
+        <h6 class="border-bottom pb-2 mb-3">Logs</h6>
+        <p>Error Log: <a href="#" onclick="loadLog('${service.errorLogFile.replaceAll(
+          pathSeparator,
+          "/"
+        )}')">${service.errorLogFile}</a></p>
+        <p>Console Log: <a href="#" onclick="loadLog('${service.errorLogFile.replaceAll(
+          pathSeparator,
+          "/"
+        )}')">${service.consoleLogFile}</a></p>
+        <p>Log Refresh In: <span id="refreshInLog">-</span></p>
+        <input class="form-control p-3" id="logSearch" type="text" placeholder="Search..">
+        <div class="border border-1 bg-secondary-subtle p-3 fs-6">
+          <pre><code id="log" style="font-size: 8pt"></code></pre>
+        </div>
+      </div>
+    </main>
     <script>
     const logContent = document.querySelector('#log');
     const $refreshInPage = document.querySelector('#refreshInPage');
@@ -166,12 +211,20 @@ function getServicePage(service: Service) {
       }).then(res => {
         return res.text();
       }).then(text => {
-        logContent.innerText = text;
+        $(logContent).html("<div>"+text.replace(/\\r\\n|\\r|\\n/g,"</div><div>")+"</div>");
+        // logContent.innerHtml = text;
         logContent.scrollTop = logContent.scrollHeight
         logContent.scrollIntoView()
       });
     }
-
+    $(document).ready(function(){
+      $("#logSearch").on("keyup", function() {
+        var value = $(this).val().toLowerCase();
+        $("#log *").filter(function() {
+          $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+      });
+    });
     </script>
   </body>
 </html>`
@@ -195,19 +248,22 @@ function getServicesPage(services: Service[]) {
           Object.values(ServiceStatus).findIndex((x) => x === service.status)
         ]
       const configured = service.isSetup ? "configured" : "not configured"
-      return `<tr>
-      <td><a href="/service/${service.id}">${service.id}</a></td>
+      let serviceLink = `<a href="http://localhost:${service.port}" target="_blank">${service.port}</a>`
+      if (service.port && service.port <= 0) {
+        serviceLink = ""
+      }
+
+      return `<tr class="align-middle">
+      <td scope="row"><a href="/service/${service.id}">${service.id}</a></td>
       <td>${execservice}</td>
       <td>${serviceStatusName}</td>
       <td>${configured.toUpperCase()}</td>
-      <td><a href="http://localhost:${service.port}" target="_blank">${
-        service.port
-      }</a></td>
+      <td>${serviceLink}</td>
       <td>
-        <button onclick="triggerServiceAPI('${
+        <button type="button" class="btn btn-success" onclick="triggerServiceAPI('${
           service.id
         }','start')">Start</button>
-        <button onclick="triggerServiceAPI('${
+        <button type="button" class="btn btn-danger" onclick="triggerServiceAPI('${
           service.id
         }','stop')">Stop</button>
       </td>
@@ -223,46 +279,67 @@ function getServicesPage(services: Service[]) {
   <html>
   <head>
     <meta http-equiv="refresh" content="${pageAutoRefreshEverySeconds}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
     <title>Services</title>
-    <style>
-      table {
-        border-collapse: collapse;
-      }
-      table, th, td {
-        border: 1px solid black;
-        padding: 5px;
-      }
-    </style>
   </head>
-  <body>
-    <h1>Services</h1>
+  <body class="bg-dark">
+    <main class="container">
+      <div class="d-flex align-items-center p-3 my-3 text-white bg-primary rounded shadow-sm">
+        <div class="container">
+          <div class="row align-items-center">
+            <div class="col">
+              <div class="lh-1">
+                <h1 class="h5 mb-0 text-white lh-1">Service Manager</h1>
+              </div>
+            </div>
+            <div class="col">
+              <button type="button" class="btn btn-danger" onclick="triggerServicesAPI('/exit')">Exit</button>
+              <button type="button" class="btn btn-warning" onclick="triggerServicesAPI('/services/reload')">Reload</button>
+            </div>
+            <div class="col text-end">
+              <small>Status @: ${getTimestamp()}, Refresh in (sec) <span id="refreshInPage">${pageAutoRefreshEverySeconds}</span></small>
+            </div>
+          </div>
+        </div>
+      </div>
 
-    <p>Logs Path: ${logsDir}</p>
-    <p>Service Path: ${servicesPath}</p>
-    <p>Service Data Path: ${servicesUserDataPath}</p>
-    <p>Service List:</p>
-    <table style="border: 1px solid">
-      <thead>
-        <tr>
-          <th>Service</th>
-          <th>Exec Service</th>
-          <th>Status</th>
-          <th>Configured</th>
-          <th>Port</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      ${servicesList}
-    </table>
+      <div class="my-3 p-3 bg-body rounded shadow-sm">
+        <table class="table table-hover">
+          <thead class="table-light">
+            <tr>
+              <th scope="col">Service</th>
+              <th scope="col">Exec Service</th>
+              <th scope="col">Status</th>
+              <th scope="col">Configured</th>
+              <th scope="col">Port</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="table-group-divider">
+          ${servicesList}
+          </tbody>
+        </table>
+      </div>
 
-    <p>
-      <button onclick="triggerServicesAPI('/exit')">Exit</button>
-      <button onclick="triggerServicesAPI('/services/reload')">Reload</button>
-    </p>
 
-    <p>Status @: ${getTimestamp()}</p>
-    <p>Page Refresh in (sec): <span id="refreshInPage">${pageAutoRefreshEverySeconds}</span></p>
+      <div class="my-3 p-3 bg-body rounded shadow-sm">
+        <h6 class="border-bottom pb-2 mb-3">Config</h6>
+        <div class="input-group input-group-sm mb-1">
+          <span class="input-group-text" id="inputGroup-sizing-sm">Logs Path</span>
+          <input type="text" value="${logsDir}" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+        </div>
+        <div class="input-group input-group-sm mb-1">
+          <span class="input-group-text" id="inputGroup-sizing-sm">Service Path</span>
+          <input type="text" value="${servicesPath}" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+        </div>
+        <div class="input-group input-group-sm mb-1">
+          <span class="input-group-text" id="inputGroup-sizing-sm">Service Data Path</span>
+          <input type="text" value="${servicesUserDataPath}" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+        </div>
+      </div>
 
+    </main>
     <script>
       const $refreshInPage = document.querySelector('#refreshInPage');
       let refreshInPage = ${pageAutoRefreshEverySeconds};
