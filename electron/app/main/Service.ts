@@ -267,7 +267,7 @@ export class Service extends EventEmitter<ServiceEvent> {
         )
         this.#setuparchiveFile = path.join(this.#servicepath, setupArchive.name)
         this.#setuparchiveOutputPath = path.join(
-          this.#servicepath,
+          this.#servicehome,
           setupArchive.output
         )
         this.#log(
@@ -288,6 +288,21 @@ export class Service extends EventEmitter<ServiceEvent> {
 
     this.#log(`service ${this.#id} loaded with status ${this.#status}.`)
     this.#checkRunning()
+  }
+
+  get setupstatefile(): string {
+    return this.#setupstatefile
+  }
+
+  get getExecutaleForPlatform(): string {
+    if (this.#options.execconfig?.executable) {
+      const platfromSpecificExecutable: string =
+        this.#options.execconfig?.executable[this.platform]
+      const platfromSpecificExecutableDefault: string =
+        this.#options.execconfig?.executable?.default || ""
+      return platfromSpecificExecutable || platfromSpecificExecutableDefault
+    }
+    return ""
   }
 
   get getSetupForPlatfrom(): string[] {
@@ -931,15 +946,35 @@ export class Service extends EventEmitter<ServiceEvent> {
       )
       return os.isPathExist(this.#setupstatefile)
     } else if (this.#options.execconfig.setuparchive) {
-      this.#log(
-        `isSetup archive setupstatefile: ${
-          this.#setuparchiveOutputPath
-        } = ${os.isPathExist(this.#setuparchiveOutputPath)}`
-      )
+      if (!this.#doValidateSetup()) {
+        this.#log(
+          `isSetup archive setuparchiveOutputPath: ${
+            this.#setuparchiveOutputPath
+          } = ${os.isPathExist(this.#setuparchiveOutputPath)}`
+        )
+      }
       return os.isPathExist(this.#setuparchiveOutputPath)
     }
     this.#log(`can't determine if service is setup`)
     return false
+  }
+  // run setup scripts
+  #doValidateSetup() {
+    // check if executables are present then create setup state file
+    if (!os.isPathExist(this.#setupstatefile)) {
+      const executable = this.getExecutaleForPlatform
+      if (executable) {
+        const executablePath = path.join(this.#servicepath, executable)
+        if (os.isPathExist(executablePath)) {
+          this.#log(`executable ${executablePath} is found`)
+          fs.writeFileSync(this.#setupstatefile, "setup found")
+        } else {
+          this.#log(`executable ${executablePath} is not found`)
+          return false
+        }
+      }
+    }
+    return true
   }
 
   // extract service archive

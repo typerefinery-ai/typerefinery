@@ -121,8 +121,12 @@ function getServicePage(service: Service) {
           <input type="text" value="${service.getServiceCommandCli(true)}" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
         </div>
         <div class="input-group input-group-sm mb-1">
-          <span class="input-group-text" id="inputGroup-sizing-sm">Is Configured</span>
+          <span class="input-group-text" id="inputGroup-sizing-sm">Is Setup</span>
           <input type="text" value="${service.isSetup}" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+        </div>
+        <div class="input-group input-group-sm mb-1">
+          <span class="input-group-text" id="inputGroup-sizing-sm">Setup Status File</span>
+          <input type="text" value="${service.setupstatefile}" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
         </div>
         <div class="input-group input-group-sm mb-1">
           <span class="input-group-text" id="inputGroup-sizing-sm">Is Running</span>
