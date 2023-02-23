@@ -2,7 +2,7 @@
   "id": "websight-mongo",
   "name": "Websight Mongo",
   "description": "Mongo instance for Websight",
-  "enabled": false,
+  "enabled": true,
   "status": "-1",
   "logoutput": "",
   "icon": "pi pi-cog",
@@ -32,10 +32,10 @@
       "default": "bin\\mongod.exe"
     },
     "commandline": {
-      "win32": "--dbpath ${SERVICE_PATH}\\database",
-      "darwin": "--dbpath ${SERVICE_PATH}/database",
-      "linux": "--dbpath ${SERVICE_PATH}/database",
-      "default": "--dbpath ${SERVICE_PATH}\\database"
+      "win32": "--dbpath ${SERVICE_HOME}\\database --bind_ip_all --auth",
+      "darwin": "--dbpath ${SERVICE_HOME}/database --bind_ip_all --auth",
+      "linux": "--dbpath ${SERVICE_HOME}/database --bind_ip_all --auth",
+      "default": "--dbpath ${SERVICE_HOME}\\database --bind_ip_all --auth"
     }
   }
 }
