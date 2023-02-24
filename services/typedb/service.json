@@ -4,7 +4,6 @@
   "description": "Database",
   "enabled": true,
   "status": "30",
-  "logoutput": "...",
   "icon": "pi pi-database",
   "servicetype": 10,
   "execconfig": {
@@ -27,18 +26,6 @@
     "healthcheck": {
       "type": "tcp",
       "retries": 30
-    }
-  },
-  "actions": {
-    "stop": {
-      "name": "stop",
-      "path": "...",
-      "commanline": "..."
-    },
-    "start": {
-      "name": "start",
-      "path": "...",
-      "commanline": "..."
     }
   }
 }

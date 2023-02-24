@@ -4,7 +4,6 @@
   "description": "Websight CMS",
   "enabled": false,
   "status": "-1",
-  "logoutput": "...",
   "icon": "pi pi-cog",
   "servicetype": 10,
   "execconfig": {
@@ -21,18 +20,6 @@
     "healthcheck": {
       "type": "tcp",
       "retries": 30
-    }
-  },
-  "actions": {
-    "stop": {
-      "name": "stop",
-      "path": "...",
-      "commanline": "..."
-    },
-    "start": {
-      "name": "start",
-      "path": "...",
-      "commanline": "..."
     }
   }
 }

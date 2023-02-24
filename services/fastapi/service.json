@@ -4,7 +4,6 @@
   "description": "Fast API",
   "enabled": true,
   "status": "-1",
-  "logoutput": "...",
   "icon": "pi pi-cog",
   "servicetype": 10,
   "execconfig": {
@@ -28,17 +27,5 @@
       "expected_status": 200
     },
     "depend_on": ["python"]
-  },
-  "actions": {
-    "stop": {
-      "name": "stop",
-      "path": "...",
-      "commanline": "..."
-    },
-    "start": {
-      "name": "start",
-      "path": "...",
-      "commanline": "..."
-    }
   }
 }
