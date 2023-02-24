@@ -515,7 +515,7 @@ export class Service extends EventEmitter<ServiceEvent> {
       this.#log(
         `process ${this.#id} with pid ${
           this.#process?.pid
-        } existed, service status is ${this.#status}`
+        } exited, service status is ${this.#status}`
       )
       this.#process = void 0
     })
