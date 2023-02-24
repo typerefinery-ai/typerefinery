@@ -4,7 +4,6 @@
   "description": "Nginx instance for Websight",
   "enabled": true,
   "status": "-1",
-  "logoutput": "",
   "icon": "pi pi-cog",
   "servicetype": 10,
   "serviceorder": 0,
