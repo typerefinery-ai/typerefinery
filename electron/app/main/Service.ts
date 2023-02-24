@@ -433,6 +433,7 @@ export class Service extends EventEmitter<ServiceEvent> {
       .replaceAll("${SERVICE_LOG_PATH}", service.#logsDir + "")
       .replaceAll("${SERVICE_AUTH_USERNAME}", service.username)
       .replaceAll("${SERVICE_AUTH_PASSWORD}", service.password)
+      .replaceAll("${SERVICE_PID_FILE}", service.#servicepidfile)
   }
 
   get environmentVariables() {
@@ -449,6 +450,7 @@ export class Service extends EventEmitter<ServiceEvent> {
     envVar["SERVICE_LOG_PATH"] = this.#logsDir + ""
     envVar["SERVICE_AUTH_USERNAME"] = this.username
     envVar["SERVICE_AUTH_PASSWORD"] = this.password
+    envVar["SERVICE_PID_FILE"] = this.#servicepidfile
 
     // for each attribute in envVar update is value
     const serviceEnvVar = this.#options.execconfig?.env || {}
@@ -1025,6 +1027,63 @@ export class Service extends EventEmitter<ServiceEvent> {
           )
 
           this.#setStatus(ServiceStatus.STOPPING)
+          if (stopCommand.startsWith(";")) {
+            stopCommand = stopCommand.substring(1)
+            await os
+              .runProcess(stopCommand, [], {
+                signal: this.#abortController.signal,
+                cwd: this.#servicepath,
+                stdio: ["ignore", this.#stdout, this.#stderr],
+                env: this.environmentVariables,
+                windowsHide: true,
+              })
+              .then((result) => {
+                this.#log(`shell command ${stopCommand} result ${result}`)
+                // this.#removeServicePidFile()
+                this.#setStatus(ServiceStatus.STOPPED)
+              })
+              .catch((err) => {
+                this.#log(`shell command ${stopCommand} error ${err}`)
+                if (os.isPathExist(this.#servicepidfile)) {
+                  this.#setStatus(ServiceStatus.ERROR)
+                } else {
+                  this.#setStatus(ServiceStatus.STOPPED)
+                }
+              })
+              .finally(() => {
+                this.#removeServicePidFile()
+              })
+            return
+          }
+
+          let serviceExecutable = this.getServiceExecutable()
+
+          // check if executing service with another service
+          if (this.#options.execconfig.execservice) {
+            // find service executable
+            const execservice: ExecService =
+              this.#options.execconfig.execservice
+
+            //check if using cli command for the service
+            if (execservice.id && execservice.cli) {
+              const serviceExecutableService = this.#serviceManager.getService(
+                execservice.id
+              )
+              const serviceExecutableRoot =
+                serviceExecutableService.getServiceExecutableRoot()
+              serviceExecutable =
+                serviceExecutable +
+                " " +
+                serviceExecutableService.getServiceCommandCli()
+              this.#execservicepath = serviceExecutableRoot
+              this.#log(
+                `executing stop command using command cli ${serviceExecutable}`
+              )
+            }
+          }
+
+          stopCommand = `${serviceExecutable} ${stopCommand}`
+          this.#log(`stop command: ${stopCommand} in ${this.#servicepath}`)
           await os
             .runProcess(stopCommand, [], {
               signal: this.#abortController.signal,
@@ -1034,22 +1093,18 @@ export class Service extends EventEmitter<ServiceEvent> {
               windowsHide: true,
             })
             .then((result) => {
-              this.#log(`shell command ${stopCommand} result ${result}`)
-              // this.#removeServicePidFile()
-              this.#setStatus(ServiceStatus.STOPPED)
+              this.#log(`stop command ${stopCommand} result ${result}`)
+              this.#setStatus(ServiceStatus.INSTALLED)
+              // create setup file to mark that setup already happened
+              // fs.writeFileSync(this.#setupstatefile, "setup completed")
             })
             .catch((err) => {
-              this.#log(`shell command ${stopCommand} error ${err}`)
-              if (os.isPathExist(this.#servicepidfile)) {
-                this.#setStatus(ServiceStatus.ERROR)
-              } else {
-                this.#setStatus(ServiceStatus.STOPPED)
-              }
+              this.#log(`stop command ${stopCommand} error ${err}`)
+              this.#setStatus(ServiceStatus.ERROR)
             })
             .finally(() => {
-              // this.#removeServicePidFile()
+              // this.#log(`setup command ${setupCommand} complete`)
             })
-
           return
         }
         this.#setStatus(ServiceStatus.STOPPING)
