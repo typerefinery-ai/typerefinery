@@ -72,21 +72,18 @@ export interface HealthCheck {
   expected_status?: number
 }
 
+export interface PlatfromCommandLine {
+  win32?: string
+  darwin?: string
+  linux?: string
+  default?: string
+}
+
 export interface ExecConfig {
   authentication?: Authentication
   execservice?: ExecService
-  executable?: {
-    win32?: string
-    darwin?: string
-    linux?: string
-    default?: string
-  }
-  executablecli?: {
-    win32?: string
-    darwin?: string
-    linux?: string
-    default?: string
-  }
+  executable?: PlatfromCommandLine
+  executablecli?: PlatfromCommandLine
   setuparchive?: {
     win32?: SetupArchive
     darwin?: SetupArchive
@@ -99,18 +96,8 @@ export interface ExecConfig {
     default?: string[]
   }
   env?: any
-  commandline?: {
-    win32?: string
-    darwin?: string
-    linux?: string
-    default?: string
-  }
-  commandlinecli?: {
-    win32?: string
-    darwin?: string
-    linux?: string
-    default?: string
-  }
+  commandline?: PlatfromCommandLine
+  commandlinecli?: PlatfromCommandLine
   datapath?: string
   serviceorder?: 99
   depend_on?: string[]
@@ -140,6 +127,24 @@ export interface ServiceActions {
   restart: () => void
 }
 
+export enum ServiceActionsEnum {
+  START = "start",
+  STOP = "stop",
+  RESTART = "restart",
+}
+
+export interface ServiceActionsConfig {
+  start?: {
+    commandline: PlatfromCommandLine
+  }
+  stop?: {
+    commandline: PlatfromCommandLine
+  }
+  restart?: {
+    commandline: PlatfromCommandLine
+  }
+}
+
 export interface SericeConfigFile {
   id: string
   name?: string
@@ -150,6 +155,7 @@ export interface SericeConfigFile {
   icon?: string
   servicetype?: ServiceType
   execconfig: ExecConfig
+  actions?: ServiceActionsConfig
 }
 
 export class Service extends EventEmitter<ServiceEvent> {
@@ -332,6 +338,17 @@ export class Service extends EventEmitter<ServiceEvent> {
   get password(): string {
     if (this.#options.execconfig?.authentication) {
       return this.#options.execconfig?.authentication?.password || ""
+    }
+    return ""
+  }
+
+  getActionForPlatform(action: string): string {
+    if (this.#options.actions) {
+      const platfromSpecificAction: string =
+        this.#options.actions?.[action].commandline[this.platform]
+      const platfromSpecificActionDefault: string =
+        this.#options.actions?.[action].commandline?.default || ""
+      return platfromSpecificAction || platfromSpecificActionDefault
     }
     return ""
   }
@@ -992,19 +1009,59 @@ export class Service extends EventEmitter<ServiceEvent> {
     }
   }
 
-  stop() {
+  async stop() {
     if (this.#process) {
       const pid: number = this.#process?.pid ? this.#process.pid : 0
       if (pid > 0) {
         this.#log(`stopping ${this.#id} with pid ${pid}`)
+        let stopCommand = this.getActionForPlatform(ServiceActionsEnum.STOP)
+        // if stop command is defined run the commandline as a process
+        if (stopCommand) {
+          stopCommand = this.#getServiceCommand(stopCommand, this)
+          this.#log(
+            `stopping ${
+              this.#id
+            } with pid ${pid} using stop command: ${stopCommand}`
+          )
+
+          this.#setStatus(ServiceStatus.STOPPING)
+          await os
+            .runProcess(stopCommand, [], {
+              signal: this.#abortController.signal,
+              cwd: this.#servicepath,
+              stdio: ["ignore", this.#stdout, this.#stderr],
+              env: this.environmentVariables,
+              windowsHide: true,
+            })
+            .then((result) => {
+              this.#log(`shell command ${stopCommand} result ${result}`)
+              // this.#removeServicePidFile()
+              this.#setStatus(ServiceStatus.STOPPED)
+            })
+            .catch((err) => {
+              this.#log(`shell command ${stopCommand} error ${err}`)
+              if (os.isPathExist(this.#servicepidfile)) {
+                this.#setStatus(ServiceStatus.ERROR)
+              } else {
+                this.#setStatus(ServiceStatus.STOPPED)
+              }
+            })
+            .finally(() => {
+              // this.#removeServicePidFile()
+            })
+
+          return
+        }
         this.#setStatus(ServiceStatus.STOPPING)
         if (!this.#process.kill(SignalType.SIGINT)) {
           this.#log(`killing ${this.#id} with pid ${pid}`)
           kill(pid, SignalType.SIGINT, (err) => {
             this.#log(`killed ${this.#id} with pid ${pid} error ${err}`)
+            this.#removeServicePidFile()
           })
         } else {
           this.#log(`gracefully closed ${this.#id} with pid ${pid}`)
+          this.#removeServicePidFile()
         }
       }
     }
@@ -1035,11 +1092,6 @@ export class Service extends EventEmitter<ServiceEvent> {
     ) {
       return true
     } else if (this.#options.execconfig.setup) {
-      this.#log(
-        `isSetup setupstatefile: ${this.#setupstatefile} = ${os.isPathExist(
-          this.#setupstatefile
-        )}`
-      )
       return os.isPathExist(this.#setupstatefile)
     } else if (this.#options.execconfig.setuparchive) {
       if (!this.#doValidateSetup()) {

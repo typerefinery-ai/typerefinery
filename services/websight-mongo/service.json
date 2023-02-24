@@ -81,7 +81,10 @@
   "actions": {
     "stop": {
       "commandline": {
-        "default": "--username ${SERVICE_AUTH_USERNAME} --password ${SERVICE_AUTH_PASSWORD} --port ${SERVICE_PORT} --quiet --eval 'db.shutdownServer()'"
+        "win32": "; ${SERVICE_PATH}\\${SERVICE_EXECUTABLE_CLI} --username ${SERVICE_AUTH_USERNAME} --password ${SERVICE_AUTH_PASSWORD} --port ${SERVICE_PORT} --quiet --eval 'db.shutdownServer()'",
+        "darwin": "; ${SERVICE_PATH}/${SERVICE_EXECUTABLE_CLI} --username ${SERVICE_AUTH_USERNAME} --password ${SERVICE_AUTH_PASSWORD} --port ${SERVICE_PORT} --quiet --eval 'db.shutdownServer()'",
+        "linux": "; ${SERVICE_PATH}/${SERVICE_EXECUTABLE_CLI} --username ${SERVICE_AUTH_USERNAME} --password ${SERVICE_AUTH_PASSWORD} --port ${SERVICE_PORT} --quiet --eval 'db.shutdownServer()'",
+        "default": "; ${SERVICE_PATH}\\${SERVICE_EXECUTABLE_CLI} --username ${SERVICE_AUTH_USERNAME} --password ${SERVICE_AUTH_PASSWORD} --port ${SERVICE_PORT} --quiet --eval 'db.shutdownServer()'"
       }
     }
   }
