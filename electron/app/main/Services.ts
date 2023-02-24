@@ -60,6 +60,17 @@ function getServicePage(service: Service) {
       Object.values(ServiceStatus).findIndex((x) => x === service.status)
     ]
   const pathSeparator = process.platform === "win32" ? "\\" : "/"
+  let statusBackground = "bg-warning"
+
+  if (service.status === ServiceStatus.STARTED) {
+    statusBackground = "bg-success"
+  }
+  if (service.status === ServiceStatus.STOPPED) {
+    statusBackground = "bg-error"
+  }
+  if (service.status === ServiceStatus.DISABLED) {
+    statusBackground = "bg-secondary"
+  }
 
   return `
   <html>
@@ -106,7 +117,7 @@ function getServicePage(service: Service) {
         </div>
         <div class="input-group input-group-sm mb-1">
           <span class="input-group-text" id="inputGroup-sizing-sm">Status</span>
-          <input type="text" value="${serviceStatusName}" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+          <input type="text" value="${serviceStatusName}" readonly class="form-control ${statusBackground}" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
         </div>
         <div class="input-group input-group-sm mb-1">
           <span class="input-group-text" id="inputGroup-sizing-sm">Port</span>
@@ -276,11 +287,22 @@ function getServicesPage(services: Service[]) {
       if (service.port && service.port <= 0) {
         serviceLink = ""
       }
+      let statusBackground = "bg-warning"
+
+      if (service.status === ServiceStatus.STARTED) {
+        statusBackground = "bg-success"
+      }
+      if (service.status === ServiceStatus.STOPPED) {
+        statusBackground = "bg-error"
+      }
+      if (service.status === ServiceStatus.DISABLED) {
+        statusBackground = "bg-secondary"
+      }
 
       return `<tr class="align-middle">
       <td scope="row"><a href="/service/${service.id}">${service.id}</a></td>
       <td>${execservice}</td>
-      <td>${serviceStatusName}</td>
+      <td class="${statusBackground}">${serviceStatusName}</td>
       <td>${configured.toUpperCase()}</td>
       <td>${serviceLink}</td>
       <td>
