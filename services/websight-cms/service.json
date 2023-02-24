@@ -21,6 +21,10 @@
       "type": "http",
       "url": "http://wsadmin:wsadmin@localhost:${SERVICE_PORT}",
       "expected_status": 200
-    }
+    },
+    "depend_on": [
+      "websight-mongo",
+      "websight-nginx"
+    ]
   }
 }
