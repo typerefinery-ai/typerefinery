@@ -66,7 +66,7 @@ function getServicePage(service: Service) {
     statusBackground = "bg-success"
   }
   if (service.status === ServiceStatus.STOPPED) {
-    statusBackground = "bg-error"
+    statusBackground = "bg-danger"
   }
   if (service.status === ServiceStatus.DISABLED) {
     statusBackground = "bg-secondary"
@@ -293,7 +293,7 @@ function getServicesPage(services: Service[]) {
         statusBackground = "bg-success"
       }
       if (service.status === ServiceStatus.STOPPED) {
-        statusBackground = "bg-error"
+        statusBackground = "bg-danger"
       }
       if (service.status === ServiceStatus.DISABLED) {
         statusBackground = "bg-secondary"
