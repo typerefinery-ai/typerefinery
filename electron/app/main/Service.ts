@@ -41,6 +41,8 @@ export enum ServiceStatus {
   LOADED = "1",
   ARCHIVED = "5",
   AVAILABLE = "10",
+  WAITINGFORDEPENDENCIES = "11",
+  EXTRACTING = "14",
   INSTALLING = "15",
   INSTALLED = "20",
   STOPPING = "30",
@@ -910,6 +912,7 @@ export class Service extends EventEmitter<ServiceEvent> {
     }
 
     this.#log(`waiting for dependent services`)
+    this.#setStatus(ServiceStatus.WAITINGFORDEPENDENCIES)
     // wait untill all depend_on services are started
     await this.#waitForDependOnServices()
 
@@ -1198,6 +1201,7 @@ export class Service extends EventEmitter<ServiceEvent> {
     // extract setuparchive before setup
     if (this.#setuparchiveFile) {
       if (!os.isPathExist(this.#setuparchiveOutputPath)) {
+        this.#setStatus(ServiceStatus.EXTRACTING)
         this.#log(`extracting setup archive ${this.#setuparchiveFile}`)
         await this.#doExtract(
           this.#setuparchiveFile,
