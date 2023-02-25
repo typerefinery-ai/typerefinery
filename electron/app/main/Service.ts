@@ -1302,7 +1302,6 @@ export class Service extends EventEmitter<ServiceEvent> {
               continue
             }
             this.#log(`executing setup shell command: ${shellCommand}`)
-            console.log(shellCommand)
             await os
               .runProcess(shellCommand, [], {
                 signal: this.#abortController.signal,
@@ -1436,6 +1435,9 @@ export class Service extends EventEmitter<ServiceEvent> {
                 this.#log(`service ${service.id} is available and ready.`)
                 depend_on_services_started = true
                 break
+              } else {
+                this.#log(`starting service ${service.id}.`)
+                await service.start()
               }
               //Make sure all the services are started.
               if (service.status != ServiceStatus.STARTED) {
