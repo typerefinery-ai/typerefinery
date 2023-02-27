@@ -824,22 +824,12 @@ export class Service extends EventEmitter<ServiceEvent> {
     if (this.#healthCheck && this.#healthCheck.url) {
       const urlFixed = this.#getServiceCommand(this.#healthCheck.url, this)
       const url: URL = new URL(urlFixed)
-      const hostname = url.hostname
-      const port = url.port
-      const path = url.pathname
       const expected_status = this.#healthCheck.expected_status || 200
 
-      const options: RequestOptions = {
-        hostname: hostname,
-        port: port,
-        path: path,
-        timeout: this.#healthCheck?.timeout || 1000,
-      }
-
-      this.#log(`http health check request ${hostname}; url ${url}`)
+      this.#log(`http health check request ${url.hostname}; url ${url}`)
 
       try {
-        const req = http.get(options, (res) => {
+        const req = http.get(url, (res) => {
           if (res.statusCode == expected_status) {
             this.#setStatus(ServiceStatus.STARTED)
             this.#log(
