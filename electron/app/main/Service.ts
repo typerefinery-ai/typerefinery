@@ -39,15 +39,19 @@ export enum ServiceStatus {
   ERROR = "-1",
   DISABLED = "0",
   LOADED = "1",
-  ARCHIVED = "5",
-  AVAILABLE = "10",
-  WAITINGFORDEPENDENCIES = "11",
-  EXTRACTING = "14",
-  INSTALLING = "15",
-  INSTALLED = "20",
-  STOPPING = "30",
-  STOPPED = "60",
+  ARCHIVED = "10",
+  EXTRACTING = "15",
+  EXTRACTED = "20",
+  INSTALLING = "25",
+  INSTALLED = "30",
+  AVAILABLE = "50",
+  STOPPING = "65",
+  STOPCOMMANDSTART = "70",
+  STOPCOMMANDEND = "75",
+  STOPPED = "80",
   STARTING = "90",
+  DEPENDENCIESWAIT = "100",
+  DEPENDENCIESREADY = "105",
   STARTED = "120",
 }
 
@@ -912,9 +916,10 @@ export class Service extends EventEmitter<ServiceEvent> {
     }
 
     this.#log(`waiting for dependent services`)
-    this.#setStatus(ServiceStatus.WAITINGFORDEPENDENCIES)
+    this.#setStatus(ServiceStatus.DEPENDENCIESWAIT)
     // wait untill all depend_on services are started
     await this.#waitForDependOnServices()
+    this.#setStatus(ServiceStatus.DEPENDENCIESREADY)
 
     this.#log(`do service setup`)
     //run setup if it exists
@@ -1029,7 +1034,7 @@ export class Service extends EventEmitter<ServiceEvent> {
             } with pid ${pid} using stop command: ${stopCommand}`
           )
 
-          this.#setStatus(ServiceStatus.STOPPING)
+          this.#setStatus(ServiceStatus.STOPCOMMANDSTART)
           if (stopCommand.startsWith(";")) {
             stopCommand = stopCommand.substring(1)
             await os
@@ -1097,7 +1102,7 @@ export class Service extends EventEmitter<ServiceEvent> {
             })
             .then((result) => {
               this.#log(`stop command ${stopCommand} result ${result}`)
-              this.#setStatus(ServiceStatus.INSTALLED)
+              this.#setStatus(ServiceStatus.STOPCOMMANDSTART)
               // create setup file to mark that setup already happened
               // fs.writeFileSync(this.#setupstatefile, "setup completed")
             })
@@ -1107,6 +1112,7 @@ export class Service extends EventEmitter<ServiceEvent> {
             })
             .finally(() => {
               // this.#log(`setup command ${setupCommand} complete`)
+              this.#setStatus(ServiceStatus.STOPPED)
             })
           return
         }
@@ -1213,6 +1219,7 @@ export class Service extends EventEmitter<ServiceEvent> {
             fs.writeFileSync(this.#setupstatefile, "archive extracted")
           }
         })
+        this.#setStatus(ServiceStatus.EXTRACTED)
       } else {
         this.#log(
           `setup archive already extracted in ${this.#setuparchiveOutputPath}`
@@ -1356,6 +1363,7 @@ export class Service extends EventEmitter<ServiceEvent> {
           this.#log(`all background processes terminated`)
         })
         fs.writeFileSync(this.#setupstatefile, "setup completed")
+        this.#setStatus(ServiceStatus.INSTALLED)
       } else {
         this.#log(`service ${this.#id} has already has been configured.`)
         this.#setStatus(ServiceStatus.AVAILABLE)
