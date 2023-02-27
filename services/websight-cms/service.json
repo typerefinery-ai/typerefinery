@@ -19,8 +19,9 @@
     "serviceport": 8113,
     "healthcheck": {
       "type": "http",
-      "url": "http://wsadmin:wsadmin@localhost:${SERVICE_PORT}",
-      "expected_status": 200
+      "url": "http://wsadmin:wsadmin@localhost:${SERVICE_PORT}/system/console/bundles",
+      "expected_status": 200,
+      "retries": 90
     },
     "depend_on": [
       "websight-mongo",
