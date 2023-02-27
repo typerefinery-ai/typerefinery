@@ -1282,9 +1282,11 @@ export class Service extends EventEmitter<ServiceEvent> {
           }
           // if setup command starts with ;, execute it as shell command
           if (setupCommand.startsWith(";")) {
-            const shellCommand = setupCommand.substring(1)
+            let shellCommand = setupCommand.substring(1)
             // does shell command ends with &?
             if (shellCommand.endsWith("&")) {
+              // remove & from shell command
+              shellCommand = shellCommand.substring(0, shellCommand.length - 1)
               this.#log(`run command in backgroud ${shellCommand}`)
               // run shell command in background and add it to backgroundProcesses
               const backgroundProcess = os
