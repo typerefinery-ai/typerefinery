@@ -11,13 +11,10 @@ import sampleData from "@/data/default.json"
 export default class Settings extends VuexModule {
   data = sampleData.settings
 
-  // Getters
-  get getFeatureStatus() {
+  get getExperience() {
     return (id: string) => {
-      const expIdx = this.data.experimentalFeatures.findIndex(
-        (el) => el.id === id
-      )
-      return this.data.experimentalFeatures[expIdx].enabled
+      const expIdx = this.data.listOfMenu.findIndex((el) => el.id === id)
+      return this.data.listOfMenu[expIdx]
     }
   }
 
@@ -46,6 +43,10 @@ export default class Settings extends VuexModule {
   toggleSettingsDialog() {
     this.data.settingsDialogVisible = !this.data.settingsDialogVisible
   }
+  @Mutation
+  toggleEditDialog() {
+    this.data.editDialog = !this.data.editDialog
+  }
 
   @Mutation
   setSettingPath(path: null) {
@@ -57,12 +58,34 @@ export default class Settings extends VuexModule {
     this.data.settingsDialogVisible = true
     this.data.settingPath = path
   }
-
+  //toggle experience
   @Mutation
-  toggleExperimentalFeatures(args: { id: string; enabled: boolean }) {
-    const expIdx = this.data.experimentalFeatures.findIndex(
-      (el) => el.id === args.id
-    )
-    this.data.experimentalFeatures[expIdx].enabled = args.enabled
+  toggleExperimentalFeatures(id) {
+    this.data.listOfMenu = this.data.listOfMenu.map((item) => {
+      if (item.id === id) {
+        item.enabled = !item.enabled
+      }
+      return item
+    })
+  }
+  //Update store after edit
+  @Mutation
+  updateMenuitem(updatedValue) {
+    const { id } = updatedValue
+    const expIdx = this.data.listOfMenu.findIndex((el) => el.id === id)
+    this.data.listOfMenu[expIdx] = updatedValue
+  }
+  //Add experience to the listOfMenu in store
+  @Mutation
+  addExprience(experience) {
+    if (experience.type === "experimental") {
+      this.data.listOfMenu.push(experience)
+    }
+    return this.data.listOfMenu
+  }
+  //update listOfMenu after orderlist save
+  @Mutation
+  updateList(orderedList) {
+    this.data.listOfMenu = orderedList
   }
 }

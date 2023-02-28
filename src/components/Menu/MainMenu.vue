@@ -1,8 +1,9 @@
 <template>
   <div class="main-menu-wrapper" @mouseleave="closeMainMenu">
     <TabMenu :model="items" @mouseover="openMainMenu"> </TabMenu>
-
+    <div v-if="subMenuVisible">
     <div
+    
       class="main-submenu"
       :class="{ overlay: !mainMenuVisible, 'hide-it': !showSubMenuOverlay }"
     >
@@ -37,6 +38,7 @@
       </div>
     </div>
   </div>
+  </div>
 </template>
 
 <script>
@@ -67,6 +69,7 @@
     },
     props: {
       mainMenuVisible: { type: Boolean, required: true },
+      subMenuVisible: { type: Boolean, required: false,default:true },
     },
     emits: ["toggle"],
     data() {
@@ -80,92 +83,8 @@
         return themesModule.getGlobalThemes
       },
       items() {
-        return [
-          {
-            label: this.$t("components.mainmenu.project"),
-            icon: "pi pi-briefcase",
-            to: "/home/project",
-            type: "regular",
-            subMenu: [
-              {
-                id: "new-project",
-                icon: "pi pi-book",
-                to: "#",
-                experimental: false,
-              },
-              {
-                id: "new-query",
-                icon: "pi pi-file",
-                to: "#",
-                experimental: false,
-              },
-              {
-                id: "new-connection",
-                icon: "pi pi-server",
-                to: "#",
-                experimental: false,
-              },
-              {
-                id: "new-theme",
-                icon: "pi pi-server",
-                to: "#",
-                experimental: false,
-              },
-              {
-                id: "new-transformer",
-                icon: "pi pi-cog",
-                to: "#",
-                experimental: true,
-              },
-              {
-                id: "new-algorithm",
-                icon: "pi pi-cog",
-                to: "#",
-                experimental: true,
-              },
-            ],
-          },
-          // {
-          //   label: this.$t("components.mainmenu.workflow"),
-          //   icon: "pi pi-briefcase",
-          //   to: "/workflow",
-          //   type: "regular",
-          //   subMenu: [],
-          // },
-          {
-            label: this.$t("components.mainmenu.charts"),
-            icon: "pi pi-chart-pie",
-            to: "/home/charts",
-            type: "experimental",
-            enabled: settingsModule.getFeatureStatus("charts"),
-            subMenu: [
-              { id: "load-data", to: "#" },
-              { id: "load-links", to: "#" },
-            ],
-          },
-          {
-            label: this.$t("components.mainmenu.maps"),
-            icon: "pi pi-sitemap",
-            to: "/home/maps",
-            type: "experimental",
-            enabled: settingsModule.getFeatureStatus("maps"),
-            subMenu: [{ id: "load-data", to: "#" }],
-          },
-          {
-            label: this.$t("components.mainmenu.chats"),
-            icon: "pi pi-comment",
-            to: "/home/chats",
-            type: "experimental",
-            enabled: settingsModule.getFeatureStatus("chat"),
-          },
-          // {
-          //   label: this.$t("components.mainmenu.editor"),
-          //   icon: "pi pi-code",
-          //   to: "/home/editor",
-          //   type: "experimental",
-          //   enabled: settingsModule.getFeatureStatus("editor"),
-          // },
-        ].filter((el) => {
+        const data=JSON.parse(JSON.stringify(settingsModule.data.listOfMenu))
+        return data.filter((el) => {
           if (el.type === "regular") return el
           else return el.enabled
         })
@@ -191,6 +110,7 @@
         return appDataModule.data.algorithmDialog
       },
     },
+    
 
     methods: {
       closemodal() {
