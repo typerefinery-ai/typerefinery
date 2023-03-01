@@ -126,7 +126,6 @@ export default {
                 url: this.url
             };
             settingsModule.updateMenuitem(data)
-            // this.updateExperinceInfo(this.payload.id, data)
             this.fetchingLatestExperience()
             this.closeDialog()
         },
@@ -145,7 +144,6 @@ export default {
                 };
             settingsModule.addExprience(data)
             this.fetchingLatestExperience()
-            // this.updateExperinceInfo(data.id, data)
             this.closeDialog()
         }
 
