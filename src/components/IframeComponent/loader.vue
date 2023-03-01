@@ -1,16 +1,10 @@
 <template>
     <div class="container">
       <div class="row">
-        <div class="col-xl-4">
-          <div class="placeholder wave">
-            <div class="menuitem"></div>
-            <div class="menubar"></div>
-          </div>
-        </div>
         <div class="col-xl-4 pt-5">
           <div class="placeholder wave">
             <div class="project-block">
-              <div class="sidebar"></div>
+              <!-- <div class="sidebar"></div> -->
               <div class="workflow">
                 <section  class="loader">
                   <span class="loader-text pi pi-spin pi-spinner"></span>
@@ -59,8 +53,8 @@
       // height: 100vh;
       font-family: 'Roboto';
       .placeholder {
-        margin: 15px;
-        padding: 10px;
+        // margin: 15px;
+        // padding: 5px;
         border-radius: 5px;
         &.pulse div {
           animation: pulse 1s infinite ease-in-out;
@@ -81,35 +75,14 @@
         div {
           background: #e8e8e8;
         }
-        .sidebar {
-          float: left;
-          width: 27%;
-          height: 81vh;
-          margin: -10px 1px 20px;
-        }
         .workflow {
           float: right;
-          width: 72%;
-          height: 81vh;
-          margin: -10px 1px 20px;
+          width: 100%;
+          height: 95vh;
+          // margin: -10px 1px 20px;
           display: flex;
           align-items: center;
           justify-content: center;
-        }
-        .menuitem {
-          float: left;
-          height: 30px;
-          margin: 10px 1px 5px;
-          width: 100%;
-          margin-top: -20px;
-        }
-        .menubar {
-          float: left;
-          height: 30px;
-          margin: 10px 1px 5px;
-          width: 100%;
-          margin-top: 5px;
-          margin-bottom: 10px;
         }
       }
     }

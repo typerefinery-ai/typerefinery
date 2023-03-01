@@ -3,47 +3,49 @@
         <Dialog v-model:visible="displayEditPopup" :header="$t(`components.dialog.popup.heading`)" :modal="true"
             :closable="false" :style="{ width: '350px' }">
             <template #header>
-                <!-- add here header -->
-                        <span v-if="addElements" class="p-dialog-title"> {{
-        $t(`components.setting.experience.add-experience`)
-      }}
-                        </span>
-                        <span v-if="editElements" class="p-dialog-title">
-                            {{
-        $t(`components.setting.experience.edit-experience`)
-      }}
-                        </span>
-                
-                    <div class="p-dialog-header-icons">
-                        <button class="p-dialog-header-icon p-dialog-header-close p-link" aria-label="close" type="button"
-                            @click="closeDialog">
-                            <span class="p-dialog-header-close-icon pi pi-times"></span>
-                        </button>
-                    </div>
-               
+                <span v-if="addElements" class="p-dialog-title"> {{
+                    $t(`components.setting.experience.add-experience`)
+                }}
+                </span>
+                <span v-if="editElements" class="p-dialog-title">
+                    {{
+                        $t(`components.setting.experience.edit-experience`)
+                    }}
+                </span>
+
+                <div class="p-dialog-header-icons">
+                    <button class="p-dialog-header-icon p-dialog-header-close p-link" aria-label="close" type="button"
+                        @click="closeDialog">
+                        <span class="p-dialog-header-close-icon pi pi-times"></span>
+                    </button>
+                </div>
+
             </template>
             <div class="field">
                 <label for="name">{{
-        $t(`components.setting.experience.label`)
-      }}</label>
+                    $t(`components.setting.experience.label`)
+                }}</label>
                 <InputText id="name" v-model="label" />
             </div>
             <div class="field">
                 <label for="icon">{{
-        $t(`components.setting.experience.icon`)
-      }}</label>
+                    $t(`components.setting.experience.icon`)
+                }}</label>
                 <InputText id="icon" v-model="icon" />
             </div>
             <div class="field">
                 <label for="url">{{
-        $t(`components.setting.experience.url`)
-      }}</label>
+                    $t(`components.setting.experience.url`)
+                }}</label>
                 <InputText id="url" v-model="url" />
             </div>
             <template #footer>
-                <Button :label="$t(`components.setting.experience.buttons.cancel`)"  icon="pi pi-times" class="p-button-text" @click="closeDialog"></Button>
-                <Button v-if="editElements" :label="$t(`components.setting.experience.buttons.save`)"  type="button" icon="pi pi-check" @click="editMenuItem"></Button>
-                <Button v-if="addElements" :label="$t(`components.setting.experience.buttons.add`)"  type="button" icon="pi pi-check" @click="addMenuItem"></Button>
+                <Button :label="$t(`components.setting.experience.buttons.cancel`)" icon="pi pi-times" class="p-button-text"
+                    @click="closeDialog"></Button>
+                <Button v-if="editElements" :label="$t(`components.setting.experience.buttons.save`)" type="button"
+                    icon="pi pi-check" @click="editMenuItem"></Button>
+                <Button v-if="addElements" :label="$t(`components.setting.experience.buttons.add`)" type="button"
+                    icon="pi pi-check" @click="addMenuItem"></Button>
             </template>
         </Dialog>
     </div>
@@ -93,7 +95,7 @@ export default {
         exprienceId: { type: String, default: "" },
         type: { type: String, required: true },
         payload: { type: Object, required: true },
-        updateExperinceInfo: { type: Function, default() { return {}} }
+        updateExperinceInfo: { type: Function, default() { return {} } }
     },
     emits: ["close"],
     mounted() {
@@ -116,15 +118,15 @@ export default {
         closeDialog() {
             this.$emit("close")
         },
-        editMenuItem() {           
+        editMenuItem() {
             const data = {
                 ...this.payload,
                 label: this.label,
                 icon: this.icon,
                 url: this.url
-            };           
+            };
             settingsModule.updateMenuitem(data)
-            this.updateExperinceInfo(this.payload.id,data)
+            this.updateExperinceInfo(this.payload.id, data)
             this.closeDialog()
         },
         addMenuItem() {
@@ -134,14 +136,14 @@ export default {
                     icon: this.icon,
                     id: id,
                     code: id,
-                    url:this.url,
+                    url: this.url,
                     to: `/experience/${id}`,
                     type: "experimental",
                     enabled: false,
                     subMenu: [{ id: "load-data", to: "#" }],
                 };
             settingsModule.addExprience(data)
-            this.updateExperinceInfo(data.id,data)
+            this.updateExperinceInfo(data.id, data)
             this.closeDialog()
         }
 
@@ -156,6 +158,7 @@ export default {
 p {
     margin: 0;
 }
+
 .confirmation-content {
     display: flex;
     align-items: center;
@@ -174,16 +177,15 @@ p {
 }
 
 .p-dialog-header {
-      padding: 1.25rem 1.8rem;
+    padding: 1.25rem 1.8rem;
 
-      .p-dialog-header-icon:last-child {
-     margin-left:10rem;
-      }
+    .p-dialog-header-icon:last-child {
+        margin-left: 10rem;
     }
+}
 
 #deleteTreeNode {
     color: white;
     background-color: #ef4444;
-}
-</style>
+}</style>
   

@@ -3,9 +3,9 @@
     <loader />
   </template>
   <template v-else>
-    <maps v-if="$route.params.id === 'maps'" />
+    <!-- <maps v-if="$route.params.id === 'maps'" />
     <charts v-else-if="$route.params.id === 'charts'" />
-    <chat v-else-if="$route.params.id === 'chat'" />
+    <chat v-else-if="$route.params.id === 'chat'" /> -->
     <!-- <code-editor v-else-if="$route.params.id === 'editor'" /> -->
     <project v-if="$route.params.id === 'project'" />
     <!-- App Settings -->
@@ -16,9 +16,9 @@
 <script>
   import { getModule } from "vuex-module-decorators"
   import Project from "@/components/Project"
-  import Charts from "@/components/Charts"
-  import Maps from "@/components/Maps"
-  import Chat from "@/components/Chat"
+  // import Charts from "@/components/Charts"
+  // import Maps from "@/components/Maps"
+  // import Chat from "@/components/Chat"
   import * as electronHelpers from "@/utils/electron"
   import Toast from "primevue/toast"
   // import CodeEditor from "@/components/CodeEditor/MonacoEditor"
@@ -38,7 +38,7 @@
   // const queriesModule = getModule(QueriesStore)
   export default {
     name: "Home",
-    components: { Project, Charts, Maps, Settings, Chat, Loader, Toast },
+    components: { Project, Settings, Loader, Toast },
     computed: {
       settingsDialogVisible() {
         return settingsModule.data.settingsDialogVisible

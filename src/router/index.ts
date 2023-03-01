@@ -3,8 +3,8 @@
 import { createRouter, createWebHashHistory } from "vue-router"
 import Home from "@/views/Home.vue"
 import Workflow from "@/views/Workflow.vue"
-import Chat from "@/components/Chat/index.vue"
-import Maps from "@/components/Maps/index.vue"
+// import Chat from "@/components/Chat/index.vue"
+// import Maps from "@/components/Maps/index.vue"
 import IframeComponent from "@/components/IframeComponent/index.vue"
 
 const router = createRouter({
@@ -15,7 +15,7 @@ const router = createRouter({
       name: "home",
       components: {
         default: Home,
-        dialog: Maps,
+        // dialog: Maps,
       },
     },
     //Routing for experiences
@@ -24,11 +24,11 @@ const router = createRouter({
       name: "experience",
       component: IframeComponent,
     },
-    {
-      path: "/home/chats",
-      name: "chat",
-      component: Chat,
-    },
+    // {
+    //   path: "/home/chats",
+    //   name: "chat",
+    //   component: Chat,
+    // },
     {
       path: "/workflow",
       name: "workflow",

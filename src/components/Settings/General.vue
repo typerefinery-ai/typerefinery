@@ -38,7 +38,7 @@
       :payload="editModalPayload"  
       :type="type" 
       :update-experince-info="updateExperinceInfo"
-      @close="editClosemodal" 
+      @close="editCloseModal" 
       />
   </div>
 </template>
@@ -95,9 +95,6 @@ export default {
 
     },
     handleFeatureToggle(enabled, id) {
-      // alert("hii",id,enabled)
-      console.log("hello")
-      console.log("id-ena", id, enabled)
       this.listOfExperiences = this.listOfExperiences.map(item => {
         console.log("item",item)
         if (item.id === id) {
@@ -105,6 +102,7 @@ export default {
         }
         return item;
       });
+      console.log("handle-listOfExperiences",this.listOfExperiences)
       settingsModule.toggleExperimentalFeatures(id)
       this.listOfExperiences = JSON.parse(JSON.stringify(settingsModule.data.listOfMenu))
     },
@@ -117,6 +115,7 @@ export default {
         console.log("item",item)
         return item;
       });
+      console.log("update-listOfExperiences",this.listOfExperiences)
       this.listOfExperiences = JSON.parse(JSON.stringify(settingsModule.data.listOfMenu))
     },
     
@@ -126,7 +125,7 @@ export default {
       this.type = "UPDATE"
       this.editModalIsOpen = true
     },
-    editClosemodal() {
+    editCloseModal() {
       this.editModalIsOpen = false
     },
     addDialogToggle() {
