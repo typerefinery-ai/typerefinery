@@ -9,7 +9,7 @@
     </div>
     <!-- content -->
     <div class="iframe-container">
-      <object :data="`${Experience.url}`" width="100%" height="100%" @load="onObjLoad()"></object>
+      <object :data="`${experience.url}`" width="100%" height="100%" @load="onObjLoad()"></object>
     </div>
   </div>
 </template>
@@ -29,12 +29,12 @@ export default {
     return {
       showMainOverlayMenu: false,
       mainMenuVisible: true,
-      Experience: {},
+      experience: {},
       loading: true
     }
   },
   mounted() {
-    this.Experience = settingsModule.getExperience(this.$route.params.id)   
+    this.experience = settingsModule.getExperience(this.$route.params.id)   
   },
   methods: {
     //Onload object tag

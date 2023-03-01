@@ -4,7 +4,7 @@
       <Button class="p-button-raised mr-2" :label="$t(`components.setting.general.buttons.addlabel`)"
         @click="addDialogToggle()" ></Button>
       <Button class="p-button-raised mr-2" :label="$t(`components.setting.general.buttons.editlabel`)"
-        :disabled="saveDiabale" @click="saveOrderList()" ></Button>
+        :disabled="saveDiable" @click="saveOrderList()" ></Button>
 
     </div>
     <OrderList v-model="listOfExperiences" listStyle="height:auto" stripedRows="true" dataKey="id"
@@ -62,7 +62,7 @@ export default {
       editModalPayload: {},
       editModalIsOpen: false,
       type: "",
-      saveDiabale: true
+      saveDiable: true
     }
   },
 
@@ -72,16 +72,16 @@ export default {
     },
   },
   mounted() {
-    this.listOfExperiences = JSON.parse(JSON.stringify(settingsModule.data.listOfMenu))
+    this.fetchingLatestExperience()
   },
   methods: {
     menuList(orderList, event) {
-      this.saveDiabale = false
+      this.saveDiable = false
       this.updatedExperienceList = orderList
     },
     saveOrderList() {
       settingsModule.updateList(this.updatedExperienceList)
-      this.saveDiabale = true
+      this.saveDiable = true
       this.listOfExperiences = JSON.parse(JSON.stringify(settingsModule.data.listOfMenu))
 
     },
