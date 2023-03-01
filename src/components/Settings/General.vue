@@ -33,13 +33,8 @@
         </div>
       </template>
     </OrderList>
-    <ExperiencePopup 
-      v-if="editModalIsOpen" 
-      :payload="editModalPayload"  
-      :type="type" 
-      :update-experince-info="updateExperinceInfo"
-      @close="editCloseModal" 
-      />
+    <ExperiencePopup v-if="editModalIsOpen" :payload="editModalPayload" :type="type"
+      :fetching-latest-experience="fetchingLatestExperience" @close="editCloseModal" />
   </div>
 </template>
 <script>
@@ -95,30 +90,14 @@ export default {
 
     },
     handleFeatureToggle(enabled, id) {
-      this.listOfExperiences = this.listOfExperiences.map(item => {
-        console.log("item",item)
-        if (item.id === id) {
-          item.enabled = !item.enabled;
-        }
-        return item;
-      });
-      console.log("handle-listOfExperiences",this.listOfExperiences)
       settingsModule.toggleExperimentalFeatures(id)
+      this.fetchingLatestExperience()
+    },
+    //fetching latest list of experience from vue store
+    fetchingLatestExperience() {
       this.listOfExperiences = JSON.parse(JSON.stringify(settingsModule.data.listOfMenu))
     },
-    updateExperinceInfo(id,newPayload){
-      this.listOfExperiences = this.listOfExperiences.map(item => {
-        console.log("item",item)
-        if (item.id === id) {
-          item=newPayload
-        }
-        console.log("item",item)
-        return item;
-      });
-      console.log("update-listOfExperiences",this.listOfExperiences)
-      this.listOfExperiences = JSON.parse(JSON.stringify(settingsModule.data.listOfMenu))
-    },
-    
+
     editDialogToggle(item) {
       console.log("item", item)
       this.editModalPayload = item
@@ -151,4 +130,5 @@ export default {
   .icon-wrapper {
     margin-left: 5px;
   }
-}</style>
+}
+</style>

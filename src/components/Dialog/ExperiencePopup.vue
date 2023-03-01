@@ -95,7 +95,7 @@ export default {
         exprienceId: { type: String, default: "" },
         type: { type: String, required: true },
         payload: { type: Object, required: true },
-        updateExperinceInfo: { type: Function, default() { return {} } }
+        fetchingLatestExperience: { type: Function, default() { return {} } }
     },
     emits: ["close"],
     mounted() {
@@ -126,7 +126,8 @@ export default {
                 url: this.url
             };
             settingsModule.updateMenuitem(data)
-            this.updateExperinceInfo(this.payload.id, data)
+            // this.updateExperinceInfo(this.payload.id, data)
+            this.fetchingLatestExperience()
             this.closeDialog()
         },
         addMenuItem() {
@@ -143,7 +144,8 @@ export default {
                     subMenu: [{ id: "load-data", to: "#" }],
                 };
             settingsModule.addExprience(data)
-            this.updateExperinceInfo(data.id, data)
+            this.fetchingLatestExperience()
+            // this.updateExperinceInfo(data.id, data)
             this.closeDialog()
         }
 
