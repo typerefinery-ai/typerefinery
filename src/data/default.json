@@ -337,6 +337,7 @@
     "focus": false,
     "viewResized": true,
     "settingsDialogVisible": false,
+    "editDialog": false,
     "settingPath": null,
     "settings": [
       {
@@ -360,20 +361,92 @@
         "icon": "pi pi-cog"
       }
     ],
-    "experimentalFeatures": [
+    "listOfMenu": [
       {
-        "id": "chat",
-        "label": "Chat",
-        "enabled": false
+        "label": "Project",
+        "icon": "pi pi-briefcase",
+        "to": "/home/project",
+        "id": "project",
+        "type": "regular",
+        "subMenu": [
+          {
+            "id": "new-project",
+            "icon": "pi pi-book",
+            "to": "#",
+            "experimental": false
+          },
+          {
+            "id": "new-query",
+            "icon": "pi pi-file",
+            "to": "#",
+            "experimental": false
+          },
+          {
+            "id": "new-connection",
+            "icon": "pi pi-server",
+            "to": "#",
+            "experimental": false
+          },
+          {
+            "id": "new-theme",
+            "icon": "pi pi-server",
+            "to": "#",
+            "experimental": false
+          },
+          {
+            "id": "new-transformer",
+            "icon": "pi pi-cog",
+            "to": "#",
+            "experimental": true
+          },
+          {
+            "id": "new-algorithm",
+            "icon": "pi pi-cog",
+            "to": "#",
+            "experimental": true
+          }
+        ]
       },
       {
-        "id": "charts",
         "label": "Charts",
-        "enabled": false
+        "icon": "pi pi-chart-pie",
+        "id": "charts",
+        "url": "http://localhost:8080/content/typerefinery-showcase/pages/pages/dashboard.html",
+        "to": "/experience/charts",
+        "type": "experimental",
+        "enabled": false,
+        "subMenu": [
+          { "id": "load-data", "to": "#" },
+          { "id": "load-links", "to": "#" }
+        ]
       },
       {
-        "id": "maps",
         "label": "Maps",
+        "icon": "pi pi-sitemap",
+        "id": "maps",
+        "to": "/experience/maps",
+        "type": "experimental",
+        "url": "https://kepler.gl/demo",
+        "enabled": false,
+        "subMenu": [{ "id": "load-data", "to": "#" }]
+      },
+      {
+        "label": "Dashboard",
+        "id": "dashboard",
+        "icon": "pi pi-sitemap",
+        "to": "/experience/dashboard",
+        "type": "experimental",
+        "url": "https://kepler.gl/demo",
+        "enabled": false,
+        "subMenu": [{ "id": "load-data", "to": "#" }]
+      },
+      {
+        "label": "Chat",
+        "id": "chat",
+        "icon": "pi pi-comment",
+        "to": "/experience/chats",
+        "url": "https://kepler.gl/demo",
+        "type": "experimental",
         "enabled": false
       }
     ]

@@ -53,11 +53,23 @@
         "alias": "उर्फ"
       },
       "general": {
-        "experimental": "प्रायोगिक विशेषताएं",
-        "chat": "चैट",
-        "editor": "एडीटर",
-        "charts": "चार्ट",
-        "maps": "नक़्शे"
+        "experience": "अनुभव",
+        "buttons": {
+          "addlabel": "नया अनुभव जोड़ें",
+          "editlabel": "सेव करे"
+        }
+      },
+      "experience": {
+        "add-experience": "अनुभव जोड़ें",
+        "edit-experience": "अनुभव संपादित करें",
+        "label": "लेबल",
+        "icon": "आइकन",
+        "url": "यूआरएल",
+        "buttons": {
+          "cancel": "रद्द करना",
+          "add": "जोड़ें",
+          "save": "सेव करे"
+        }
       }
     },
     "chat": {
@@ -361,7 +373,8 @@
     "logout": "लॉग आउट",
     "help": "मदद",
     "profile": "उपयोगकर्ता रूपरेखा",
-    "settings": "सेटिंग्स खोलें"
+    "settings": "सेटिंग्स खोलें",
+    "edit-experience": "अनुभव संपादित करें"
   },
   "buttons": {
     "submit": "प्रस्तुत",
