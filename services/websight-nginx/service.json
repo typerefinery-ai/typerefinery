@@ -2,9 +2,8 @@
   "id": "websight-nginx",
   "name": "Websight Nginx",
   "description": "Nginx instance for Websight",
-  "enabled": false,
+  "enabled": true,
   "status": "-1",
-  "logoutput": "",
   "icon": "pi pi-cog",
   "servicetype": 10,
   "serviceorder": 0,
@@ -18,10 +17,25 @@
       "default": "nginx.exe"
     },
     "commandline": {
-      "win32": "-p ${SERVICE_PATH}\\config",
-      "darwin": "-p ${SERVICE_PATH}/config",
-      "linux": "-p ${SERVICE_PATH}/config",
-      "default": "-p ${SERVICE_PATH}\\config"
+      "win32": "-p ${SERVICE_HOME}\\config",
+      "darwin": "-p ${SERVICE_HOME}/config",
+      "linux": "-p ${SERVICE_HOME}/config",
+      "default": "-p ${SERVICE_HOME}\\config"
+    },
+    "healthcheck": {
+      "type": "http",
+      "url": "http://localhost:${SERVICE_PORT}/health",
+      "expected_status": 200
+    }
+  },
+  "actions": {
+    "stop": {
+      "commandline": {
+        "win32": "-p ${SERVICE_HOME}\\config -s stop",
+        "darwin": "-p ${SERVICE_HOME}/config -s stop",
+        "linux": "-p ${SERVICE_HOME}/config -s stop",
+        "default": "-p ${SERVICE_HOME}\\config -s stop"
+      }
     }
   }
 }

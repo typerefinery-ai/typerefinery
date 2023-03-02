@@ -1,0 +1,361 @@
+{
+  "id":"pl.ds.websight:websight-base-sling-feature:slingosgifeature:base:1.4.2",
+  "title":"WebSight Base: Sling feature",
+  "vendor":"Dynamic Solutions sp. z o.o. sp. k.",
+  "license":"Dynamic Solutions License",
+  "bundles":[
+    {
+      "id":"commons-codec:commons-codec:1.15",
+      "start-order":"5"
+    },
+    {
+      "id":"commons-collections:commons-collections:3.2.2",
+      "start-order":"15"
+    },
+    {
+      "id":"org.apache.commons:commons-collections4:4.4",
+      "start-order":"15"
+    },
+    {
+      "id":"org.apache.commons:commons-math:2.2",
+      "start-order":"20"
+    },
+    {
+      "id":"org.apache.httpcomponents:httpclient-osgi:4.5.13",
+      "start-order":"15"
+    },
+    {
+      "id":"org.apache.httpcomponents:httpcore-osgi:4.4.15",
+      "start-order":"15"
+    },
+    {
+      "id":"org.apache.sling:org.apache.sling.adapter:2.2.0",
+      "start-order":"20"
+    },
+    {
+      "id":"io.websight:io.websight.sling.bundleresource.impl:2.1.0",
+      "start-order":"20"
+    },
+    {
+      "id":"org.apache.sling:org.apache.sling.commons.classloader:1.4.4",
+      "start-order":"20"
+    },
+    {
+      "id":"org.apache.sling:org.apache.sling.commons.compiler:2.4.0",
+      "start-order":"20"
+    },
+    {
+      "id":"org.apache.sling:org.apache.sling.commons.fsclassloader:1.0.14",
+      "start-order":"20"
+    },
+    {
+      "id":"org.apache.sling:org.apache.sling.commons.mime:2.2.2",
+      "start-order":"15"
+    },
+    {
+      "id":"org.apache.sling:org.apache.sling.commons.scheduler:2.7.12",
+      "start-order":"20"
+    },
+    {
+      "id":"org.apache.sling:org.apache.sling.commons.threads:3.2.22",
+      "start-order":"15"
+    },
+    {
+      "id":"org.apache.sling:org.apache.sling.engine:2.8.0",
+      "start-order":"20"
+    },
+    {
+      "id":"org.apache.sling:org.apache.sling.i18n:2.5.18",
+      "start-order":"20"
+    },
+    {
+      "id":"org.apache.sling:org.apache.sling.installer.factory.packages:1.0.4",
+      "start-order":"20"
+    },
+    {
+      "id":"org.apache.sling:org.apache.sling.installer.hc:2.0.2",
+      "start-order":"20"
+    },
+    {
+      "id":"org.apache.sling:org.apache.sling.models.api:1.4.0",
+      "start-order":"20"
+    },
+    {
+      "id":"org.apache.sling:org.apache.sling.models.impl:1.5.0",
+      "start-order":"20"
+    },
+    {
+      "id":"org.apache.sling:org.apache.sling.resourceresolver:1.8.4",
+      "start-order":"20"
+    },
+    {
+      "id":"org.apache.sling:org.apache.sling.serviceusermapper:1.5.4",
+      "start-order":"15"
+    },
+    {
+      "id":"org.apache.sling:org.apache.sling.servlets.get:2.1.44",
+      "start-order":"20"
+    },
+    {
+      "id":"org.apache.sling:org.apache.sling.servlets.resolver:2.9.2",
+      "start-order":"20"
+    },
+    {
+      "id":"org.apache.sling:org.apache.sling.xss:2.2.18",
+      "start-order":"20"
+    },
+    {
+      "id":"org.apache.felix:org.apache.felix.metatype:1.2.4",
+      "start-order":"4"
+    },
+    {
+      "id":"commons-fileupload:commons-fileupload:1.4",
+      "start-order":"5"
+    },
+    {
+      "id":"commons-io:commons-io:2.11.0",
+      "start-order":"5"
+    },
+    {
+      "id":"org.apache.felix:org.apache.felix.http.jetty:4.1.14",
+      "start-order":"5"
+    },
+    {
+      "id":"org.apache.felix:org.apache.felix.http.servlet-api:1.1.4",
+      "start-order":"5"
+    },
+    {
+      "id":"org.apache.felix:org.apache.felix.http.whiteboard:4.0.0",
+      "start-order":"5"
+    },
+    {
+      "id":"org.apache.felix:org.apache.felix.inventory:1.1.0",
+      "start-order":"5"
+    },
+    {
+      "id":"org.apache.felix:org.apache.felix.prefs:1.1.0",
+      "start-order":"5"
+    },
+    {
+      "id":"org.apache.sling:org.apache.sling.api:2.24.0",
+      "start-order":"5"
+    },
+    {
+      "id":"org.apache.sling:org.apache.sling.auth.core:1.5.6",
+      "start-order":"5"
+    },
+    {
+      "id":"io.dropwizard.metrics:metrics-core:3.2.6",
+      "start-order":"5"
+    },
+    {
+      "id":"org.apache.sling:org.apache.sling.commons.metrics:1.2.10",
+      "start-order":"5"
+    },
+    {
+      "id":"org.apache.tika:tika-core:1.28.1",
+      "start-order":"10"
+    },
+    {
+      "id":"org.apache.tika:tika-parsers:1.28.1",
+      "start-order":"10"
+    },
+    {
+      "id":"org.apache.sling:org.apache.sling.provisioning.model:1.8.6",
+      "start-order":"20"
+    },
+    {
+      "id":"org.apache.sling:org.apache.sling.repoinit.parser:1.6.12",
+      "start-order":"20"
+    },
+    {
+      "id":"org.apache.sling:org.apache.sling.jcr.repoinit:1.1.36",
+      "start-order":"20"
+    },
+    {
+      "id":"org.apache.sling:org.apache.sling.resourcemerger:1.4.0",
+      "start-order":"20"
+    }
+  ],
+  "configurations":  {
+    "org.apache.sling.commons.log.LogManager":    {
+      "org.apache.sling.commons.log.packagingDataEnabled":true,
+      "org.apache.sling.commons.log.pattern":"%d{dd.MM.yyyy HH:mm:ss.SSS} *%level* [%thread] %logger %msg%n",
+      "org.apache.sling.commons.log.level":"$[env:WS_BASE_LOG_LEVEL;default=info]",
+      "org.apache.sling.commons.log.file":"logs/error.log",
+      "org.apache.sling.commons.log.file.number:Integer":7,
+      "org.apache.sling.commons.log.file.size":"'.'yyyy-MM-dd"
+    },
+    "org.apache.felix.http":    {
+      "org.apache.felix.proxy.load.balancer.connection.enable":true
+    },
+    "org.apache.sling.engine.impl.log.RequestLogger":    {
+      "access.log.enabled":true,
+      "request.log.outputtype:Integer":0,
+      "access.log.output":"log.access",
+      "request.log.output":"log.request",
+      "request.log.enabled":true,
+      "access.log.outputtype:Integer":0
+    },
+    "org.apache.sling.engine.impl.SlingMainServlet":    {
+      "sling.additional.response.headers":[
+        "X-Content-Type-Options=nosniff",
+        "X-Frame-Options=SAMEORIGIN",
+        "Cache-control=no-cache"
+      ]
+    },
+    "org.apache.sling.engine.parameters":    {
+      "sling.default.parameter.encoding":"UTF-8"
+    },
+    "org.apache.sling.commons.log.LogManager.factory.config~access.log":    {
+      "org.apache.sling.commons.log.pattern":"%msg%n",
+      "org.apache.sling.commons.log.names":[
+        "log.access"
+      ],
+      "org.apache.sling.commons.log.level":"info",
+      "org.apache.sling.commons.log.file":"logs/access.log"
+    },
+    "org.apache.sling.commons.log.LogManager.factory.config~request.log":    {
+      "org.apache.sling.commons.log.pattern":"%msg%n",
+      "org.apache.sling.commons.log.names":[
+        "log.request"
+      ],
+      "org.apache.sling.commons.log.level":"info",
+      "org.apache.sling.commons.log.file":"logs/request.log"
+    },
+    "org.apache.jackrabbit.vault.packaging.impl.PackagingImpl":    {
+      "authIdsForRootInstallation":[
+        "sling-package-install"
+      ],
+      "packageRoots":[
+        "/etc/packages"
+      ],
+      "authIdsForHookExecution":[
+        "sling-package-install"
+      ]
+    },
+    "org.apache.sling.jcr.base.internal.LoginAdminWhitelist.fragment~sling":    {
+      "whitelist.bundles":[
+        "org.apache.sling.discovery.commons",
+        "org.apache.sling.discovery.base",
+        "org.apache.sling.discovery.oak",
+        "org.apache.sling.i18n",
+        "org.apache.sling.jcr.base",
+        "org.apache.sling.jcr.oak.server",
+        "org.apache.sling.jcr.repoinit"
+      ],
+      "whitelist.name":"sling"
+    },
+    "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~i18n":    {
+      "user.mapping":[
+        "org.apache.sling.i18n=[sling-readall]"
+      ]
+    },
+    "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~installer-packages":    {
+      "user.mapping":[
+        "org.apache.sling.installer.factory.packages=[sling-package-install]"
+      ]
+    },
+    "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~jcr-resource":    {
+      "user.mapping":[
+        "org.apache.sling.jcr.resource:validation=[sling-readall]"
+      ]
+    },
+    "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~observation":    {
+      "user.mapping":[
+        "org.apache.sling.jcr.resource:observation=[sling-readall]"
+      ]
+    },
+    "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~resourceresolver":    {
+      "user.mapping":[
+        "org.apache.sling.resourceresolver:mapping=[sling-readall]",
+        "org.apache.sling.resourceresolver:hierarchy=[sling-readall]",
+        "org.apache.sling.resourceresolver:observation=[sling-readall]",
+        "org.apache.sling.resourceresolver:console=[sling-readall]"
+      ]
+    },
+    "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~servletsresolver":    {
+      "user.mapping":[
+        "org.apache.sling.servlets.resolver:console=[sling-readall]",
+        "org.apache.sling.servlets.resolver:scripts=[sling-search-path-reader]"
+      ]
+    },
+    "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~xss":    {
+      "user.mapping":[
+        "org.apache.sling.xss=[sling-xss]"
+      ]
+    },
+    "org.apache.sling.resourcemerger.picker.overriding":    {
+      "merge.root":"/mnt/override"
+    }
+  },
+  "repoinit:TEXT|true":[
+    "#",
+    "#  Licensed to the Apache Software Foundation (ASF) under one",
+    "#  or more contributor license agreements.  See the NOTICE file",
+    "#  distributed with this work for additional information",
+    "#  regarding copyright ownership.  The ASF licenses this file",
+    "#  to you under the Apache License, Version 2.0 (the",
+    "#  \"License\"); you may not use this file except in compliance",
+    "#  with the License.  You may obtain a copy of the License at",
+    "#",
+    "#   http://www.apache.org/licenses/LICENSE-2.0",
+    "#",
+    "#  Unless required by applicable law or agreed to in writing,",
+    "#  software distributed under the License is distributed on an",
+    "#  \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY",
+    "#  KIND, either express or implied.  See the License for the",
+    "#  specific language governing permissions and limitations",
+    "#  under the License.",
+    "#",
+    "",
+    "# general",
+    "create path (sling:OrderedFolder) /content",
+    "set ACL for everyone",
+    "    allow   jcr:read   on /content",
+    "end",
+    "",
+    "# sling-readall",
+    "create service user sling-readall with path system/sling",
+    "",
+    "set principal ACL for sling-readall",
+    "    allow   jcr:read    on /",
+    "end",
+    "",
+    "# sling-xss",
+    "create service user sling-xss with path system/sling",
+    "",
+    "create path (sling:Folder) /apps/sling/xss",
+    "",
+    "set principal ACL for sling-xss",
+    "    allow   jcr:read    on /apps/sling/xss",
+    "end",
+    "",
+    "# content-package installer",
+    "create service user sling-package-install with path system/sling",
+    "",
+    "set principal ACL for sling-package-install",
+    "    allow   jcr:all     on    /",
+    "    allow   jcr:namespaceManagement,jcr:nodeTypeDefinitionManagement on :repository",
+    "end",
+    "#<<< SLING-5848 - Define service user and ACLs for Scripting",
+    "create service user sling-search-path-reader with path system/sling",
+    "",
+    "create path (sling:Folder) /libs",
+    "create path (sling:Folder) /apps",
+    "",
+    "set principal ACL for sling-search-path-reader",
+    "    allow   jcr:read    on /libs,/apps",
+    "end",
+    "# SLING-5848 - Define service user and ACLs for Scripting >>>",
+    "",
+    "# SLING-10597 - Simplify setup of resource resolution mappings",
+    "create path (sling:Folder) /etc/map",
+    "create path (sling:Folder) /etc/map/http"
+  ],
+  "execution-environment:JSON|false":{
+    "framework":{
+      "id":"org.apache.felix:org.apache.felix.framework:7.0.3"
+    }
+  }
+}

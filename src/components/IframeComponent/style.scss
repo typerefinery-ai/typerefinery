@@ -1,0 +1,31 @@
+.app {
+  box-sizing: border-box;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+
+  // .header {
+  //   width: 100%;
+  //   height: 75px;
+  //   display: flex;
+  //   justify-content: space-between;
+  //   flex-direction: column;
+  //   position: relative;
+  //   border-bottom: 1px solid var(--surface-border);
+  //   box-sizing: border-box;
+
+  //   &.menu-hidden {
+  //     height: 36px;
+  //   }
+  // }
+
+  .iframe-container {
+    flex: 1;
+    padding: 5px;
+
+    iframe {
+      width: 100%;
+      height: 100%;
+    }
+  }
+}

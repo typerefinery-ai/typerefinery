@@ -316,6 +316,12 @@
     &[status="10"] {
       background-color: v-bind("serviceStatusColorList['available']");
     }
+    &[status="11"] {
+      color: v-bind("serviceStatusColorList['available']");
+    }
+    &[status="14"] {
+      color: v-bind("serviceStatusColorList['installing']");
+    }
     &[status="15"] {
       background-color: v-bind("serviceStatusColorList['installing']");
     }
@@ -349,6 +355,12 @@
     }
     &[status="10"] {
       color: v-bind("serviceStatusColorList['available']");
+    }
+    &[status="11"] {
+      color: v-bind("serviceStatusColorList['available']");
+    }
+    &[status="14"] {
+      color: v-bind("serviceStatusColorList['installing']");
     }
     &[status="15"] {
       color: v-bind("serviceStatusColorList['installing']");

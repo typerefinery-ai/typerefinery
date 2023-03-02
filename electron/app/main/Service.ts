@@ -3,7 +3,7 @@ import { ChildProcess, spawn, type SpawnOptions } from "child_process"
 import { type ServiceManager } from "./ServiceManager"
 import { Logger } from "./Logger"
 import fs, { createWriteStream, WriteStream } from "fs"
-import http, { type RequestOptions } from "node:http"
+import { http } from "follow-redirects"
 import net from "net"
 import EventEmitter from "eventemitter3"
 import kill from "tree-kill"
@@ -39,13 +39,19 @@ export enum ServiceStatus {
   ERROR = "-1",
   DISABLED = "0",
   LOADED = "1",
-  ARCHIVED = "5",
-  AVAILABLE = "10",
-  INSTALLING = "15",
-  INSTALLED = "20",
-  STOPPING = "30",
-  STOPPED = "60",
+  ARCHIVED = "10",
+  EXTRACTING = "15",
+  EXTRACTED = "20",
+  INSTALLING = "25",
+  INSTALLED = "30",
+  AVAILABLE = "50",
+  STOPPING = "65",
+  STOPCOMMANDSTART = "70",
+  STOPCOMMANDEND = "75",
+  STOPPED = "80",
   STARTING = "90",
+  DEPENDENCIESWAIT = "100",
+  DEPENDENCIESREADY = "105",
   STARTED = "120",
 }
 
@@ -72,14 +78,18 @@ export interface HealthCheck {
   expected_status?: number
 }
 
+export interface PlatfromCommandLine {
+  win32?: string
+  darwin?: string
+  linux?: string
+  default?: string
+}
+
 export interface ExecConfig {
+  authentication?: Authentication
   execservice?: ExecService
-  executable?: {
-    win32?: string
-    darwin?: string
-    linux?: string
-    default?: string
-  }
+  executable?: PlatfromCommandLine
+  executablecli?: PlatfromCommandLine
   setuparchive?: {
     win32?: SetupArchive
     darwin?: SetupArchive
@@ -92,18 +102,8 @@ export interface ExecConfig {
     default?: string[]
   }
   env?: any
-  commandline?: {
-    win32?: string
-    darwin?: string
-    linux?: string
-    default?: string
-  }
-  commandlinecli?: {
-    win32?: string
-    darwin?: string
-    linux?: string
-    default?: string
-  }
+  commandline?: PlatfromCommandLine
+  commandlinecli?: PlatfromCommandLine
   datapath?: string
   serviceorder?: 99
   depend_on?: string[]
@@ -122,10 +122,33 @@ export interface ExecService {
   cli?: boolean
 }
 
+export interface Authentication {
+  username?: string
+  password?: string
+}
+
 export interface ServiceActions {
   start: () => void
   stop: () => void
   restart: () => void
+}
+
+export enum ServiceActionsEnum {
+  START = "start",
+  STOP = "stop",
+  RESTART = "restart",
+}
+
+export interface ServiceActionsConfig {
+  start?: {
+    commandline: PlatfromCommandLine
+  }
+  stop?: {
+    commandline: PlatfromCommandLine
+  }
+  restart?: {
+    commandline: PlatfromCommandLine
+  }
 }
 
 export interface SericeConfigFile {
@@ -138,11 +161,14 @@ export interface SericeConfigFile {
   icon?: string
   servicetype?: ServiceType
   execconfig: ExecConfig
+  actions?: ServiceActionsConfig
 }
 
 export class Service extends EventEmitter<ServiceEvent> {
   #process?: ChildProcess
   #id: string
+  #name: string
+  #description: string
   #servicehome: string
   #servicepath: string
   #execservicepath = ""
@@ -180,6 +206,8 @@ export class Service extends EventEmitter<ServiceEvent> {
     super()
     this.#options = options
     this.#abortController = new AbortController()
+    this.#name = this.#options.name || this.#options.id
+    this.#description = this.#options.description || ""
     this.#servicepath = servicepath
     this.#servicehome = servicehome
     this.#servicedatapath = servicedatapath
@@ -267,7 +295,7 @@ export class Service extends EventEmitter<ServiceEvent> {
         )
         this.#setuparchiveFile = path.join(this.#servicepath, setupArchive.name)
         this.#setuparchiveOutputPath = path.join(
-          this.#servicepath,
+          this.#servicehome,
           setupArchive.output
         )
         this.#log(
@@ -288,6 +316,58 @@ export class Service extends EventEmitter<ServiceEvent> {
 
     this.#log(`service ${this.#id} loaded with status ${this.#status}.`)
     this.#checkRunning()
+  }
+
+  get name(): string {
+    return this.#name
+  }
+
+  get description(): string {
+    return this.#description
+  }
+
+  get setuparchiveOutputPath(): string {
+    return this.#setuparchiveOutputPath
+  }
+
+  get setupstatefile(): string {
+    return this.#setupstatefile
+  }
+
+  get username(): string {
+    if (this.#options.execconfig?.authentication) {
+      return this.#options.execconfig?.authentication?.username || ""
+    }
+    return ""
+  }
+
+  get password(): string {
+    if (this.#options.execconfig?.authentication) {
+      return this.#options.execconfig?.authentication?.password || ""
+    }
+    return ""
+  }
+
+  getActionForPlatform(action: string): string {
+    if (this.#options.actions) {
+      const platfromSpecificAction: string =
+        this.#options.actions?.[action].commandline[this.platform]
+      const platfromSpecificActionDefault: string =
+        this.#options.actions?.[action].commandline?.default || ""
+      return platfromSpecificAction || platfromSpecificActionDefault
+    }
+    return ""
+  }
+
+  get getExecutaleForPlatform(): string {
+    if (this.#options.execconfig?.executable) {
+      const platfromSpecificExecutable: string =
+        this.#options.execconfig?.executable[this.platform]
+      const platfromSpecificExecutableDefault: string =
+        this.#options.execconfig?.executable?.default || ""
+      return platfromSpecificExecutable || platfromSpecificExecutableDefault
+    }
+    return ""
   }
 
   get getSetupForPlatfrom(): string[] {
@@ -345,23 +425,38 @@ export class Service extends EventEmitter<ServiceEvent> {
   // replace possible variables in a service command string
   #getServiceCommand(command: string, service: Service): string {
     return command
+      .replaceAll("${SERVICE_HOME}", service.#servicehome)
+      .replaceAll("${SERVICE_EXECUTABLE}", service.getServiceExecutable())
+      .replaceAll(
+        "${SERVICE_EXECUTABLE_CLI}",
+        service.getServiceExecutableCli()
+      )
       .replaceAll("${SERVICE_PATH}", service.#servicepath)
       .replaceAll("${EXEC_SERVICE_PATH}", service.#execservicepath)
       .replaceAll("${SERVICE_DATA_PATH}", service.#servicedatapath)
       .replaceAll("${SERVICE_PORT}", service.#serviceport + "")
       .replaceAll("${SERVICE_HOST}", service.#servicehost + "")
       .replaceAll("${SERVICE_LOG_PATH}", service.#logsDir + "")
+      .replaceAll("${SERVICE_AUTH_USERNAME}", service.username)
+      .replaceAll("${SERVICE_AUTH_PASSWORD}", service.password)
+      .replaceAll("${SERVICE_PID_FILE}", service.#servicepidfile)
   }
 
   get environmentVariables() {
     const envVar = {}
     // add default env vars
+    envVar["SERVICE_HOME"] = this.#servicehome
+    envVar["SERVICE_EXECUTABLE"] = this.getServiceExecutable()
+    envVar["SERVICE_EXECUTABLE_CLI"] = this.getServiceExecutableCli()
     envVar["SERVICE_PATH"] = this.#servicepath
     envVar["EXEC_SERVICE_PATH"] = this.#execservicepath
     envVar["SERVICE_DATA_PATH"] = this.#servicedatapath
     envVar["SERVICE_PORT"] = this.#serviceport + ""
     envVar["SERVICE_HOST"] = this.#servicehost + ""
     envVar["SERVICE_LOG_PATH"] = this.#logsDir + ""
+    envVar["SERVICE_AUTH_USERNAME"] = this.username
+    envVar["SERVICE_AUTH_PASSWORD"] = this.password
+    envVar["SERVICE_PID_FILE"] = this.#servicepidfile
 
     // for each attribute in envVar update is value
     const serviceEnvVar = this.#options.execconfig?.env || {}
@@ -406,6 +501,10 @@ export class Service extends EventEmitter<ServiceEvent> {
 
   get options(): SericeConfigFile {
     return this.#options
+  }
+
+  get isEnabled() {
+    return this.#options.enabled
   }
 
   get isStarted() {
@@ -478,7 +577,7 @@ export class Service extends EventEmitter<ServiceEvent> {
       this.#log(
         `process ${this.#id} with pid ${
           this.#process?.pid
-        } existed, service status is ${this.#status}`
+        } exited, service status is ${this.#status}`
       )
       this.#process = void 0
     })
@@ -629,6 +728,49 @@ export class Service extends EventEmitter<ServiceEvent> {
     return serviceExecutable
   }
 
+  // get service executable cli from options by platform
+  getServiceExecutableCli(): string {
+    let serviceExecutableCli: any = ""
+    if (this.#options && this.#options.execconfig) {
+      // if service is being executed by another service
+      if (this.#options.execconfig.execservice) {
+        // find service executable
+        const execservice: ExecService = this.#options.execconfig.execservice
+        if (execservice.id) {
+          const serviceExecutableService = this.#serviceManager.getService(
+            execservice.id
+          )
+          // get full path to executable service
+          const serviceExecutable = path.resolve(
+            serviceExecutableService.#servicepath,
+            serviceExecutableService.getServiceExecutable()
+          )
+          return serviceExecutable
+        } else {
+          this.#log("ExecService as been defined but no id was found")
+        }
+      } else if (this.#options.execconfig.executablecli) {
+        // if service is being executed by a file
+        serviceExecutableCli =
+          this.#options.execconfig.executablecli[this.platform]
+        if (serviceExecutableCli == null) {
+          serviceExecutableCli =
+            this.#options.execconfig.executablecli.default || ""
+        }
+        return serviceExecutableCli
+      }
+      if (serviceExecutableCli == null) {
+        this.#log("could not determine service executable")
+        // this.disable()
+      }
+    } else {
+      this.#setStatus(ServiceStatus.INVALIDCONFIG)
+      this.#log(
+        `service is missing execconfig, service status is ${this.#status}`
+      )
+    }
+    return serviceExecutableCli
+  }
   // set enable flag in options to false
   disable() {
     this.#options.enabled = false
@@ -682,22 +824,12 @@ export class Service extends EventEmitter<ServiceEvent> {
     if (this.#healthCheck && this.#healthCheck.url) {
       const urlFixed = this.#getServiceCommand(this.#healthCheck.url, this)
       const url: URL = new URL(urlFixed)
-      const hostname = url.hostname
-      const port = url.port
-      const path = url.pathname
       const expected_status = this.#healthCheck.expected_status || 200
 
-      const options: RequestOptions = {
-        hostname: hostname,
-        port: port,
-        path: path,
-        timeout: this.#healthCheck?.timeout || 1000,
-      }
-
-      this.#log(`http health check request ${hostname}; url ${url}`)
+      this.#log(`http health check request ${url.hostname}; url ${url}`)
 
       try {
-        const req = http.get(options, (res) => {
+        const req = http.get(url, (res) => {
           if (res.statusCode == expected_status) {
             this.#setStatus(ServiceStatus.STARTED)
             this.#log(
@@ -759,6 +891,12 @@ export class Service extends EventEmitter<ServiceEvent> {
 
   // start service and store its process id in a file based on os type
   async start() {
+    //quick fail if disabled
+    if (!this.isEnabled) {
+      this.#log(`service ${this.#id} is disabled`)
+      return
+    }
+
     //quick fail already started
     if (this.isStarted) {
       this.#log(
@@ -768,8 +906,10 @@ export class Service extends EventEmitter<ServiceEvent> {
     }
 
     this.#log(`waiting for dependent services`)
+    this.#setStatus(ServiceStatus.DEPENDENCIESWAIT)
     // wait untill all depend_on services are started
     await this.#waitForDependOnServices()
+    this.#setStatus(ServiceStatus.DEPENDENCIESREADY)
 
     this.#log(`do service setup`)
     //run setup if it exists
@@ -869,19 +1009,113 @@ export class Service extends EventEmitter<ServiceEvent> {
     }
   }
 
-  stop() {
+  async stop() {
     if (this.#process) {
       const pid: number = this.#process?.pid ? this.#process.pid : 0
       if (pid > 0) {
         this.#log(`stopping ${this.#id} with pid ${pid}`)
+        let stopCommand = this.getActionForPlatform(ServiceActionsEnum.STOP)
+        // if stop command is defined run the commandline as a process
+        if (stopCommand) {
+          stopCommand = this.#getServiceCommand(stopCommand, this)
+          this.#log(
+            `stopping ${
+              this.#id
+            } with pid ${pid} using stop command: ${stopCommand}`
+          )
+
+          this.#setStatus(ServiceStatus.STOPCOMMANDSTART)
+          if (stopCommand.startsWith(";")) {
+            stopCommand = stopCommand.substring(1)
+            await os
+              .runProcess(stopCommand, [], {
+                signal: this.#abortController.signal,
+                cwd: this.#servicepath,
+                stdio: ["ignore", this.#stdout, this.#stderr],
+                env: this.environmentVariables,
+                windowsHide: true,
+              })
+              .then((result) => {
+                this.#log(`shell command ${stopCommand} result ${result}`)
+                // this.#removeServicePidFile()
+                this.#setStatus(ServiceStatus.STOPPED)
+              })
+              .catch((err) => {
+                this.#log(`shell command ${stopCommand} error ${err}`)
+                if (os.isPathExist(this.#servicepidfile)) {
+                  this.#setStatus(ServiceStatus.ERROR)
+                } else {
+                  this.#setStatus(ServiceStatus.STOPPED)
+                }
+              })
+              .finally(() => {
+                this.#removeServicePidFile()
+              })
+            return
+          }
+
+          let serviceExecutable = this.getServiceExecutable()
+
+          // check if executing service with another service
+          if (this.#options.execconfig.execservice) {
+            // find service executable
+            const execservice: ExecService =
+              this.#options.execconfig.execservice
+
+            //check if using cli command for the service
+            if (execservice.id && execservice.cli) {
+              const serviceExecutableService = this.#serviceManager.getService(
+                execservice.id
+              )
+              const serviceExecutableRoot =
+                serviceExecutableService.getServiceExecutableRoot()
+              serviceExecutable =
+                serviceExecutable +
+                " " +
+                serviceExecutableService.getServiceCommandCli()
+              this.#execservicepath = serviceExecutableRoot
+              this.#log(
+                `executing stop command using command cli ${serviceExecutable}`
+              )
+            }
+          }
+
+          stopCommand = `${serviceExecutable} ${stopCommand}`
+          this.#log(`stop command: ${stopCommand} in ${this.#servicepath}`)
+          await os
+            .runProcess(stopCommand, [], {
+              signal: this.#abortController.signal,
+              cwd: this.#servicepath,
+              stdio: ["ignore", this.#stdout, this.#stderr],
+              env: this.environmentVariables,
+              windowsHide: true,
+            })
+            .then((result) => {
+              this.#log(`stop command ${stopCommand} result ${result}`)
+              this.#setStatus(ServiceStatus.STOPCOMMANDSTART)
+              // create setup file to mark that setup already happened
+              // fs.writeFileSync(this.#setupstatefile, "setup completed")
+            })
+            .catch((err) => {
+              this.#log(`stop command ${stopCommand} error ${err}`)
+              this.#setStatus(ServiceStatus.ERROR)
+            })
+            .finally(() => {
+              // this.#log(`setup command ${setupCommand} complete`)
+              this.#setStatus(ServiceStatus.STOPPED)
+            })
+          return
+        }
         this.#setStatus(ServiceStatus.STOPPING)
         if (!this.#process.kill(SignalType.SIGINT)) {
           this.#log(`killing ${this.#id} with pid ${pid}`)
           kill(pid, SignalType.SIGINT, (err) => {
             this.#log(`killed ${this.#id} with pid ${pid} error ${err}`)
+            this.#removeServicePidFile()
           })
         } else {
           this.#log(`gracefully closed ${this.#id} with pid ${pid}`)
+          this.#removeServicePidFile()
         }
       }
     }
@@ -912,22 +1146,37 @@ export class Service extends EventEmitter<ServiceEvent> {
     ) {
       return true
     } else if (this.#options.execconfig.setup) {
-      this.#log(
-        `isSetup setupstatefile: ${this.#setupstatefile} = ${os.isPathExist(
-          this.#setupstatefile
-        )}`
-      )
       return os.isPathExist(this.#setupstatefile)
     } else if (this.#options.execconfig.setuparchive) {
-      this.#log(
-        `isSetup archive setupstatefile: ${
-          this.#setuparchiveOutputPath
-        } = ${os.isPathExist(this.#setuparchiveOutputPath)}`
-      )
+      if (!this.#doValidateSetup()) {
+        this.#log(
+          `isSetup archive setuparchiveOutputPath: ${
+            this.#setuparchiveOutputPath
+          } = ${os.isPathExist(this.#setuparchiveOutputPath)}`
+        )
+      }
       return os.isPathExist(this.#setuparchiveOutputPath)
     }
     this.#log(`can't determine if service is setup`)
     return false
+  }
+  // run setup scripts
+  #doValidateSetup() {
+    // check if executables are present then create setup state file
+    if (!os.isPathExist(this.#setupstatefile)) {
+      const executable = this.getExecutaleForPlatform
+      if (executable) {
+        const executablePath = path.join(this.#servicepath, executable)
+        if (os.isPathExist(executablePath)) {
+          this.#log(`executable ${executablePath} is found`)
+          fs.writeFileSync(this.#setupstatefile, "setup found")
+        } else {
+          this.#log(`executable ${executablePath} is not found`)
+          return false
+        }
+      }
+    }
+    return true
   }
 
   // extract service archive
@@ -948,6 +1197,7 @@ export class Service extends EventEmitter<ServiceEvent> {
     // extract setuparchive before setup
     if (this.#setuparchiveFile) {
       if (!os.isPathExist(this.#setuparchiveOutputPath)) {
+        this.#setStatus(ServiceStatus.EXTRACTING)
         this.#log(`extracting setup archive ${this.#setuparchiveFile}`)
         await this.#doExtract(
           this.#setuparchiveFile,
@@ -959,13 +1209,14 @@ export class Service extends EventEmitter<ServiceEvent> {
             fs.writeFileSync(this.#setupstatefile, "archive extracted")
           }
         })
+        this.#setStatus(ServiceStatus.EXTRACTED)
       } else {
         this.#log(
           `setup archive already extracted in ${this.#setuparchiveOutputPath}`
         )
       }
     }
-
+    // run setup steps
     if (this.#setup && this.#setup.length > 0) {
       if (!os.isPathExist(this.#setupstatefile)) {
         this.#log(
@@ -1012,11 +1263,67 @@ export class Service extends EventEmitter<ServiceEvent> {
           }
         }
 
+        // list of setup processess running in backgroud to kill after setup
+        const backgroundProcesses: Promise<any>[] = []
+
         //for each setup command in #setup, execute it
         for (let i = 0; i < this.#setup.length; i++) {
+          //get step command
           const step = this.#setup[i]
+          //update vars in command
           const setupCommand = this.#getServiceCommand(step, this)
-          this.#log(`executing setup command ${setupCommand}`)
+          // if setup command is empty or starts with #, skip it
+          if (!setupCommand || setupCommand.startsWith("#")) {
+            this.#log(`skipping setup step ${step}`)
+            continue
+          }
+          // if setup command starts with ;, execute it as shell command
+          if (setupCommand.startsWith(";")) {
+            let shellCommand = setupCommand.substring(1)
+            // does shell command ends with &?
+            if (shellCommand.endsWith("&")) {
+              // remove & from shell command
+              shellCommand = shellCommand.substring(0, shellCommand.length - 1)
+              this.#log(`run command in backgroud ${shellCommand}`)
+              // run shell command in background and add it to backgroundProcesses
+              const backgroundProcess = os
+                .runProcess(shellCommand, [], {
+                  signal: this.#abortController.signal,
+                  cwd: this.#servicepath,
+                  stdio: ["ignore", this.#stdout, this.#stderr],
+                  env: this.environmentVariables,
+                  windowsHide: true,
+                })
+                .then((result) => {
+                  this.#log(`shell command ${shellCommand} result ${result}`)
+                })
+                .catch((err) => {
+                  this.#log(`shell command ${shellCommand} error ${err}`)
+                  this.#setStatus(ServiceStatus.ERROR)
+                })
+              backgroundProcesses.push(backgroundProcess)
+              continue
+            }
+            this.#log(`executing setup shell command: ${shellCommand}`)
+            await os
+              .runProcess(shellCommand, [], {
+                signal: this.#abortController.signal,
+                cwd: this.#servicepath,
+                stdio: ["ignore", this.#stdout, this.#stderr],
+                env: this.environmentVariables,
+                windowsHide: true,
+              })
+              .then((result) => {
+                this.#log(`shell command ${shellCommand} result ${result}`)
+              })
+              .catch((err) => {
+                this.#log(`shell command ${shellCommand} error ${err}`)
+                this.#setStatus(ServiceStatus.ERROR)
+              })
+            continue
+          }
+          // execute setup command using service executable
+          this.#log(`executing setup command: ${setupCommand}`)
           const execCommand = `${serviceExecutable} ${setupCommand}`
           this.#log(`execCommand: ${execCommand} in ${this.#servicepath}`)
           await os
@@ -1031,7 +1338,7 @@ export class Service extends EventEmitter<ServiceEvent> {
               this.#log(`setup command ${setupCommand} result ${result}`)
               this.#setStatus(ServiceStatus.INSTALLED)
               // create setup file to mark that setup already happened
-              fs.writeFileSync(this.#setupstatefile, "setup completed")
+              // fs.writeFileSync(this.#setupstatefile, "setup completed")
             })
             .catch((err) => {
               this.#log(`setup command ${setupCommand} error ${err}`)
@@ -1041,6 +1348,12 @@ export class Service extends EventEmitter<ServiceEvent> {
               // this.#log(`setup command ${setupCommand} complete`)
             })
         }
+        // terminate all processes running in backgroundProcess
+        await Promise.all(backgroundProcesses).then(() => {
+          this.#log(`all background processes terminated`)
+        })
+        fs.writeFileSync(this.#setupstatefile, "setup completed")
+        this.#setStatus(ServiceStatus.INSTALLED)
       } else {
         this.#log(`service ${this.#id} has already has been configured.`)
         this.#setStatus(ServiceStatus.AVAILABLE)
@@ -1090,7 +1403,11 @@ export class Service extends EventEmitter<ServiceEvent> {
         )
       }
     } else {
-      this.#setStatus(ServiceStatus.AVAILABLE)
+      if (this.isEnabled) {
+        this.#setStatus(ServiceStatus.AVAILABLE)
+      } else {
+        this.#setStatus(ServiceStatus.DISABLED)
+      }
     }
   }
 
@@ -1122,6 +1439,9 @@ export class Service extends EventEmitter<ServiceEvent> {
                 this.#log(`service ${service.id} is available and ready.`)
                 depend_on_services_started = true
                 break
+              } else {
+                this.#log(`starting service ${service.id}.`)
+                await service.start()
               }
               //Make sure all the services are started.
               if (service.status != ServiceStatus.STARTED) {

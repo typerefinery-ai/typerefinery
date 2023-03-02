@@ -1,0 +1,26 @@
+{
+  "id":"pl.ds.websight:websight-cms-ce-feature:slingosgifeature:websight-commons:1.4.0",
+  "title":"WebSight CMS Community Edition: OSGi Sling Feature Model",
+  "description":"WebSight CMS Community Edition Feature that builds the Sling\n    OSGI Feature Model for the projects running on WebSight.",
+  "vendor":"Dynamic Solutions sp. z o.o. sp. k.",
+  "license":"Dynamic Solutions License",
+  "configurations":  {
+    "pl.ds.websight.root.redirect.RootRedirectServlet":    {
+      "redirectTarget":"/apps/websight/index.html/content::spaces"
+    },
+    "org.apache.sling.engine.impl.auth.SlingAuthenticator":    {
+      "auth.annonymous":false,
+      "sling.auth.requirements":[
+        "-/apps/websight-authentication",
+        "-/apps/websight-system-info-service",
+        "-/apps/websight-atlaskit-esm/web-resources",
+        "-/apps/websight-rest-esm-client/web-resources",
+        "-/apps/websight-fragments-esm/web-resources",
+        "-/apps/websight-rest-atlaskit-client/web-resources",
+        "-/apps/websight-ui-components/icon/web-resources",
+        "-/apps/websight-error-handlers/web-resources",
+        "-/apps/websight-system-info-view/web-resources/fragments/system-info"
+      ]
+    }
+  }
+}

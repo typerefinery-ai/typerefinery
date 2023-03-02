@@ -2,13 +2,17 @@
   "id": "websight-mongo",
   "name": "Websight Mongo",
   "description": "Mongo instance for Websight",
-  "enabled": false,
+  "enabled": true,
   "status": "-1",
   "logoutput": "",
   "icon": "pi pi-cog",
   "servicetype": 10,
   "serviceorder": 0,
   "execconfig": {
+    "authentication": {
+      "username": "mongoadmin",
+      "password": "mongoadmin"
+    },
     "serviceorder": 1,
     "serviceport": 8180,
     "setuparchive": {
@@ -25,17 +29,63 @@
         "output": "linux"
       }
     },
+    "setup": {
+      "win32": [
+        "; ${SERVICE_PATH}\\${SERVICE_EXECUTABLE} --dbpath ${SERVICE_HOME}\\database --port ${SERVICE_PORT} &",
+        "; sleep 5",
+        "; ${SERVICE_PATH}\\${SERVICE_EXECUTABLE_CLI} admin --port ${SERVICE_PORT} --quiet --eval \"printjson(db.createUser({user: '${SERVICE_AUTH_USERNAME}',pwd: '${SERVICE_AUTH_PASSWORD}',roles: [{ role: 'root', db: 'admin' },]}))\"",
+        "; ${SERVICE_PATH}\\${SERVICE_EXECUTABLE_CLI} admin --port ${SERVICE_PORT} --quiet --eval 'db.shutdownServer()'"
+      ],
+      "darwin": [
+        "; ${SERVICE_PATH}/${SERVICE_EXECUTABLE} --dbpath ${SERVICE_HOME}\\database --port ${SERVICE_PORT} &",
+        "; sleep 5",
+        "; ${SERVICE_PATH}/${SERVICE_EXECUTABLE_CLI} admin --port ${SERVICE_PORT} --quiet --eval \"printjson(db.createUser({user: '${SERVICE_AUTH_USERNAME}',pwd: '${SERVICE_AUTH_PASSWORD}',roles: [{ role: 'root', db: 'admin' },]}))\"",
+        "; ${SERVICE_PATH}/${SERVICE_EXECUTABLE_CLI} admin --port ${SERVICE_PORT} --quiet --eval 'db.shutdownServer()'"
+      ],
+      "linux": [
+        "; ${SERVICE_PATH}/${SERVICE_EXECUTABLE} --dbpath ${SERVICE_HOME}\\database --port ${SERVICE_PORT} &",
+        "; sleep 5",
+        "; ${SERVICE_PATH}/${SERVICE_EXECUTABLE_CLI} admin --port ${SERVICE_PORT} --quiet --eval \"printjson(db.createUser({user: '${SERVICE_AUTH_USERNAME}',pwd: '${SERVICE_AUTH_PASSWORD}',roles: [{ role: 'root', db: 'admin' },]}))\"",
+        "; ${SERVICE_PATH}/${SERVICE_EXECUTABLE_CLI} admin --port ${SERVICE_PORT} --quiet --eval 'db.shutdownServer()'"
+      ],
+      "default": [
+        "; ${SERVICE_PATH}\\${SERVICE_EXECUTABLE} --dbpath ${SERVICE_HOME}\\database --port ${SERVICE_PORT} &",
+        "; sleep 5",
+        "; ${SERVICE_PATH}\\${SERVICE_EXECUTABLE_CLI} admin --port ${SERVICE_PORT} --quiet --eval \"printjson(db.createUser({user: '${SERVICE_AUTH_USERNAME}',pwd: '${SERVICE_AUTH_PASSWORD}',roles: [{ role: 'root', db: 'admin' },]}))\"",
+        "; ${SERVICE_PATH}\\${SERVICE_EXECUTABLE_CLI} admin --port ${SERVICE_PORT} --quiet --eval 'db.shutdownServer()'"
+      ]
+    },
     "executable": {
       "win32": "bin\\mongod.exe",
       "darwin": "bin/mongod",
       "linux": "bin/mongod",
       "default": "bin\\mongod.exe"
     },
+    "executablecli": {
+      "win32": "bin\\mongosh.exe",
+      "darwin": "bin/mongosh",
+      "linux": "bin/mongosh",
+      "default": "bin\\mongosh.exe"
+    },
     "commandline": {
-      "win32": "--dbpath ${SERVICE_PATH}\\database",
-      "darwin": "--dbpath ${SERVICE_PATH}/database",
-      "linux": "--dbpath ${SERVICE_PATH}/database",
-      "default": "--dbpath ${SERVICE_PATH}\\database"
+      "win32": "--dbpath ${SERVICE_HOME}\\database --bind_ip_all --auth --port ${SERVICE_PORT}",
+      "darwin": "--dbpath ${SERVICE_HOME}/database --bind_ip_all --auth --port ${SERVICE_PORT}",
+      "linux": "--dbpath ${SERVICE_HOME}/database --bind_ip_all --auth --port ${SERVICE_PORT}",
+      "default": "--dbpath ${SERVICE_HOME}\\database --bind_ip_all --auth --port ${SERVICE_PORT}"
+    },
+    "healthcheck": {
+      "type": "tcp",
+      "retries": 30
+    }
+  },
+  "actions": {
+    "stop": {
+      "commandline": {
+        "win32": "; ${SERVICE_PATH}\\${SERVICE_EXECUTABLE_CLI} --username ${SERVICE_AUTH_USERNAME} --password ${SERVICE_AUTH_PASSWORD} --port ${SERVICE_PORT} --quiet --eval 'db.shutdownServer()'",
+        "darwin": "; ${SERVICE_PATH}/${SERVICE_EXECUTABLE_CLI} --username ${SERVICE_AUTH_USERNAME} --password ${SERVICE_AUTH_PASSWORD} --port ${SERVICE_PORT} --quiet --eval 'db.shutdownServer()'",
+        "linux": "; ${SERVICE_PATH}/${SERVICE_EXECUTABLE_CLI} --username ${SERVICE_AUTH_USERNAME} --password ${SERVICE_AUTH_PASSWORD} --port ${SERVICE_PORT} --quiet --eval 'db.shutdownServer()'",
+        "default": "; ${SERVICE_PATH}\\${SERVICE_EXECUTABLE_CLI} --username ${SERVICE_AUTH_USERNAME} --password ${SERVICE_AUTH_PASSWORD} --port ${SERVICE_PORT} --quiet --eval 'db.shutdownServer()'"
+      }
     }
   }
 }

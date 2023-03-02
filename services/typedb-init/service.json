@@ -4,7 +4,6 @@
   "description": "TypeDB Init Script",
   "enabled": true,
   "status": "-1",
-  "logoutput": "...",
   "icon": "pi pi-cog",
   "servicetype": 10,
   "execconfig": {

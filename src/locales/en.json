@@ -52,12 +52,23 @@
         "alias": "Alias Name"
       },
       "general": {
-        "experimental": "Experimental Features",
-        "chat": "Chat",
-        "editor": "Editor",
-        "charts": "Charts",
-        "maps": "Maps",
-        "sampleData": "Sample Data"
+        "experience": "Experiences",
+        "buttons": {
+          "addlabel": "Add New Experience",
+          "editlabel": "Save"
+        }
+      },
+      "experience": {
+        "add-experience": "Add Experience",
+        "edit-experience": "Edit Experience",
+        "label": "Label",
+        "icon": "Icon",
+        "url": "Url",
+        "buttons": {
+          "cancel": "Cancel",
+          "add": "Add",
+          "save": "Save"
+        }
       }
     },
     "chat": {
@@ -371,6 +382,7 @@
     "logout": "Logout",
     "help": "Help",
     "profile": "User profile",
-    "settings": "Open Settings"
+    "settings": "Open Settings",
+    "edit-experience": "Edit Experience"
   }
 }

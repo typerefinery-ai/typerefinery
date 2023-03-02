@@ -1,0 +1,184 @@
+{
+  "id":"pl.ds.websight:websight-base-sling-feature:slingosgifeature:oak_base:1.4.2",
+  "title":"WebSight Base: Sling feature",
+  "vendor":"Dynamic Solutions sp. z o.o. sp. k.",
+  "license":"Dynamic Solutions License",
+  "variables":{
+    "websight.config.admin.omitAdminPw":"true"
+  },
+  "bundles":[
+    {
+      "id":"org.apache.felix:org.apache.felix.jaas:1.0.2",
+      "start-order":"10"
+    },
+    {
+      "id":"com.google.guava:guava:15.0",
+      "start-order":"15"
+    },
+    {
+      "id":"org.apache.jackrabbit:jackrabbit-data:2.20.4",
+      "start-order":"15"
+    },
+    {
+      "id":"org.apache.jackrabbit:jackrabbit-jcr-commons:2.20.4",
+      "start-order":"15"
+    },
+    {
+      "id":"org.apache.jackrabbit:jackrabbit-spi-commons:2.20.4",
+      "start-order":"15"
+    },
+    {
+      "id":"org.apache.jackrabbit:jackrabbit-spi:2.20.4",
+      "start-order":"15"
+    },
+    {
+      "id":"org.apache.jackrabbit:oak-api:1.42.0",
+      "start-order":"15"
+    },
+    {
+      "id":"org.apache.jackrabbit:oak-blob-plugins:1.42.0",
+      "start-order":"15"
+    },
+    {
+      "id":"org.apache.jackrabbit:oak-blob:1.42.0",
+      "start-order":"15"
+    },
+    {
+      "id":"org.apache.jackrabbit:oak-commons:1.42.0",
+      "start-order":"15"
+    },
+    {
+      "id":"org.apache.jackrabbit:oak-core-spi:1.42.0",
+      "start-order":"15"
+    },
+    {
+      "id":"org.apache.jackrabbit:oak-core:1.42.0",
+      "start-order":"15"
+    },
+    {
+      "id":"org.apache.jackrabbit:oak-jackrabbit-api:1.42.0",
+      "start-order":"15"
+    },
+    {
+      "id":"org.apache.jackrabbit:oak-jcr:1.42.0",
+      "start-order":"15"
+    },
+    {
+      "id":"org.apache.jackrabbit:oak-lucene:1.42.0",
+      "start-order":"15"
+    },
+    {
+      "id":"org.apache.jackrabbit:oak-query-spi:1.42.0",
+      "start-order":"15"
+    },
+    {
+      "id":"org.apache.jackrabbit:oak-security-spi:1.42.0",
+      "start-order":"15"
+    },
+    {
+      "id":"org.apache.jackrabbit:oak-store-composite:1.42.0",
+      "start-order":"15"
+    },
+    {
+      "id":"org.apache.jackrabbit:oak-store-document:1.42.0",
+      "start-order":"15"
+    },
+    {
+      "id":"org.apache.jackrabbit:oak-store-spi:1.42.0",
+      "start-order":"15"
+    },
+    {
+      "id":"org.apache.jackrabbit:oak-authorization-principalbased:1.42.0",
+      "start-order":"15"
+    },
+    {
+      "id":"org.apache.sling:org.apache.sling.jcr.api:2.4.0",
+      "start-order":"15"
+    },
+    {
+      "id":"org.apache.sling:org.apache.sling.jcr.base:3.1.10",
+      "start-order":"15"
+    },
+    {
+      "id":"org.apache.sling:org.apache.sling.jcr.jcr-wrapper:2.0.0",
+      "start-order":"15"
+    },
+    {
+      "id":"org.apache.sling:org.apache.sling.jcr.oak.server:1.2.10",
+      "start-order":"16"
+    },
+    {
+      "id":"org.apache.sling:org.apache.sling.jcr.resource:3.2.0",
+      "start-order":"20"
+    },
+    {
+      "id":"org.apache.jackrabbit.vault:org.apache.jackrabbit.vault:3.6.0",
+      "start-order":"20"
+    }
+  ],
+  "configurations":  {
+    "org.apache.felix.jaas.ConfigurationSpi":    {
+      "jaas.defaultRealmName":"jackrabbit.oak",
+      "jaas.configProviderName":"FelixJaasProvider"
+    },
+    "org.apache.jackrabbit.oak.security.authentication.AuthenticationConfigurationImpl":    {
+      "org.apache.jackrabbit.oak.authentication.configSpiName":"FelixJaasProvider"
+    },
+    "org.apache.jackrabbit.oak.security.user.RandomAuthorizableNodeName":    {
+      "length:Integer":21
+    },
+    "org.apache.jackrabbit.oak.security.user.UserConfigurationImpl":    {
+      "adminId":"$[env:WS_ADMIN_USERNAME;default=wsadmin;type=String]",
+      "omitAdminPw":"${websight.config.admin.omitAdminPw}",
+      "groupsPath":"/home/groups",
+      "defaultDepth":"1",
+      "importBehavior":"besteffort",
+      "usersPath":"/home/users"
+    },
+    "org.apache.jackrabbit.oak.security.authorization.AuthorizationConfigurationImpl":    {
+      "importBehavior":"besteffort"
+    },
+    "org.apache.jackrabbit.oak.spi.security.user.action.DefaultAuthorizableActionProvider":    {
+      "userPrivilegeNames":[
+        "jcr:all"
+      ],
+      "groupPrivilegeNames":[
+        "jcr:read"
+      ],
+      "enabledActions":[
+        "org.apache.jackrabbit.oak.spi.security.user.action.AccessControlAction"
+      ]
+    },
+    "org.apache.felix.jaas.Configuration.factory~GuestLoginModule":    {
+      "jaas.controlFlag":"optional",
+      "jaas.classname":"org.apache.jackrabbit.oak.spi.security.authentication.GuestLoginModule",
+      "jaas.ranking:Integer":300
+    },
+    "org.apache.felix.jaas.Configuration.factory~LoginModuleImpl":    {
+      "jaas.controlFlag":"required",
+      "jaas.classname":"org.apache.jackrabbit.oak.security.authentication.user.LoginModuleImpl"
+    },
+    "org.apache.felix.jaas.Configuration.factory~TokenLoginModule":    {
+      "jaas.controlFlag":"sufficient",
+      "jaas.classname":"org.apache.jackrabbit.oak.security.authentication.token.TokenLoginModule",
+      "jaas.ranking:Integer":200
+    },
+    "org.apache.jackrabbit.oak.spi.security.authorization.principalbased.impl.PrincipalBasedAuthorizationConfiguration":    {
+      "enableAggregationFilter":true
+    },
+    "org.apache.jackrabbit.oak.spi.security.authorization.principalbased.impl.FilterProviderImpl":    {
+      "path":"/home/users/system/sling"
+    },
+    "org.apache.jackrabbit.oak.security.internal.SecurityProviderRegistration":    {
+      "requiredServicePids":[
+        "org.apache.jackrabbit.oak.security.authorization.AuthorizationConfigurationImpl",
+        "org.apache.jackrabbit.oak.security.principal.PrincipalConfigurationImpl",
+        "org.apache.jackrabbit.oak.security.authentication.token.TokenConfigurationImpl",
+        "org.apache.jackrabbit.oak.spi.security.user.action.DefaultAuthorizableActionProvider",
+        "org.apache.jackrabbit.oak.security.authorization.restriction.RestrictionProviderImpl",
+        "org.apache.jackrabbit.oak.security.user.UserAuthenticationFactoryImpl",
+        "org.apache.jackrabbit.oak.spi.security.authorization.principalbased.impl.PrincipalBasedAuthorizationConfiguration"
+      ]
+    }
+  }
+}

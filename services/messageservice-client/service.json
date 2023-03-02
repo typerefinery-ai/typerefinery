@@ -34,17 +34,5 @@
       "url": "http://localhost:${SERVICE_PORT}/",
       "expected_status": 200
     }
-  },
-  "actions": {
-    "stop": {
-      "name": "stop",
-      "path": "...",
-      "commanline": "..."
-    },
-    "start": {
-      "name": "start",
-      "path": "...",
-      "commanline": "..."
-    }
   }
 }
