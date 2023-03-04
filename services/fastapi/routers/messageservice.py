@@ -34,11 +34,11 @@ class PayloadSchema(BaseModel):
   )
 
 @Logger.catch
-@router.post("/payload/create")
-async def flow_create(request: Request, response: Response, body: dict = Body(...)):
+@router.post("/payload/create/{topic}")
+async def flow_create(topic: str, request: Request, response: Response, body: dict = Body(...)):
     service_url_create = "ws://localhost:8112/$tms"
     print(json.dumps(body))
-    data = { "type": 'subscribe', "id": 'payload_insert', "data": { "payload":  json.dumps(body) } }
+    data = { "type": 'subscribe', "id": 'payload_insert', "data": { "payload":  json.dumps(body), "topic": topic } }
     subscribers = { "type": "subscribers", "subscribers": [] }
 
     try:
