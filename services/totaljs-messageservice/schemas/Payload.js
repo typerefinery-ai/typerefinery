@@ -6,6 +6,7 @@ console.log(step_prefix)
 NEWSCHEMA("Payload", function (schema) {
   console.log(schema)
   schema.define("payload", "String")
+  schema.define("topic", "String")
 
   // Define additional fields but ONLY for TMS schema (definitions/tms.js)
   schema.jsonschema_define("id", "String")

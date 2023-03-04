@@ -6,6 +6,9 @@
   "properties": {
     "payload": {
       "type": "string"
+    },
+    "topic": {
+      "type": "string"
     }
   }
 }
