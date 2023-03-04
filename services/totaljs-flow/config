@@ -33,3 +33,6 @@ directory               (env)    : SERVICE_DATA_PATH
 components                    : https://typerefinery-ai.github.io/flowcomponents/db.json
 // custom
 components2                   : https://cdn.totaljs.com/flowstream/components/db.json
+
+// #(in kilobytes), set to 10mb
+default_websocket_maxlength : 10000

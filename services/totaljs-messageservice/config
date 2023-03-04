@@ -2,3 +2,6 @@ name: TMS Message Service
 
 allow_tms: true
 # secret_tms                    : typerefinery
+
+#A max. TMS message length in kB (kilobytes), default value: 1024
+default_tms_maxlength: 10024
