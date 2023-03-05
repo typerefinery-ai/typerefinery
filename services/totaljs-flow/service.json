@@ -31,6 +31,9 @@
       "expected_status": 200,
       "retries": 30
     },
-    "depend_on": ["node"]
+    "depend_on": [
+      "node",
+      "totaljs-messageservice"
+    ]
   }
 }
