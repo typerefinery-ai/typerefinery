@@ -33,12 +33,19 @@ Function PrintInfo
   printSectionLine "PATH: ${PATH}"
   printSectionLine "PYTHONPACKAGES: ${PYTHONPACKAGES}"
   printSectionLine "PYTHONPATH: ${PYTHONPATH}"
+  printSectionLine "PYTHON: ${PYTHON}"
+
+  printSectionLine "PYTHONHOME: ${env:PYTHONHOME}"
+  printSectionLine "PYTHONPATH: ${env:PYTHONPATH}"
+  printSectionLine "PYTHONUSERBASE: ${env:PYTHONUSERBASE}"
+  printSectionLine "PYTHONEXECUTABLE: ${env:PYTHONEXECUTABLE}"
 
   printSectionBanner "Starting ${SERVICE_NAME} service"
 }
 
 Function StartServer
 {
+  echo "${SERVICE_NAME} - StartServer"
 
   if ($DEBUG) {
     TestPython
@@ -50,7 +57,7 @@ Function StartServer
   printSectionLine "${SERVICE_NAME} - SERVICE_LOG_PATH=${SERVICE_LOG_PATH}"
   printSectionLine "${SERVICE_NAME} - SERVICE_PATH=${SERVICE_PATH}"
   try {
-    & python -m uvicorn --reload --reload-exclude "req-*.py" --host localhost --app-dir "${SERVER_HOME}" main:app
+    & Invoke-Expression -Command "${PYTHON} -m uvicorn --reload --reload-exclude ""req-*.py"" --host localhost --app-dir ""${SERVER_HOME}"" main:app"
   } finally {
     Set-Location -Path "${CURRENT_PATH}"
   }
@@ -59,6 +66,7 @@ Function StartServer
 
 Function StartSample
 {
+  echo "${SERVICE_NAME} - StartSample"
 
   if ($DEBUG) {
     TestPython
@@ -70,7 +78,7 @@ Function StartSample
   printSectionLine "${SERVICE_NAME} - SERVICE_LOG_PATH=${SERVICE_LOG_PATH}"
   printSectionLine "${SERVICE_NAME} - SERVICE_PATH=${SERVICE_PATH}"
   try {
-    python -m http.server 8081 --directory "${SCRIPS_PATH}"
+    Invoke-Expression -Command "${PYTHON} -m http.server 8081 --directory "${SCRIPS_PATH}""
   } finally {
     Set-Location -Path "${CURRENT_PATH}"
   }
@@ -79,13 +87,13 @@ Function StartSample
 
 Function StartSetup
 {
+  echo "${SERVICE_NAME} - StartSetup"
   Set-Location -Path "${PYTHON_HOME}"
   try {
     if ( $IsWindows ) {
       python get-pip.py
     }
-    python -m pip install uvicorn
-    python -m pip install --target="${PYTHONPACKAGES}" -r "${SERVER_REQUIREMENTS}"
+    Invoke-Expression -Command "${PYTHON} -m pip install --target="${PYTHONPACKAGES}" -r "${SERVER_REQUIREMENTS}""
   } finally {
     Set-Location -Path "${CURRENT_PATH}"
   }
@@ -93,11 +101,12 @@ Function StartSetup
 
 Function RunScriptBasic
 {
+  echo "${SERVICE_NAME} - RunScriptBasic"
   echo "${SERVICE_NAME} - SERVICE_DATA_PATH=${SERVICE_DATA_PATH}"
   echo "${SERVICE_NAME} - SERVICE_LOG_PATH=${SERVICE_LOG_PATH}"
   echo "${SERVICE_NAME} - SERVICE_PATH=${SERVICE_PATH}"
   try {
-    python ${SERVICE_PATH}/scripts/G_to_WebCola.py ${TYPEDB_HOST} ${TYPEDB_PORT} ${TYPEDB_DB} "match $a isa log, has logName 'L1'; $b isa event, has eventName $c; $d (owner: $a, item: $b) isa trace, has traceId $e, has index $f; offset 0;"
+    Invoke-Expression -Command "${PYTHON} ${SERVICE_PATH}/scripts/G_to_WebCola.py ${TYPEDB_HOST} ${TYPEDB_PORT} ${TYPEDB_DB} ""match $a isa log, has logName 'L1'; $b isa event, has eventName $c; $d (owner: $a, item: $b) isa trace, has traceId $e, has index $f; offset 0;"""
   } finally {
     Set-Location -Path "${CURRENT_PATH}"
   }
@@ -106,12 +115,13 @@ Function RunScriptBasic
 
 Function RunScriptGroup
 {
+  echo "${SERVICE_NAME} - RunScriptGroup"
   echo "${SERVICE_NAME} - SERVICE_DATA_PATH=${SERVICE_DATA_PATH}"
   echo "${SERVICE_NAME} - SERVICE_LOG_PATH=${SERVICE_LOG_PATH}"
   echo "${SERVICE_NAME} - SERVICE_PATH=${SERVICE_PATH}"
   try {
-    python ${SERVICE_PATH}/scripts/WebCola_Groups3.py ${TYPEDB_HOST} ${TYPEDB_PORT} ${TYPEDB_DB} "match $a isa log, has logName 'L1'; $b isa event, has eventName $c; $d (owner: $a, item: $b) isa trace, has traceId $e, has index $f; offset 0;"
-    python ${SERVICE_PATH}/scripts/Collapse_Group.py ${SERVICE_PATH}/scripts/WebCola_Groups3.py.output ${SERVICE_PATH}/scripts/WebCola_Groups3.py.output.collapsed
+    Invoke-Expression -Command "${PYTHON} ${SERVICE_PATH}/scripts/WebCola_Groups3.py ${TYPEDB_HOST} ${TYPEDB_PORT} ${TYPEDB_DB} ""match $a isa log, has logName 'L1'; $b isa event, has eventName $c; $d (owner: $a, item: $b) isa trace, has traceId $e, has index $f; offset 0;"""
+    Invoke-Expression -Command "${PYTHON} ${SERVICE_PATH}/scripts/Collapse_Group.py ${SERVICE_PATH}/scripts/WebCola_Groups3.py.output ${SERVICE_PATH}/scripts/WebCola_Groups3.py.output.collapsed"
   } finally {
     Set-Location -Path "${CURRENT_PATH}"
   }
@@ -125,10 +135,10 @@ SetEnvPath "PATH" "${PYTHON_PATH}"
 SetEnvPath "PYTHONPATH" "${SERVER_HOME}" "${PYTHONPACKAGES}"
 SetEnvPath "PYTHONHOME" "${PYTHON_HOME}"
 SetEnvPath "PYTHONUSERBASE" "${PYTHONPACKAGES}"
+SetEnvPath "PYTHONEXECUTABLE" "${PYTHON}"
 
-printSectionLine "PYTHONHOME: ${env:PYTHONHOME}"
-printSectionLine "PYTHONPATH: ${env:PYTHONPATH}"
-printSectionLine "PYTHONUSERBASE: ${env:PYTHONUSERBASE}"
+
+PrintInfo
 
 if ( $SETUP ) {
   StartSetup
