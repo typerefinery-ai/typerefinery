@@ -72,6 +72,11 @@ function getServicePage(service: Service) {
     statusBackground = "bg-secondary"
   }
 
+  let actionSetupLabel = "Install"
+  if (service.isSetup) {
+    actionSetupLabel = "Re-Install"
+  }
+
   return `
   <html>
   <head>
@@ -87,12 +92,13 @@ function getServicePage(service: Service) {
           <div class="row align-items-center">
             <div class="col">
               <div class="lh-1">
-                <h1 class="h5 mb-0 text-white lh-1">Service: ${service.name}</h1>
+                <h1 class="h5 mb-0 text-white lh-1">Service: ${service.name} <a type="button" href="/services" class="btn btn-secondary"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-house" viewBox="0 0 16 16" data-darkreader-inline-fill="" style="--darkreader-inline-fill:currentColor;"><path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L2 8.207V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V8.207l.646.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.707 1.5ZM13 7.207V13.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V7.207l5-5 5 5Z"></path></svg></a></h1>
               </div>
             </div>
             <div class="col">
               <button type="button" class="btn btn-success" onclick="triggerServiceAPI('start')">Start</button>
               <button type="button" class="btn btn-danger" onclick="triggerServiceAPI('stop')">Stop</button>
+              <button type="button" class="btn btn-danger" onclick="triggerServiceAPI('setup')">${actionSetupLabel}</button>
             </div>
             <div class="col text-end">
               <small>Status @: ${getTimestamp()}, Refresh in (sec) <span id="refreshInPage">${pageAutoRefreshEverySeconds}</span></small>
@@ -289,6 +295,7 @@ function getServicesPage(services: Service[]) {
       }
       let statusBackground = "bg-warning"
 
+
       if (service.status === ServiceStatus.STARTED) {
         statusBackground = "bg-success"
       }
@@ -297,6 +304,11 @@ function getServicesPage(services: Service[]) {
       }
       if (service.status === ServiceStatus.DISABLED) {
         statusBackground = "bg-secondary"
+      }
+
+      let actionSetupLabel = "Install"
+      if (service.isSetup) {
+        actionSetupLabel = "Re-Install"
       }
 
       return `<tr class="align-middle">
@@ -312,6 +324,9 @@ function getServicesPage(services: Service[]) {
         <button type="button" class="btn btn-danger" onclick="triggerServiceAPI('${
           service.id
         }','stop')">Stop</button>
+        <button type="button" class="btn btn-danger" onclick="triggerServiceAPI('${
+          service.id
+        }','setup')">${actionSetupLabel}</button>
       </td>
       </tr>`
     })
@@ -473,6 +488,14 @@ app.post("/service/:serviceId/:serviceAction", (req, res, next) => {
     if (service.isRunning) {
       service.stop()
     }
+  }
+  if (serviceAction === "setup") {
+    console.log(["setup start", service.id])
+    if (service.isRunning) {
+      service.stop()
+    }
+    service.install()
+    console.log(["setup end", service.id])
   }
   res.json({
     service: serviceId,

@@ -915,6 +915,8 @@ export class Service extends EventEmitter<ServiceEvent> {
     //run setup if it exists
     await this.#doSetup()
 
+    this.#setStatus(ServiceStatus.AVAILABLE)
+
     //quick fail no command
     if (
       this.#options &&
@@ -1192,11 +1194,18 @@ export class Service extends EventEmitter<ServiceEvent> {
     }
   }
 
+  async install() {
+    this.#log(`installing service ${this.#id}`)
+    //run install routine
+    await this.#doSetup(true)
+    this.#log(`installed service ${this.#id}`)
+  }
+
   // run setup scripts
-  async #doSetup() {
+  async #doSetup(force = false) {
     // extract setuparchive before setup
     if (this.#setuparchiveFile) {
-      if (!os.isPathExist(this.#setuparchiveOutputPath)) {
+      if (!os.isPathExist(this.#setuparchiveOutputPath) || force) {
         this.#setStatus(ServiceStatus.EXTRACTING)
         this.#log(`extracting setup archive ${this.#setuparchiveFile}`)
         await this.#doExtract(
@@ -1218,7 +1227,7 @@ export class Service extends EventEmitter<ServiceEvent> {
     }
     // run setup steps
     if (this.#setup && this.#setup.length > 0) {
-      if (!os.isPathExist(this.#setupstatefile)) {
+      if (!os.isPathExist(this.#setupstatefile) || force) {
         this.#log(
           `service ${
             this.#id
