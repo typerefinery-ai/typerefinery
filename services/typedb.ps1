@@ -72,7 +72,8 @@ Function StartServer
 
     SetEnvPath "G_CP" ( Join-Path "${SERVER_HOME}" "server" "conf" ) ( Join-Path "${SERVER_HOME}" "server" "lib" "common" "*" ) ( Join-Path "${SERVER_HOME}" "server" "lib" "prod" "*" )
 
-    java ${env:SERVER_JAVAOPTS} -cp "${env:G_CP}" -D"typedb.dir=${SERVER_HOME}" "com.vaticle.typedb.core.server.TypeDBServer" --storage.data="${SERVICE_STORAGE_DATA_PATH}"
+    Invoke-Expression -Command "${JAVA_PROGRAM_PATH} ${env:SERVER_JAVAOPTS} -cp ""${env:G_CP}"" -D""typedb.dir=${SERVER_HOME}"" ""com.vaticle.typedb.core.server.TypeDBServer"" --storage.data=""${SERVICE_STORAGE_DATA_PATH}"""
+    # java ${env:SERVER_JAVAOPTS} -cp "${env:G_CP}" -D"typedb.dir=${SERVER_HOME}" "com.vaticle.typedb.core.server.TypeDBServer" --storage.data="${SERVICE_STORAGE_DATA_PATH}"
 
   } finally {
     Set-Location -Path "${CURRENT_PATH}"
