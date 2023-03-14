@@ -11,3 +11,4 @@ requests
 websocket-client
 python-dotenv
 starlette
+grpcio

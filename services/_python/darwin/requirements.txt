@@ -1,4 +1,7 @@
+python-dotenv
 uvicorn[standard]
 typedb-client
 argparse
 loguru
+websocket-client
+grpcio
