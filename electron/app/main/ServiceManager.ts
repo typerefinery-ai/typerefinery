@@ -248,11 +248,14 @@ class ServiceManager {
         }`
       )
     }
+
+    //generate global environment variables to pass to all services
+    this.getGlobalEnv()
+
     for (const service of orderedServiceList) {
       this.#logger.log(`starting service ${service.id}`)
       await service.start(this.globalEnv)
-      // collect global environment variables
-      // add service.globalEnvironmentVariables to #globalenv
+      // collect global environment variables from service and add to globalenv in case they have changed
       Object.assign(this.#globalenv, service.globalEnvironmentVariables)
 
       this.#logger.log(
