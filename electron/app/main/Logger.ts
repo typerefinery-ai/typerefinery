@@ -51,4 +51,11 @@ export class Logger {
     //   console.log(...args)
     // }
   }
+
+  debug(...args: any[]) {
+    this.#logger.log("debug", JSON.stringify(args))
+    // if (this.#isDev) {
+    //   console.log(...args)
+    // }
+  }
 }

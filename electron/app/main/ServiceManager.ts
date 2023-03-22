@@ -30,13 +30,15 @@ class ServiceManager {
   #logsDir: string
   #logWritable: Writable
   #logWritablePath: string
+  #globalenv: { [key: string]: string } = {}
   constructor(
     logsDir: string,
     logger: Logger,
     servicesroot: string,
     servicesdataroot: string,
     serviceEvents: ServiceEvents,
-    serviceManagerEvents: ServiceManagerEvents
+    serviceManagerEvents: ServiceManagerEvents,
+    globalenv: { [key: string]: string } = {}
   ) {
     this.#logsDir = logsDir
     this.#servicesroot = servicesroot
@@ -55,11 +57,27 @@ class ServiceManager {
 
     this.#logger.log("service manager log", this.#logWritablePath)
     this.#serviceConfigList = []
+    this.#globalenv = globalenv
     this.reload()
   }
 
   get log(): Writable {
     return this.#logWritable
+  }
+
+  getGlobalEnv(): { [key: string]: string } {
+    //for each service get globalenv
+    this.#services.forEach((service: Service) => {
+      const serviceGlobalEnv = service.globalEnvironmentVariables
+      Object.keys(serviceGlobalEnv).forEach((key: string) => {
+        this.#globalenv[key] = serviceGlobalEnv[key]
+      })
+    })
+    return this.#globalenv
+  }
+
+  get globalEnv(): { [key: string]: string } {
+    return this.#globalenv
   }
 
   reload(restart = false) {
@@ -232,7 +250,11 @@ class ServiceManager {
     }
     for (const service of orderedServiceList) {
       this.#logger.log(`starting service ${service.id}`)
-      await service.start()
+      await service.start(this.globalEnv)
+      // collect global environment variables
+      // add service.globalEnvironmentVariables to #globalenv
+      Object.assign(this.#globalenv, service.globalEnvironmentVariables)
+
       this.#logger.log(
         `service started ${service.id} : ${service.status} : ${service.isSetup}`
       )

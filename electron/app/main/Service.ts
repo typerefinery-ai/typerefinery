@@ -102,6 +102,7 @@ export interface ExecConfig {
     default?: string[]
   }
   env?: any
+  globalenv?: any
   commandline?: PlatfromCommandLine
   commandlinecli?: PlatfromCommandLine
   datapath?: string
@@ -193,6 +194,7 @@ export class Service extends EventEmitter<ServiceEvent> {
   #status: ServiceStatus = ServiceStatus.DISABLED
   #abortController: AbortController
   #logsDir: string
+  #processEnv: { [key: string]: string } = {}
   constructor(
     logsDir: string,
     logger: Logger,
@@ -442,21 +444,42 @@ export class Service extends EventEmitter<ServiceEvent> {
       .replaceAll("${SERVICE_PID_FILE}", service.#servicepidfile)
   }
 
-  get environmentVariables() {
+  get environmentVariables(): { [key: string]: string } {
+    return this.#processEnv || {}
+  }
+
+  #compileEnvironmentVariables(args: { [key: string]: string } = {}): any {
     const envVar = {}
+    // add this.environmentVariables into envVar
+    Object.assign(envVar, this.#environmentVariables)
+    // if args is not empty add it to envVar
+    if (args && Object.keys(args).length > 0) {
+      // add this.globalEnvironmentVariables into envVar
+      Object.assign(envVar, args)
+    }
+    this.#processEnv = envVar
+    return this.#processEnv
+  }
+
+  /**
+   * get service environment variables
+   */
+  get #environmentVariables() {
     // add default env vars
-    envVar["SERVICE_HOME"] = this.#servicehome
-    envVar["SERVICE_EXECUTABLE"] = this.getServiceExecutable()
-    envVar["SERVICE_EXECUTABLE_CLI"] = this.getServiceExecutableCli()
-    envVar["SERVICE_PATH"] = this.#servicepath
-    envVar["EXEC_SERVICE_PATH"] = this.#execservicepath
-    envVar["SERVICE_DATA_PATH"] = this.#servicedatapath
-    envVar["SERVICE_PORT"] = this.#serviceport + ""
-    envVar["SERVICE_HOST"] = this.#servicehost + ""
-    envVar["SERVICE_LOG_PATH"] = this.#logsDir + ""
-    envVar["SERVICE_AUTH_USERNAME"] = this.username
-    envVar["SERVICE_AUTH_PASSWORD"] = this.password
-    envVar["SERVICE_PID_FILE"] = this.#servicepidfile
+    const envVar = {
+      SERVICE_HOME: this.#servicehome,
+      SERVICE_EXECUTABLE: this.getServiceExecutable(),
+      SERVICE_EXECUTABLE_CLI: this.getServiceExecutableCli(),
+      SERVICE_PATH: this.#servicepath,
+      EXEC_SERVICE_PATH: this.#execservicepath,
+      SERVICE_DATA_PATH: this.#servicedatapath,
+      SERVICE_PORT: this.#serviceport + "",
+      SERVICE_HOST: this.#servicehost + "",
+      SERVICE_LOG_PATH: this.#logsDir + "",
+      SERVICE_AUTH_USERNAME: this.username,
+      SERVICE_AUTH_PASSWORD: this.password,
+      SERVICE_PID_FILE: this.#servicepidfile,
+    }
 
     // for each attribute in envVar update is value
     const serviceEnvVar = this.#options.execconfig?.env || {}
@@ -467,6 +490,22 @@ export class Service extends EventEmitter<ServiceEvent> {
       }
     }
 
+    return envVar
+  }
+
+  /**
+   * get global environment variables this service emits
+   */
+  get globalEnvironmentVariables() {
+    const envVar = {}
+    // for each attribute in globalenv update is value
+    const serviceEnvVar = this.#options.execconfig?.globalenv || {}
+    for (const key in serviceEnvVar) {
+      if (serviceEnvVar[key]) {
+        const value = serviceEnvVar[key]
+        envVar[key] = this.#getServiceCommand(value, this)
+      }
+    }
     return envVar
   }
 
@@ -890,7 +929,7 @@ export class Service extends EventEmitter<ServiceEvent> {
   }
 
   // start service and store its process id in a file based on os type
-  async start() {
+  async start(globalenv: { [key: string]: string } = {}) {
     //quick fail if disabled
     if (!this.isEnabled) {
       this.#log(`service ${this.#id} is disabled`)
@@ -907,9 +946,27 @@ export class Service extends EventEmitter<ServiceEvent> {
 
     this.#log(`waiting for dependent services`)
     this.#setStatus(ServiceStatus.DEPENDENCIESWAIT)
+
+    this.#log(
+      `waiting for dependant services ${
+        this.#id
+      } with env variables ${JSON.stringify(globalenv)}`
+    )
     // wait untill all depend_on services are started
-    await this.#waitForDependOnServices()
+    const globalEnv: any = await this.#waitForDependOnServices(globalenv)
+    // merge dependant global env with arg globalenv
+    Object.assign(globalEnv, globalenv)
+
     this.#setStatus(ServiceStatus.DEPENDENCIESREADY)
+
+    // compile environment variables
+    this.#compileEnvironmentVariables(globalEnv)
+
+    this.#log(
+      `starting service ${this.#id} with env variables ${JSON.stringify(
+        this.environmentVariables
+      )}`
+    )
 
     this.#log(`do service setup`)
     //run setup if it exists
@@ -1133,6 +1190,11 @@ export class Service extends EventEmitter<ServiceEvent> {
     this.emit("log", this.#id, message)
   }
 
+  #debug(message: any) {
+    this.#logger.debug(message)
+    this.emit("log", this.#id, message)
+  }
+
   #setStatus(newstatus: ServiceStatus) {
     this.#status = newstatus
     if (this.#events.sendServiceStatus) {
@@ -1151,7 +1213,7 @@ export class Service extends EventEmitter<ServiceEvent> {
       return os.isPathExist(this.#setupstatefile)
     } else if (this.#options.execconfig.setuparchive) {
       if (!this.#doValidateSetup()) {
-        this.#log(
+        this.#debug(
           `isSetup archive setuparchiveOutputPath: ${
             this.#setuparchiveOutputPath
           } = ${os.isPathExist(this.#setuparchiveOutputPath)}`
@@ -1170,10 +1232,10 @@ export class Service extends EventEmitter<ServiceEvent> {
       if (executable) {
         const executablePath = path.join(this.#servicepath, executable)
         if (os.isPathExist(executablePath)) {
-          this.#log(`executable ${executablePath} is found`)
+          this.#debug(`executable ${executablePath} is found`)
           fs.writeFileSync(this.#setupstatefile, "setup found")
         } else {
-          this.#log(`executable ${executablePath} is not found`)
+          this.#debug(`executable ${executablePath} is not found`)
           return false
         }
       }
@@ -1421,7 +1483,7 @@ export class Service extends EventEmitter<ServiceEvent> {
   }
 
   // wait untill all depend_on services are started
-  async #waitForDependOnServices() {
+  async #waitForDependOnServices(globalenv: { [key: string]: string } = {}) {
     return new Promise((resolve) => {
       if (
         this.#options.execconfig.depend_on &&
@@ -1450,8 +1512,12 @@ export class Service extends EventEmitter<ServiceEvent> {
                 break
               } else {
                 this.#log(`starting service ${service.id}.`)
-                await service.start()
+                await service.start(globalenv)
               }
+
+              // merge global environment variables
+              Object.assign(globalenv, service.globalEnvironmentVariables)
+
               //Make sure all the services are started.
               if (service.status != ServiceStatus.STARTED) {
                 depend_on_services_started = false
@@ -1462,12 +1528,41 @@ export class Service extends EventEmitter<ServiceEvent> {
           if (depend_on_services_started) {
             this.#log(`all dependent services started`)
             clearInterval(interval)
-            resolve(true)
+            resolve(globalenv)
           }
         }, 1000)
       } else {
         resolve(true)
       }
     })
+  }
+
+  /**
+   *
+   * @param template template string
+   * @param args arguments to be replaced in template
+   * @returns interpolated string
+   */
+  #updateTemplateVars(
+    template: string,
+    args: { [key: string]: string }
+  ): string {
+    if (typeof args !== "object") {
+      return template
+    }
+    try {
+      return new Function(
+        "return `" + template.replace(/\$\{(.+?)\}/g, "${this.$1}") + "`;"
+      ).call(args)
+    } catch (e) {
+      // ES6 syntax not supported
+    }
+    Object.keys(args).forEach((key) => {
+      template = template.replace(
+        new RegExp("\\$\\{" + key + "\\}", "g"),
+        args[key]
+      )
+    })
+    return template
   }
 }

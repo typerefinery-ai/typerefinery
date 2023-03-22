@@ -7,7 +7,7 @@ import path from "path"
 import config from "../../../package.json"
 import fs from "fs"
 
-const pageAutoRefreshEverySeconds = 10
+const pageAutoRefreshEverySeconds = 10000
 
 const isProduction = process.env.NODE_ENV === "production"
 const APPDATA =
@@ -279,6 +279,50 @@ function getTimestamp(date: Date = new Date()) {
 }
 
 function getServicesPage(services: Service[]) {
+  const serviceDependencies = {}
+
+  const nodes: any[] = []
+  const links: any[] = []
+
+  nodes.push({ name: "root", n: 1, grp: 1, id: "root" })
+  // nodes.push({ name: "Enabled", n: 1, grp: 1, id: "enabled" })
+  // nodes.push({ name: "Disabled", n: 1, grp: 1, id: "disabled" })
+
+  // links.push({ source: "services", target: "enabled", value: 1 })
+  // links.push({ source: "services", target: "disabled", value: 1 })
+
+  services.forEach((service) => {
+    const sericeNode = {
+      name: service.name,
+      n: 1,
+      grp: 1,
+      id: service.id,
+    }
+    nodes.push(sericeNode)
+    // if service has depends_on services
+
+    service.options.execconfig.depend_on?.forEach((dep) => {
+      const depNode = {
+        source: dep,
+        target: service.id,
+        value: 1,
+      }
+      links.push(depNode)
+    })
+    if (!service.options.execconfig.depend_on) {
+      const depNode = {
+        source: "root",
+        target: service.id,
+        value: 1,
+      }
+      links.push(depNode)
+    }
+  })
+
+  serviceDependencies["nodes"] = nodes
+  serviceDependencies["links"] = links
+  serviceDependencies["attributes"] = {}
+
   let servicesList = services
     .map((service) => {
       const execservice = service.options.execconfig?.execservice?.id
@@ -294,7 +338,6 @@ function getServicesPage(services: Service[]) {
         serviceLink = ""
       }
       let statusBackground = "bg-warning"
-
 
       if (service.status === ServiceStatus.STARTED) {
         statusBackground = "bg-success"
@@ -342,7 +385,22 @@ function getServicesPage(services: Service[]) {
     <meta http-equiv="refresh" content="${pageAutoRefreshEverySeconds}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
     <title>Services</title>
+    <style>
+      circle {
+        fill: cadetblue;
+      }
+      line {
+        stroke: #ccc;
+      }
+      text {
+        text-anchor: middle;
+        font-family: "Helvetica Neue", Helvetica, sans-serif;
+        fill: #666;
+        font-size: 16px;
+      }
+    </style>
   </head>
   <body class="bg-dark">
     <main class="container">
@@ -383,6 +441,23 @@ function getServicesPage(services: Service[]) {
         </table>
       </div>
 
+      <div class="my-3 p-3 bg-body rounded shadow-sm">
+        <h6 class="border-bottom pb-2 mb-3">Dependecy Tree</h6>
+        <div class="border border-1 bg-secondary-subtle p-3 fs-6">
+        <div id="dependencytree"></div>
+        </div>
+      </div>
+
+      <div class="my-3 p-3 bg-body rounded shadow-sm">
+        <h6 class="border-bottom pb-2 mb-3">Environment Variables</h6>
+        <div class="border border-1 bg-secondary-subtle p-3 fs-6">
+        <pre><code id="env" style="font-size: 8pt">${JSON.stringify(
+          serviceManager.getGlobalEnv(),
+          null,
+          "\t"
+        )}</code></pre>
+        </div>
+      </div>
 
       <div class="my-3 p-3 bg-body rounded shadow-sm">
         <h6 class="border-bottom pb-2 mb-3">Config</h6>
@@ -429,6 +504,108 @@ function getServicesPage(services: Service[]) {
           location.reload();
         });
       }
+      function displayDependencyTree() {
+        console.log("displayDependencyTree");
+
+        const data = ${JSON.stringify(serviceDependencies)};
+
+        const container =  document.getElementById("dependencytree");
+        console.log(container.getBoundingClientRect().width);
+        // set the dimensions and margins of the graph
+        const margin = {top: 10, right: 30, bottom: 30, left: 30},
+            width = container.getBoundingClientRect().width - margin.left - margin.right,
+            height = 400 - margin.top - margin.bottom;
+
+        // append the svg object to the body of the page
+        const svg = d3.select("#dependencytree")
+            .append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+              .attr("class","links")
+              .attr("transform","translate(" + margin.left + "," + margin.top + ")")
+            .append("g")
+              .attr("class","nodes")
+              .attr("transform","translate(" + margin.left + "," + margin.top + ")");
+
+        // run the layout
+        var simulation = d3.forceSimulation(data.nodes)
+        .force("x",d3.forceX(width/2).strength(0.4))
+        .force("y",d3.forceY(height/2).strength(0.4))
+        .force("charge",d3.forceManyBody().strength(-1000))
+          // .force('center', d3.forceCenter(width / 2, height / 2))
+          .force("link", d3.forceLink().links(data.links).id(d => d.id).distance(100))
+          .force("collide",d3.forceCollide().radius(d => d.r*10))
+          .on('tick', ticked);
+
+        var drag = d3.drag()
+          .on("start", dragstarted)
+          .on("drag", dragged)
+          .on("end", dragended);
+
+        function updateLinks() {
+          var u = d3.select('.links')
+            .selectAll('line')
+            .data(data.links)
+            .join('line')
+            .attr('x1', function(d) {
+              return d.source.x
+            })
+            .attr('y1', function(d) {
+              return d.source.y
+            })
+            .attr('x2', function(d) {
+              return d.target.x
+            })
+            .attr('y2', function(d) {
+              return d.target.y
+            });
+        }
+
+        function updateNodes() {
+          u = d3.select('.nodes')
+            .selectAll('text')
+            .data(data.nodes)
+            .join('text')
+            .text(function(d) {
+              return d.name
+            })
+            .attr('x', function(d) {
+              return d.x
+            })
+            .attr('y', function(d) {
+              return d.y
+            })
+            .attr('dy', function(d) {
+              return 5
+            })
+            .call(drag);
+        }
+
+        function ticked() {
+          updateLinks()
+          updateNodes()
+        }
+
+        function dragstarted(event) {
+          if (!event.active) simulation.alphaTarget(0.3).restart();
+          event.subject.fx = event.subject.x;
+          event.subject.fy = event.subject.y;
+        }
+
+        function dragged(event) {
+          event.subject.fx = event.x;
+          event.subject.fy = event.y;
+        }
+
+        function dragended(event) {
+          if (!event.active) simulation.alphaTarget(0);
+          event.subject.fx = null;
+          event.subject.fy = null;
+        }
+
+      }
+      displayDependencyTree();
     </script>
   </body>
 </html>`
