@@ -1,6 +1,6 @@
 {
   "id": "websight-cms",
-  "name": "websight-cms",
+  "name": "Websight CMS",
   "description": "Websight CMS",
   "enabled": true,
   "status": "-1",
@@ -24,8 +24,16 @@
       "retries": 90
     },
     "depend_on": [
+      "totaljs-flow",
+      "totaljs-messageservice",
       "websight-mongo",
       "websight-nginx"
-    ]
+    ],
+    "env": {
+      "FLOW_HOST_URL": "${FLOW_HOST_URL}"
+    },
+    "globalenv": {
+      "CMS_PORT": "${SERVICE_PORT}"
+    }
   }
 }

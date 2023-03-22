@@ -18,6 +18,10 @@
     "env": {
       "SERVICE_DATA_PATH": "${SERVICE_DATA_PATH}\\database"
     },
+    "globalenv": {
+      "FLOW_HOST_URL": "http://localhost:${SERVICE_PORT}",
+      "FLOW_PORT": "${SERVICE_PORT}"
+    },
     "commandline": {
       "win32": "${SERVICE_PATH}\\index.js",
       "darwin": "${SERVICE_PATH}/index.js",
@@ -33,7 +37,8 @@
     },
     "depend_on": [
       "node",
-      "totaljs-messageservice"
+      "totaljs-messageservice",
+      "fastapi"
     ]
   }
 }

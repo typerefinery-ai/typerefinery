@@ -18,6 +18,10 @@
     "commandline": {
       "default": "index.js"
     },
+    "globalenv": {
+      "MESSAGESERVICE_URL": "http://localhost:${SERVICE_PORT}",
+      "MESSAGESERVICE_PORT": "${SERVICE_PORT}"
+    },
     "serviceport": 8112,
     "healthcheck": {
       "type": "http",

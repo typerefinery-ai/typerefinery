@@ -22,6 +22,10 @@
       "linux": "-p ${SERVICE_HOME}/config",
       "default": "-p ${SERVICE_HOME}\\config"
     },
+    "globalenv": {
+      "NGINX_URL": "http://localhost:${SERVICE_PORT}",
+      "NGINX_PORT": "${SERVICE_PORT}"
+    },
     "healthcheck": {
       "type": "http",
       "url": "http://localhost:${SERVICE_PORT}/health",

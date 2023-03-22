@@ -33,6 +33,9 @@
       "type": "http",
       "url": "http://localhost:${SERVICE_PORT}/",
       "expected_status": 200
-    }
+    },
+    "depend_on": [
+      "python"
+    ]
   }
 }

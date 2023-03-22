@@ -1,6 +1,6 @@
 {
   "id": "typedb",
-  "name": "DB",
+  "name": "TypeDB",
   "description": "Database",
   "enabled": true,
   "status": "30",
@@ -26,6 +26,14 @@
     "healthcheck": {
       "type": "tcp",
       "retries": 30
-    }
+    },
+    "globalenv": {
+      "TYPEDB_DB": "typerefinery",
+      "TYPEDB_PORT": "${SERVICE_PORT}",
+      "TYPEDB_HOST": "${SERVICE_HOST}"
+    },
+    "depend_on": [
+      "java"
+    ]
   }
 }

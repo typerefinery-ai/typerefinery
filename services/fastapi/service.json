@@ -1,6 +1,6 @@
 {
   "id": "fastapi",
-  "name": "API",
+  "name": "FastAPI",
   "description": "Fast API",
   "enabled": true,
   "status": "-1",
@@ -16,6 +16,9 @@
     },
     "env": {
       "PYTHONPATH": "${SERVICE_PATH}"
+    },
+    "globalenv": {
+      "API_URL": "http://localhost:${SERVICE_PORT}"
     },
     "commandline": {
       "default": "-m uvicorn --host localhost --port ${SERVICE_PORT} --app-dir ${SERVICE_PATH} main:app"
