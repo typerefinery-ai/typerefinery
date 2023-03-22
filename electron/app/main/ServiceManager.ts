@@ -88,6 +88,7 @@ class ServiceManager {
 
     this.#loadServiceConfigs()
     this.#loadServices()
+    this.#updateGlobalEnv()
 
     // send list of services to app
     if (this.#serviceManagerEvents.sendServiceList) {
@@ -101,6 +102,14 @@ class ServiceManager {
 
   #clearServices() {
     this.#services = []
+  }
+
+  #updateGlobalEnv() {
+    this.getGlobalEnv()
+    // for each service update globalenv
+    this.#services.forEach((service: Service) => {
+      service.setGlobalEnvironmentVariables(this.#globalenv)
+    })
   }
 
   // process all service configs and load Service objects

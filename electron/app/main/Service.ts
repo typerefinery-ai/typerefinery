@@ -194,7 +194,8 @@ export class Service extends EventEmitter<ServiceEvent> {
   #status: ServiceStatus = ServiceStatus.DISABLED
   #abortController: AbortController
   #logsDir: string
-  #processEnv: { [key: string]: string } = {}
+  #processEnv: { [key: string]: string } = {} // passed to process
+  #globalEnv: { [key: string]: string } = {} // pass when service was created
   constructor(
     logsDir: string,
     logger: Logger,
@@ -315,6 +316,11 @@ export class Service extends EventEmitter<ServiceEvent> {
         )
       }
     }
+
+    this.#getOpenPort().then((port) => {
+      this.#serviceport = port
+      this.#log(`service ${this.#id} resolved port ${port}.`)
+    })
 
     this.#log(`service ${this.#id} loaded with status ${this.#status}.`)
     this.#checkRunning()
@@ -448,10 +454,12 @@ export class Service extends EventEmitter<ServiceEvent> {
     return this.#processEnv || {}
   }
 
-  #compileEnvironmentVariables(args: { [key: string]: string } = {}): any {
+  compileEnvironmentVariables(args: { [key: string]: string } = {}): any {
     const envVar = {}
     // add this.environmentVariables into envVar
     Object.assign(envVar, this.#environmentVariables)
+    // add this.environmentVariables into envVar
+    Object.assign(envVar, this.#globalEnv)
     // if args is not empty add it to envVar
     if (args && Object.keys(args).length > 0) {
       // add this.globalEnvironmentVariables into envVar
@@ -491,6 +499,11 @@ export class Service extends EventEmitter<ServiceEvent> {
     }
 
     return envVar
+  }
+
+  setGlobalEnvironmentVariables(args: { [key: string]: string } = {}) {
+    // add this.globalEnvironmentVariables into envVar
+    Object.assign(this.#globalEnv, args)
   }
 
   /**
@@ -960,7 +973,7 @@ export class Service extends EventEmitter<ServiceEvent> {
     this.#setStatus(ServiceStatus.DEPENDENCIESREADY)
 
     // compile environment variables
-    this.#compileEnvironmentVariables(globalEnv)
+    this.compileEnvironmentVariables(globalEnv)
 
     this.#log(
       `starting service ${this.#id} with env variables ${JSON.stringify(
@@ -994,8 +1007,6 @@ export class Service extends EventEmitter<ServiceEvent> {
     this.#log(`service executable ${serviceExecutable}`)
     this.#log(`service path ${this.#servicepath}`)
     this.#log(`service user data path ${this.#servicedatapath}`)
-
-    this.#serviceport = await this.#getOpenPort()
     this.#log(`service port ${this.#serviceport}`)
 
     if (serviceExecutable) {
