@@ -17,6 +17,9 @@
     "commandline": {
       "default": ""
     },
+    "globalenv": {
+      "TYPEDB_DB": "typerefinery"
+    },
     "serviceport": 8000,
     "depend_on": [
       "typedb"
