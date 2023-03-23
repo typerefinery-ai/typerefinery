@@ -454,8 +454,10 @@ function getServicesPage(services: Service[]) {
               </div>
             </div>
             <div class="col">
-              <button type="button" class="btn btn-danger" onclick="triggerServicesAPI('/exit')">Exit</button>
+              <button type="button" class="btn btn-success" onclick="triggerServicesAPI('/services/startall')">Start All</button>
               <button type="button" class="btn btn-warning" onclick="triggerServicesAPI('/services/reload')">Reload</button>
+              <button type="button" class="btn btn-danger" onclick="triggerServicesAPI('/services/stopall')">Stop All</button>
+              <button type="button" class="btn btn-danger" onclick="triggerServicesAPI('/exit')">Exit</button>
             </div>
             <div class="col text-end">
               <small>Status @: ${getTimestamp()}, Refresh in (sec) <span id="refreshInPage">${pageAutoRefreshEverySeconds}</span></small>
@@ -749,11 +751,28 @@ app.post("/service/:serviceId/:serviceAction", (req, res, next) => {
   })
 })
 
+app.post("/services/stopall", function (req, res, next) {
+  serviceManager.stopAll().finally(() => {
+    res.json({
+      status: "ok",
+    })
+  })
+})
+
+app.post("/services/startall", function (req, res, next) {
+  serviceManager.startAll().finally(() => {
+    res.json({
+      status: "ok",
+    })
+  })
+})
+
 app.post("/services/reload", (req, res, next) => {
   logger.log("Reloading config.")
-  serviceManager.reload()
-  res.json({
-    status: "ok",
+  serviceManager.reload().finally(() => {
+    res.json({
+      status: "ok",
+    })
   })
 })
 

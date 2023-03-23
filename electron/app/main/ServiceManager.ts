@@ -80,9 +80,9 @@ class ServiceManager {
     return this.#globalenv
   }
 
-  reload(restart = false) {
+  async reload(restart = false) {
     if (restart) {
-      this.stopAll()
+      await this.stopAll()
     }
     this.#clearServices()
 
@@ -96,7 +96,7 @@ class ServiceManager {
     }
 
     if (restart) {
-      this.startAll()
+      await this.startAll()
     }
   }
 
