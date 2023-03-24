@@ -51,6 +51,7 @@ export enum ServiceStatus {
   STOPPED = "80",
   STARTING = "90",
   DEPENDENCIESWAIT = "100",
+  DEPENDENCIESNOTREADY = "104",
   DEPENDENCIESREADY = "105",
   STARTED = "120",
 }
@@ -1010,15 +1011,24 @@ export class Service extends EventEmitter<ServiceEvent> {
         this.#id
       } with env variables ${JSON.stringify(globalenv)}`
     )
+
     // wait untill all depend_on services are started
-    const globalEnv: any = await this.#waitForDependOnServices(globalenv)
-    // merge dependant global env with arg globalenv
-    Object.assign(globalEnv, globalenv)
+    const depend_on_services_started = await this.#waitForDependOnServices(
+      globalenv
+    )
+
+    if (!depend_on_services_started) {
+      this.#log(
+        `dependant services not started, service status is ${this.#status}.`
+      )
+      this.#setStatus(ServiceStatus.DEPENDENCIESNOTREADY)
+      return
+    }
 
     this.#setStatus(ServiceStatus.DEPENDENCIESREADY)
 
     // compile environment variables
-    this.compileEnvironmentVariables(globalEnv)
+    this.compileEnvironmentVariables(globalenv)
 
     this.#log(
       `starting service ${this.#id} with env variables ${JSON.stringify(
@@ -1274,6 +1284,10 @@ export class Service extends EventEmitter<ServiceEvent> {
       this.#events.sendServiceStatus(this.#id, newstatus)
       this.emit("status", this.#id, newstatus)
     }
+  }
+
+  get isRunnable() {
+    return this.#options.execconfig.commandline ? true : false
   }
 
   get isSetup() {
@@ -1556,58 +1570,48 @@ export class Service extends EventEmitter<ServiceEvent> {
   }
 
   // wait untill all depend_on services are started
-  async #waitForDependOnServices(globalenv: { [key: string]: string } = {}) {
-    return new Promise((resolve) => {
-      if (
-        this.#options.execconfig.depend_on &&
-        this.#options.execconfig.depend_on.length > 0
-      ) {
-        const dependOnServices = this.#options.execconfig.depend_on
-        this.#log(`waiting for depend_on services ${dependOnServices}`)
-        const interval = setInterval(async () => {
-          let depend_on_services_started = true
-          for (let i = 0; i < dependOnServices.length; i++) {
-            const depend_on_service = dependOnServices[i]
-            const service = this.#serviceManager.getService(depend_on_service)
-            if (service) {
-              this.#log(
-                `checking services ${service.id} status ${service.status} and setup ${service.isSetup}.`
-              )
+  async #waitForDependOnServices(
+    globalenv: { [key: string]: string } = {}
+  ): Promise<boolean> {
+    if (
+      this.#options.execconfig.depend_on &&
+      this.#options.execconfig.depend_on.length > 0
+    ) {
+      const dependOnServices = this.#options.execconfig.depend_on
+      this.#log(`waiting for depend_on services ${dependOnServices}`)
+      for (let i = 0; i < dependOnServices.length; i++) {
+        const depend_on_service = dependOnServices[i]
+        const service = this.#serviceManager.getService(depend_on_service)
+        if (service) {
+          this.#log(
+            `checking services ${service.id} status ${service.status} and setup ${service.isSetup}.`
+          )
 
-              // Make sure all system services are configured.
-              if (
-                (service.status == ServiceStatus.AVAILABLE ||
-                  service.status == ServiceStatus.INSTALLED) &&
-                service.isSetup
-              ) {
-                this.#log(`service ${service.id} is available and ready.`)
-                depend_on_services_started = true
-                break
-              } else {
-                this.#log(`starting service ${service.id}.`)
-                await service.start(globalenv)
-              }
+          // Make sure all system services are configured.
+          if (
+            (service.status == ServiceStatus.AVAILABLE ||
+              service.status == ServiceStatus.INSTALLED) &&
+            service.isSetup
+          ) {
+            this.#log(`service ${service.id} is ready.`)
+          }
 
-              // merge global environment variables
-              Object.assign(globalenv, service.globalEnvironmentVariables)
+          if (service.isRunnable && !service.isRunning) {
+            this.#log(`starting service ${service.id}.`)
+            await service.start(globalenv)
 
-              //Make sure all the services are started.
-              if (service.status != ServiceStatus.STARTED) {
-                depend_on_services_started = false
-                break
-              }
+            if (service.isRunning) {
+              break
+            } else {
+              this.#log(`service ${service.id} did not start.`)
+              return false
             }
           }
-          if (depend_on_services_started) {
-            this.#log(`all dependent services started`)
-            clearInterval(interval)
-            resolve(globalenv)
-          }
-        }, 1000)
-      } else {
-        resolve(true)
+        }
       }
-    })
+    }
+
+    return true
   }
 
   /**

@@ -307,34 +307,65 @@
     border-radius: 50%;
     display: inline-block;
 
+    //TODO: turn this into a computed property
+    &[status="-10"] {
+      background-color: v-bind("serviceStatusColorList['error']");
+    }
     &[status="-1"] {
       background-color: v-bind("serviceStatusColorList['error']");
     }
     &[status="0"] {
       background-color: v-bind("serviceStatusColorList['disabled']");
     }
+    &[status="1"] {
+      background-color: v-bind("serviceStatusColorList['available']");
+    }
     &[status="10"] {
       background-color: v-bind("serviceStatusColorList['available']");
     }
     &[status="11"] {
-      color: v-bind("serviceStatusColorList['available']");
+      background-color: v-bind("serviceStatusColorList['available']");
     }
     &[status="14"] {
-      color: v-bind("serviceStatusColorList['installing']");
+      background-color: v-bind("serviceStatusColorList['installing']");
     }
     &[status="15"] {
       background-color: v-bind("serviceStatusColorList['installing']");
     }
     &[status="20"] {
-      background-color: v-bind("serviceStatusColorList['installed']");
+      background-color: v-bind("serviceStatusColorList['installing']");
+    }
+    &[status="25"] {
+      background-color: v-bind("serviceStatusColorList['installing']");
     }
     &[status="30"] {
+      background-color: v-bind("serviceStatusColorList['installed']");
+    }
+    &[status="50"] {
+      background-color: v-bind("serviceStatusColorList['available']");
+    }
+    &[status="65"] {
       background-color: v-bind("serviceStatusColorList['stopping']");
     }
-    &[status="60"] {
+    &[status="70"] {
+      background-color: v-bind("serviceStatusColorList['stopping']");
+    }
+    &[status="75"] {
+      background-color: v-bind("serviceStatusColorList['stopping']");
+    }
+    &[status="80"] {
       background-color: v-bind("serviceStatusColorList['stopped']");
     }
     &[status="90"] {
+      background-color: v-bind("serviceStatusColorList['starting']");
+    }
+    &[status="100"] {
+      background-color: v-bind("serviceStatusColorList['starting']");
+    }
+    &[status="104"] {
+      background-color: v-bind("serviceStatusColorList['starting']");
+    }
+    &[status="105"] {
       background-color: v-bind("serviceStatusColorList['starting']");
     }
     &[status="120"] {
@@ -344,6 +375,8 @@
 
   .service-button {
     color: gray;
+
+    //TODO: turn this into a computed property
     &[status="-10"] {
       color: v-bind("serviceStatusColorList['error']");
     }
@@ -352,6 +385,9 @@
     }
     &[status="0"] {
       color: v-bind("serviceStatusColorList['disabled']");
+    }
+    &[status="1"] {
+      color: v-bind("serviceStatusColorList['available']");
     }
     &[status="10"] {
       color: v-bind("serviceStatusColorList['available']");
@@ -366,15 +402,39 @@
       color: v-bind("serviceStatusColorList['installing']");
     }
     &[status="20"] {
-      color: v-bind("serviceStatusColorList['installed']");
+      color: v-bind("serviceStatusColorList['installing']");
+    }
+    &[status="25"] {
+      color: v-bind("serviceStatusColorList['installing']");
     }
     &[status="30"] {
+      color: v-bind("serviceStatusColorList['installed']");
+    }
+    &[status="50"] {
+      color: v-bind("serviceStatusColorList['available']");
+    }
+    &[status="65"] {
       color: v-bind("serviceStatusColorList['stopping']");
     }
-    &[status="60"] {
+    &[status="70"] {
+      color: v-bind("serviceStatusColorList['stopping']");
+    }
+    &[status="75"] {
+      color: v-bind("serviceStatusColorList['stopping']");
+    }
+    &[status="80"] {
       color: v-bind("serviceStatusColorList['stopped']");
     }
     &[status="90"] {
+      color: v-bind("serviceStatusColorList['starting']");
+    }
+    &[status="100"] {
+      color: v-bind("serviceStatusColorList['starting']");
+    }
+    &[status="104"] {
+      color: v-bind("serviceStatusColorList['starting']");
+    }
+    &[status="105"] {
       color: v-bind("serviceStatusColorList['starting']");
     }
     &[status="120"] {
