@@ -2,3 +2,4 @@
 !config/logs
 config/logs/*.log
 config/temp/*_temp
+config/conf/nginx.conf

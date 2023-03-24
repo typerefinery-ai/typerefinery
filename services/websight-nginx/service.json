@@ -30,6 +30,10 @@
       "type": "http",
       "url": "http://localhost:${SERVICE_PORT}/health",
       "expected_status": 200
+    },
+    "commandconfig": {
+      "source": "config/conf/nginx.conf.template",
+      "target": "config/conf/nginx.conf"
     }
   },
   "actions": {
