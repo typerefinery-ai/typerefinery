@@ -547,13 +547,9 @@ export class Service extends EventEmitter<ServiceEvent> {
     // read source file
     try {
       const data = fs.readFileSync(sourcePath, "utf8")
-      console.log(["data", data])
-
       try {
         // replace variables in source file
         const result = this.#getServiceCommand(data, this)
-        console.log(["result", result])
-
         // ensure target file esists
         this.#ensurePathToFile(targetPath)
 
