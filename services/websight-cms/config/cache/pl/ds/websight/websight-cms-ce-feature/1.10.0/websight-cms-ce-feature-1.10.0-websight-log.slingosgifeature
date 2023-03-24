@@ -1,0 +1,21 @@
+{
+  "id":"pl.ds.websight:websight-cms-ce-feature:slingosgifeature:websight-log:1.10.0",
+  "title":"WebSight CMS Community Edition: OSGi Sling Feature Model",
+  "description":"WebSight CMS Community Edition Feature that builds the Sling\n    OSGI Feature Model for the projects running on WebSight.",
+  "vendor":"Dynamic Solutions sp. z o.o. sp. k.",
+  "license":"Dynamic Solutions License",
+  "configurations":  {
+    "org.apache.sling.commons.log.LogManager.factory.config~websight.log":    {
+      "org.apache.sling.commons.log.packagingDataEnabled":true,
+      "org.apache.sling.commons.log.pattern":"%d{dd.MM.yyyy HH:mm:ss.SSS} *%level* [%thread] %logger %msg%n",
+      "org.apache.sling.commons.log.level":"$[env:WS_WEBSIGHT_LOG_LEVEL;default=info]",
+      "org.apache.sling.commons.log.file":"logs/websight.log",
+      "org.apache.sling.commons.log.file.number:Integer":8,
+      "org.apache.sling.commons.log.file.size":"'.'yyyy-MM-dd",
+      "org.apache.sling.commons.log.names":[
+        "pl.ds.websight"
+      ],
+      "org.apache.sling.commons.log.additiv":true
+    }
+  }
+}

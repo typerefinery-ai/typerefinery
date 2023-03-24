@@ -1,0 +1,13 @@
+{
+  "id":"pl.ds.websight:websight-request-parameters-support:slingosgifeature:1.0.6",
+  "title":"WebSight Request Parameters Support",
+  "description":"Request Parameters Support module provides functionality of models or enums\ninjection into REST requests parameters.",
+  "vendor":"Dynamic Solutions sp. z o.o. sp. k.",
+  "license":"Dynamic Solutions License",
+  "bundles":[
+    {
+      "id":"pl.ds.websight:websight-request-parameters-support:1.0.6",
+      "start-order":"20"
+    }
+  ]
+}

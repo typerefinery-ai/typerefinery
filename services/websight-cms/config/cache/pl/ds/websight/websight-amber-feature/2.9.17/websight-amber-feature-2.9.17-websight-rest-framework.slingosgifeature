@@ -1,0 +1,37 @@
+{
+  "id":"pl.ds.websight:websight-amber-feature:slingosgifeature:websight-rest-framework:2.9.17",
+  "title":"WebSight Amber: OSGi Sling Feature Model",
+  "description":"OSGi Sling Feature Model of WebSight Amber foundation project",
+  "vendor":"Dynamic Solutions sp. z o.o. sp. k.",
+  "license":"Dynamic Solutions License",
+  "bundles":[
+    {
+      "id":"com.fasterxml.jackson.core:jackson-annotations:2.13.1",
+      "start-order":"5"
+    },
+    {
+      "id":"com.fasterxml.jackson.core:jackson-core:2.13.1",
+      "start-order":"5"
+    },
+    {
+      "id":"com.fasterxml.jackson.core:jackson-databind:2.13.1",
+      "start-order":"5"
+    },
+    {
+      "id":"com.google.guava:guava:15.0",
+      "start-order":"5"
+    },
+    {
+      "id":"pl.ds.websight:websight-rest-atlaskit-client:1.1.6",
+      "start-order":"25"
+    },
+    {
+      "id":"pl.ds.websight:websight-rest-esm-client:1.1.6",
+      "start-order":"25"
+    },
+    {
+      "id":"pl.ds.websight:websight-rest-framework:1.1.6",
+      "start-order":"20"
+    }
+  ]
+}
