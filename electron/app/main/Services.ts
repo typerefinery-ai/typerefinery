@@ -7,7 +7,7 @@ import path from "path"
 import config from "../../../package.json"
 import fs from "fs"
 
-const pageAutoRefreshEverySeconds = 10000
+const pageAutoRefreshEverySeconds = 10
 
 const isProduction = process.env.NODE_ENV === "production"
 const APPDATA =
