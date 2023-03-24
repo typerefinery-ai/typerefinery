@@ -19,7 +19,7 @@
     "serviceport": 8113,
     "healthcheck": {
       "type": "http",
-      "url": "http://wsadmin:wsadmin@localhost:${SERVICE_PORT}/system/console/bundles",
+      "url": "http://localhost:${SERVICE_PORT}/system/health",
       "expected_status": 200,
       "retries": 90
     },
