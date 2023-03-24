@@ -78,6 +78,11 @@ export interface HealthCheck {
   expected_status?: number
 }
 
+export interface CommandConfigEnvSubstitution {
+  source: string
+  target: string
+}
+
 export interface PlatfromCommandLine {
   win32?: string
   darwin?: string
@@ -105,6 +110,7 @@ export interface ExecConfig {
   globalenv?: any
   commandline?: PlatfromCommandLine
   commandlinecli?: PlatfromCommandLine
+  commandconfig?: CommandConfigEnvSubstitution
   datapath?: string
   serviceorder?: 99
   depend_on?: string[]
@@ -520,6 +526,49 @@ export class Service extends EventEmitter<ServiceEvent> {
       }
     }
     return envVar
+  }
+
+  /**
+   * prepare service configs by subsitituting variables in service config template
+   * @param source source template
+   * @param target destination file
+   * @param environmentVariables additional arguments to subsitute
+   */
+  #prepareConfigFile(source: string, target: string): boolean {
+    const sourcePath: string = path.join(this.#servicehome, source)
+    const targetPath: string = path.join(this.#servicehome, target)
+    const sourcePathExist: boolean = fs.existsSync(sourcePath)
+
+    if (!sourcePathExist) {
+      this.#log(`can't find source file ${sourcePath}.`)
+      return false
+    }
+
+    // read source file
+    try {
+      const data = fs.readFileSync(sourcePath, "utf8")
+      console.log(["data", data])
+
+      try {
+        // replace variables in source file
+        const result = this.#getServiceCommand(data, this)
+        console.log(["result", result])
+
+        // ensure target file esists
+        this.#ensurePathToFile(targetPath)
+
+        // write result to target file
+        fs.writeFileSync(targetPath, result, "utf8")
+
+        return true
+      } catch (error) {
+        this.#log(`error writing tagret file ${targetPath}`)
+      }
+    } catch (error) {
+      this.#log(`error reading source file ${sourcePath}`)
+    }
+
+    return false
   }
 
   get setup() {
@@ -998,6 +1047,23 @@ export class Service extends EventEmitter<ServiceEvent> {
       }
       //silently backout as setup exists
       return
+    }
+
+    //check if commandconfig is set
+    if (
+      this.#options &&
+      this.#options.execconfig &&
+      this.#options.execconfig.commandconfig
+    ) {
+      //check if command is set
+      const source = this.#options.execconfig.commandconfig.source
+      const target = this.#options.execconfig.commandconfig.target
+
+      if (source && target) {
+        this.#log(`copying command config from ${source} to ${target}`)
+        //copy command config to target
+        this.#prepareConfigFile(source, target)
+      }
     }
 
     this.#log(`starting ${this.#id}`)
