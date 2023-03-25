@@ -7,13 +7,12 @@
   "logoutput": "",
   "icon": "pi pi-cog",
   "servicetype": 10,
-  "serviceorder": 0,
   "execconfig": {
     "authentication": {
       "username": "mongoadmin",
       "password": "mongoadmin"
     },
-    "serviceorder": 1,
+    "serviceorder": 10,
     "serviceport": 8180,
     "setuparchive": {
       "win32": {

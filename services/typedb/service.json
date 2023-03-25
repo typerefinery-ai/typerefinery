@@ -21,7 +21,6 @@
       "default": "-Xms256m -Xmx1024m -cp \"${SERVICE_PATH}\\console\\conf\\;${SERVICE_PATH}\\console\\lib\\*;\" -D\"typedb.dir=${SERVICE_PATH}\" com.vaticle.typedb.console.TypeDBConsole "
     },
     "datapath": "/server/data",
-    "serviceorder": 1,
     "serviceport": 8729,
     "healthcheck": {
       "type": "tcp",

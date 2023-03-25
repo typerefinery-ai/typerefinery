@@ -6,9 +6,7 @@
   "status": "-1",
   "icon": "pi pi-cog",
   "servicetype": 10,
-  "serviceorder": 0,
   "execconfig": {
-    "serviceorder": 1,
     "serviceport": 8114,
     "executable": {
       "win32": "nginx.exe",

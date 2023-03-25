@@ -29,6 +29,10 @@
       "url": "http://localhost:${SERVICE_PORT}/healthcheck",
       "expected_status": 200
     },
-    "depend_on": ["python"]
+    "depend_on": [
+      "python",
+      "totaljs-flow",
+      "totaljs-messageservice"
+    ]
   }
 }

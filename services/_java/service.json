@@ -7,7 +7,6 @@
   "logoutput": "",
   "icon": "pi pi-cog",
   "servicetype": 10,
-  "serviceorder": 0,
   "execconfig": {
     "serviceorder": 1,
     "executable": {

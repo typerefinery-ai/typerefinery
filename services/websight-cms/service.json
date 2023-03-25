@@ -15,7 +15,6 @@
       "default": "--add-opens java.base/java.lang=ALL-UNNAMED -jar ${SERVICE_HOME}\\config\\org.apache.sling.feature.launcher.jar -c ${SERVICE_HOME}\\config\\cache -CC \"org.apache.sling.commons.log.LogManager=MERGE_LATEST\" -D oak.mongo.uri=\"mongodb://mongoadmin:mongoadmin@localhost:8180/\" -D org.osgi.service.http.port=${SERVICE_PORT} -p ${SERVICE_DATA_PATH} -f ${SERVICE_HOME}\\config\\cache\\ai\\typerefinery\\websight\\typerefinery-distribution\\1.0.0-SNAPSHOT\\typerefinery-distribution-1.0.0-SNAPSHOT-typerefinery-websight.slingosgifeature,${SERVICE_HOME}\\config\\cache\\ai\\typerefinery\\websight\\typerefinery-distribution\\1.0.0-SNAPSHOT\\typerefinery-distribution-1.0.0-SNAPSHOT-docker.slingosgifeature"
     },
     "datapath": "/server/data",
-    "serviceorder": 1,
     "serviceport": 8113,
     "healthcheck": {
       "type": "http",
