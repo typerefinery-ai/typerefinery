@@ -203,6 +203,7 @@ export class Service extends EventEmitter<ServiceEvent> {
   #logsDir: string
   #processEnv: { [key: string]: string } = {} // passed to process
   #globalEnv: { [key: string]: string } = {} // pass when service was created
+  #healthCheckTimeout: any
   constructor(
     logsDir: string,
     logger: Logger,
@@ -439,6 +440,13 @@ export class Service extends EventEmitter<ServiceEvent> {
 
   // replace possible variables in a service command string
   #getServiceCommand(command: string, service: Service): string {
+    // for each environment variable in environmentVariables
+    // replace ${ENV_VAR} with the value of the environment variable
+    // if this.#serviceManager.globalEnv is not empty
+    for (const [key, value] of Object.entries(this.#serviceManager.globalEnv)) {
+      command = command.replaceAll(`\${${key}}`, value)
+    }
+
     return command
       .replaceAll("${SERVICE_HOME}", service.#servicehome)
       .replaceAll("${SERVICE_EXECUTABLE}", service.getServiceExecutable())
@@ -609,12 +617,26 @@ export class Service extends EventEmitter<ServiceEvent> {
     return this.#status === ServiceStatus.STARTED
   }
 
+  get isStopped() {
+    return this.#status === ServiceStatus.STOPPED
+  }
+
   get isRunning() {
     if (this.#process) {
       return !this.#process.killed
     } else {
       return false
     }
+  }
+
+  isDependantOnService(serviceid: string): boolean {
+    if (
+      this.#options.execconfig.depend_on &&
+      this.#options.execconfig.depend_on.length > 0
+    ) {
+      return this.#options.execconfig.depend_on.includes(serviceid) || false
+    }
+    return false
   }
 
   get port() {
@@ -811,6 +833,8 @@ export class Service extends EventEmitter<ServiceEvent> {
         if (serviceExecutable == null) {
           serviceExecutable = this.#options.execconfig.executable.default || ""
         }
+        //compile full path to executable
+        serviceExecutable = path.resolve(this.#servicepath, serviceExecutable)
         return serviceExecutable
       }
       if (serviceExecutable == null) {
@@ -855,6 +879,11 @@ export class Service extends EventEmitter<ServiceEvent> {
           serviceExecutableCli =
             this.#options.execconfig.executablecli.default || ""
         }
+        //compile full path to executable
+        serviceExecutableCli = path.resolve(
+          this.#servicepath,
+          serviceExecutableCli
+        )
         return serviceExecutableCli
       }
       if (serviceExecutableCli == null) {
@@ -879,23 +908,35 @@ export class Service extends EventEmitter<ServiceEvent> {
     this.#options.enabled = true
   }
 
+  #stopHealthCheck() {
+    if (this.#healthCheckTimeout) {
+      clearTimeout(this.#healthCheckTimeout)
+    }
+  }
+
   // interval: 10s
   // retries: 60
   // start_period: 60s
   // start helth check and repeat until retries is 0
   #startHealthCheck(retries: number) {
-    if (this.#healthCheck && this.#status != ServiceStatus.STARTED) {
+    if (this.#healthCheck && (!this.isStarted || !this.isStopped)) {
       if (retries > 0) {
         const timeoutInterval = this.#healthCheck?.interval || 1000
         const nextRetry = retries - 1
-        this.#runHealthCheck()
-        setTimeout(
-          (nextRetry) => {
-            this.#startHealthCheck(nextRetry)
-          },
-          timeoutInterval,
-          nextRetry
-        )
+        if (!this.#runHealthCheck()) {
+          //try again in timeoutInterval
+          this.#healthCheckTimeout = setTimeout(
+            (nextRetry) => {
+              this.#startHealthCheck(nextRetry)
+            },
+            timeoutInterval,
+            nextRetry
+          )
+        } else {
+          // health check passed
+          this.#setStatus(ServiceStatus.STARTED)
+          this.#stopHealthCheck()
+        }
       } else {
         this.#log(
           `health check exited after ${
@@ -907,18 +948,19 @@ export class Service extends EventEmitter<ServiceEvent> {
   }
 
   // run health check
-  #runHealthCheck(): void {
+  #runHealthCheck(): boolean {
     if (this.#healthCheck) {
       if (this.#healthCheck.type == HealthCheckType.HTTP) {
-        this.#runHealthCheckHttp()
+        return this.#runHealthCheckHttp()
       } else if (this.#healthCheck.type == HealthCheckType.TCP) {
-        this.#runHealthCheckTcp()
+        return this.#runHealthCheckTcp()
       }
     }
+    return true
   }
 
   // run health check http
-  #runHealthCheckHttp(): void {
+  #runHealthCheckHttp(): boolean {
     if (this.#healthCheck && this.#healthCheck.url) {
       const urlFixed = this.#getServiceCommand(this.#healthCheck.url, this)
       const url: URL = new URL(urlFixed)
@@ -939,6 +981,7 @@ export class Service extends EventEmitter<ServiceEvent> {
                 res.statusCode
               }, service status is ${this.#status}`
             )
+            return false
           }
         })
         req.on("error", (e) => {
@@ -947,6 +990,7 @@ export class Service extends EventEmitter<ServiceEvent> {
               this.#status
             }`
           )
+          return false
         })
       } catch (error) {
         this.#log(
@@ -954,12 +998,14 @@ export class Service extends EventEmitter<ServiceEvent> {
             this.#status
           }`
         )
+        return false
       }
     }
+    return true
   }
 
   // run health check tcp
-  #runHealthCheckTcp(): void {
+  #runHealthCheckTcp(): boolean {
     if (this.#healthCheck && this.#serviceport) {
       const hostname = this.#servicehost
       const port = this.#serviceport
@@ -974,8 +1020,10 @@ export class Service extends EventEmitter<ServiceEvent> {
             this.#status
           }`
         )
+        return false
       })
     }
+    return true
   }
 
   // get an open port
@@ -988,7 +1036,11 @@ export class Service extends EventEmitter<ServiceEvent> {
   }
 
   // start service and store its process id in a file based on os type
-  async start(globalenv: { [key: string]: string } = {}) {
+  async start(
+    globalenv: { [key: string]: string } = {},
+    startchain: string[] = [this.id],
+    waitfordependencies = true
+  ): Promise<void> {
     //quick fail if disabled
     if (!this.isEnabled) {
       this.#log(`service ${this.#id} is disabled`)
@@ -1003,30 +1055,31 @@ export class Service extends EventEmitter<ServiceEvent> {
       return
     }
 
-    this.#log(`waiting for dependent services`)
-    this.#setStatus(ServiceStatus.DEPENDENCIESWAIT)
+    if (waitfordependencies) {
+      this.#log(`waiting for dependent services.`)
+      this.#setStatus(ServiceStatus.DEPENDENCIESWAIT)
 
-    this.#log(
-      `waiting for dependant services ${
-        this.#id
-      } with env variables ${JSON.stringify(globalenv)}`
-    )
-
-    // wait untill all depend_on services are started
-    const depend_on_services_started = await this.#waitForDependOnServices(
-      globalenv
-    )
-
-    if (!depend_on_services_started) {
       this.#log(
-        `dependant services not started, service status is ${this.#status}.`
+        `waiting for dependant services ${
+          this.#id
+        } with env variables ${JSON.stringify(globalenv)}`
       )
-      this.#setStatus(ServiceStatus.DEPENDENCIESNOTREADY)
-      return
+
+      // wait untill all depend_on services are started
+      const depend_on_services_started =
+        await this.#waitForDependOnServicesAsync(globalenv, startchain)
+
+      if (!depend_on_services_started) {
+        this.#log(
+          `dependant services not started, service status is ${this.#status}.`
+        )
+        this.#setStatus(ServiceStatus.DEPENDENCIESNOTREADY)
+        return
+      }
+
+      this.#setStatus(ServiceStatus.DEPENDENCIESREADY)
+      this.#log(`service dependencies are all ready.`)
     }
-
-    this.#setStatus(ServiceStatus.DEPENDENCIESREADY)
-
     // compile environment variables
     this.compileEnvironmentVariables(globalenv)
 
@@ -1155,6 +1208,7 @@ export class Service extends EventEmitter<ServiceEvent> {
     if (this.#process) {
       const pid: number = this.#process?.pid ? this.#process.pid : 0
       if (pid > 0) {
+        this.#stopHealthCheck()
         this.#log(`stopping ${this.#id} with pid ${pid}`)
         let stopCommand = this.getActionForPlatform(ServiceActionsEnum.STOP)
         // if stop command is defined run the commandline as a process
@@ -1462,7 +1516,11 @@ export class Service extends EventEmitter<ServiceEvent> {
               backgroundProcesses.push(backgroundProcess)
               continue
             }
-            this.#log(`executing setup shell command: ${shellCommand}`)
+            this.#log(
+              `executing setup shell command: ${shellCommand} in ${
+                this.#servicepath
+              }.`
+            )
             await os
               .runProcess(shellCommand, [], {
                 signal: this.#abortController.signal,
@@ -1601,7 +1659,7 @@ export class Service extends EventEmitter<ServiceEvent> {
             await service.start(globalenv)
 
             if (service.isRunning) {
-              break
+              continue
             } else {
               this.#log(`service ${service.id} did not start.`)
               return false
@@ -1612,6 +1670,77 @@ export class Service extends EventEmitter<ServiceEvent> {
     }
 
     return true
+  }
+
+  // wait untill all depend_on services are started
+  async #waitForDependOnServicesAsync(
+    globalenv: { [key: string]: string } = {},
+    startchain: string[] = []
+  ) {
+    return new Promise((resolve) => {
+      if (
+        this.#options.execconfig.depend_on &&
+        this.#options.execconfig.depend_on.length > 0
+      ) {
+        const dependOnServices = this.#options.execconfig.depend_on
+        this.#log(`waiting for depend_on services ${dependOnServices}`)
+        const interval = setInterval(async () => {
+          let depend_on_services_started = true
+          for (let i = 0; i < dependOnServices.length; i++) {
+            const depend_on_service = dependOnServices[i]
+            //skip if service is already in start chain
+            if (startchain.includes(depend_on_service)) {
+              continue
+            }
+            const service = this.#serviceManager.getService(depend_on_service)
+            if (service) {
+              this.#log(
+                `checking services ${service.id} status ${service.status} and setup ${service.isSetup}.`
+              )
+
+              //add this service to start chain, to avoid circular dependency
+              startchain.push(depend_on_service)
+
+              // Make sure all system services are configured.
+              if (
+                (service.status == ServiceStatus.AVAILABLE ||
+                  service.status == ServiceStatus.INSTALLED) &&
+                service.isSetup
+              ) {
+                this.#log(`service ${service.id} is available and ready.`)
+              }
+
+              if (service.isRunnable && !service.isRunning) {
+                this.#log(`starting service ${service.id}.`)
+                //add this service to start chain
+                await service.start(globalenv, startchain)
+
+                //Make sure all the services are started.
+                if (!service.isRunning) {
+                  this.#log(`service ${service.id} did not start.`)
+                  depend_on_services_started = false
+                  //service did not start, abort
+                  break
+                } else {
+                  //stop health check for this if it still running
+                  service.#stopHealthCheck()
+                }
+              } else {
+                //this service is not runnable or already running, continue
+                continue
+              }
+            }
+          }
+          if (depend_on_services_started) {
+            this.#log(`all dependent services started`)
+          }
+          clearInterval(interval)
+          resolve(depend_on_services_started)
+        }, 1000)
+      } else {
+        resolve(true)
+      }
+    })
   }
 
   /**
