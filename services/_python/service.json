@@ -10,10 +10,10 @@
   "execconfig": {
     "serviceorder": 1,
     "executable": {
-      "win32": "python.exe",
-      "darwin": "bin/python",
-      "linux": "bin/python",
-      "default": "python.exe"
+      "win32": "win32\\python.exe",
+      "darwin": "darwin/bin/python",
+      "linux": "linux/bin/python",
+      "default": "win32\\python.exe"
     },
     "setup": {
       "win32": [

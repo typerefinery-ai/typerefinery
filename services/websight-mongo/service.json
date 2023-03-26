@@ -30,41 +30,41 @@
     },
     "setup": {
       "win32": [
-        "; ${SERVICE_PATH}\\${SERVICE_EXECUTABLE} --dbpath ${SERVICE_HOME}\\database --port ${SERVICE_PORT} &",
+        "; ${SERVICE_EXECUTABLE} --dbpath ${SERVICE_HOME}\\database --port ${SERVICE_PORT} &",
         "; sleep 5",
-        "; ${SERVICE_PATH}\\${SERVICE_EXECUTABLE_CLI} admin --port ${SERVICE_PORT} --quiet --eval \"printjson(db.createUser({user: '${SERVICE_AUTH_USERNAME}',pwd: '${SERVICE_AUTH_PASSWORD}',roles: [{ role: 'root', db: 'admin' },]}))\"",
-        "; ${SERVICE_PATH}\\${SERVICE_EXECUTABLE_CLI} admin --port ${SERVICE_PORT} --quiet --eval 'db.shutdownServer()'"
+        "; ${SERVICE_EXECUTABLE_CLI} admin --port ${SERVICE_PORT} --quiet --eval \"printjson(db.createUser({user: '${SERVICE_AUTH_USERNAME}',pwd: '${SERVICE_AUTH_PASSWORD}',roles: [{ role: 'root', db: 'admin' },]}))\"",
+        "; ${SERVICE_EXECUTABLE_CLI} admin --port ${SERVICE_PORT} --quiet --eval 'db.shutdownServer()'"
       ],
       "darwin": [
-        "; ${SERVICE_PATH}/${SERVICE_EXECUTABLE} --dbpath ${SERVICE_HOME}\\database --port ${SERVICE_PORT} &",
+        "; ${SERVICE_EXECUTABLE} --dbpath ${SERVICE_HOME}\\database --port ${SERVICE_PORT} &",
         "; sleep 5",
-        "; ${SERVICE_PATH}/${SERVICE_EXECUTABLE_CLI} admin --port ${SERVICE_PORT} --quiet --eval \"printjson(db.createUser({user: '${SERVICE_AUTH_USERNAME}',pwd: '${SERVICE_AUTH_PASSWORD}',roles: [{ role: 'root', db: 'admin' },]}))\"",
-        "; ${SERVICE_PATH}/${SERVICE_EXECUTABLE_CLI} admin --port ${SERVICE_PORT} --quiet --eval 'db.shutdownServer()'"
+        "; ${SERVICE_EXECUTABLE_CLI} admin --port ${SERVICE_PORT} --quiet --eval \"printjson(db.createUser({user: '${SERVICE_AUTH_USERNAME}',pwd: '${SERVICE_AUTH_PASSWORD}',roles: [{ role: 'root', db: 'admin' },]}))\"",
+        "; ${SERVICE_EXECUTABLE_CLI} admin --port ${SERVICE_PORT} --quiet --eval 'db.shutdownServer()'"
       ],
       "linux": [
-        "; ${SERVICE_PATH}/${SERVICE_EXECUTABLE} --dbpath ${SERVICE_HOME}\\database --port ${SERVICE_PORT} &",
+        "; ${SERVICE_EXECUTABLE} --dbpath ${SERVICE_HOME}\\database --port ${SERVICE_PORT} &",
         "; sleep 5",
-        "; ${SERVICE_PATH}/${SERVICE_EXECUTABLE_CLI} admin --port ${SERVICE_PORT} --quiet --eval \"printjson(db.createUser({user: '${SERVICE_AUTH_USERNAME}',pwd: '${SERVICE_AUTH_PASSWORD}',roles: [{ role: 'root', db: 'admin' },]}))\"",
-        "; ${SERVICE_PATH}/${SERVICE_EXECUTABLE_CLI} admin --port ${SERVICE_PORT} --quiet --eval 'db.shutdownServer()'"
+        "; ${SERVICE_EXECUTABLE_CLI} admin --port ${SERVICE_PORT} --quiet --eval \"printjson(db.createUser({user: '${SERVICE_AUTH_USERNAME}',pwd: '${SERVICE_AUTH_PASSWORD}',roles: [{ role: 'root', db: 'admin' },]}))\"",
+        "; ${SERVICE_EXECUTABLE_CLI} admin --port ${SERVICE_PORT} --quiet --eval 'db.shutdownServer()'"
       ],
       "default": [
-        "; ${SERVICE_PATH}\\${SERVICE_EXECUTABLE} --dbpath ${SERVICE_HOME}\\database --port ${SERVICE_PORT} &",
+        "; ${SERVICE_EXECUTABLE} --dbpath ${SERVICE_HOME}\\database --port ${SERVICE_PORT} &",
         "; sleep 5",
-        "; ${SERVICE_PATH}\\${SERVICE_EXECUTABLE_CLI} admin --port ${SERVICE_PORT} --quiet --eval \"printjson(db.createUser({user: '${SERVICE_AUTH_USERNAME}',pwd: '${SERVICE_AUTH_PASSWORD}',roles: [{ role: 'root', db: 'admin' },]}))\"",
-        "; ${SERVICE_PATH}\\${SERVICE_EXECUTABLE_CLI} admin --port ${SERVICE_PORT} --quiet --eval 'db.shutdownServer()'"
+        "; ${SERVICE_EXECUTABLE_CLI} admin --port ${SERVICE_PORT} --quiet --eval \"printjson(db.createUser({user: '${SERVICE_AUTH_USERNAME}',pwd: '${SERVICE_AUTH_PASSWORD}',roles: [{ role: 'root', db: 'admin' },]}))\"",
+        "; ${SERVICE_EXECUTABLE_CLI} admin --port ${SERVICE_PORT} --quiet --eval 'db.shutdownServer()'"
       ]
     },
     "executable": {
-      "win32": "bin\\mongod.exe",
-      "darwin": "bin/mongod",
-      "linux": "bin/mongod",
-      "default": "bin\\mongod.exe"
+      "win32": "win32\\bin\\mongod.exe",
+      "darwin": "darwin/bin/mongod",
+      "linux": "linux/bin/mongod",
+      "default": "win32\\bin\\mongod.exe"
     },
     "executablecli": {
-      "win32": "bin\\mongosh.exe",
-      "darwin": "bin/mongosh",
-      "linux": "bin/mongosh",
-      "default": "bin\\mongosh.exe"
+      "win32": "win32\\bin\\mongosh.exe",
+      "darwin": "darwin/bin/mongosh",
+      "linux": "linux/bin/mongosh",
+      "default": "win32\\bin\\mongosh.exe"
     },
     "commandline": {
       "win32": "--dbpath ${SERVICE_HOME}\\database --bind_ip_all --auth --port ${SERVICE_PORT}",
@@ -84,10 +84,10 @@
   "actions": {
     "stop": {
       "commandline": {
-        "win32": "; ${SERVICE_PATH}\\${SERVICE_EXECUTABLE_CLI} --username ${SERVICE_AUTH_USERNAME} --password ${SERVICE_AUTH_PASSWORD} --port ${SERVICE_PORT} --quiet --eval 'db.shutdownServer()'",
-        "darwin": "; ${SERVICE_PATH}/${SERVICE_EXECUTABLE_CLI} --username ${SERVICE_AUTH_USERNAME} --password ${SERVICE_AUTH_PASSWORD} --port ${SERVICE_PORT} --quiet --eval 'db.shutdownServer()'",
-        "linux": "; ${SERVICE_PATH}/${SERVICE_EXECUTABLE_CLI} --username ${SERVICE_AUTH_USERNAME} --password ${SERVICE_AUTH_PASSWORD} --port ${SERVICE_PORT} --quiet --eval 'db.shutdownServer()'",
-        "default": "; ${SERVICE_PATH}\\${SERVICE_EXECUTABLE_CLI} --username ${SERVICE_AUTH_USERNAME} --password ${SERVICE_AUTH_PASSWORD} --port ${SERVICE_PORT} --quiet --eval 'db.shutdownServer()'"
+        "win32": "; ${SERVICE_EXECUTABLE_CLI} --username ${SERVICE_AUTH_USERNAME} --password ${SERVICE_AUTH_PASSWORD} --port ${SERVICE_PORT} --quiet --eval 'db.shutdownServer()'",
+        "darwin": "; ${SERVICE_EXECUTABLE_CLI} --username ${SERVICE_AUTH_USERNAME} --password ${SERVICE_AUTH_PASSWORD} --port ${SERVICE_PORT} --quiet --eval 'db.shutdownServer()'",
+        "linux": "; ${SERVICE_EXECUTABLE_CLI} --username ${SERVICE_AUTH_USERNAME} --password ${SERVICE_AUTH_PASSWORD} --port ${SERVICE_PORT} --quiet --eval 'db.shutdownServer()'",
+        "default": "; ${SERVICE_EXECUTABLE_CLI} --username ${SERVICE_AUTH_USERNAME} --password ${SERVICE_AUTH_PASSWORD} --port ${SERVICE_PORT} --quiet --eval 'db.shutdownServer()'"
       }
     }
   }

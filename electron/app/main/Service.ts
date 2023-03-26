@@ -820,7 +820,7 @@ export class Service extends EventEmitter<ServiceEvent> {
           )
           // get full path to executable service
           const serviceExecutable = path.resolve(
-            serviceExecutableService.#servicepath,
+            serviceExecutableService.#servicehome,
             serviceExecutableService.getServiceExecutable()
           )
           return serviceExecutable
@@ -834,7 +834,7 @@ export class Service extends EventEmitter<ServiceEvent> {
           serviceExecutable = this.#options.execconfig.executable.default || ""
         }
         //compile full path to executable
-        serviceExecutable = path.resolve(this.#servicepath, serviceExecutable)
+        serviceExecutable = path.resolve(this.#servicehome, serviceExecutable)
         return serviceExecutable
       }
       if (serviceExecutable == null) {
@@ -1410,12 +1410,20 @@ export class Service extends EventEmitter<ServiceEvent> {
     if (this.#setuparchiveFile) {
       if (!os.isPathExist(this.#setuparchiveOutputPath) || force) {
         this.#setStatus(ServiceStatus.EXTRACTING)
-        this.#log(`extracting setup archive ${this.#setuparchiveFile}`)
+        this.#log(
+          `extracting setup archive ${this.#setuparchiveFile} into ${
+            this.#servicepath
+          }.`
+        )
         await this.#doExtract(
           this.#setuparchiveFile,
           this.#servicepath
         ).finally(() => {
-          this.#log(`extracted setup archive ${this.#setuparchiveFile}`)
+          this.#log(
+            `extracted setup archive ${this.#setuparchiveFile} in ${
+              this.#servicepath
+            }.`
+          )
 
           if (os.isPathExist(this.#setuparchiveOutputPath)) {
             fs.writeFileSync(this.#setupstatefile, "archive extracted")

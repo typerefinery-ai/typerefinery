@@ -9,10 +9,10 @@
   "execconfig": {
     "serviceport": 8114,
     "executable": {
-      "win32": "nginx.exe",
-      "darwin": "bin/nginx",
-      "linux": "bin/nginx",
-      "default": "nginx.exe"
+      "win32": "win32\\nginx.exe",
+      "darwin": "darwin/bin/nginx",
+      "linux": "linux/bin/nginx",
+      "default": "win32\\nginx.exe"
     },
     "commandline": {
       "win32": "-p ${SERVICE_HOME}\\config",
