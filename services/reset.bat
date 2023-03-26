@@ -56,6 +56,7 @@ if exist %USER_APP_SERVICES_PATH% (
 echo REMOVE GENERATED FILES:
 cd ..
 git clean -xdf services
+git clean -xdf logs
 goto exit
 
 
