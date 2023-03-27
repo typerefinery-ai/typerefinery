@@ -2,7 +2,7 @@
   "id": "bpmn-server",
   "name": "BPMN Server",
   "description": "BPMN Server",
-  "enabled": false,
+  "enabled": true,
   "status": "30",
   "logoutput": "",
   "icon": "pi pi-globe",
@@ -20,6 +20,7 @@
       "PORT": "${SERVICE_PORT}",
       "API_KEY": "typerefinery",
       "SESSION_SECRET": "typerefinery",
+      "MONGO_DB_URL": "mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@127.0.0.1:${MONGO_PORT}?retryWrites=true&w=majority&directConnection=true",
       "MONGO_DB_NAME": "bpmn"
     },
     "commandline": {
