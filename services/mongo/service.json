@@ -73,7 +73,7 @@
       "default": "--dbpath ${SERVICE_HOME}\\database --bind_ip_all --auth --port ${SERVICE_PORT}"
     },
     "globalenv": {
-      "MONGO_DB_URL": "mongodb://${SERVICE_AUTH_USERNAME}:${SERVICE_AUTH_PASSWORD}@${SERVICE_HOST}:${SERVICE_PORT}?retryWrites=true&w=majority",
+      "MONGO_DB_URL": "mongodb://${SERVICE_AUTH_USERNAME}:${SERVICE_AUTH_PASSWORD}@${SERVICE_HOST}:${SERVICE_PORT}?retryWrites=true&w=majority&directConnection=true",
       "MONGO_PORT": "${SERVICE_PORT}"
     },
     "healthcheck": {
