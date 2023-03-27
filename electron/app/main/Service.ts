@@ -1197,6 +1197,7 @@ export class Service extends EventEmitter<ServiceEvent> {
         return
       }
     } else {
+      this.#setStatus(ServiceStatus.AVAILABLE)
       this.#log("service is not runnable, done.")
       return
     }
