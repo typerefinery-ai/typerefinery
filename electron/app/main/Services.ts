@@ -13,9 +13,15 @@ const isProduction = process.env.NODE_ENV === "production"
 const APPDATA =
   process.env.APPDATA || (process.platform === "darwin" ? "/Users" : "/home")
 
-const logsDir = isProduction
+let logsDir = isProduction
   ? path.join(APPDATA, config.name, "logs")
   : path.join(__dirname, "../../../logs")
+
+// create a new logs sub directory with date timestamp everytime the app starts
+const date = new Date()
+const dateStr = date.toISOString().replace(/:/g, "-")
+logsDir = path.join(logsDir, dateStr)
+fs.mkdirSync(logsDir, { recursive: true })
 
 const servicePort = 3001
 
