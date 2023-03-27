@@ -1069,7 +1069,11 @@ export class Service extends EventEmitter<ServiceEvent> {
       return
     }
 
-    if (waitfordependencies) {
+    if (
+      waitfordependencies &&
+      this.#options.execconfig.depend_on &&
+      this.#options.execconfig.depend_on.length > 0
+    ) {
       this.#log(`waiting for dependent services.`)
       this.#setStatus(ServiceStatus.DEPENDENCIESWAIT)
 
@@ -1440,6 +1444,8 @@ export class Service extends EventEmitter<ServiceEvent> {
           )
 
           if (os.isPathExist(this.#setuparchiveOutputPath)) {
+            // as we have just extracted the archive, we need to force the setup
+            force = true
             fs.writeFileSync(this.#setupstatefile, "archive extracted")
           }
         })
@@ -1513,11 +1519,13 @@ export class Service extends EventEmitter<ServiceEvent> {
           }
           // if setup command starts with ;, execute it as shell command
           if (setupCommand.startsWith(";")) {
-            let shellCommand = setupCommand.substring(1)
+            let shellCommand = setupCommand.substring(1).trim()
             // does shell command ends with &?
             if (shellCommand.endsWith("&")) {
               // remove & from shell command
-              shellCommand = shellCommand.substring(0, shellCommand.length - 1)
+              shellCommand = shellCommand
+                .substring(0, shellCommand.length - 1)
+                .trim()
               this.#log(`run command in backgroud ${shellCommand}`)
               // run shell command in background and add it to backgroundProcesses
               const backgroundProcess = os
