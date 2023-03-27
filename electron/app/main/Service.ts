@@ -221,7 +221,7 @@ export class Service extends EventEmitter<ServiceEvent> {
     this.#description = this.#options.description || ""
     this.#servicepath = servicepath
     this.#servicehome = servicehome
-    this.#servicedatapath = servicedatapath
+    this.#servicedatapath = servicehome
     // if server has datapath set ensure the sub path exist in the server data path
     if (this.#options.execconfig.datapath) {
       this.#servicedatapath = path.join(
@@ -878,7 +878,7 @@ export class Service extends EventEmitter<ServiceEvent> {
           )
           // get full path to executable service
           const serviceExecutable = path.resolve(
-            serviceExecutableService.#servicepath,
+            serviceExecutableService.#servicehome,
             serviceExecutableService.getServiceExecutable()
           )
           return serviceExecutable
@@ -895,7 +895,7 @@ export class Service extends EventEmitter<ServiceEvent> {
         }
         //compile full path to executable
         serviceExecutableCli = path.resolve(
-          this.#servicepath,
+          this.#servicehome,
           serviceExecutableCli
         )
         return serviceExecutableCli
@@ -1027,6 +1027,7 @@ export class Service extends EventEmitter<ServiceEvent> {
         this.#setStatus(ServiceStatus.STARTED)
         this.#log(`tcp health check success, service status ${this.#status}`)
         socket.end()
+        return true
       })
       socket.on("error", (error) => {
         this.#log(
@@ -1424,6 +1425,7 @@ export class Service extends EventEmitter<ServiceEvent> {
 
   // run setup scripts
   async #doSetup(force = false) {
+    const isSetupStateFile = os.isPathExist(this.#setupstatefile)
     // extract setuparchive before setup
     if (this.#setuparchiveFile) {
       if (!os.isPathExist(this.#setuparchiveOutputPath) || force) {
@@ -1443,7 +1445,7 @@ export class Service extends EventEmitter<ServiceEvent> {
             }.`
           )
 
-          if (os.isPathExist(this.#setuparchiveOutputPath)) {
+          if (isSetupStateFile) {
             // as we have just extracted the archive, we need to force the setup
             force = true
             fs.writeFileSync(this.#setupstatefile, "archive extracted")
@@ -1458,7 +1460,7 @@ export class Service extends EventEmitter<ServiceEvent> {
     }
     // run setup steps
     if (this.#setup && this.#setup.length > 0) {
-      if (!os.isPathExist(this.#setupstatefile) || force) {
+      if (!isSetupStateFile || force) {
         this.#log(
           `service ${
             this.#id
