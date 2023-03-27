@@ -19,7 +19,11 @@ let logsDir = isProduction
 
 // create a new logs sub directory with date timestamp everytime the app starts
 const date = new Date()
-const dateStr = date.toISOString().replace(/:/g, "-")
+const dateStr = date
+  .toISOString()
+  .replace(/:/g, "-")
+  .replace(/.Z/g, "")
+  .replace(/T/g, "_")
 logsDir = path.join(logsDir, dateStr)
 fs.mkdirSync(logsDir, { recursive: true })
 
