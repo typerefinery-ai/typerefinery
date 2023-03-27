@@ -746,12 +746,12 @@ app.post("/service/:serviceId/:serviceAction", (req, res, next) => {
     }
   }
   if (serviceAction === "setup") {
-    console.log(["setup start", service.id])
+    // console.log(["setup start", service.id])
     if (service.isRunning) {
       service.stop()
     }
     service.install()
-    console.log(["setup end", service.id])
+    // console.log(["setup end", service.id])
   }
   res.json({
     service: serviceId,
