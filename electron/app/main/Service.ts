@@ -257,6 +257,13 @@ export class Service extends EventEmitter<ServiceEvent> {
     this.#stderr.on("error", (err) => {
       this.#logger.error(err)
     })
+    this.#stderr.on("open", () => {
+      this.#stdout.write(`log open`)
+    })
+    this.#stderr.on("finish", () => {
+      this.#stdout.write(`log finished`)
+    })
+    this.#stderr.write(`service error log ${this.#stderr.path}.\n`)
     this.#log(`service error log ${this.#stderr.path}`)
 
     // create stdout log file for service executable
@@ -272,6 +279,13 @@ export class Service extends EventEmitter<ServiceEvent> {
     this.#stdout.on("error", (err) => {
       this.#logger.error(err)
     })
+    this.#stdout.on("open", () => {
+      this.#stdout.write(`log open`)
+    })
+    this.#stdout.on("finish", () => {
+      this.#stdout.write(`log finished`)
+    })
+    this.#stdout.write(`service console log ${this.#stdout.path}.\n`)
     this.#log(`service console log ${this.#stdout.path}`)
 
     const config = options.execconfig
@@ -1155,34 +1169,43 @@ export class Service extends EventEmitter<ServiceEvent> {
         windowsHide: true,
       }
 
-      const process = spawn(serviceExecutable, commandline, options)
+      this.#log(
+        `starting service ${serviceExecutable}, ${commandline}, ${options}`
+      )
 
-      this.#log([
-        "spawn",
-        {
-          serviceExecutable: serviceExecutable,
-          commandline: commandline,
-          options: options,
-        },
-        process.pid,
-      ])
+      try {
+        const process = spawn(serviceExecutable, commandline, options)
 
-      // monitor console
-      if (process.stdout) {
-        process.stdout.setEncoding("utf8")
-        process.stdout.on("data", (data) => {
-          this.#log(data)
-        })
+        this.#log([
+          "spawn",
+          {
+            serviceExecutable: serviceExecutable,
+            commandline: commandline,
+            options: options,
+          },
+          process.pid,
+        ])
+
+        // monitor console
+        if (process.stdout) {
+          process.stdout.setEncoding("utf8")
+          process.stdout.on("data", (data) => {
+            this.#log(data)
+          })
+        }
+        // monitor error log
+        if (process.stderr) {
+          process.stderr.setEncoding("utf8")
+          process.stderr.on("data", (data) => {
+            this.#log(data)
+          })
+        }
+
+        this.#register(process)
+      } catch (error) {
+        this.#setStatus(ServiceStatus.ERROR)
+        this.#log(`error starting service ${this.id} with error ${error}`)
       }
-      // monitor error log
-      if (process.stderr) {
-        process.stderr.setEncoding("utf8")
-        process.stderr.on("data", (data) => {
-          this.#log(data)
-        })
-      }
-
-      this.#register(process)
     } else {
       this.#log("unsuported service type")
       return
@@ -1569,13 +1592,17 @@ export class Service extends EventEmitter<ServiceEvent> {
               this.#setStatus(ServiceStatus.ERROR)
             })
             .finally(() => {
-              // this.#log(`setup command ${setupCommand} complete`)
+              this.#log(`setup command ${setupCommand} complete`)
             })
         }
         // terminate all processes running in backgroundProcess
-        await Promise.all(backgroundProcesses).then(() => {
-          this.#log(`all background processes terminated`)
-        })
+        await Promise.all(backgroundProcesses)
+          .then(() => {
+            this.#log(`all background processes terminated`)
+          })
+          .catch((err) => {
+            this.#log(`error terminating background processes ${err}`)
+          })
         fs.writeFileSync(this.#setupstatefile, "setup completed")
         this.#setStatus(ServiceStatus.INSTALLED)
       } else {
