@@ -1103,26 +1103,7 @@ export class Service extends EventEmitter<ServiceEvent> {
       )}`
     )
 
-    this.#log(`do service setup`)
-    //run setup if it exists
-    await this.#doSetup()
-
-    this.#setStatus(ServiceStatus.AVAILABLE)
-
-    //quick fail no command
-    if (
-      this.#options &&
-      this.#options.execconfig &&
-      !this.#options.execconfig.commandline
-    ) {
-      if (!(this.#setup && this.#setup.length > 0)) {
-        this.#log(`can't start service ${this.#id} no command specified.`)
-      }
-      //silently backout as setup exists
-      return
-    }
-
-    //check if commandconfig is set
+    //check if commandconfig is set and execute it
     if (
       this.#options &&
       this.#options.execconfig &&
@@ -1139,75 +1120,84 @@ export class Service extends EventEmitter<ServiceEvent> {
       }
     }
 
-    this.#log(`starting ${this.#id}`)
-    this.#setStatus(ServiceStatus.STARTING)
+    this.#log(`do service setup`)
+    //run setup if it exists
+    await this.#doSetup()
 
-    const serviceExecutable = this.getServiceExecutable()
-    this.#log(`service executable ${serviceExecutable}`)
-    this.#log(`service path ${this.#servicepath}`)
-    this.#log(`service user data path ${this.#servicedatapath}`)
-    this.#log(`service port ${this.#serviceport}`)
+    if (this.isRunnable) {
+      this.#log(`starting ${this.#id}`)
+      this.#setStatus(ServiceStatus.STARTING)
 
-    if (serviceExecutable) {
-      let commandline = new Array<string>()
-      if (
-        this.#options &&
-        this.#options.execconfig &&
-        this.#options.execconfig.commandline
-      ) {
-        commandline = this.getServiceCommand().split(" ") || []
-      }
+      const serviceExecutable = this.getServiceExecutable()
+      this.#log(`service executable ${serviceExecutable}`)
+      this.#log(`service path ${this.#servicepath}`)
+      this.#log(`service user data path ${this.#servicedatapath}`)
+      this.#log(`service port ${this.#serviceport}`)
 
-      const options: SpawnOptions = {
-        cwd: this.#servicepath,
-        signal: this.#abortController.signal,
-        windowsVerbatimArguments: true,
-        env: this.environmentVariables,
-        shell: false,
-        // send data to logs but it will be delayed as its buffered in 64k blocks :(
-        stdio: ["ignore", this.#stdout, this.#stderr],
-        windowsHide: true,
-      }
-
-      this.#log(
-        `starting service ${serviceExecutable}, ${commandline}, ${options}`
-      )
-
-      try {
-        const process = spawn(serviceExecutable, commandline, options)
-
-        this.#log([
-          "spawn",
-          {
-            serviceExecutable: serviceExecutable,
-            commandline: commandline,
-            options: options,
-          },
-          process.pid,
-        ])
-
-        // monitor console
-        if (process.stdout) {
-          process.stdout.setEncoding("utf8")
-          process.stdout.on("data", (data) => {
-            this.#log(data)
-          })
-        }
-        // monitor error log
-        if (process.stderr) {
-          process.stderr.setEncoding("utf8")
-          process.stderr.on("data", (data) => {
-            this.#log(data)
-          })
+      if (serviceExecutable) {
+        let commandline = new Array<string>()
+        if (
+          this.#options &&
+          this.#options.execconfig &&
+          this.#options.execconfig.commandline
+        ) {
+          commandline = this.getServiceCommand().split(" ") || []
         }
 
-        this.#register(process)
-      } catch (error) {
-        this.#setStatus(ServiceStatus.ERROR)
-        this.#log(`error starting service ${this.id} with error ${error}`)
+        const options: SpawnOptions = {
+          cwd: this.#servicepath,
+          signal: this.#abortController.signal,
+          windowsVerbatimArguments: true,
+          env: this.environmentVariables,
+          shell: false,
+          // send data to logs but it will be delayed as its buffered in 64k blocks :(
+          stdio: ["ignore", this.#stdout, this.#stderr],
+          windowsHide: true,
+        }
+
+        this.#log(
+          `starting service ${serviceExecutable}, ${commandline}, ${options}`
+        )
+
+        try {
+          const process = spawn(serviceExecutable, commandline, options)
+
+          this.#log([
+            "spawn",
+            {
+              serviceExecutable: serviceExecutable,
+              commandline: commandline,
+              options: options,
+            },
+            process.pid,
+          ])
+
+          // monitor console
+          if (process.stdout) {
+            process.stdout.setEncoding("utf8")
+            process.stdout.on("data", (data) => {
+              this.#log(data)
+            })
+          }
+          // monitor error log
+          if (process.stderr) {
+            process.stderr.setEncoding("utf8")
+            process.stderr.on("data", (data) => {
+              this.#log(data)
+            })
+          }
+
+          this.#register(process)
+        } catch (error) {
+          this.#setStatus(ServiceStatus.ERROR)
+          this.#log(`error starting service ${this.id} with error ${error}`)
+        }
+      } else {
+        this.#log("unsuported service type")
+        return
       }
     } else {
-      this.#log("unsuported service type")
+      this.#log("service is not runnable, done.")
       return
     }
   }
@@ -1364,7 +1354,7 @@ export class Service extends EventEmitter<ServiceEvent> {
   }
 
   get isRunnable() {
-    return this.#options.execconfig.commandline ? true : false
+    return this.getServiceCommand().trim().length > 0 ? true : false
   }
 
   get isSetup() {
