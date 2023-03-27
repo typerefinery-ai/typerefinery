@@ -29,7 +29,6 @@
     "commandline": {
       "default": ""
     },
-    "serviceport": 8000,
     "depend_on": [
       "typedb"
     ]
