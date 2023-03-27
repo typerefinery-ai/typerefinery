@@ -1161,7 +1161,9 @@ export class Service extends EventEmitter<ServiceEvent> {
         }
 
         this.#log(
-          `starting service ${serviceExecutable}, ${commandline}, ${options}`
+          `starting service ${serviceExecutable}, ${commandline}, ${JSON.stringify(
+            options
+          )}`
         )
 
         try {
