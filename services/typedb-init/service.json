@@ -17,10 +17,10 @@
     "commandline": {
       "default": ""
     },
-    "globalenv": {
-      "TYPEDB_DB": "typerefinery"
+    "commandconfig": {
+      "source": "init.tql.template",
+      "target": "init.tql"
     },
-    "serviceport": 8000,
     "depend_on": [
       "typedb"
     ]
