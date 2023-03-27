@@ -49,11 +49,6 @@ Function PrintInfo
 
 Function StartServer
 {
-
-  if ($DEBUG) {
-    TestPython
-  }
-
   Set-Location -Path "${SERVER_HOME}"
   try {
     & ${NODE_PROGRAM_PATH} app
