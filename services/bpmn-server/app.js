@@ -38,6 +38,18 @@ function getVersion() {
 }
 class WebApp {
     constructor() {
+
+        console.log("BPMN-SERVER")
+        console.log([
+          "config",
+          process.env.API_KEY,
+          process.env.DEFINITIONS_PATH,
+          process.env.MONGO_DB_NAME,
+          process.env.PORT,
+          process.env.MONGO_DB_URL,
+          process.env.SESSION_SECRET
+        ])
+
         //NOPASSPORT 		this.passport = passport;
         //NOPASSPORT 		this.passportConfig = require('./config/passport');
         this.initExpress();

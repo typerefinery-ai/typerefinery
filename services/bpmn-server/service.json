@@ -2,7 +2,7 @@
   "id": "bpmn-server",
   "name": "BPMN Server",
   "description": "BPMN Server",
-  "enabled": true,
+  "enabled": false,
   "status": "30",
   "logoutput": "",
   "icon": "pi pi-globe",
@@ -16,7 +16,11 @@
       "default": ["; ${NPM} install"]
     },
     "env": {
-      "SERVICE_DATA_PATH": "${SERVICE_DATA_PATH}\\processes"
+      "SERVICE_DATA_PATH": "${SERVICE_DATA_PATH}\\processes",
+      "PORT": "${SERVICE_PORT}",
+      "API_KEY": "typerefinery",
+      "SESSION_SECRET": "typerefinery",
+      "MONGO_DB_NAME": "bpmn"
     },
     "commandline": {
       "win32": "app",

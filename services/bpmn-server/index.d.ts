@@ -1,3 +1,3 @@
-export * from './bpmnServer';
-declare const docsFolder: string;
-export { docsFolder };
+export * from '.'
+declare const docsFolder: string
+export { docsFolder }
