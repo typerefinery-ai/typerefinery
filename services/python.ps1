@@ -1,5 +1,5 @@
 Param(
-  [string]$APP_NAME = "TypeRefinery",
+  [string]$APP_NAME = "Python",
   [string]$SERVICES_HOME = "services",
   [string]$CURRENT_PATH = "${PWD}",
   [string]$SERVICE_NAME = "_python",

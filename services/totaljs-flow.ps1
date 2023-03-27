@@ -1,5 +1,5 @@
 Param(
-  [string]$APP_NAME = "TypeRefinery",
+  [string]$APP_NAME = "Flow",
   [string]$SERVICE_NAME = "totaljs-flow",
   [string]$CURRENT_PATH = "${PWD}",
   [string]$OS = ( $IsWindows ? "win32" : ( $IsMacOS ? "darwin" : "linux" ) ),

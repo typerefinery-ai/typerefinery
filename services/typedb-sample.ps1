@@ -1,5 +1,5 @@
 Param(
-  [string]$APP_NAME = "TypeRefinery",
+  [string]$APP_NAME = "TypeDB Sample",
   [string]$SERVICE_NAME = "typedb-sample",
   [string]$CURRENT_PATH = "${PWD}",
   [string]$OS = ( $IsWindows ? "win32" : ( $IsMacOS ? "darwin" : "linux" ) ),

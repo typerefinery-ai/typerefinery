@@ -1,7 +1,7 @@
 {
-  "id": "websight-nginx",
-  "name": "Websight Nginx",
-  "description": "Nginx instance for Websight",
+  "id": "nginx",
+  "name": "Nginx",
+  "description": "Nginx instance for CMS",
   "enabled": true,
   "status": "-1",
   "icon": "pi pi-cog",

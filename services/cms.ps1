@@ -1,6 +1,6 @@
 Param(
-  [string]$APP_NAME = "TypeRefinery",
-  [string]$SERVICE_NAME = "websight-cms",
+  [string]$APP_NAME = "CMS",
+  [string]$SERVICE_NAME = "cms",
   [string]$CURRENT_PATH = "${PWD}",
   [string]$OS = ( $IsWindows ? "win32" : ( $IsMacOS ? "darwin" : "linux" ) ),
   [string]$CPU_ARCH = "x64",

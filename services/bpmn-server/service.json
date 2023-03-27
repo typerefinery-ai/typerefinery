@@ -33,7 +33,7 @@
     },
     "depend_on": [
       "node",
-      "websight-mongo"
+      "mongo"
     ]
   }
 }

@@ -1,5 +1,5 @@
 Param(
-  [string]$APP_NAME = "TypeRefinery",
+  [string]$APP_NAME = "Message Service",
   [string]$SERVICE_NAME = "totaljs-messageservice",
   [string]$CURRENT_PATH = "${PWD}",
   [string]$OS = ( $IsWindows ? "win32" : ( $IsMacOS ? "darwin" : "linux" ) ),

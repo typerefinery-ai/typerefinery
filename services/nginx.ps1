@@ -1,6 +1,6 @@
 Param(
-  [string]$APP_NAME = "TypeRefinery",
-  [string]$SERVICE_NAME = "websight-nginx",
+  [string]$APP_NAME = "Nginx",
+  [string]$SERVICE_NAME = "nginx",
   [string]$CURRENT_PATH = "${PWD}",
   [string]$OS = ( $IsWindows ? "win32" : ( $IsMacOS ? "darwin" : "linux" ) ),
   [string]$CPU_ARCH = "x64",

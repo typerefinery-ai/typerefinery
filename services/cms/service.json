@@ -1,5 +1,5 @@
 {
-  "id": "websight-cms",
+  "id": "cms",
   "name": "Websight CMS",
   "description": "Websight CMS",
   "enabled": true,
@@ -25,8 +25,8 @@
     "depend_on": [
       "totaljs-flow",
       "totaljs-messageservice",
-      "websight-mongo",
-      "websight-nginx"
+      "mongo",
+      "nginx"
     ],
     "env": {
       "FLOW_HOST_URL": "${FLOW_HOST_URL}"
