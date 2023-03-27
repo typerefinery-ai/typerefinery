@@ -15,10 +15,10 @@
       "default": "-Xms256m -Xmx1024m -cp \"${SERVICE_PATH}\\server\\conf\\;${SERVICE_PATH}\\server\\lib\\common\\*;${SERVICE_PATH}\\server\\lib\\prod\\*;\" -D\"typedb.dir=${SERVICE_PATH}\" com.vaticle.typedb.core.server.TypeDBServer --storage.data=\"${SERVICE_DATA_PATH}\" --server.address 0.0.0.0:${SERVICE_PORT}"
     },
     "commandlinecli": {
-      "win32": "-Xms256m -Xmx1024m -cp \"${SERVICE_PATH}\\console\\conf\\;${SERVICE_PATH}\\console\\lib\\*;\" -D\"typedb.dir=${SERVICE_PATH}\" com.vaticle.typedb.console.TypeDBConsole --server.address 0.0.0.0:${SERVICE_PORT} ",
-      "darwin": "-Xms256m -Xmx1024m -cp \"${SERVICE_PATH}/console/conf/:${SERVICE_PATH}/console/lib/*:\" -D\"typedb.dir=${SERVICE_PATH}\" com.vaticle.typedb.console.TypeDBConsole --server.address 0.0.0.0:${SERVICE_PORT} ",
-      "linux": "-Xms256m -Xmx1024m -cp \"${SERVICE_PATH}/console/conf/:${SERVICE_PATH}/console/lib/*:\" -D\"typedb.dir=${SERVICE_PATH}\" com.vaticle.typedb.console.TypeDBConsole --server.address 0.0.0.0:${SERVICE_PORT} ",
-      "default": "-Xms256m -Xmx1024m -cp \"${SERVICE_PATH}\\console\\conf\\;${SERVICE_PATH}\\console\\lib\\*;\" -D\"typedb.dir=${SERVICE_PATH}\" com.vaticle.typedb.console.TypeDBConsole --server.address 0.0.0.0:${SERVICE_PORT} "
+      "win32": "-Xms256m -Xmx1024m -cp \"${SERVICE_PATH}\\console\\conf\\;${SERVICE_PATH}\\console\\lib\\*;\" -D\"typedb.dir=${SERVICE_PATH}\" com.vaticle.typedb.console.TypeDBConsole --server 0.0.0.0:${SERVICE_PORT} ",
+      "darwin": "-Xms256m -Xmx1024m -cp \"${SERVICE_PATH}/console/conf/:${SERVICE_PATH}/console/lib/*:\" -D\"typedb.dir=${SERVICE_PATH}\" com.vaticle.typedb.console.TypeDBConsole --server 0.0.0.0:${SERVICE_PORT} ",
+      "linux": "-Xms256m -Xmx1024m -cp \"${SERVICE_PATH}/console/conf/:${SERVICE_PATH}/console/lib/*:\" -D\"typedb.dir=${SERVICE_PATH}\" com.vaticle.typedb.console.TypeDBConsole --server 0.0.0.0:${SERVICE_PORT} ",
+      "default": "-Xms256m -Xmx1024m -cp \"${SERVICE_PATH}\\console\\conf\\;${SERVICE_PATH}\\console\\lib\\*;\" -D\"typedb.dir=${SERVICE_PATH}\" com.vaticle.typedb.console.TypeDBConsole --server 0.0.0.0:${SERVICE_PORT} "
     },
     "datapath": "/server/data",
     "serviceport": 8729,
