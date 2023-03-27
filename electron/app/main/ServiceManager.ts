@@ -235,28 +235,32 @@ class ServiceManager {
     return await getPortFree(port, host)
   }
 
-  #sortServices() {
-    this.#services.sort((service1: Service, service2: Service) => {
-      const serviceorder1 = service1.options.execconfig?.serviceorder ?? 99
-      const serviceorder2 = service2.options.execconfig?.serviceorder ?? 99
-      let returnvalue = 0
-      // services with lower serviceorder value are started first
-      if (serviceorder1 < serviceorder2) {
-        returnvalue = -1
-        // services with higher serviceorder value are started last
-      } else if (serviceorder2 < serviceorder1) {
-        returnvalue = 1
-      }
+  #sortServices(reverse = false) {
+    if (!reverse) {
+      this.#services.sort((service1: Service, service2: Service) => {
+        const serviceorder1 = service1.options.execconfig?.serviceorder ?? 99
+        const serviceorder2 = service2.options.execconfig?.serviceorder ?? 99
+        let returnvalue = 0
+        // services with lower serviceorder value are started first
+        if (serviceorder1 < serviceorder2) {
+          returnvalue = -1
+          // services with higher serviceorder value are started last
+        } else if (serviceorder2 < serviceorder1) {
+          returnvalue = 1
+        }
 
-      // services with same serviceorder value are sorted by dependancy
-      // services that depend on other services are started after the services they depend on
-      if (service1.isDependantOnService(service2.id)) {
-        returnvalue = 1
-      } else if (service2.isDependantOnService(service1.id)) {
-        returnvalue = -1
-      }
-      return returnvalue
-    })
+        // services with same serviceorder value are sorted by dependancy
+        // services that depend on other services are started after the services they depend on
+        if (service1.isDependantOnService(service2.id)) {
+          returnvalue = 1
+        } else if (service2.isDependantOnService(service1.id)) {
+          returnvalue = -1
+        }
+        return returnvalue
+      })
+    } else {
+      this.#services.reverse()
+    }
   }
 
   // start all services
@@ -289,6 +293,7 @@ class ServiceManager {
 
   // stop all services
   async stopAll() {
+    this.#sortServices(true)
     for (const service of this.#services) {
       this.#logger.log(`stopping service ${service.id}`)
       await service.stop()
