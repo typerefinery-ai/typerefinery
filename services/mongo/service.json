@@ -1,5 +1,5 @@
 {
-  "id": "websight-mongo",
+  "id": "mongo",
   "name": "Websight Mongo",
   "description": "Mongo instance for Websight",
   "enabled": true,
