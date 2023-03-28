@@ -941,20 +941,15 @@ export class Service extends EventEmitter<ServiceEvent> {
       if (retries > 0) {
         const timeoutInterval = this.#healthCheck?.interval || 1000
         const nextRetry = retries - 1
-        if (!this.#runHealthCheck()) {
-          //try again in timeoutInterval
-          this.#healthCheckTimeout = setTimeout(
-            (nextRetry) => {
-              this.#startHealthCheck(nextRetry)
-            },
-            timeoutInterval,
-            nextRetry
-          )
-        } else {
-          // health check passed
-          this.#setStatus(ServiceStatus.STARTED)
-          this.#stopHealthCheck()
-        }
+        this.#runHealthCheck()
+        //try again in timeoutInterval
+        this.#healthCheckTimeout = setTimeout(
+          (nextRetry) => {
+            this.#startHealthCheck(nextRetry)
+          },
+          timeoutInterval,
+          nextRetry
+        )
       } else {
         this.#log(
           `health check exited after ${
@@ -984,12 +979,13 @@ export class Service extends EventEmitter<ServiceEvent> {
       const url: URL = new URL(urlFixed)
       const expected_status = this.#healthCheck.expected_status || 200
 
-      this.#log(`http health check request ${url.hostname}; url ${url}`)
+      // this.#log(`http health check request ${url.hostname}; url ${url}`)
 
       try {
         const req = http.get(url, (res) => {
           if (res.statusCode == expected_status) {
             this.#setStatus(ServiceStatus.STARTED)
+            this.#stopHealthCheck()
             this.#log(
               `http health check success, service status is ${this.#status}`
             )
@@ -1003,11 +999,11 @@ export class Service extends EventEmitter<ServiceEvent> {
           }
         })
         req.on("error", (e) => {
-          this.#log(
-            `http health check request failed with error ${e}, service status is ${
-              this.#status
-            }`
-          )
+          // this.#log(
+          //   `http health check request failed with error ${e}, service status is ${
+          //     this.#status
+          //   }`
+          // )
           return false
         })
       } catch (error) {
@@ -1029,6 +1025,7 @@ export class Service extends EventEmitter<ServiceEvent> {
       const port = this.#serviceport
       const socket = net.createConnection(port, hostname, () => {
         this.#setStatus(ServiceStatus.STARTED)
+        this.#stopHealthCheck()
         this.#log(`tcp health check success, service status ${this.#status}`)
         socket.end()
         return true
@@ -1765,7 +1762,7 @@ export class Service extends EventEmitter<ServiceEvent> {
                   break
                 } else {
                   //stop health check for this if it still running
-                  service.#stopHealthCheck()
+                  // service.#stopHealthCheck()
                 }
               } else {
                 //this service is not runnable or already running, continue
