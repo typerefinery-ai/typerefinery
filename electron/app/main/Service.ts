@@ -258,7 +258,7 @@ export class Service extends EventEmitter<ServiceEvent> {
       this.#logger.error(err)
     })
     this.#stderr.on("open", () => {
-      this.#stdout.write(`log open`)
+      this.#stdout.write(`log open\n`)
     })
     this.#stderr.on("finish", () => {
       this.#stdout.write(`log finished`)
@@ -637,6 +637,10 @@ export class Service extends EventEmitter<ServiceEvent> {
 
   get isStopped() {
     return this.#status === ServiceStatus.STOPPED
+  }
+
+  get isStarting() {
+    return this.#status === ServiceStatus.STARTING
   }
 
   get isRunning() {
@@ -1060,6 +1064,12 @@ export class Service extends EventEmitter<ServiceEvent> {
     //quick fail if disabled
     if (!this.isEnabled) {
       this.#log(`service ${this.#id} is disabled`)
+      return
+    }
+
+    //quick fail if already starting
+    if (this.isStarting) {
+      this.#log(`service ${this.#id} is already starting.`)
       return
     }
 
