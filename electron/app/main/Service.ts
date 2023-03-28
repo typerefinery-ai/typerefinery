@@ -1067,6 +1067,10 @@ export class Service extends EventEmitter<ServiceEvent> {
       return
     }
 
+    this.#stdout.write(
+      `\nstarting ${this.#status}, ${this.isStarted}, ${this.isStopped} \n`
+    )
+
     //quick fail if already starting
     if (this.isStarting) {
       this.#log(`service ${this.#id} is already starting.`)
