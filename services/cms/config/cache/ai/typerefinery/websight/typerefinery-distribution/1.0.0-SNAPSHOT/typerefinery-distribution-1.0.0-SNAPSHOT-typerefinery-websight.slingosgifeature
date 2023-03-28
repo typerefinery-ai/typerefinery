@@ -1160,39 +1160,6 @@
         "ai.typerefinery.websight:typerefinery-distribution:slingosgifeature:typerefinery:1.0.0-SNAPSHOT"
       ]
     },
-    "ai.typerefinery.websight.services.flow.FlowService":    {
-      "host.url":"$[env:FLOW_HOST_URL;default=http://localhost:8000]",
-      "endpoint.export":"/flow/export/%s",
-      "endpoint.import":"/flow/import",
-      "endpoint.update":"/flow/update",
-      "endpoint.save":"/flow/%s/save",
-      "flow.page.change.listener.enabled":true,
-      "flow.meta.author":"TypeRefinery.io",
-      ":configurator:feature-origins-endpoint.import":[
-        "ai.typerefinery.websight:typerefinery-distribution:slingosgifeature:typerefinery:1.0.0-SNAPSHOT"
-      ],
-      ":configurator:feature-origins-flow.meta.author":[
-        "ai.typerefinery.websight:typerefinery-distribution:slingosgifeature:typerefinery:1.0.0-SNAPSHOT"
-      ],
-      ":configurator:feature-origins-endpoint.export":[
-        "ai.typerefinery.websight:typerefinery-distribution:slingosgifeature:typerefinery:1.0.0-SNAPSHOT"
-      ],
-      ":configurator:feature-origins-endpoint.save":[
-        "ai.typerefinery.websight:typerefinery-distribution:slingosgifeature:typerefinery:1.0.0-SNAPSHOT"
-      ],
-      ":configurator:feature-origins-endpoint.update":[
-        "ai.typerefinery.websight:typerefinery-distribution:slingosgifeature:typerefinery:1.0.0-SNAPSHOT"
-      ],
-      ":configurator:feature-origins-host.url":[
-        "ai.typerefinery.websight:typerefinery-distribution:slingosgifeature:typerefinery:1.0.0-SNAPSHOT"
-      ],
-      ":configurator:feature-origins-flow.page.change.listener.enabled":[
-        "ai.typerefinery.websight:typerefinery-distribution:slingosgifeature:typerefinery:1.0.0-SNAPSHOT"
-      ],
-      ":configurator:feature-origins":[
-        "ai.typerefinery.websight:typerefinery-distribution:slingosgifeature:typerefinery:1.0.0-SNAPSHOT"
-      ]
-    },
     "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl":    {
       "user.default":"sling-adminall",
       "user.mapping":[
