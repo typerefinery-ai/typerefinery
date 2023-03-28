@@ -643,6 +643,13 @@ export class Service extends EventEmitter<ServiceEvent> {
     return this.#status === ServiceStatus.STARTING
   }
 
+  get isInstalling() {
+    return (
+      this.#status === ServiceStatus.INSTALLING ||
+      this.#status === ServiceStatus.EXTRACTING
+    )
+  }
+
   get isRunning() {
     if (this.#process) {
       return !this.#process.killed
@@ -1072,7 +1079,7 @@ export class Service extends EventEmitter<ServiceEvent> {
     )
 
     //quick fail if already starting
-    if (this.isStarting) {
+    if (this.isStarting || this.isInstalling) {
       this.#log(`service ${this.#id} is already starting.`)
       return
     }
