@@ -18,7 +18,8 @@
       "PYTHONPATH": "${SERVICE_PATH}"
     },
     "globalenv": {
-      "API_URL": "http://localhost:${SERVICE_PORT}"
+      "API_URL": "http://localhost:${SERVICE_PORT}",
+      "API_PORT": "${SERVICE_PORT}"
     },
     "commandline": {
       "default": "-m uvicorn --host localhost --port ${SERVICE_PORT} --app-dir ${SERVICE_PATH} main:app"
