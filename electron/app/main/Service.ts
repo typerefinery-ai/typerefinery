@@ -461,6 +461,10 @@ export class Service extends EventEmitter<ServiceEvent> {
       command = command.replaceAll(`\${${key}}`, value)
     }
 
+    for (const [key, value] of Object.entries(this.#processEnv)) {
+      command = command.replaceAll(`\${${key}}`, value)
+    }
+
     return command
       .replaceAll("${SERVICE_HOME}", service.#servicehome)
       .replaceAll("${SERVICE_EXECUTABLE}", service.getServiceExecutable())
