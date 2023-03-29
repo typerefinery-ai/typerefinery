@@ -55,9 +55,12 @@ const serviceManager = new ServiceManager(
     sendServiceList,
   }
 )
+
 //starting services aotomatically
 const isAutoStart = process.env.SERVICES_AUTOSTART === "true"
+logger.log("service manager isAutoStart: {}", isAutoStart)
 if (isAutoStart) {
+  logger.log("service manager startAll.")
   serviceManager.startAll()
 }
 
@@ -837,3 +840,20 @@ app.get("/services/status", (req, res, next) => {
     message: result ? "Services are started" : `${serviceId} is not started.`,
   })
 })
+
+/**
+ * Stop all services on exit
+ * @param {NodeJS.SignalsListener} signal
+ */
+async function signalExitHandler(signal) {
+  console.log("terminating - service manager stopAll.")
+  logger.log("terminating - service manager stopAll.")
+  await serviceManager.stopAll()
+  process.exit()
+}
+
+// listen for TERM signal .e.g. ctr+c
+process.on("SIGBREAK", signalExitHandler)
+process.on("SIGINT", signalExitHandler)
+process.on("SIGQUIT", signalExitHandler)
+process.on("SIGTERM", signalExitHandler)
