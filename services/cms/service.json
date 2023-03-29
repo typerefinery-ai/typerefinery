@@ -20,7 +20,7 @@
       "type": "http",
       "url": "http://localhost:${SERVICE_PORT}/system/health",
       "expected_status": 200,
-      "retries": 90
+      "retries": 180
     },
     "depend_on": [
       "totaljs-flow",
