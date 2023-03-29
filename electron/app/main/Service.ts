@@ -116,6 +116,7 @@ export interface ExecConfig {
   serviceorder?: 99
   depend_on?: string[]
   serviceport?: number
+  servicedebugport?: number
   servicehost?: string
   healthcheck?: HealthCheck
 }
@@ -186,6 +187,7 @@ export class Service extends EventEmitter<ServiceEvent> {
   #options: SericeConfigFile
   #events: ServiceEvents
   #serviceport?: number
+  #servicedebugport?: number
   #servicehost?: string
   #serviceManager: ServiceManager
   #stdout: WriteStream
@@ -235,6 +237,7 @@ export class Service extends EventEmitter<ServiceEvent> {
     this.#serviceManager = serviceManager
     this.#id = this.#options.id
     this.#serviceport = this.#options.execconfig?.serviceport || 0
+    this.#servicedebugport = this.#options.execconfig?.servicedebugport || 0
     this.#servicehost = this.#options.execconfig?.servicehost || "localhost"
     this.#healthCheck = this.#options.execconfig?.healthcheck
     this.#setup = this.getSetupForPlatfrom
@@ -476,6 +479,7 @@ export class Service extends EventEmitter<ServiceEvent> {
       .replaceAll("${EXEC_SERVICE_PATH}", service.#execservicepath)
       .replaceAll("${SERVICE_DATA_PATH}", service.#servicedatapath)
       .replaceAll("${SERVICE_PORT}", service.#serviceport + "")
+      .replaceAll("${SERVICE_DEBUG_PORT}", service.#servicedebugport + "")
       .replaceAll("${SERVICE_HOST}", service.#servicehost + "")
       .replaceAll("${SERVICE_LOG_PATH}", service.#logsDir + "")
       .replaceAll("${SERVICE_AUTH_USERNAME}", service.username)
@@ -515,6 +519,7 @@ export class Service extends EventEmitter<ServiceEvent> {
       EXEC_SERVICE_PATH: this.#execservicepath,
       SERVICE_DATA_PATH: this.#servicedatapath,
       SERVICE_PORT: this.#serviceport + "",
+      SERVICE_DEBUG_PORT: this.#servicedebugport + "",
       SERVICE_HOST: this.#servicehost + "",
       SERVICE_LOG_PATH: this.#logsDir + "",
       SERVICE_AUTH_USERNAME: this.username,
