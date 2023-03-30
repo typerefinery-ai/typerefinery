@@ -83,15 +83,15 @@ jobs:
     runs-on: ${{ matrix.os }}
     env:
       NODE_ENV: development
-      NODE_OPTIONS: '--max_old_space_size=4096'
-
+      NODE_OPTIONS: "--max_old_space_size=4096"
+      CYPRESS_CACHE_FOLDER: cypress/cache
     strategy:
       matrix:
         node: [18.3.0]
-        os: [ubuntu-latest]
+        os: [windows-latest]
         include:
-          - os: ubuntu-latest
-            friendlyName: Functional Test - Ubuntu
+          - os: windows-latest
+            friendlyName: Functional Test - Windows
 
     steps:
       - name: Check out Git repository
@@ -116,20 +116,28 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
 
+      - name: Cache Cypress Binary
+        id: cache-cypress-binary
+        uses: actions/cache@v3
+        with:
+          path: cypress/cache
+          #key: cypress-binary-${{ hashFiles('package-lock.json') }}
+          key: ${{ runner.os }}-cypress-${{ hashFiles('**/package-lock.json') }}
+
       - name: Run Install
         run: |
           npm install
-
+      
       - name: Cypress run
         uses: cypress-io/github-action@v4
         with:
-          config: pageLoadTimeout=100000,baseUrl=http://localhost:8080
-          wait-on: 'http://localhost:8080'
+          config: pageLoadTimeout=250000,baseUrl=http://localhost:3000
+          wait-on: "http://localhost:3000"
           install: false
           build: |
             npm run build
           start: |
-            npm run preview
+            npm run preview:wait:ci
           command: |
             npm run test:ci
           record: true
@@ -140,8 +148,10 @@ jobs:
           COMMIT_INFO_MESSAGE: ${{ github.event.inputs.title }}
 
       - name: Generate Reports
+        if: always()
         run: |
           npm run posttest
+
       # # This workaround is required for running npm install
       # - name: Set permissions
       #   run: |
@@ -159,11 +169,10 @@ jobs:
       #     docker compose --profile reports up reports
 
       - name: Deploy Reports to gh-pages
-        if: always()
         uses: JamesIves/github-pages-deploy-action@v4.2.5
         with:
           branch: gh-pages
-          folder: cypress/reports
+          folder: cypress/reports      
 
   release:
     needs: [unit-test]
@@ -258,4 +267,3 @@ jobs:
       #       dist_electron/*.dmg
       #       dist_electron/*.dmg.blockmap
       #       dist_electron/latest*.yml
-

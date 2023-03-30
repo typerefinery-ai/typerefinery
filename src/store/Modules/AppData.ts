@@ -29,10 +29,12 @@ export default class AppData extends VuexModule {
   setSelectedTreeNodes(node: { id: string }) {
     const data = JSON.parse(JSON.stringify(this.data))
     const nodes = data.selectedTreeNodes
-    nodes.list.push(node.id)
-    nodes[node.id] = node
-    nodes.activeNode = node.id
-    this.data.selectedTreeNodes = nodes
+    if (!nodes.list.includes(node.id)) {
+      nodes.list.push(node.id)
+      nodes[node.id] = node
+      nodes.activeNode = node.id
+      this.data.selectedTreeNodes = nodes
+    }
   }
 
   @Mutation
@@ -47,9 +49,11 @@ export default class AppData extends VuexModule {
   setSelectedSplitNodes(node: { id: string }) {
     const data = JSON.parse(JSON.stringify(this.data))
     const nodes = data.selectedSplitNodes
-    nodes.list.push(node.id)
-    nodes[node.id] = node
-    this.data.selectedSplitNodes = nodes
+    if (!nodes.list.includes(node.id)) {
+      nodes.list.push(node.id)
+      nodes[node.id] = node
+      this.data.selectedSplitNodes = nodes
+    }
   }
 
   @Mutation
@@ -61,11 +65,15 @@ export default class AppData extends VuexModule {
   }
 
   @Mutation
-  removeSelectedTreeNodes(id: string) {
+  removeSelectedTreeNodes(ids: string[]) {
     const nodes = JSON.parse(JSON.stringify(this.data.selectedTreeNodes))
-    const idx = nodes.list.findIndex((el) => el == id)
-    nodes.list.splice(idx, 1)
-    delete nodes[id]
+    ids.forEach((id) => {
+      const idx = nodes.list.findIndex((el: string) => el == id)
+      if (idx !== -1) {
+        nodes.list.splice(idx, 1)
+        delete nodes[id]
+      }
+    })
     if (nodes.list.length) {
       nodes.activeNode = nodes.list[0]
     }
@@ -75,7 +83,7 @@ export default class AppData extends VuexModule {
   @Mutation
   removeSelectedSplitNodes(id: string) {
     const nodes = JSON.parse(JSON.stringify(this.data.selectedSplitNodes))
-    const idx = nodes.list.findIndex((el) => el == id)
+    const idx = nodes.list.findIndex((el: string) => el == id)
     nodes.list.splice(idx, 1)
     delete nodes[id]
     if (nodes.list.length) {
@@ -107,6 +115,10 @@ export default class AppData extends VuexModule {
   }
 
   @Mutation
+  toggleThemeDialog() {
+    this.data.themeDialog = !this.data.themeDialog
+  }
+  @Mutation
   toggleTransformerDialog() {
     this.data.transformerDialog = !this.data.transformerDialog
   }
@@ -121,4 +133,27 @@ export default class AppData extends VuexModule {
   setResizingFlow(value: boolean) {
     this.data.resizingFlow = value
   }
+
+  // Sidebar
+  @Mutation
+  toggleSidebarPanel() {
+    this.data.sidebarVisible = !this.data.sidebarVisible
+  }
+
+  // // Initial Data
+  // @Mutation
+  // setInitialDataCreated() {
+  //   this.data.initialDataCreated = true
+  // }
+
+  // // services
+  // @Mutation
+  // setServicesStarted() {
+  //   this.data.servicesStarted = true
+  // }
+
+  // @Mutation
+  // setServicesStopped() {
+  //   this.data.servicesStarted = false
+  // }
 }

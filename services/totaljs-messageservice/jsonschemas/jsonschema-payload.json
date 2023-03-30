@@ -1,0 +1,14 @@
+{
+  "$id": "https://example.com/svg.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Payload",
+  "type": "object",
+  "properties": {
+    "payload": {
+      "type": "string"
+    },
+    "topic": {
+      "type": "string"
+    }
+  }
+}

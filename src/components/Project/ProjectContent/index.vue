@@ -32,6 +32,7 @@
           @close-split-view="closeSplitView"
         />
       </pane>
+      <Home />
     </splitpanes>
   </div>
 </template>
@@ -41,6 +42,7 @@
   import { getModule } from "vuex-module-decorators"
   import Sidebar from "../Sidebar"
   import ContentView from "./ContentView.vue"
+  import Home from "../ContentTab/Tabs/DisplayHomePage.vue"
   import AppData from "@/store/Modules/AppData"
   const appDataModule = getModule(AppData)
 
@@ -51,6 +53,7 @@
       Splitpanes,
       Pane,
       ContentView,
+      Home,
     },
     props: {
       focus: {
@@ -78,6 +81,9 @@
       splitNodeSelected() {
         return appDataModule.data.splitNodeClicked
       },
+      sidebarVisible() {
+        return appDataModule.data.sidebarVisible
+      },
     },
     watch: {
       nodeSelected() {
@@ -86,6 +92,24 @@
       splitNodeSelected() {
         this.updateSplitTabs()
       },
+      sidebarVisible(visible) {
+        if (visible) {
+          this.pane1Size = 25
+          this.panesSize = 75
+        } else {
+          this.pane1Size = 0
+          this.panesSize = 45
+        }
+      },
+      // sidebarVisible(visible) {
+      //   if (visible) {
+      //     this.pane1Size = 25
+      //     this.panesSize = 75
+      //   } else {
+      //     this.pane1Size = 0
+      //     this.panesSize = 45
+      //   }
+      // },
     },
     mounted() {
       this.updateTabs()
@@ -98,10 +122,8 @@
         const pane = { id: "pane2", tabs: [tab] }
         if (this.panes.length === 1) {
           this.panes.push(pane)
-          setTimeout(() => {
-            this.pane1Size = 0
-            this.panesSize = 45
-          }, 0)
+          this.pane1Size = 0
+          this.panesSize = 45
         } else {
           this.panes[1] = pane
         }
@@ -112,9 +134,11 @@
       handleSplitterClick(e) {
         if (e.index !== 1) return
         const pane = this.$refs.sidebarPane
-        pane.style.width == "0"
+        !this.sidebarVisible
           ? (pane.style.width = "25%")
           : (pane.style.width = 0)
+        appDataModule.toggleSidebarPanel()
+        appDataModule.toggleSidebarPanel()
       },
       updateTabs() {
         const projectsArray = appDataModule.data.selectedTreeNodes || {

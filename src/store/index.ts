@@ -26,11 +26,16 @@ const Connections = new VuexPersistence({
   reducer: (state: any) => ({ Connections: state.Connections }),
 })
 
-const FlowMessage = new VuexPersistence({
-  key: "flowMessage",
+const Themes = new VuexPersistence({
+  key: "themes",
   storage: window.localStorage,
-  reducer: (state: any) => ({ FlowMessage: state.FlowMessage }),
+  reducer: (state: any) => ({ Themes: state.Themes }),
 })
+// const FlowMessage = new VuexPersistence({
+//   key: "flowMessage",
+//   storage: window.localStorage,
+//   reducer: (state: any) => ({ FlowMessage: state.FlowMessage }),
+// })
 
 const Projects = new VuexPersistence({
   key: "projects",
@@ -38,11 +43,11 @@ const Projects = new VuexPersistence({
   reducer: (state: any) => ({ Projects: state.Projects }),
 })
 
-const Services = new VuexPersistence({
-  key: "services",
-  storage: window.localStorage,
-  reducer: (state: any) => ({ Services: state.Services }),
-})
+// const Services = new VuexPersistence({
+//   key: "services",
+//   storage: window.localStorage,
+//   reducer: (state: any) => ({ Services: state.Services }),
+// })
 
 const Settings = new VuexPersistence({
   key: "settings",
@@ -50,11 +55,11 @@ const Settings = new VuexPersistence({
   reducer: (state: any) => ({ Settings: state.Settings }),
 })
 
-// const Transformers = new VuexPersistence({
-//   key: "transformers",
-//   storage: window.localStorage,
-//   reducer: (state: any) => ({ Transformers: state.Transformers }),
-// })
+const Queries = new VuexPersistence({
+  key: "queries",
+  storage: window.localStorage,
+  reducer: (state: any) => ({ Queries: state.Queries }),
+})
 
 export default createStore({
   plugins: [
@@ -62,10 +67,11 @@ export default createStore({
     AppData.plugin,
     Auth.plugin,
     Connections.plugin,
-    FlowMessage.plugin,
+    // FlowMessage.plugin,
     Projects.plugin,
-    Services.plugin,
+    // Services.plugin,
     Settings.plugin,
-    // Transformers.plugin,
+    Themes.plugin,
+    Queries.plugin,
   ],
 })

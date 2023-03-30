@@ -2,50 +2,59 @@
 import { Module, VuexModule, Mutation, Action } from "vuex-module-decorators"
 import store from "../index"
 import sampleData from "@/data/default.json"
-
 @Module({
   name: "Services",
   store: store,
   dynamic: true,
-  preserveState: localStorage.getItem("services") !== null,
+  // preserveState: localStorage.getItem("services") !== null,
 })
 export default class Services extends VuexModule {
   data = sampleData.services
 
-  // services = [
-  //   {
-  //     id: "fastapi",
-  //     name: "API",
-  //     description: "Fast API",
-  //     enabled: false,
-  //     status: "-1",
-  //     logoutput: "...",
-  //     icon: "pi pi-cog",
-  //     servicetype: 10,
-  //     actions: {
-  //       stop: {
-  //         name: "stop",
-  //         path: "...",
-  //         commanline: "...",
-  //       },
-  //       start: {
-  //         name: "start",
-  //         path: "...",
-  //         commanline: "...",
-  //       },
-  //     },
-  //   },
-  //   {
-  //     id: "typedb",
-  //     name: "DB",
-  //     description: "Database",
-  //     enabled: false,
-  //     status: "30",
-  //     logoutput: "...",
-  //     icon: "pi pi-database",
-  //     servicetype: 10,
-  //   },
-  // ]
+  @Action({ rawError: true })
+  async restartService(serviceid: string) {
+    // @ts-expect-error ts-migrate(2339) FIXME: Property 'ipc' does not exist on type 'Window & typeof globalThis'
+    const { ipc } = window
+    if (ipc && ipc.restartService) {
+      await ipc.restartService(serviceid)
+    }
+  }
+
+  @Action({ rawError: true })
+  async stopService(serviceid: string) {
+    // @ts-expect-error ts-migrate(2339) FIXME: Property 'ipc' does not exist on type 'Window & typeof globalThis'
+    const { ipc } = window
+    if (ipc && ipc.stopService) {
+      await ipc.stopService(serviceid)
+    }
+  }
+
+  @Action({ rawError: true })
+  async startService(serviceid: string) {
+    // @ts-expect-error ts-migrate(2339) FIXME: Property 'ipc' does not exist on type 'Window & typeof globalThis'
+    const { ipc } = window
+    if (ipc && ipc.startService) {
+      await ipc.startService(serviceid)
+    }
+  }
+
+  @Action({ rawError: true })
+  async startAllServices() {
+    // @ts-expect-error ts-migrate(2339) FIXME: Property 'ipc' does not exist on type 'Window & typeof globalThis'
+    const { ipc } = window
+    if (ipc && ipc.startAll) {
+      await ipc.startAll()
+    }
+  }
+
+  @Action({ rawError: true })
+  async stopAllServices() {
+    // @ts-expect-error ts-migrate(2339) FIXME: Property 'ipc' does not exist on type 'Window & typeof globalThis'
+    const { ipc } = window
+    if (ipc && ipc.stopAll) {
+      await ipc.stopAll()
+    }
+  }
 
   @Action({ rawError: true })
   async getServices() {
@@ -55,7 +64,6 @@ export default class Services extends VuexModule {
       const services = await ipc.getServices()
       this.context.commit("setServices", services)
     }
-    // console.log(services)
     // this.services = []
     // services.forEach((service: any) => {
     //   this.services.push(service)
@@ -142,8 +150,13 @@ export default class Services extends VuexModule {
   // }
 
   @Mutation
-  setServices(payload) {
+  setServices(payload: any) {
     this.data.services = payload
+  }
+
+  @Mutation
+  setSelectedServices(payload: any) {
+    this.data.selectedStatus = payload
   }
 
   // @Mutation
@@ -208,4 +221,15 @@ export default class Services extends VuexModule {
   //   this.services[idx].logoutput =
   //     this.services[idx].logoutput + "\n" + logstring
   // }
+
+  // services
+  @Mutation
+  setServicesStarted() {
+    this.data.servicesStarted = true
+  }
+
+  @Mutation
+  setServicesStopped() {
+    this.data.servicesStarted = false
+  }
 }

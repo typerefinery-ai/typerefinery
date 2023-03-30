@@ -1,0 +1,44 @@
+{
+  "id": "bpmn-server",
+  "name": "BPMN Server",
+  "description": "BPMN Server",
+  "enabled": true,
+  "status": "30",
+  "logoutput": "",
+  "icon": "pi pi-globe",
+  "servicetype": 10,
+  "execconfig": {
+    "execservice": { "id": "node" },
+    "setup": {
+      "win32": ["; ${NPM} install"],
+      "darwin": ["; ${NPM} install"],
+      "linux": ["; ${NPM} install"],
+      "default": ["; ${NPM} install"]
+    },
+    "env": {
+      "PORT": "${SERVICE_PORT}",
+      "API_KEY": "typerefinery",
+      "SESSION_SECRET": "typerefinery",
+      "MONGO_DB_URL": "mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@127.0.0.1:${MONGO_PORT}?retryWrites=true&w=majority&directConnection=true",
+      "MONGO_DB_NAME": "bpmn"
+    },
+    "datapath": "processes",
+    "commandline": {
+      "win32": "app",
+      "darwin": "app",
+      "linux": "app",
+      "default": "app"
+    },
+    "serviceport": 8190,
+    "healthcheck": {
+      "type": "http",
+      "url": "http://127.0.0.1:${SERVICE_PORT}/",
+      "expected_status": 200,
+      "retries": 30
+    },
+    "depend_on": [
+      "node",
+      "mongo"
+    ]
+  }
+}

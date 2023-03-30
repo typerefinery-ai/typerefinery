@@ -59,46 +59,20 @@
         >
       </div>
       <div class="field">
-        <label
-          for="description"
-          :class="{ 'p-error': v$.description.$invalid && submitted }"
+        <label for="description">
+          {{ $t("components.dialog.projects.info.description") }}</label
         >
-          {{ $t("components.dialog.projects.info.description") + "*" }}</label
-        >
-        <InputText
-          id="description"
-          v-model="v$.description.$model"
-          :class="{ 'p-invalid': v$.description.$invalid && submitted }"
-        />
-        <small
-          v-if="
-            (v$.description.$invalid && submitted) ||
-            v$.description.$pending.$response
-          "
-          class="p-error"
-          >{{
-            v$.description.required.$message.replace("Value", "Description")
-          }}</small
-        >
+        <InputText id="description" v-model="description" />
       </div>
       <div class="field">
-        <label for="icon" :class="{ 'p-error': v$.icon.$invalid && submitted }">
-          {{ $t("components.dialog.projects.info.icon") + "*" }}</label
+        <label for="icon">
+          {{ $t("components.dialog.projects.info.icon") }}</label
         >
-        <InputText
-          id="icon"
-          v-model="v$.icon.$model"
-          :class="{ 'p-invalid': v$.icon.$invalid && submitted }"
-        />
-        <small
-          v-if="(v$.icon.$invalid && submitted) || v$.icon.$pending.$response"
-          class="p-error"
-          >{{ v$.icon.required.$message.replace("Value", "Icon") }}</small
-        >
+        <InputText id="icon" v-model="icon" />
       </div>
       <div class="field">
         <label for="host" :class="{ 'p-error': v$.host.$invalid && submitted }">
-          {{ $t("components.dialog.connections.info.host") + "*" }}</label
+          {{ $t("components.dialog.connections.info.uri") + "*" }}</label
         >
         <InputText
           id="host"
@@ -123,7 +97,11 @@
         <small
           v-if="(v$.port.$invalid && submitted) || v$.port.$pending.$response"
           class="p-error"
-          >{{ v$.port.required.$message.replace("Value", "Port") }}</small
+          >{{
+            v$.port.required.$invalid
+              ? v$.port.required.$message.replace("Value", "Port")
+              : v$.port.numeric.$message.replace("Value", "Port")
+          }}</small
         >
       </div>
       <div class="field">
@@ -157,15 +135,14 @@
         class="p-button-text"
         @click="connectioncloseDialog"
       />
-      <Button
+      <!-- <Button
         v-if="selectedEditNode"
         :label="$t(`components.dialog.new-transformer.footer.update`)"
         icon="pi pi-check"
         autofocus
         @click="handleEditedConnectionStore(!v$.$invalid)"
-      />
+      /> -->
       <Button
-        v-else
         :label="$t(`components.dialog.new-transformer.footer.save`)"
         icon="pi pi-check"
         autofocus
@@ -177,9 +154,10 @@
 
 <script>
   import { getModule } from "vuex-module-decorators"
-  import { required } from "@vuelidate/validators"
+  import { required, numeric } from "@vuelidate/validators"
   import { useVuelidate } from "@vuelidate/core"
-  import { getRandomId } from "@/utils"
+  import { nanoid } from "nanoid"
+  import restapi from "@/utils/restapi"
   import Dialog from "primevue/dialog"
   import Dropdown from "primevue/dropdown"
   import InputText from "primevue/inputtext"
@@ -188,6 +166,7 @@
   import Projects from "@/store/Modules/Projects"
   import Connections from "@/store/Modules/Connections"
   import AppData from "@/store/Modules/AppData"
+  import { errorToast, successToast } from "@/utils/toastService"
   const projectsModule = getModule(Projects)
   const connectionsModule = getModule(Connections)
   const appDataModule = getModule(AppData)
@@ -229,10 +208,10 @@
     validations() {
       return {
         name: { required },
-        description: { required },
-        icon: { required },
+        // description: { required },
+        // icon: { required },
         host: { required },
-        port: { required },
+        port: { required, numeric },
         database: { required },
       }
     },
@@ -301,58 +280,59 @@
         this.$emit("close")
       },
       //update dialog
-      handleEditedConnectionStore(isFormValid) {
-        let data
-        if (this.lengthData.length == 1) {
-          data = {
-            connectionIdx: this.connectionsIndex,
-            data: {
-              ...connectionsModule.getGlobalConnections[this.connectionsIndex],
-              label: this.v$.name.$model,
-              icon: this.v$.icon.$model,
-              host: this.v$.host.$model,
-              port: this.v$.port.$model,
-              database: this.v$.database.$model,
-              description: this.v$.description.$model,
-              type: "connection",
-              scope: "local",
-            },
-          }
-          connectionsModule.editGlobalConnection(data)
-        } else {
-          data = {
-            connectionIdx: this.connectionsIndex,
-            projectIdx: this.projectsIndex,
-            data: {
-              ...projectsModule.getProjects[this.projectsIndex].connections
-                .list[this.connectionsIndex],
-              label: this.v$.name.$model,
-              host: this.v$.host.$model,
-              port: this.v$.port.$model,
-              database: this.v$.database.$model,
-              icon: this.v$.icon.$model,
-              description: this.v$.description.$model,
-              type: "connection",
-              scope: "global",
-            },
-          }
-          projectsModule.editLocalConnection(data)
-        }
-        this.updateData = data
-        this.submitted = true
-        // stop here if form is invalid
-        if (!isFormValid) {
-          return
-        }
+      // handleEditedConnectionStore(isFormValid) {
+      //   let data
+      //   if (this.lengthData.length == 1) {
+      //     data = {
+      //       connectionIdx: this.connectionsIndex,
+      //       data: {
+      //         ...connectionsModule.getGlobalConnections[this.connectionsIndex],
+      //         label: this.v$.name.$model,
+      //         icon: this.v$.icon.$model,
+      //         host: this.v$.host.$model,
+      //         port: this.v$.port.$model,
+      //         database: this.v$.database.$model,
+      //         description: this.v$.description.$model,
+      //         type: "connection",
+      //         scope: "local",
+      //       },
+      //     }
+      //     connectionsModule.editGlobalConnection(data)
+      //   } else {
+      //     data = {
+      //       connectionIdx: this.connectionsIndex,
+      //       projectIdx: this.projectsIndex,
+      //       data: {
+      //         ...projectsModule.getProjects[this.projectsIndex].connections
+      //           .list[this.connectionsIndex],
+      //         label: this.v$.name.$model,
+      //         host: this.v$.host.$model,
+      //         port: this.v$.port.$model,
+      //         database: this.v$.database.$model,
+      //         icon: this.v$.icon.$model,
+      //         description: this.v$.description.$model,
+      //         type: "connection",
+      //         scope: "global",
+      //       },
+      //     }
+      //     projectsModule.editLocalConnection(data)
+      //   }
+      //   this.updateData = data
+      //   this.submitted = true
+      //   // stop here if form is invalid
+      //   if (!isFormValid) {
+      //     return
+      //   }
 
-        this.connectioncloseDialog()
-      },
+      //   this.connectioncloseDialog()
+      // },
 
       // new dialog
-      handleconnectionstore(isFormValid) {
+      async handleconnectionstore(isFormValid) {
         const projectIndex = projectsModule.getProjects.findIndex(
           (el) => el.id == this.selected
         )
+        const id = nanoid(14)
         const data = {
           projectIdx: projectIndex,
           data: {
@@ -363,7 +343,7 @@
             icon: this.icon,
             description: this.description,
             type: "connection",
-            id: getRandomId(),
+            id,
             scope: projectIndex == -1 ? "global" : "local",
           },
         }
@@ -372,11 +352,31 @@
         if (!isFormValid) {
           return
         }
-        if (projectIndex == -1) {
-          connectionsModule.addGlobalConnection(data.data)
-        } else {
-          projectsModule.addLocalConnection(data)
+        try {
+          const payload = {
+            connectionid: id,
+            projectid: this.selected,
+            scope: projectIndex == -1 ? "global" : "local",
+            label: this.name,
+            host: this.host,
+            port: this.port,
+            database: this.database,
+            icon: this.icon,
+            description: this.description,
+            type: "connection",
+          }
+          await restapi.post("/datastore/connection", payload)
+          if (projectIndex == -1) {
+            connectionsModule.addGlobalConnection(data.data)
+          } else {
+            projectsModule.addLocalConnection(data)
+          }
+          successToast(this, "Successfully Created!")
+        } catch (err) {
+          console.log(err)
+          errorToast(this)
         }
+
         this.$emit("close")
       },
     },

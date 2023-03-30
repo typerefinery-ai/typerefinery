@@ -72,6 +72,7 @@ def htmlPage(host,port):
                 ws.send(input.value)
                 input.value = ''
                 event.preventDefault()
+                return false;
             }
         </script>
     </body>

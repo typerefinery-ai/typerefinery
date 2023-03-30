@@ -2,6 +2,7 @@
   <div class="content-area">
     <div class="tabs-wrapper">
       <TabView
+        :scrollable="true"
         class="tab-view-wrapper"
         :class="{ draggable: focus }"
         :active-index="activeIndex"
@@ -11,7 +12,11 @@
           <template #header>
             <div class="tab-item" :class="{ active: activeIndex === i }">
               <span :id="tab.id">{{ tab.label }}</span>
-              <i class="pi pi-times" @click.stop="closeSplitView(tab)"></i>
+              <i
+                v-if="dirtyTabs[tab.id]"
+                class="pi pi-circle-fill mini-circle"
+              ></i>
+              <i class="pi pi-times" @click.stop="handleClosePrompt(tab)"></i>
             </div>
           </template>
           <!-- tab 1 -->
@@ -20,11 +25,13 @@
             :focus="focus"
             :tools-visible="contentToolsVisible"
             :tab="tab"
+            :dirty-tabs="dirtyTabs"
             @toggle="toggleContentTools"
+            @input="handleFormState"
+            @check-tab-if-dirty="checkTabIfDirty"
           />
         </TabPanel>
       </TabView>
-
       <div
         v-show="!contentToolsVisible && !focus"
         v-tooltip="$t(`tooltips.show-content-tools`)"
@@ -33,38 +40,44 @@
       >
         <i class="pi pi-angle-double-down"></i>
       </div>
-
       <menu-bar
         v-if="focus && paneId === panes[panes.length - 1].id"
         :menu-bar-visible="contentToolsVisible"
         @toggle="toggleContentTools"
       />
     </div>
+    <close-prompt
+      :show-dialog="showDialog"
+      @close="showDialog = false"
+      @confirm="handleConfirm"
+    />
   </div>
 </template>
-
 <script>
   import { getModule } from "vuex-module-decorators"
   import TabView from "primevue/tabview"
   import TabPanel from "primevue/tabpanel"
   import MenuBar from "@/components/Menu/MenuBar.vue"
   import ContentTab from "../ContentTab"
+  import ClosePrompt from "./ClosePrompt.vue"
   import Settings from "@/store/Modules/Settings"
   import Projects from "@/store/Modules/Projects"
   import Connections from "@/store/Modules/Connections"
   import AppData from "@/store/Modules/AppData"
+  import Themes from "@/store/Modules/Theme"
+  import Queries from "@/store/Modules/Queries"
   const settingsModule = getModule(Settings)
   const projectsModule = getModule(Projects)
   const connectionsModule = getModule(Connections)
   const appDataModule = getModule(AppData)
-
+  const themesModule = getModule(Themes)
+  const queriesModule = getModule(Queries)
   TabView.methods.onTabClick = function (event, i) {
     this.$emit("tab-click", {
       originalEvent: event,
       index: i,
     })
   }
-
   export default {
     name: "ContentView",
     components: {
@@ -72,8 +85,8 @@
       MenuBar,
       TabView,
       TabPanel,
+      ClosePrompt,
     },
-
     props: {
       focus: { type: Boolean, required: true },
       tabs: { type: Array, required: true },
@@ -85,23 +98,16 @@
       return {
         contentToolsVisible: true,
         activeIndex: 0,
+        dirtyTabs: {},
+        showDialog: false,
+        dialogTab: {},
       }
     },
-
     computed: {
       allTabs() {
         return this.tabs.map((el) => ({
           ...el,
-          label:
-            el.type === "query"
-              ? projectsModule.getQueries(el.projectIdx)[el.queryIdx].label
-              : el.type === "connection"
-              ? el.parent
-                ? projectsModule.getProjects[el.parentIdx].connections.list[
-                    el.key.split("-").pop()
-                  ].label
-                : connectionsModule.data.list[el.key.split("-").pop()].label
-              : el.label,
+          label: this.getLabel(el),
         }))
       },
       activeNode() {
@@ -110,7 +116,6 @@
           : appDataModule.data.selectedSplitNodes.activeNode
       },
     },
-
     watch: {
       focus(isTrue) {
         if (isTrue) this.contentToolsVisible = false
@@ -130,8 +135,42 @@
           this.activeIndex = index
       },
     },
-
     methods: {
+      getLabel(tab) {
+        const projects = projectsModule.getProjects
+        const projectIdx = projects.findIndex((el) => el.id === tab.parent)
+        if (tab.type === "query" && tab.parent) {
+          const queries = projectsModule.getQueries(projectIdx)
+          const queryIdx = queries.findIndex((el) => el.id === tab.id)
+          return projectsModule.getQueries(projectIdx)[queryIdx].label
+        } else if (tab.type === "query") {
+          const queries = queriesModule.getGlobalQueries
+          const queryIdx = queries.findIndex((el) => el.id === tab.id)
+          return queriesModule.getGlobalQueries[queryIdx].label
+        } else if (tab.type === "connection" && tab.parent) {
+          const connections = projectsModule.getLocalConnections(projectIdx)
+          const connectionIdx = connections.findIndex((el) => el.id === tab.id)
+          return projectsModule.getLocalConnections(projectIdx)[connectionIdx]
+            .label
+        } else if (tab.type === "connection") {
+          const connections = connectionsModule.getGlobalConnections
+          const connectionIdx = connections.findIndex((el) => el.id === tab.id)
+          return connectionsModule.getGlobalConnections[connectionIdx].label
+        } else if (tab.type === "project") {
+          const projectIdx = projects.findIndex((el) => el.id === tab.id)
+          return projects[projectIdx].label
+        } else if (tab.type === "theme" && tab.parent) {
+          const themes = projectsModule.getLocalThemes(projectIdx)
+          const themeIdx = themes.findIndex((el) => el.id === tab.id)
+          return projectsModule.getLocalThemes(projectIdx)[themeIdx].label
+        } else if (tab.type === "theme") {
+          const themes = themesModule.getGlobalThemes
+          const themeIdx = themes.findIndex((el) => el.id === tab.id)
+          return themesModule.getGlobalThemes[themeIdx].label
+        } else {
+          return tab.label
+        }
+      },
       onTabClick(e) {
         const id = e.originalEvent.target.id
         if (!id) return
@@ -148,44 +187,59 @@
         //   this.activeIndex = e.index
         // }
       },
-
       toggleContentTools() {
         this.contentToolsVisible = !this.contentToolsVisible
         settingsModule.resizeView()
       },
-
       splitView(idx) {
         this.$emit("split-view", idx)
       },
-
-      closeSplitView(tab) {
-        // if (this.paneId == "pane2") {
-        //   return this.$emit("close-split-view")
-        // }
+      handleClosePrompt(tab) {
+        if (this.dirtyTabs[tab.id]) {
+          this.showDialog = true
+          this.dialogTab = tab
+        } else {
+          this.closeTab(tab)
+        }
+      },
+      checkTabIfDirty(tabId) {
+        return true
+      },
+      handleConfirm() {
+        this.closeTab(this.dialogTab)
+        this.handleFormState({ id: this.dialogTab.id, isDirty: false })
+        this.showDialog = false
+      },
+      closeTab(tab) {
+        if (!tab.id) return
         if (tab.type == "output") {
           appDataModule.removeSelectedSplitNodes(tab.id)
           appDataModule.toggleSplitNode()
         } else {
-          appDataModule.removeSelectedTreeNodes(tab.id)
+          appDataModule.removeSelectedTreeNodes([tab.id])
           appDataModule.toggleTreeNode()
         }
         projectsModule.updateSelectedNode({ key: tab.key })
       },
+      handleFormState({ id, isDirty }) {
+        if (this.dirtyTabs[id] && !isDirty) {
+          delete this.dirtyTabs[id]
+        } else if (!this.dirtyTabs[id] && isDirty) {
+          this.dirtyTabs[id] = true
+        }
+      },
     },
   }
 </script>
-
 <style lang="scss">
   #body {
     .content-area {
       .tabs-wrapper {
         position: relative;
         height: 100%;
-
         .tab-item {
           display: flex;
           align-items: center;
-
           .pi-times {
             margin-left: 10px;
             font-size: 90%;
@@ -193,28 +247,32 @@
             top: 1px;
           }
         }
-
         .icon-wrapper-down {
           position: absolute;
           top: 12px;
           right: 10px;
           cursor: pointer;
         }
-
         .tab-view-wrapper {
           height: 100%;
         }
-
         .p-tabview {
           .p-tabview-panels {
-            height: calc(100% - 39px);
+            height: 92vh;
             padding: 0;
+            overflow: auto;
           }
-
           .p-tabview-panel {
-            height: 100%;
+            height: 92%;
+            overflow: auto;
           }
         }
+      }
+      .mini-circle {
+        font-size: 0.8rem;
+        margin-left: 0.5rem;
+        top: 1px;
+        position: relative;
       }
     }
   }

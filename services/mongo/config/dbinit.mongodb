@@ -1,0 +1,11 @@
+use admin
+db.createUser(
+  {
+    user: "mongoadmin",
+    pwd: "mongoadmin",
+    roles: [
+      { role: "root", db: "admin" },
+    ]
+  }
+)
+db.shutdownServer()

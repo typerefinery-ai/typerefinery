@@ -1,0 +1,47 @@
+{
+  "id":"pl.ds.websight:websight-base-sling-feature:slingosgifeature:scripting:1.5.1",
+  "title":"WebSight Base: Sling feature",
+  "vendor":"Dynamic Solutions sp. z o.o. sp. k.",
+  "license":"Dynamic Solutions License",
+  "bundles":[
+    {
+      "id":"org.antlr:antlr4-runtime:4.7.1",
+      "start-order":"20"
+    },
+    {
+      "id":"org.apache.sling:org.apache.sling.scripting.api:2.2.0",
+      "start-order":"20"
+    },
+    {
+      "id":"org.apache.sling:org.apache.sling.scripting.spi:1.0.4",
+      "start-order":"20"
+    },
+    {
+      "id":"org.apache.sling:org.apache.sling.scripting.core:2.4.2",
+      "start-order":"20"
+    },
+    {
+      "id":"org.apache.sling:org.apache.sling.scripting.sightly.compiler.java:1.2.2-1.4.0",
+      "start-order":"20"
+    },
+    {
+      "id":"org.apache.sling:org.apache.sling.scripting.sightly.compiler:1.2.14-1.4.0",
+      "start-order":"20"
+    },
+    {
+      "id":"org.apache.sling:org.apache.sling.scripting.sightly.runtime:1.2.6-1.4.0",
+      "start-order":"20"
+    },
+    {
+      "id":"org.apache.sling:org.apache.sling.scripting.sightly:1.4.16-1.4.0",
+      "start-order":"20"
+    }
+  ],
+  "configurations":  {
+    "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~scripting":    {
+      "user.mapping":[
+        "org.apache.sling.scripting.core=[sling-search-path-reader]"
+      ]
+    }
+  }
+}

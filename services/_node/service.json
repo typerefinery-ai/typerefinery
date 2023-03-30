@@ -8,13 +8,36 @@
   "icon": "pi pi-globe",
   "servicetype": 10,
   "execconfig": {
+    "serviceorder": 1,
     "setuparchive": {
-      "name": "node-v18.6.0-win-x64.zip",
-      "output": "node-v18.6.0-win-x64"
+      "win32": {
+        "name": "node-v18.6.0-win-x64.zip",
+        "output": "node-v18.6.0-win-x64"
+      },
+      "darwin": {
+        "name": "node-v18.6.0-darwin-x64.tar.gz",
+        "output": "node-v18.6.0-darwin-x64"
+      },
+      "linux": {
+        "name": "node-v18.6.0-linux-x64.tar.gz",
+        "output": "node-v18.6.0-linux-x64"
+      }
     },
     "executable": {
       "win32": "node-v18.6.0-win-x64\\node.exe",
-      "default": "node-v18.6.0-win-x64\\node"
+      "darwin": "node-v18.6.0-darwin-x64/bin/node",
+      "linux": "node-v18.6.0-linux-x64/bin/node",
+      "default": "node-v18.6.0-win-x64\\node.exe"
+    },
+    "executablecli": {
+      "win32": "node-v18.6.0-win-x64\\npm.cmd",
+      "darwin": "node-v18.6.0-darwin-x64/bin/npm",
+      "linux": "node-v18.6.0-linux-x64/bin/npm",
+      "default": "node-v18.6.0-win-x64\\npm.cmd"
+    },
+    "globalenv": {
+      "NODE": "${SERVICE_EXECUTABLE}",
+      "NPM": "${SERVICE_EXECUTABLE_CLI}"
     }
   }
 }

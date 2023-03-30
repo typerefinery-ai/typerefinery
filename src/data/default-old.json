@@ -99,7 +99,7 @@
               "icon": "connection",
               "scope": "local",
               "description": "",
-              "port": "1729",
+              "port": "8729",
               "host": "localhost"
             },
             {
@@ -109,7 +109,7 @@
               "icon": "connection",
               "scope": "local",
               "description": "",
-              "port": "1729",
+              "port": "8729",
               "host": "localhost"
             }
           ]
@@ -136,7 +136,7 @@
                 "icon": "connection",
                 "scope": "local",
                 "description": "",
-                "port": "1729",
+                "port": "8729",
                 "host": "localhost"
               },
               "transformer": {
@@ -180,7 +180,7 @@
                 "icon": "connection",
                 "scope": "local",
                 "description": "",
-                "port": "1729",
+                "port": "8729",
                 "host": "localhost"
               },
               "transformer": {

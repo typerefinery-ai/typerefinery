@@ -23,30 +23,16 @@
     </template>
     <Panel :header="$t(`components.dialog.new-query.panel1.header`)">
       <div class="field">
-        <label
-          for="expand"
-          :class="{ 'p-error': v$.projectselected.$invalid && submitted }"
-        >
-          {{ $t("components.dialog.new-query.panel1.label1") }}*</label
+        <label for="expand">
+          {{ $t("components.dialog.new-query.panel1.label1") }}</label
         >
         <Dropdown
-          v-model="v$.projectselected.$model"
+          v-model="projectselected"
           :options="projectList"
           option-label="label"
           option-value="key"
-          :placeholder="$t(`components.dialog.new-query.panel1.select1`)"
-          :class="{ 'p-error': v$.projectselected.$invalid && submitted }"
+          :placeholder="$t(`components.dialog.new-query.panel1.select-project`)"
         />
-        <small
-          v-if="
-            (v$.projectselected.$invalid && submitted) ||
-            v$.projectselected.$pending.$response
-          "
-          class="p-error"
-          >{{
-            v$.projectselected.required.$message.replace("Value", "Project")
-          }}</small
-        >
       </div>
     </Panel>
     <Panel
@@ -70,14 +56,11 @@
       </div>
 
       <div class="field">
-        <label :class="{ 'p-error': v$.description.$invalid && submitted }"
-          >{{ $t("components.dialog.new-query.panel2.description") }}*</label
-        >
-        <InputText
-          v-model="v$.description.$model"
-          :class="{ 'p-error': v$.description.$invalid && submitted }"
-        />
-        <small
+        <label>{{
+          $t("components.dialog.new-query.panel2.description")
+        }}</label>
+        <InputText v-model="description" />
+        <!-- <small
           v-if="
             (v$.description.$invalid && submitted) ||
             v$.description.$pending.$response
@@ -86,22 +69,13 @@
           >{{
             v$.description.required.$message.replace("Value", "Description")
           }}</small
-        >
+        > -->
       </div>
       <div class="field">
-        <label for="icon" :class="{ 'p-error': v$.icon.$invalid && submitted }">
-          {{ $t("components.dialog.projects.info.icon") }}*</label
+        <label for="icon">
+          {{ $t("components.dialog.projects.info.icon") }}</label
         >
-        <InputText
-          id="icon"
-          v-model="v$.icon.$model"
-          :class="{ 'p-invalid': v$.icon.$invalid && submitted }"
-        />
-        <small
-          v-if="(v$.icon.$invalid && submitted) || v$.icon.$pending.$response"
-          class="p-error"
-          >{{ v$.icon.required.$message.replace("Value", "Icon") }}</small
-        >
+        <InputText id="icon" v-model="icon" />
       </div>
 
       <div class="field">
@@ -115,7 +89,7 @@
         /> -->
         <codemirror
           v-model="query"
-          placeholder="Code goes here..."
+          :placeholder="$t(`components.dialog.new-query.add-query`)"
           :style="{ height: '20vh' }"
           :autofocus="true"
           :indent-with-tab="true"
@@ -124,18 +98,20 @@
         />
       </div>
       <div class="field">
-        <label
+        <!-- <label
           for="expand"
           :class="{ 'p-error': v$.connectionselected.$invalid && submitted }"
           >{{ $t("components.dialog.new-query.panel1.label2") }}*</label
-        >
-        <Dropdown
+        > -->
+        <!-- <Dropdown
           v-model="v$.connectionselected.$model"
           :options="connectionList"
           option-label="label"
           option-group-label="label"
           option-group-children="items"
-          :placeholder="$t(`components.dialog.new-query.panel1.select2`)"
+          :placeholder="
+            $t(`components.dialog.new-query.panel1.select-connection`)
+          "
           :class="{ 'p-error': v$.connectionselected.$invalid && submitted }"
           @change="handleConnection"
         />
@@ -151,7 +127,7 @@
               "Connection"
             )
           }}</small
-        >
+        > -->
       </div>
       <!-- <div class="field">
         <label
@@ -235,7 +211,8 @@
   import { javascript } from "@codemirror/lang-javascript"
   import { oneDark } from "@codemirror/theme-one-dark"
   import { getModule } from "vuex-module-decorators"
-  import { getRandomId } from "@/utils"
+  // import { getRandomId } from "@/utils"
+  import { nanoid } from "nanoid"
   import Dialog from "primevue/dialog"
   import Dropdown from "primevue/dropdown"
   import InputText from "primevue/inputtext"
@@ -244,11 +221,15 @@
   import Projects from "@/store/Modules/Projects"
   import Settings from "@/store/Modules/Settings"
   import Connections from "@/store/Modules/Connections"
+  import restapi from "@/utils/restapi"
+  import Queries from "@/store/Modules/Queries"
+  import { errorToast, successToast } from "@/utils/toastService"
   // import Algorithms from "@/store/Modules/Algorithms"
   // import Transformers from "@/store/Modules/Transformers"
   const settingsModule = getModule(Settings)
   const projectsModule = getModule(Projects)
   const connectionsModule = getModule(Connections)
+  const queriesModule = getModule(Queries)
   // const transformersModule = getModule(Transformers)
   // const algorithmsModule = getModule(Algorithms)
 
@@ -289,11 +270,11 @@
     },
     validations() {
       return {
-        projectselected: { required },
-        connectionselected: { required },
+        // projectselected: { required },
+        // connectionselected: { required },
         name: { required },
-        description: { required },
-        icon: { required },
+        // description: { required },
+        // icon: { required },
         // tranformerselected: { required },
         // algorithmselected: { required },
       }
@@ -305,29 +286,29 @@
           key: el.id,
         }))
       },
-      connectionList() {
-        let projectIdx = projectsModule.getProjects.findIndex(
-          (el) => el.id == this.projectselected
-        )
-        const localConnections =
-          projectIdx == -1 ? [] : projectsModule.getLocalConnections(projectIdx)
-        return [
-          {
-            label: "Global",
-            code: "global",
-            items: connectionsModule.getGlobalConnections.map((el) => {
-              return { label: el.label, key: el.id, scope: el.scope }
-            }),
-          },
-          {
-            label: "Local",
-            code: "local",
-            items: localConnections.map((el) => {
-              return { label: el.label, key: el.id, scope: el.scope }
-            }),
-          },
-        ]
-      },
+      // connectionList() {
+      //   let projectIdx = projectsModule.getProjects.findIndex(
+      //     (el) => el.id == this.projectselected
+      //   )
+      //   const localConnections =
+      //     projectIdx == -1 ? [] : projectsModule.getLocalConnections(projectIdx)
+      //   return [
+      //     {
+      //       label: "Global",
+      //       code: "global",
+      //       items: connectionsModule.getGlobalConnections.map((el) => {
+      //         return { label: el.label, key: el.id, scope: el.scope }
+      //       }),
+      //     },
+      //     {
+      //       label: "Local",
+      //       code: "local",
+      //       items: localConnections.map((el) => {
+      //         return { label: el.label, key: el.id, scope: el.scope }
+      //       }),
+      //     },
+      //   ]
+      // },
       // transformerList() {
       //   let projectIdx = projectsModule.getProjects.findIndex(
       //     (el) => el.id == this.projectselected
@@ -386,22 +367,22 @@
       querycloseDialog() {
         this.$emit("close")
       },
-      handleConnection({ value }) {
-        const projectIdx = projectsModule.getProjects.findIndex(
-          (el) => el.id == this.projectselected
-        )
-        let connection
-        if (value.scope == "local") {
-          connection = projectsModule
-            .getLocalConnections(projectIdx)
-            .find((el) => el.id == value.key)
-        } else {
-          connection = connectionsModule.getGlobalConnections.find((el) => {
-            return el.id == value.key
-          })
-        }
-        this.connectiondata = connection
-      },
+      // handleConnection({ value }) {
+      //   const projectIdx = projectsModule.getProjects.findIndex(
+      //     (el) => el.id == this.projectselected
+      //   )
+      //   let connection
+      //   if (value.scope == "local") {
+      //     connection = projectsModule
+      //       .getLocalConnections(projectIdx)
+      //       .find((el) => el.id == value.key)
+      //   } else {
+      //     connection = connectionsModule.getGlobalConnections.find((el) => {
+      //       return el.id == value.key
+      //     })
+      //   }
+      //   this.connectiondata = connection
+      // },
       // handleTransformer(el) {
       //   this.setTransformerCode(el.value)
       // },
@@ -442,32 +423,65 @@
       //   }
       //   this.algorithmdata = algorithmcode
       // },
-      handlequerystore(isFormValid) {
+      async handlequerystore(isFormValid) {
+        this.submitted = true
+        // stop here if form is invalid
+        if (!isFormValid) {
+          return
+        }
         const projectIdx = projectsModule.getProjects.findIndex(
           (el) => el.id == this.projectselected
         )
+        const id = nanoid(14)
         const data = {
           projectIdx: projectIdx,
           data: {
             label: this.name,
-            id: getRandomId(),
+            id,
             description: this.description,
-            connection: this.connectiondata,
+            // connectionid: this.connectiondata.id,
             icon: this.icon,
             query: this.query,
             type: "query",
+            queryid: id,
+            projectid: this.projectselected,
+            scope: projectIdx == -1 ? "global" : "local",
+            data: "",
             // transformer: this.transformdata,
             // algorithm: this.algorithmdata,
-            dataPath: "",
-            endpoint: "",
+            // dataPath: "",
+            // endpoint: "",
             // database: "",
           },
         }
-        this.submitted = true
-        if (!isFormValid) {
-          return
+
+        try {
+          const payload = {
+            queryid: id,
+            label: this.name,
+            type: "query",
+            projectid: this.projectselected,
+            // connectionid: this.connectiondata.id,
+            icon: this.icon,
+            query: this.query,
+            description: this.description,
+            scope: projectIdx == -1 ? "global" : "local",
+            data: "",
+          }
+          await restapi.post("/datastore/query", payload)
+          this.submitted = true
+          // projectsModule.addNewQuery(data)
+          if (projectIdx == -1) {
+            queriesModule.addGlobalQuery(data.data)
+          } else {
+            projectsModule.addNewQuery(data)
+          }
+          successToast(this, "Successfully Created!")
+        } catch (err) {
+          console.log(err)
+          errorToast(this)
         }
-        projectsModule.addNewQuery(data)
+
         this.$emit("close")
       },
     },

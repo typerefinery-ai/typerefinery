@@ -8,6 +8,7 @@
       :key="item.name"
       class="menu-item service-button"
       :status="item.value"
+      @click="OpenServices(item.value)"
     >
       <i class="pi pi-cog"></i>&nbsp;
       <span class="service-button-text">{{ item.count }}</span>
@@ -26,13 +27,37 @@
   </span>
   <!-- if prop variant is set to table then load template from Table.vue -->
   <span v-else-if="variant == 'table'">
+    <label for="name">{{ $t("components.setting.services.status") }}</label>
+    <div class="servicelist">
+      <Dropdown
+        v-model="selected"
+        :options="serviceStatusList"
+        option-label="name"
+        option-value="value"
+      >
+      </Dropdown>
+    </div>
+
     <Accordion :active-index="activeIndex">
-      <AccordionTab v-for="service in serviceList" :key="service.id">
+      <AccordionTab v-for="service in listOfServices" :key="service.id">
         <template #header>
           <div class="service-header">
-            <i :class="service.icon"></i>
-            <span class="service-title">{{ service.name }}</span>
-            <span class="service-status" :status="service.status"></span>
+            <div>
+              <i :class="service.icon"></i>
+              <span class="service-title">{{ service.name }}</span>
+            </div>
+            <!-- button -->
+            <div class="service-block">
+              <span class="service-restart">
+                <Button
+                  :icon="`pi ${loading ? 'pi-spin pi-refresh' : 'pi-refresh'}`"
+                  :style="{ 'pointer-events': loading ? 'none' : 'auto' }"
+                  @click.stop="restartService(service)"
+                />
+              </span>
+
+              <span class="service-status" :status="service.status"></span>
+            </div>
           </div>
         </template>
 
@@ -114,6 +139,8 @@
   import Checkbox from "primevue/checkbox"
   import InputText from "primevue/inputtext"
   import Textarea from "primevue/textarea"
+  import Button from "primevue/button"
+  import { errorToast, successToast } from "@/utils/toastService"
   import Settings from "@/store/Modules/Settings"
   import Services from "@/store/Modules/Services"
   const settingsModule = getModule(Settings)
@@ -125,6 +152,7 @@
       Accordion,
       AccordionTab,
       Dropdown,
+      Button,
       Checkbox,
       InputText,
       Textarea,
@@ -135,7 +163,10 @@
     },
     data() {
       return {
+        loading: false,
         activeIndex: -1,
+        selected: "ALL",
+        listOfServices: [],
       }
     },
     computed: {
@@ -155,10 +186,21 @@
         return servicesModule.serviceCountByStatus
       },
     },
+    watch: {
+      selected() {
+        this.serviceListByStatus()
+      },
+    },
     created() {
       servicesModule.getServices()
     },
     mounted() {
+      // //if global.asas === null
+      // this.selected = globa.this.serviceListByStatus()
+      if (servicesModule.data.selectedStatus) {
+        this.selected = servicesModule.data.selectedStatus
+      }
+      this.serviceListByStatus()
       if (this.field) {
         const serviceIndex = servicesModule.serviceList.findIndex(
           (s) => s.id === this.field
@@ -169,8 +211,42 @@
       }
     },
     methods: {
-      openSettings(serviceId) {
-        settingsModule.openSettingsDialog("services/" + serviceId)
+      restartService(service) {
+        this.loading = true
+        servicesModule.restartService(service.id)
+        this.serviceListByStatus()
+        const newService = servicesModule.data.services.filter(
+          (el) => el.id == service.id
+        )
+        const acceptedStatus = ["10", "120"]
+        if (
+          newService.length > 0 &&
+          acceptedStatus.includes(newService[0].status)
+        ) {
+          this.loading = false
+          successToast(this, "Successfully Started")
+        } else {
+          this.loading = false
+          errorToast(this, "Something went wrong")
+        }
+      },
+      OpenServices(status) {
+        servicesModule.setSelectedServices(status)
+        settingsModule.openSettingsDialog("services")
+        // console.log("before", this.selected)
+        // this.selected = status
+        // console.log("after", this.selected)
+        // this.preValueOfSelected = status
+      },
+      serviceListByStatus() {
+        if (this.selected && this.selected === "ALL") {
+          this.listOfServices = servicesModule.data.services
+        } else {
+          const data = servicesModule.data.services.filter(
+            (el) => el.status == this.selected
+          )
+          this.listOfServices = data
+        }
       },
     },
   }
@@ -184,6 +260,9 @@
     .menu-item {
       width: min-content;
     }
+  }
+  .servicelist {
+    padding: 5px;
   }
   #service-panel {
     box-shadow: none;
@@ -202,12 +281,20 @@
     vertical-align: top;
     width: 100%;
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     flex-direction: row;
+    justify-content: space-between;
   }
-
+  .service-block {
+    display: flex;
+    align-items: center;
+  }
   .service-title {
     padding-left: 1rem;
+  }
+  .service-restart {
+    // padding-left: 1rem;
+    margin-right: 1rem;
   }
 
   .service-status {
@@ -220,28 +307,65 @@
     border-radius: 50%;
     display: inline-block;
 
+    //TODO: turn this into a computed property
+    &[status="-10"] {
+      background-color: v-bind("serviceStatusColorList['error']");
+    }
     &[status="-1"] {
       background-color: v-bind("serviceStatusColorList['error']");
     }
     &[status="0"] {
       background-color: v-bind("serviceStatusColorList['disabled']");
     }
+    &[status="1"] {
+      background-color: v-bind("serviceStatusColorList['available']");
+    }
     &[status="10"] {
-      background-color: v-bind("serviceStatusColorList['stopped']");
+      background-color: v-bind("serviceStatusColorList['available']");
+    }
+    &[status="11"] {
+      background-color: v-bind("serviceStatusColorList['available']");
+    }
+    &[status="14"] {
+      background-color: v-bind("serviceStatusColorList['installing']");
     }
     &[status="15"] {
-      background-color: v-bind("serviceStatusColorList['stopped']");
+      background-color: v-bind("serviceStatusColorList['installing']");
     }
     &[status="20"] {
-      background-color: v-bind("serviceStatusColorList['stopped']");
+      background-color: v-bind("serviceStatusColorList['installing']");
+    }
+    &[status="25"] {
+      background-color: v-bind("serviceStatusColorList['installing']");
     }
     &[status="30"] {
+      background-color: v-bind("serviceStatusColorList['installed']");
+    }
+    &[status="50"] {
+      background-color: v-bind("serviceStatusColorList['available']");
+    }
+    &[status="65"] {
       background-color: v-bind("serviceStatusColorList['stopping']");
     }
-    &[status="60"] {
+    &[status="70"] {
+      background-color: v-bind("serviceStatusColorList['stopping']");
+    }
+    &[status="75"] {
+      background-color: v-bind("serviceStatusColorList['stopping']");
+    }
+    &[status="80"] {
       background-color: v-bind("serviceStatusColorList['stopped']");
     }
     &[status="90"] {
+      background-color: v-bind("serviceStatusColorList['starting']");
+    }
+    &[status="100"] {
+      background-color: v-bind("serviceStatusColorList['starting']");
+    }
+    &[status="104"] {
+      background-color: v-bind("serviceStatusColorList['starting']");
+    }
+    &[status="105"] {
       background-color: v-bind("serviceStatusColorList['starting']");
     }
     &[status="120"] {
@@ -251,6 +375,8 @@
 
   .service-button {
     color: gray;
+
+    //TODO: turn this into a computed property
     &[status="-10"] {
       color: v-bind("serviceStatusColorList['error']");
     }
@@ -260,22 +386,55 @@
     &[status="0"] {
       color: v-bind("serviceStatusColorList['disabled']");
     }
+    &[status="1"] {
+      color: v-bind("serviceStatusColorList['available']");
+    }
     &[status="10"] {
-      color: v-bind("serviceStatusColorList['stopped']");
+      color: v-bind("serviceStatusColorList['available']");
+    }
+    &[status="11"] {
+      color: v-bind("serviceStatusColorList['available']");
+    }
+    &[status="14"] {
+      color: v-bind("serviceStatusColorList['installing']");
     }
     &[status="15"] {
-      color: v-bind("serviceStatusColorList['stopped']");
+      color: v-bind("serviceStatusColorList['installing']");
     }
     &[status="20"] {
-      color: v-bind("serviceStatusColorList['stopped']");
+      color: v-bind("serviceStatusColorList['installing']");
+    }
+    &[status="25"] {
+      color: v-bind("serviceStatusColorList['installing']");
     }
     &[status="30"] {
+      color: v-bind("serviceStatusColorList['installed']");
+    }
+    &[status="50"] {
+      color: v-bind("serviceStatusColorList['available']");
+    }
+    &[status="65"] {
       color: v-bind("serviceStatusColorList['stopping']");
     }
-    &[status="60"] {
+    &[status="70"] {
+      color: v-bind("serviceStatusColorList['stopping']");
+    }
+    &[status="75"] {
+      color: v-bind("serviceStatusColorList['stopping']");
+    }
+    &[status="80"] {
       color: v-bind("serviceStatusColorList['stopped']");
     }
     &[status="90"] {
+      color: v-bind("serviceStatusColorList['starting']");
+    }
+    &[status="100"] {
+      color: v-bind("serviceStatusColorList['starting']");
+    }
+    &[status="104"] {
+      color: v-bind("serviceStatusColorList['starting']");
+    }
+    &[status="105"] {
       color: v-bind("serviceStatusColorList['starting']");
     }
     &[status="120"] {

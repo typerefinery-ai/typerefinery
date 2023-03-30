@@ -8,6 +8,7 @@ NEWSCHEMA("Svg", function (schema) {
   schema.define("flowId", "String")
   schema.define("stepName", "String")
   schema.define("path", "String")
+  schema.define("projectId", "String")
 
   // Define additional fields but ONLY for TMS schema (definitions/tms.js)
   schema.jsonschema_define("id", "String")

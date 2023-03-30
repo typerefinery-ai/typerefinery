@@ -1,38 +1,39 @@
 {
   "id": "fastapi",
-  "name": "API",
+  "name": "FastAPI",
   "description": "Fast API",
   "enabled": true,
   "status": "-1",
-  "logoutput": "...",
   "icon": "pi pi-cog",
   "servicetype": 10,
   "execconfig": {
     "execservice": { "id": "python" },
-    "setup": [
-      "-m pip install --target=${SERVICE_PATH}\\__packages__ -r ${SERVICE_PATH}\\requirements.txt"
-    ],
+    "setup": {
+      "win32": ["-m pip install --ignore-installed --target=${SERVICE_PATH}\\__packages__ -r ${SERVICE_PATH}\\requirements.txt"],
+      "darwin": ["-m pip install --ignore-installed --target=${SERVICE_PATH}/__packages__ -r ${SERVICE_PATH}/requirements.txt"],
+      "linux": ["-m pip install --ignore-installed --target=${SERVICE_PATH}/__packages__ -r ${SERVICE_PATH}/requirements.txt"],
+      "default": ["-m pip install --ignore-installed --target=${SERVICE_PATH}\\__packages__ -r ${SERVICE_PATH}\\requirements.txt"]
+    },
     "env": {
       "PYTHONPATH": "${SERVICE_PATH}"
     },
-    "commandline": "-m uvicorn --host localhost --port ${SERVICE_PORT} --app-dir ${SERVICE_PATH} main:app",
+    "globalenv": {
+      "API_URL": "http://localhost:${SERVICE_PORT}",
+      "API_PORT": "${SERVICE_PORT}"
+    },
+    "commandline": {
+      "default": "-m uvicorn --host localhost --port ${SERVICE_PORT} --app-dir ${SERVICE_PATH} main:app"
+    },
     "serviceport": 8000,
     "healthcheck": {
       "type": "http",
       "url": "http://localhost:${SERVICE_PORT}/healthcheck",
       "expected_status": 200
-    }
-  },
-  "actions": {
-    "stop": {
-      "name": "stop",
-      "path": "...",
-      "commanline": "..."
     },
-    "start": {
-      "name": "start",
-      "path": "...",
-      "commanline": "..."
-    }
+    "depend_on": [
+      "python",
+      "totaljs-flow",
+      "totaljs-messageservice"
+    ]
   }
 }

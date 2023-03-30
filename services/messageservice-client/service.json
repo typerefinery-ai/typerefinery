@@ -1,0 +1,41 @@
+{
+  "id": "messageserviceclient",
+  "name": "Messageservice Client",
+  "description": "Sample WebSocket server that echos back all received messages.",
+  "enabled": false,
+  "status": "30",
+  "logoutput": "",
+  "icon": "pi pi-globe",
+  "servicetype": 10,
+  "execconfig": {
+    "execservice": { "id": "python" },
+    "setup": {
+      "win32": [
+        "get-pip.py",
+        "-m pip install --target=${SERVICE_PATH}\\__packages__ -r ${SERVICE_PATH}\\requirements.txt"
+      ],
+      "darwin": [
+        "-m pip install --target=${SERVICE_PATH}/__packages__ -r ${SERVICE_PATH}/requirements.txt"
+      ],
+      "linux": [
+        "-m pip install --target=${SERVICE_PATH}/__packages__ -r ${SERVICE_PATH}/requirements.txt"
+      ],
+      "default": [
+        "get-pip.py",
+        "-m pip install --target=${SERVICE_PATH}\\__packages__ -r ${SERVICE_PATH}\\requirements.txt"
+      ]
+    },
+    "commandline": {
+      "default": "-m uvicorn main:app --host localhost --port ${SERVICE_PORT} --app-dir ${SERVICE_PATH}"
+    },
+    "serviceport": 8281,
+    "healthcheck": {
+      "type": "http",
+      "url": "http://localhost:${SERVICE_PORT}/",
+      "expected_status": 200
+    },
+    "depend_on": [
+      "python"
+    ]
+  }
+}

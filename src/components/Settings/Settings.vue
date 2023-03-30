@@ -65,7 +65,9 @@
   import GeneralInfo from "./General.vue"
   import ServicesList from "../Services"
   import Settings from "@/store/Modules/Settings"
+  import Services from "@/store/Modules/Services"
   const settingsModule = getModule(Settings)
+  const servicesModule = getModule(Services)
 
   export default {
     name: "Settings",
@@ -94,6 +96,7 @@
       },
       changeTab(id) {
         this.selected = id
+        servicesModule.setSelectedServices(null)
         settingsModule.setSettingPath(id)
       },
     },

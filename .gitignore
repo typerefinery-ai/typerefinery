@@ -38,22 +38,3 @@ lerna-debug.log*
 
 #Electron-builder output
 /dist_electron
-
-# python cache files
-services/_python/Lib
-services/_python/Scripts
-
-# service specific folders
-__pycache__
-__packages__
-services/**/*.pid
-services/**/*.setup
-services/fastapi/generated/algorithm/req-*
-!services/fastapi/generated/algorithm/.gitkeep
-services/fastapi/generated/transformer/req-*
-!services/fastapi/generated/transformer/.gitkeep
-services/fastapi/generated/createsvg/req-*
-!services/fastapi/generated/createsvg/.gitkeep
-
-# type db data
-services/typedb/server/data/**/*

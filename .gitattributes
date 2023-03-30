@@ -1,5 +1,5 @@
 # Autodetect text files
-* text=auto
+* text=lf
 
 # keep binaries
 *.dll binary
@@ -12,4 +12,29 @@
 *.pyd binary
 *.cat binary
 *.zip binary
-
+*.tar.gz binary
+*.jpg binary
+*.jpeg binary
+*.tiff binary
+*.ico binary
+*.gif binary
+*.png binary
+original binary
+file binary
+folderThumbnail binary
+*.woff binary
+*.woff2 binary
+*.eot binary
+*.ttf binary
+*.mp4 binary
+*.flv binary
+*.m4v binary
+*.avi binary
+*.psd binary
+*.pdf binary
+*.3gp binary
+*.ogv binary
+*.webm binary
+*.wdmg binary
+*.svg binary
+*.sftmp binary

@@ -113,7 +113,7 @@
           },
           {
             label: "Github",
-            value: "https://github.com/innovolve-ai/typerefinery",
+            value: "https://github.com/typerefinery-ai/typerefinery",
           },
         ],
       }

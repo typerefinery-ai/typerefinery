@@ -6,42 +6,72 @@
 
 <script lang="ts">
   import { defineComponent } from "vue"
-  // import { getModule } from "vuex-module-decorators"
+  import { getModule } from "vuex-module-decorators"
   // import * as themeHelpers from "@/utils/theme"
-  // import Setings from "@/store/Modules/Settings"
-  // const settingsModule = getModule(Setings)
+  import AppData from "@/store/Modules/AppData"
+  import Services from "@/store/Modules/Services"
+  const appDataModule = getModule(AppData)
+  const servicesModule = getModule(Services)
 
   export default defineComponent({
     name: "App",
-
-    created() {
+    data() {
+      return {
+        servicesToCheck: [
+          "fastapi",
+          "typedb",
+          "totaljs-flow",
+          "totaljs-messageservice",
+        ],
+      }
+    },
+    async created() {
       // window.addEventListener("keydown", this.keyListener)
-      // // monitor service events
-      // // @ts-expect-error ts-migrate(2339) FIXME: Property 'api' does not exist on type 'Window & typeof globalThis'
-      // window.api?.response("service:status", (data) => {
-      //   this.updateServiceStatusByStatusName(data)
-      // })
-      // // @ts-expect-error ts-migrate(2339) FIXME: Property 'api' does not exist on type 'Window & typeof globalThis'
-      // window.api?.response("service:log", (data) => {
-      //   this.updateServiceLogByName(data)
-      // })
+      this.checkServiceStatus()
+      // @ts-expect-error ts-migrate(2339) FIXME: Property 'api' does not exist on type 'Window & typeof globalThis'
+      window.api?.response("sendServiceStopped", () => {
+        servicesModule.setServicesStopped()
+      })
     },
 
     // unmounted() {
     //   window.removeEventListener("keydown", this.keyListener)
     // },
     methods: {
-      // ...mapActions({
-      //   updateServiceLogByName: "Services/updateServiceLogByName",
-      //   updateServiceStatusByStatusName:
-      //     "Services/updateServiceStatusByStatusName",
-      // }),
-      // ...mapGetters({
-      //   serviceTypeList: "Services/serviceTypeList",
-      //   serviceStatusList: "Services/serviceStatusList",
-      //   serviceStatusColorList: "Services/serviceStatusColorList",
-      //   services: "Services/services",
-      // }),
+      async checkServiceStatus() {
+        // @ts-expect-error ts-migrate(2339) FIXME: Property 'ipc' does not exist on type 'Window & typeof globalThis'
+        const { ipc } = window
+        if (ipc && ipc.getServices) {
+          const services = await ipc.getServices()
+          const requiredServices = services.filter((el: { id: string }) =>
+            this.servicesToCheck.includes(el.id)
+          )
+          console.log(requiredServices, "requiredServices")
+          const reqServicesStarted = requiredServices.every(
+            (el: { status: string }) => el.status === "120"
+          )
+          console.log(reqServicesStarted, "reqServicesStarted")
+          if (!reqServicesStarted) {
+            servicesModule.setServicesStopped()
+            this.setServiceLoaded()
+          } else {
+            servicesModule.setServicesStarted()
+          }
+        }
+      },
+      setServiceLoaded() {
+        // @ts-expect-error ts-migrate(2339) FIXME: Property 'api' does not exist on type 'Window & typeof globalThis'
+        window.api?.response("sendServiceStatus", ({ id, output }) => {
+          console.log(id, output, "output")
+          if (this.servicesToCheck.includes(id) && output === "120") {
+            const idx = this.servicesToCheck.indexOf(id)
+            this.servicesToCheck.splice(idx, 1)
+            if (this.servicesToCheck.length === 0) {
+              servicesModule.setServicesStarted()
+            }
+          }
+        })
+      },
       // TODO: Fix this code
       // keyListener(e: { key: string; shiftKey: boolean }) {
       //   const { key, shiftKey } = e

@@ -5,3 +5,4 @@ simple-websocket-server
 fastapi
 loguru
 psutil
+uvicorn

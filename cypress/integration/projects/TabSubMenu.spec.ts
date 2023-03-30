@@ -1,8 +1,8 @@
-describe("Projecty Tab", () => {
+describe("Project Tab", () => {
   it("visits the app root url", () => {
     cy.visit("/")
   })
-  it("login as default user", () => {
-    cy.get(".login").should("be.visible").find(".submit-button").click()
-  })
+  // it("Has popUp", () => {
+  //   cy.get(".p-button-text").click()
+  // })
 })

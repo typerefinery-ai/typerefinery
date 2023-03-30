@@ -1,0 +1,47 @@
+{
+  "id": "nginx",
+  "name": "Nginx",
+  "description": "Nginx instance for CMS",
+  "enabled": true,
+  "status": "-1",
+  "icon": "pi pi-cog",
+  "servicetype": 10,
+  "execconfig": {
+    "serviceport": 8114,
+    "executable": {
+      "win32": "win32\\nginx.exe",
+      "darwin": "darwin/bin/nginx",
+      "linux": "linux/bin/nginx",
+      "default": "win32\\nginx.exe"
+    },
+    "commandline": {
+      "win32": "-p ${SERVICE_HOME}\\config",
+      "darwin": "-p ${SERVICE_HOME}/config",
+      "linux": "-p ${SERVICE_HOME}/config",
+      "default": "-p ${SERVICE_HOME}\\config"
+    },
+    "globalenv": {
+      "NGINX_URL": "http://localhost:${SERVICE_PORT}",
+      "NGINX_PORT": "${SERVICE_PORT}"
+    },
+    "healthcheck": {
+      "type": "http",
+      "url": "http://localhost:${SERVICE_PORT}/health",
+      "expected_status": 200
+    },
+    "commandconfig": {
+      "source": "config/conf/nginx.conf.template",
+      "target": "config/conf/nginx.conf"
+    }
+  },
+  "actions": {
+    "stop": {
+      "commandline": {
+        "win32": "-p ${SERVICE_HOME}\\config -s stop",
+        "darwin": "-p ${SERVICE_HOME}/config -s stop",
+        "linux": "-p ${SERVICE_HOME}/config -s stop",
+        "default": "-p ${SERVICE_HOME}\\config -s stop"
+      }
+    }
+  }
+}

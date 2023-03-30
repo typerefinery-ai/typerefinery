@@ -4,16 +4,23 @@
   "description": "TypeDB Init Script",
   "enabled": true,
   "status": "-1",
-  "logoutput": "...",
   "icon": "pi pi-cog",
   "servicetype": 10,
   "execconfig": {
     "execservice": { "id": "typedb", "cli": true },
-    "setup": [
-      "--script=${SERVICE_PATH}\\init.tql"
-    ],
-    "commandline": "",
-    "serviceport": 8000,
+    "setup": {
+      "win32": ["--script=${SERVICE_PATH}\\init.tql"],
+      "darwin": ["--script=${SERVICE_PATH}/init.tql"],
+      "linux": ["--script=${SERVICE_PATH}/init.tql"],
+      "default": ["--script=${SERVICE_PATH}\\init.tql"]
+    },
+    "commandline": {
+      "default": ""
+    },
+    "commandconfig": {
+      "source": "init.tql.template",
+      "target": "init.tql"
+    },
     "depend_on": [
       "typedb"
     ]

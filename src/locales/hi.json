@@ -10,7 +10,8 @@
     },
     "project": {
       "new-project": "नया काम",
-      "new-query": "नया प्रश्न",
+      "new-query": "नया क्वेरी",
+      "new-theme": "नया थीम",
       "new-connection": "नया कनेक्शन",
       "new-transformer": "नया ट्रांसफार्मर",
       "new-algorithm": "नया एल्गोरिथम",
@@ -20,7 +21,7 @@
       "queries": "प्रश्नों",
       "tab": "टैब",
       "name": "नाम",
-      "query": "प्रश्न",
+      "query": "क्वेरी",
       "calories": "कैलोरी",
       "description": "विवरण",
       "icon": "आइकन"
@@ -35,6 +36,7 @@
         "services": "सेवाएँ"
       },
       "services": {
+        "status": "स्थिति के अनुसार सेवाएं दिखा रहा है",
         "info": {
           "name": "नाम",
           "enabled": "सक्षम",
@@ -51,14 +53,25 @@
         "alias": "उर्फ"
       },
       "general": {
-        "experimental": "प्रायोगिक विशेषताएं",
-        "chat": "चैट",
-        "editor": "एडीटर",
-        "charts": "चार्ट",
-        "maps": "नक़्शे"
+        "experience": "अनुभव",
+        "buttons": {
+          "addlabel": "नया अनुभव जोड़ें",
+          "editlabel": "सेव करे"
+        }
+      },
+      "experience": {
+        "add-experience": "अनुभव जोड़ें",
+        "edit-experience": "अनुभव संपादित करें",
+        "label": "लेबल",
+        "icon": "आइकन",
+        "url": "यूआरएल",
+        "buttons": {
+          "cancel": "रद्द करना",
+          "add": "जोड़ें",
+          "save": "सेव करे"
+        }
       }
     },
-
     "chat": {
       "send": "भेजें",
       "messageplaceholder": "अपना संदेश यहां टंकित करें...",
@@ -67,11 +80,17 @@
       "From": "से"
     },
     "tab": {
-      "query": "प्रश्न",
+      "query": "क्वेरी",
       "algorithm": "एल्गोरिथम",
       "data": "आंकड़े",
       "graph": "ग्राफ",
-      "transform": "ट्रांसफॉर्म"
+      "transform": "ट्रांसफॉर्म",
+      "project": {
+        "header": "परियोजना ",
+        "name": "नाम",
+        "description": "विवरण",
+        "icon": "आइकन"
+      }
     },
     "graph": {
       "properties": "प्रोपर्टीज",
@@ -84,48 +103,78 @@
     "dialog": {
       "projects": {
         "header": "परियोजना",
+        "project-type": "परियोजना प्रकार",
         "panelheader": "परियोजना की जानकारी",
         "info": {
           "name": "नाम",
           "description": "विवरण",
           "icon": "आइकन",
           "cancel": "रद्द करना",
-          "save": "बचाना"
+          "confirm": "पुष्टि करें",
+          "prompt-header": "क्या आप सुनिश्चित हैं?",
+          "prompt-info": " आपके पास सहेजे नहीं गए परिवर्तन हैं. अगर आप छोड़ते हैं तो आप ये परिवर्तन खो देंगे",
+          "delete": "हटाएं",
+          "save": "सेव करे",
+          "saveas": "सेव अस",
+          "save-project": "परियोजना सहेजी गई",
+          "project-error": "परियोजना  लेबल %{error} पहले से ही मौजूद है",
+          "flowName": "कार्यप्रवाह नाम",
+          "select": "प्रोजेक्ट चयन करें"
         }
       },
       "connections": {
         "header": "नए कनेक्शन ",
         "info": {
+          "connection": "कनेक्शन",
           "panelheader": "परियोजना का चयन करें",
           "panel2header": "कनेक्शन जानकारी",
           "project": "परियोजनाओं",
           "select": "परियोजना का चयन करें",
+          "select-connection": "कनेक्शन चयन करें",
           "connection-info": "कनेक्शन जानकारी",
           "name": "नाम",
-          "host": "मेज़बान",
-          "port": "पत्तन",
+          "uri": " यूआरई",
+          "port": "पोर्ट नंबर",
           "database": "डेटाबेस",
-          "description": "विवरण",
+          "description": " कनेक्शन विवरण",
           "icon": "आइकन",
-          "submit": "प्रस्तुत"
+          "submit": "प्रस्तुत",
+          "connection-detail": "कनेक्शन की जानकारी",
+          "database-detail": "डेटाबेस की जानकारी",
+          "enter-connection-description": "कनेक्शन विवरण दर्ज करें",
+          "label": "लेबल",
+          "save-connection": "कनेक्शन सहेजा गया",
+          "connection-error": "कनेक्शन  लेबल %{error} पहले से ही मौजूद है",
+          "connection-save-locally": "कनेक्शन स्थानीय रूप से सहेजा गया",
+          "connection-save-globally": "कनेक्शन वैश्विक रूप से सहेजा गया"
         },
-        "updated-header": "कनेक्शन अपडेट करें"
+        "panelheader": "कनेक्शन",
+        "updated-header": "कनेक्शन अपडेट करें",
+        "save-as-local": "स्थानीय के रूप में सहेजें",
+        "save-as-global": "वैश्विक के रूप में सहेजें",
+        "save-connection-as": "सहेजें",
+        "db-placeholder": "डेटाबेस का नाम दर्ज करें",
+        "port-placeholder": "पोर्ट नंबर दर्ज करें जैसे 8729",
+        "label-placeholder": "कनेक्शन लेबल दर्ज करें",
+        "icon-placeholder": "कनेक्शन आइकन दर्ज करें"
       },
       "new-query": {
-        "header": "नया प्रश्न",
+        "query": "क्वेरी",
+        "header": "नया क्वेरी",
         "panel1": {
           "header": "कनेक्शन जानकारी",
           "label1": "परियोजनाओं",
-          "label2": "सम्बन्ध",
-          "select1": "परियोजना का चयन करें",
-          "select2": "कनेक्शन चुनें"
+          "label2": "कनेक्शन",
+          "select-project": "परियोजना का चयन करें",
+          "select-connection": "कनेक्शन चयन करें",
+          "select-query": "क्वेरी चयन करें"
         },
         "panel2": {
           "header": "क्वेरी जानकारी",
           "name": "नाम",
           "description": "विवरण",
           "icon": "आइकन",
-          "query": "प्रश्न",
+          "query": "क्वेरी",
           "transformer": "ट्रांसफार्मर",
           "select1": "ट्रांसफार्मर का चयन करें",
           "algorithm": "एल्गोरिथम",
@@ -133,8 +182,31 @@
         },
         "footer": {
           "cancel": "रद्द करना",
-          "save": "बचाना"
-        }
+          "save": "सेव करे",
+          "download": "डाउनलोड "
+        },
+        "add-query": "अपनी क्वेरी यहां भरें..."
+      },
+      "new-theme": {
+        "theme": "थीम",
+        "header": "नई थीम ",
+        "info": {
+          "panelheader": "परियोजनाओं जानकारी",
+          "panel2header": "थीम जानकारी",
+          "project": "परियोजनाओं",
+          "select": "चयन करें परियोजनाओं",
+          "select-theme": "थीम चयन करें",
+          "theme-info": "थीम जानकारी",
+          "name": "नाम",
+          "description": "विवरण",
+          "icon": "आइकन",
+          "submit": "प्रस्तुत",
+          "code": "कोड"
+        },
+        "panel2": {
+          "theme": "थीम"
+        },
+        "add-theme": "अपनी थीम यहाँ भरें..."
       },
       "new-transformer": {
         "header": "नया ट्रांसफार्मर",
@@ -148,11 +220,11 @@
           "name": "नाम",
           "description": "विवरण",
           "icon": "आइकन",
-          "query": "प्रश्न"
+          "query": "क्वेरी"
         },
         "footer": {
           "cancel": "रद्द करना",
-          "save": "बचाना",
+          "save": "सेव करे",
           "update": "अपडेट करें"
         },
         "updated-header": "ट्रांसफार्मर अपडेट करें"
@@ -167,16 +239,26 @@
         "panel2": {
           "header": "एल्गोरिथम की जानकारी",
           "name": "नाम",
-          "query": "प्रश्न",
+          "query": "क्वेरी",
           "description": "विवरण",
           "icon": "आइकन"
         },
         "footer": {
           "cancel": "रद्द करना",
-          "save": "बचाना",
+          "save": "सेव करे",
           "update": "अपडेट करें"
         },
         "updated-header": "एल्गोरिथम अपडेट करें"
+      },
+      "sample-data": {
+        "header": "सैम्पल डेटा",
+        "cancel": "रद्द करें",
+        "proceed": "आगे बढे",
+        "info": "सैम्पल डेटा  करने के लिए आगे बढ़ें पर क्लिक करें"
+      },
+      "popup": {
+        "heading": "क्या आप निश्चित हैं?",
+        "message": "क्या आप इसे मिटाना चाहते हैं?"
       }
     },
     "transformer": {
@@ -215,9 +297,35 @@
       }
     },
     "tabquery": {
+      "label": "नाम",
       "connection": "कनेक्शन",
       "select": "कनेक्शन चुनें",
-      "db": "डेटाबेस "
+      "db": "डेटाबेस ",
+      "save-query-as": "क्वेरी सहेजें",
+      "query-name": "क्वेरी नाम दर्ज करें...",
+      "save-as-local": "स्थानीय के रूप में सहेजें",
+      "save-as-global": "वैश्विक के रूप में सहेजें",
+      "save-query": "क्वेरी सहेजी गई",
+      "query-save-locally": "क्वेरी स्थानीय रूप से सहेजा गया",
+      "query-save-globally": "क्वेरी वैश्विक रूप से सहेजा गया",
+      "query-error": "क्वेरी  लेबल %{error} पहले से ही मौजूद है"
+    },
+    "tabtheme": {
+      "label": "नाम",
+      "theme-name": "थीम नाम दर्ज करें...",
+      "icon-placeholder": "थीम आइकन दर्ज करें...",
+      "des-placeholder": "थीम विवरण दर्ज करें...",
+      "code-placeholder": "अपनी थीम यहां जोड़ें...",
+      "theme": "थीम",
+      "icon": "आइकन",
+      "des": "विवरण",
+      "save-as-local": "स्थानीय के रूप में सहेजें",
+      "save-as-global": "वैश्विक के रूप में सहेजें",
+      "save-theme-as": "सहेजें",
+      "save-theme": "थीम सहेजा गया",
+      "theme-save-locally": "थीम स्थानीय रूप से सहेजा गया",
+      "theme-save-globally": "थीम वैश्विक रूप से सहेजा गया",
+      "theme-error": "थीम  लेबल %{error} पहले से ही मौजूद है"
     },
     "algorithm": {
       "label": "एल्गोरिथम",
@@ -243,6 +351,9 @@
     "output": {
       "viz": "विज़",
       "table": "टेबल"
+    },
+    "theme": {
+      "theme": "थीम"
     }
   },
   "tooltips": {
@@ -254,6 +365,7 @@
     "minimize": "छोटा करें",
     "maximize": "अधिकतम करें",
     "close": "बंद करें",
+    "restore": "पुनर्स्थापित",
     "hide-content-tools": "कोंटेंट टूल्स छुपाएं",
     "show-content-tools": "कोंटेंट टूल्स दिखाएं",
     "project": "परियोजना",
@@ -261,7 +373,8 @@
     "logout": "लॉग आउट",
     "help": "मदद",
     "profile": "उपयोगकर्ता रूपरेखा",
-    "settings": "सेटिंग्स खोलें"
+    "settings": "सेटिंग्स खोलें",
+    "edit-experience": "अनुभव संपादित करें"
   },
   "buttons": {
     "submit": "प्रस्तुत",

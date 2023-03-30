@@ -20,9 +20,9 @@
       justify-content: center;
       padding: 20px 0;
 
-      &:last-of-type {
-        margin-top: auto;
-      }
+      // &:last-of-type {
+      //   margin-top: auto;
+      // }
     }
   }
 
@@ -33,6 +33,42 @@
 
     .tree-wrapper {
       border: none;
+      min-width: 300px;
     }
+
+    .p-treenode-label {
+      width: 80%;
+      padding-right: 1rem;
+    }
+  }
+
+  .selected-node {
+    white-space: nowrap;
+    width: 90%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+    margin-right: 1rem;
+  }
+  #label_icon {
+    font-size: 0.7rem;
+    position: relative;
+    top: 2px;
+    color: #3f51b5;
+    margin-right: 7px;
+  }
+
+  .label_wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  #delete_node {
+    opacity: 0;
+  }
+
+  .p-tree .p-tree-container .p-treenode .p-treenode-content:hover #delete_node {
+    opacity: 1;
   }
 }

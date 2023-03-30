@@ -6,8 +6,8 @@
   import * as d3 from "d3"
   import * as webcola from "webcola"
   import { getModule } from "vuex-module-decorators"
-  import FlowMessage from "@/store/Modules/FlowMessage"
-  const flowModule = getModule(FlowMessage)
+  // import FlowMessage from "@/store/Modules/FlowMessage"
+  // const flowModule = getModule(FlowMessage)
   export default {
     name: "FlowGraph",
     mounted() {
@@ -234,7 +234,7 @@
         let cola = webcola.d3adaptor(d3).size([width, height])
 
         // graph.json
-        const data = flowModule.data.basic
+        const data = {}
         cola
           .nodes(data.nodes)
           .links(data.links)

@@ -1,7 +1,7 @@
 <template>
   <div class="sidebar-container">
     <div class="sidebar-fixed">
-      <div class="sidebar-fixed-items text-primary">
+      <div class="sidebar-fixed-items text-primary" @click="toggleSidebar">
         <file-icon v-tooltip="$t(`tooltips.project`)" :size="20" />
       </div>
       <!-- SEARCH ICON -->
@@ -11,13 +11,9 @@
       <div class="sidebar-fixed-items hover:text-primary" @click="openSettings">
         <tune-icon v-tooltip="$t(`tooltips.settings`)" :size="25" />
       </div>
-      <div class="sidebar-fixed-items hover:text-primary">
-        <logout-icon
-          v-tooltip="$t(`tooltips.logout`)"
-          :size="25"
-          @click="logout"
-        />
-      </div>
+      <!-- <div class="sidebar-fixed-items hover:text-primary">
+        <logout-icon v-tooltip="$t(`tooltips.logout`)" :size="25" />
+      </div> -->
     </div>
     <div id="sidebar-draggable" class="sidebar-draggable">
       <Tree
@@ -36,12 +32,41 @@
         @dblclick="handleNodeSelection"
       >
         <template #default="slotProps">
-          <b v-if="isSelected(slotProps.node.id)" role="treeitem">{{
-            slotProps.node.label
-          }}</b>
-          <span v-else role="treeitem">{{ slotProps.node.label }}</span>
+          <span v-if="isSelected(slotProps.node.id)" class="label_wrapper">
+            <b class="selected-node" role="treeitem"
+              >{{ slotProps.node.label }}
+            </b>
+            <i id="label_icon" class="pi pi-circle-fill"></i>
+            <i
+              v-if="
+                showDeleteButton(slotProps.node.type, slotProps.node.parent)
+              "
+              id="delete_node"
+              class="pi pi-trash"
+              @click="deleteNode(slotProps.node)"
+            ></i>
+          </span>
+          <span v-else role="treeitem" class="label_wrapper"
+            ><span class="selected-node" role="treeitem"
+              >{{ slotProps.node.label }}
+            </span>
+            <i
+              v-if="
+                showDeleteButton(slotProps.node.type, slotProps.node.parent)
+              "
+              id="delete_node"
+              class="pi pi-trash"
+              @click="deleteNode(slotProps.node)"
+            ></i>
+          </span>
         </template>
       </Tree>
+      <delete-tree-node-popup
+        v-if="deletedialog"
+        :node="node"
+        :deletedialog="deletedialog"
+        @close="deleteCloseModal"
+      />
     </div>
   </div>
 </template>
@@ -50,139 +75,146 @@
   import Tree from "primevue/tree"
   import FileIcon from "vue-material-design-icons/FileMultipleOutline.vue"
   //   import MagnifyIcon from "vue-material-design-icons/Magnify.vue"
-  import LogoutIcon from "vue-material-design-icons/Logout.vue"
+  // import LogoutIcon from "vue-material-design-icons/Logout.vue"
   import TuneIcon from "vue-material-design-icons/Tune.vue"
   import { getModule } from "vuex-module-decorators"
   import Projects from "@/store/Modules/Projects"
   import Settings from "@/store/Modules/Settings"
   import Connections from "@/store/Modules/Connections"
-  import FlowMessage from "@/store/Modules/FlowMessage"
+  import DeleteTreeNodePopup from "@/components/Dialog/DeleteProjectPopup.vue"
   // import Transformers from "@/store/Modules/Transformers"
   // import Algorithms from "@/store/Modules/Algorithms"
   import AppData from "@/store/Modules/AppData"
+  import Themes from "@/store/Modules/Theme"
+  import Queries from "@/store/Modules/Queries"
+  const themesModule = getModule(Themes)
   const settingsModule = getModule(Settings)
   const projectsModule = getModule(Projects)
   const connectionsModule = getModule(Connections)
-  const flowMessageModule = getModule(FlowMessage)
+  const queriesModule = getModule(Queries)
   // const transformersModule = getModule(Transformers)
   // const algorithmsModule = getModule(Algorithms)
   const appDataModule = getModule(AppData)
 
   export default {
     name: "Sidebar",
-    components: { LogoutIcon, FileIcon, Tree, TuneIcon },
+    components: { FileIcon, Tree, TuneIcon, DeleteTreeNodePopup },
     data() {
       return {
         selectedNode: null,
         connection: null,
+        displayHome: false,
+        deletePopupOpen: false,
+        deletedialog: false,
       }
     },
     computed: {
+      // deletedialog() {
+      //   return appDataModule.data.deletedialog
+      // },
       nodesData() {
         const projects = {
           key: 0,
           type: "projects",
           label: "Projects",
           icon: "pi pi-fw pi-book",
-          children: projectsModule.data.list.map((project, projectIdx) => ({
-            key: `0-${projectIdx}`,
+          children: projectsModule.data.list.map((project) => ({
+            key: project.id,
             id: project.id,
             type: project.type,
             label: project.label,
             icon: "pi pi-fw pi-file",
             children: [
               {
-                key: `0-${projectIdx}-0`,
+                key: `0-0-${project.id}`,
                 label: "Connections",
                 type: "connections",
-                parentIdx: projectIdx,
+                // parentIdx: projectIdx,
                 icon: "pi pi-fw pi-server",
-                children: project.connections.list.map((connection, cIdx) => {
+                children: project.connections.list.map((connection) => {
                   return {
-                    key: `0-${projectIdx}-0-${cIdx}`,
+                    key: connection.id,
                     id: connection.id,
                     type: connection.type,
                     label: connection.label,
                     icon: "pi pi-fw pi-file",
                     parent: project.id,
-                    parentIdx: projectIdx,
+                    // parentIdx: projectIdx,
                   }
                 }),
               },
               {
-                key: `0-${projectIdx}-1`,
+                key: `0-1-${project.id}`,
                 label: "Queries",
                 type: "queries",
-                parentIdx: projectIdx,
+                // parentIdx: projectIdx,
                 icon: "pi pi-fw pi-database",
-                children: project.queries.list.map((query, qIdx) => {
+                children: project.queries.list.map((query) => {
                   return {
-                    key: `0-${projectIdx}-1-${qIdx}`,
+                    key: query.id,
                     id: query.id,
                     type: query.type,
                     label: query.label,
                     icon: "pi pi-fw pi-file",
                     connection: query.connection,
                     parent: project.id,
-                    parentIdx: projectIdx,
+                    // parentIdx: projectIdx,
                   }
                 }),
               },
               {
-                key: `0-${projectIdx}-2`,
+                key: `0-2-${project.id}`,
                 label: "Themes",
                 type: "themes",
-                parentIdx: projectIdx,
+                // parentIdx: projectIdx,
                 icon: "pi pi-fw pi-server",
-                children: project.themes.list.map((theme, tIdx) => {
+                children: project.themes.list.map((theme) => {
                   return {
-                    key: `0-${projectIdx}-2-${tIdx}`,
+                    key: theme.id,
                     id: theme.id,
                     type: theme.type,
                     label: theme.label,
                     icon: "pi pi-fw pi-file",
                     parent: project.id,
-                    parentIdx: projectIdx,
+                    // parentIdx: projectIdx,
                   }
                 }),
               },
               {
-                key: `0-${projectIdx}-3`,
+                key: `0-3-${project.id}`,
                 label: "Wirings",
                 type: "wirings",
-                parentIdx: projectIdx,
+                // parentIdx: projectIdx,
                 icon: "pi pi-fw pi-server",
                 children: [
                   ...project.wirings.list.map((wiring) => {
                     return {
-                      key: `0-${projectIdx}-3-0`,
+                      key: wiring.id,
                       id: wiring.id,
                       type: wiring.type,
                       label: wiring.label,
                       icon: "pi pi-fw pi-file",
                       parent: project.id,
-                      parentIdx: projectIdx,
+                      // parentIdx: projectIdx,
                     }
                   }),
                   {
-                    key: `0-${projectIdx}-3-1`,
+                    key: `0-3-0-${project.id}`,
                     label: "Outputs",
                     type: "outputs",
-                    parentIdx: projectIdx,
+                    // parentIdx: projectIdx,
                     icon: "pi pi-fw pi-server",
-                    children: Object.keys(flowMessageModule.data).map(
-                      (objkey, oIdx) => {
-                        return {
-                          key: `0-${projectIdx}-0-${projectIdx}-3-1-${oIdx}`,
-                          id: objkey,
-                          type: "output",
-                          label: "Output_Viz " + ++oIdx,
-                          icon: "pi pi-fw pi-file",
-                          parent: project.id,
-                          parentIdx: projectIdx,
-                        }
+                    children: project.flowoutputlist.map((output) => {
+                      const id = `${output.stepId}.${output.projectId}`
+                      return {
+                        key: id,
+                        id,
+                        type: "output",
+                        label: "Output_Viz",
+                        icon: "pi pi-fw pi-file",
+                        parent: output.projectId,
                       }
-                    ),
+                    }),
                   },
                 ],
               },
@@ -192,17 +224,45 @@
         const connections = {
           key: 1,
           type: "connections",
-          label: "Connections",
+          label: "Global Connections",
           icon: "pi pi-fw pi-book",
-          children: connectionsModule.data.list.map((connection, idx) => ({
-            key: `1-${idx}`,
+          children: connectionsModule.data.list.map((connection) => ({
+            key: connection.id,
             id: connection.id,
             type: connection.type,
             label: connection.label,
             icon: "pi pi-fw pi-file",
           })),
         }
-        return [projects, connections]
+        const queries = {
+          key: 2,
+          type: "queries",
+          label: "Global Queries",
+          icon: "pi pi-fw pi-book",
+          children: queriesModule.data.list.map((query) => ({
+            key: query.id,
+            id: query.id,
+            type: query.type,
+            label: query.label,
+            icon: "pi pi-fw pi-file",
+          })),
+        }
+        const themes = {
+          key: 3,
+          label: "Global Themes",
+          type: "themes",
+          icon: "pi pi-fw pi-server",
+          children: themesModule.data.list.map((theme) => {
+            return {
+              key: theme.id,
+              id: theme.id,
+              type: theme.type,
+              label: theme.label,
+              icon: "pi pi-fw pi-file",
+            }
+          }),
+        }
+        return [projects, connections, themes, queries]
       },
       expandedKeys() {
         return projectsModule.data.expandedNodes
@@ -210,8 +270,10 @@
       selectionKeys() {
         return projectsModule.data.selectedNode
       },
-      activeNode() {
-        return appDataModule.data.selectedTreeNodes.activeNode
+      activeNodes() {
+        const { selectedTreeNodes: T, selectedSplitNodes: S } =
+          appDataModule.data
+        return [T.activeNode, S.activeNode]
       },
     },
     mounted() {
@@ -221,10 +283,22 @@
       }
     },
     methods: {
+      deleteCloseModal() {
+        this.deletedialog = false
+      },
+      showDeleteButton(type, parent) {
+        if (parent) {
+          return false
+        }
+        const nodeTypes = ["query", "connection", "theme", "project"]
+        return nodeTypes.includes(type)
+      },
       isSelected(id) {
+        const { selectedTreeNodes: T, selectedSplitNodes: S } =
+          appDataModule.data
         if (
-          this.activeNode === id &&
-          appDataModule.data.selectedTreeNodes.list.includes(id)
+          this.activeNodes.includes(id) &&
+          (T.list.includes(id) || S.list.includes(id))
         ) {
           return true
         }
@@ -233,10 +307,7 @@
       openSettings() {
         settingsModule.openSettingsDialog("general")
       },
-      logout() {
-        localStorage.clear()
-        this.$router.push({ name: "Login" })
-      },
+
       handleNodes(data) {
         if (data.type === "query") {
           this.openQuery(data)
@@ -245,14 +316,14 @@
         }
       },
       openQuery(data) {
-        const { id, parent, type, key } = data
-        const projectIdx = projectsModule.getProjects.findIndex(
-          (el) => el.id == parent
-        )
-        const queryIdx = projectsModule
-          .getQueries(projectIdx)
-          .findIndex((el) => el.id == id)
-        const queryData = { key, type, id, projectIdx, queryIdx, ...data }
+        const { id, type, key } = data
+        // const projectIdx = projectsModule.getProjects.findIndex(
+        //   (el) => el.id == parent
+        // )
+        // const queryIdx = projectsModule
+        //   .getQueries(projectIdx)
+        //   .findIndex((el) => el.id == id)
+        const queryData = { key, type, id, ...data }
         const isNew = !appDataModule.data.selectedTreeNodes.list.includes(id)
         if (isNew) {
           appDataModule.toggleTreeNode()
@@ -265,6 +336,7 @@
         const { id, type } = data
         if (type == "output") {
           // split the tab
+
           const isNew = !appDataModule.data.selectedSplitNodes.list.includes(id)
           if (isNew) {
             appDataModule.toggleSplitNode()
@@ -300,6 +372,11 @@
           projectsModule.updateSelectedNode({ key, value: true })
           this.handleNodes(this.selectedNode)
         }
+        if (isTreeNode && this.selectedNode.type == "project") {
+          projectsModule.updateSelectedNode({ key, value: true })
+
+          this.handleNodes(this.selectedNode)
+        }
       },
       expandNode({ key }) {
         projectsModule.updateExpandedNodes({ key, value: true })
@@ -307,10 +384,16 @@
       collapseNode({ key }) {
         projectsModule.updateExpandedNodes({ key, value: false })
       },
+      toggleSidebar() {
+        appDataModule.toggleSidebarPanel()
+      },
+      deleteNode(node) {
+        this.node = node
+        this.deletedialog = true
+      },
     },
   }
 </script>
-
-<style lang="scss" scoped>
+<style lang="scss">
   @import "./Sidebar.scss";
 </style>

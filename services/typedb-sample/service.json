@@ -4,17 +4,31 @@
   "description": "TypeDB Sample Data",
   "enabled": true,
   "status": "-1",
-  "logoutput": "...",
   "icon": "pi pi-cog",
   "servicetype": 10,
   "execconfig": {
     "execservice": { "id": "python" },
-    "setup": [
-      "-m pip install --target=${SERVICE_PATH}\\__packages__ -r ${SERVICE_PATH}\\requirements.txt",
-      "${SERVICE_PATH}\\basic_upload.py"
-    ],
-    "commandline": "",
-    "serviceport": 8000,
+    "setup": {
+      "win32": [
+        "-m pip install --target=${SERVICE_PATH}\\__packages__ -r ${SERVICE_PATH}\\requirements.txt",
+        "${SERVICE_PATH}\\basic_upload.py --port ${TYPEDB_PORT} --db ${TYPEDB_DB} --host ${TYPEDB_HOST}"
+      ],
+      "darwin": [
+        "-m pip install --target=${SERVICE_PATH}/__packages__ -r ${SERVICE_PATH}/requirements.txt",
+        "${SERVICE_PATH}/basic_upload.py --port ${TYPEDB_PORT} --db ${TYPEDB_DB} --host ${TYPEDB_HOST}"
+      ],
+      "linux": [
+        "-m pip install --target=${SERVICE_PATH}/__packages__ -r ${SERVICE_PATH}/requirements.txt",
+        "${SERVICE_PATH}/basic_upload.py --port ${TYPEDB_PORT} --db ${TYPEDB_DB} --host ${TYPEDB_HOST}"
+      ],
+      "default": [
+        "-m pip install --target=${SERVICE_PATH}\\__packages__ -r ${SERVICE_PATH}\\requirements.txt",
+        "${SERVICE_PATH}\\basic_upload.py --port ${TYPEDB_PORT} --db ${TYPEDB_DB} --host ${TYPEDB_HOST}"
+      ]
+    },
+    "commandline": {
+      "default": ""
+    },
     "depend_on": [
       "typedb"
     ]

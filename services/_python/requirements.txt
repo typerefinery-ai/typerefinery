@@ -1,4 +1,0 @@
-uvicorn[standard]
-typedb-client
-argparse
-loguru

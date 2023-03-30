@@ -30,9 +30,9 @@
   // import axios from "axios"
   import Button from "primevue/button"
   import TableView from "../Table/TableView.vue"
-  import FlowMessage from "@/store/Modules/FlowMessage"
+  import Projects from "@/store/Modules/Projects"
   import { getModule } from "vuex-module-decorators"
-  const flowModule = getModule(FlowMessage)
+  const projectsModule = getModule(Projects)
   // import GraphView from "../../../Workflow/FlowGraph.vue"
 
   export default {
@@ -53,9 +53,12 @@
     },
     computed: {
       path() {
-        const svg = flowModule.data[this.tab.id]
-        if (svg) {
-          let path = `http://localhost:8000${svg.path}`
+        const project = projectsModule.getProjects.find(
+          (el) => el.id === this.tab.parent
+        )
+        if (project && project.flowoutputlist.length) {
+          const file_name = project.flowoutputlist[0].path
+          let path = `http://localhost:8000${file_name}`
           return path
         } else {
           return ""
@@ -77,7 +80,7 @@
       // async getData() {
       // try {
       //   const origin = `http://localhost:8000`
-      //   const { data } = await axios.get(origin + this.path)
+      //   const { data } = await restapi.get(origin + this.path)
       // this.svgPath = data
       //   console.log(data)
       // } catch (err) {

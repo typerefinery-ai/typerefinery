@@ -1,0 +1,4 @@
+database create ${TYPEDB_DB}
+transaction ${TYPEDB_DB} schema write
+source ./schema.tql
+commit

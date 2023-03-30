@@ -38,7 +38,7 @@ class AlgoritmRequestModel(BaseModel):
         default="localhost", title="TypeDB host address"
     )
     dbport: str | None = Field(
-        default="1729", title="TypeDB host port"
+        default="8729", title="TypeDB host port"
     )
     dbdatabase: str | None = Field(
         default="typerefinery", title="TypeDB database to use"

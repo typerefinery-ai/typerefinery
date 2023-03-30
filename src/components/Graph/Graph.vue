@@ -7,7 +7,7 @@
   import * as webcola from "webcola"
   import { getModule } from "vuex-module-decorators"
   import Projects from "@/store/Modules/Projects"
-  import axios from "axios"
+  import restapi from "@/utils/restapi"
   const projectsModule = getModule(Projects)
   export default {
     name: "Graph",
@@ -56,7 +56,7 @@
         const origin = new URL(query.endpoint).origin
         if (query.dataPath) {
           try {
-            const { data } = await axios.get(origin + query.dataPath)
+            const { data } = await restapi.get(origin + query.dataPath)
             this.graphData = data
             this.renderGraph()
           } catch (err) {

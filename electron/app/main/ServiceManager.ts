@@ -30,13 +30,15 @@ class ServiceManager {
   #logsDir: string
   #logWritable: Writable
   #logWritablePath: string
+  #globalenv: { [key: string]: string } = {}
   constructor(
     logsDir: string,
     logger: Logger,
     servicesroot: string,
     servicesdataroot: string,
     serviceEvents: ServiceEvents,
-    serviceManagerEvents: ServiceManagerEvents
+    serviceManagerEvents: ServiceManagerEvents,
+    globalenv: { [key: string]: string } = {}
   ) {
     this.#logsDir = logsDir
     this.#servicesroot = servicesroot
@@ -55,6 +57,7 @@ class ServiceManager {
 
     this.#logger.log("service manager log", this.#logWritablePath)
     this.#serviceConfigList = []
+    this.#globalenv = globalenv
     this.reload()
   }
 
@@ -62,14 +65,31 @@ class ServiceManager {
     return this.#logWritable
   }
 
-  reload(restart = false) {
+  getGlobalEnv(): { [key: string]: string } {
+    //for each service get globalenv
+    this.#services.forEach((service: Service) => {
+      const serviceGlobalEnv = service.globalEnvironmentVariables
+      Object.keys(serviceGlobalEnv).forEach((key: string) => {
+        this.#globalenv[key] = serviceGlobalEnv[key]
+      })
+    })
+    return this.#globalenv
+  }
+
+  get globalEnv(): { [key: string]: string } {
+    return this.#globalenv
+  }
+
+  async reload(restart = false) {
     if (restart) {
-      this.stopAll()
+      await this.stopAll()
     }
     this.#clearServices()
 
     this.#loadServiceConfigs()
     this.#loadServices()
+    this.#updateGlobalEnv()
+    this.#sortServices()
 
     // send list of services to app
     if (this.#serviceManagerEvents.sendServiceList) {
@@ -77,12 +97,20 @@ class ServiceManager {
     }
 
     if (restart) {
-      this.startAll()
+      await this.startAll()
     }
   }
 
   #clearServices() {
     this.#services = []
+  }
+
+  #updateGlobalEnv() {
+    this.getGlobalEnv()
+    // for each service update globalenv
+    this.#services.forEach((service: Service) => {
+      service.setGlobalEnvironmentVariables(this.#globalenv)
+    })
   }
 
   // process all service configs and load Service objects
@@ -93,11 +121,9 @@ class ServiceManager {
         new Service(
           this.#logsDir,
           this.#logger,
+          serviceConfig.servicehome,
           serviceConfig.servicepath,
-          path.join(
-            this.#servicesdataroot,
-            path.basename(serviceConfig.servicepath)
-          ),
+          serviceConfig.servicesdataroot,
           serviceConfig.options,
           this.#serviceEvents,
           this
@@ -137,9 +163,42 @@ class ServiceManager {
             )
 
             const servicePathResolved = path.resolve(path.dirname(file))
+
+            // detect if platfrom paths exist and use them as service path
+            const platfromPath =
+              process.platform == "win32" ||
+              process.platform == "darwin" ||
+              process.platform == "linux"
+                ? process.platform
+                : ""
+            let platformServicePath = servicePathResolved
+            let servicePlatformPathResolved = servicePathResolved
+            // data path is service path + service name
+            let servicesDataRootResolved = path.join(
+              this.#servicesdataroot,
+              path.basename(servicePathResolved)
+            )
+
+            if (platfromPath) {
+              platformServicePath = path.join(servicePathResolved, platfromPath)
+              if (
+                fs.existsSync(platformServicePath) &&
+                fs.statSync(platformServicePath).isDirectory()
+              ) {
+                servicePlatformPathResolved = platformServicePath
+                // data path is service path + service name + platform name
+                servicesDataRootResolved = path.join(
+                  this.#servicesdataroot,
+                  path.basename(servicePathResolved),
+                  path.basename(platformServicePath)
+                )
+              }
+            }
             // create new ServiceConfig object
             const serviceConfig: ServiceConfig = {
-              servicepath: servicePathResolved,
+              servicehome: servicePathResolved,
+              servicepath: servicePlatformPathResolved,
+              servicesdataroot: servicesDataRootResolved,
               options: serviceFileConfig,
               events: this.#serviceEvents,
             }
@@ -176,17 +235,65 @@ class ServiceManager {
     return await getPortFree(port, host)
   }
 
+  #sortServices(reverse = false) {
+    if (!reverse) {
+      this.#services.sort((service1: Service, service2: Service) => {
+        const serviceorder1 = service1.options.execconfig?.serviceorder ?? 99
+        const serviceorder2 = service2.options.execconfig?.serviceorder ?? 99
+        let returnvalue = 0
+        // services with lower serviceorder value are started first
+        if (serviceorder1 < serviceorder2) {
+          returnvalue = -1
+          // services with higher serviceorder value are started last
+        } else if (serviceorder2 < serviceorder1) {
+          returnvalue = 1
+        }
+
+        // services with same serviceorder value are sorted by dependancy
+        // services that depend on other services are started after the services they depend on
+        if (service1.isDependantOnService(service2.id)) {
+          returnvalue = 1
+        } else if (service2.isDependantOnService(service1.id)) {
+          returnvalue = -1
+        }
+        return returnvalue
+      })
+    } else {
+      this.#services.reverse()
+    }
+  }
+
   // start all services
   async startAll() {
+    this.#sortServices()
+
+    for (const service of this.#services) {
+      this.#logger.log(
+        `ordered service ${service.id} : ${
+          service.options.execconfig?.serviceorder ?? 99
+        }`
+      )
+    }
+
+    //generate global environment variables to pass to all services
+    this.getGlobalEnv()
+
     for (const service of this.#services) {
       this.#logger.log(`starting service ${service.id}`)
-      await service.start()
+      await service.start(this.globalEnv)
+      // collect global environment variables from service and add to globalenv in case they have changed
+      Object.assign(this.#globalenv, service.globalEnvironmentVariables)
+
+      this.#logger.log(
+        `service started ${service.id} : ${service.status} : ${service.isSetup}`
+      )
     }
     this.#logger.log("all services started.")
   }
 
   // stop all services
   async stopAll() {
+    this.#sortServices(true)
     for (const service of this.#services) {
       this.#logger.log(`stopping service ${service.id}`)
       await service.stop()

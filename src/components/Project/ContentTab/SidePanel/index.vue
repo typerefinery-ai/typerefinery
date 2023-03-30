@@ -1,6 +1,6 @@
 <template>
   <div class="content-side-panel">
-    <query-info v-show="activeView === 'Q'" :tab="tab" />
+    <query-info v-show="activeView === 'Q'" :tab="tab" @on-input="onInput" />
     <!-- <graph-properties v-show="activeView === 'G'" :data="nodeData" :tab="tab" />
     <transformer-config
       v-show="activeView === 'T'"
@@ -32,10 +32,14 @@
       activeView: { type: String, required: true },
       tab: { type: Object, required: true },
     },
-    emits: ["handle-dependencies"],
+    emits: ["handle-dependencies", "on-input"],
     methods: {
       handleDependencies(d) {
         this.$emit("handle-dependencies", d)
+      },
+
+      onInput(field, value) {
+        this.$emit("on-input", field, value)
       },
     },
   }
