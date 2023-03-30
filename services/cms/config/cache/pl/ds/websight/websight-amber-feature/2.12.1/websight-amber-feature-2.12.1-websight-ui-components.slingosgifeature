@@ -1,0 +1,33 @@
+{
+  "id":"pl.ds.websight:websight-amber-feature:slingosgifeature:websight-ui-components:2.12.1",
+  "title":"WebSight Amber: OSGi Sling Feature Model",
+  "description":"OSGi Sling Feature Model of WebSight Amber foundation project",
+  "vendor":"Dynamic Solutions sp. z o.o. sp. k.",
+  "license":"Dynamic Solutions License",
+  "bundles":[
+    {
+      "id":"pl.ds.websight:websight-ui-components-icon:1.4.3",
+      "start-order":"25"
+    },
+    {
+      "id":"pl.ds.websight:websight-ui-components-navigation:1.4.3",
+      "start-order":"25"
+    },
+    {
+      "id":"pl.ds.websight:websight-ui-components-tree:1.4.3",
+      "start-order":"25"
+    },
+    {
+      "id":"pl.ds.websight:websight-ui-components-modal:1.4.3",
+      "start-order":"25"
+    },
+    {
+      "id":"pl.ds.websight:websight-ui-components-table:1.4.3",
+      "start-order":"25"
+    },
+    {
+      "id":"pl.ds.websight:websight-ui-components-toolbar:1.4.3",
+      "start-order":"25"
+    }
+  ]
+}

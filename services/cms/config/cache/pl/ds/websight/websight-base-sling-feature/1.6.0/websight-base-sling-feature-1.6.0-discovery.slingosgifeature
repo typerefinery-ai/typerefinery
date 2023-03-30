@@ -1,0 +1,66 @@
+{
+  "id":"pl.ds.websight:websight-base-sling-feature:slingosgifeature:discovery:1.6.0",
+  "title":"WebSight Base: Sling feature",
+  "vendor":"Dynamic Solutions sp. z o.o. sp. k.",
+  "license":"Dynamic Solutions License",
+  "bundles":[
+    {
+      "id":"org.apache.sling:org.apache.sling.discovery.api:1.0.4",
+      "start-order":"20"
+    },
+    {
+      "id":"org.apache.sling:org.apache.sling.discovery.base:2.0.10",
+      "start-order":"20"
+    },
+    {
+      "id":"org.apache.sling:org.apache.sling.discovery.commons:1.0.24",
+      "start-order":"20"
+    },
+    {
+      "id":"org.apache.sling:org.apache.sling.discovery.oak:1.2.34",
+      "start-order":"20"
+    },
+    {
+      "id":"org.apache.sling:org.apache.sling.discovery.support:1.0.6",
+      "start-order":"20"
+    }
+  ],
+  "configurations":  {
+    "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~sling.discovery":    {
+      "user.mapping":[
+        "org.apache.sling.discovery.commons=[sling-discovery]",
+        "org.apache.sling.discovery.base=[sling-discovery]",
+        "org.apache.sling.discovery.oak=[sling-discovery]"
+      ]
+    }
+  },
+  "repoinit:TEXT|true":[
+    "#",
+    "#  Licensed to the Apache Software Foundation (ASF) under one",
+    "#  or more contributor license agreements.  See the NOTICE file",
+    "#  distributed with this work for additional information",
+    "#  regarding copyright ownership.  The ASF licenses this file",
+    "#  to you under the Apache License, Version 2.0 (the",
+    "#  \"License\"); you may not use this file except in compliance",
+    "#  with the License.  You may obtain a copy of the License at",
+    "#",
+    "#   http://www.apache.org/licenses/LICENSE-2.0",
+    "#",
+    "#  Unless required by applicable law or agreed to in writing,",
+    "#  software distributed under the License is distributed on an",
+    "#  \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY",
+    "#  KIND, either express or implied.  See the License for the",
+    "#  specific language governing permissions and limitations",
+    "#  under the License.",
+    "#",
+    "",
+    "create service user sling-discovery with path system/sling",
+    "",
+    "create path (sling:Folder) /var/discovery",
+    "create path (sling:Folder) /var/discovery/oak",
+    "",
+    "set principal ACL for sling-discovery",
+    "    allow   jcr:read,rep:write    on /var/discovery",
+    "end"
+  ]
+}

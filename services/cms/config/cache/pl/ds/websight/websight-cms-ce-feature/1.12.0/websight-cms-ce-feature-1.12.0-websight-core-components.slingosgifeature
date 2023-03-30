@@ -1,0 +1,13 @@
+{
+  "id":"pl.ds.websight:websight-cms-ce-feature:slingosgifeature:websight-core-components:1.12.0",
+  "title":"WebSight CMS Community Edition: OSGi Sling Feature Model",
+  "description":"WebSight CMS Community Edition Feature that builds the Sling\n    OSGI Feature Model for the projects running on WebSight.",
+  "vendor":"Dynamic Solutions sp. z o.o. sp. k.",
+  "license":"Dynamic Solutions License",
+  "bundles":[
+    {
+      "id":"pl.ds.websight:websight-core-components-app:1.0.2",
+      "start-order":"25"
+    }
+  ]
+}
