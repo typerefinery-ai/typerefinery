@@ -15,9 +15,7 @@
       "linux": ["; ${NPM} install"],
       "default": ["; ${NPM} install"]
     },
-    "env": {
-      "SERVICE_DATA_PATH": "${SERVICE_DATA_PATH}\\database"
-    },
+    "datapath": "./database",
     "globalenv": {
       "FLOW_HOST_URL": "http://localhost:${SERVICE_PORT}",
       "FLOW_PORT": "${SERVICE_PORT}"
