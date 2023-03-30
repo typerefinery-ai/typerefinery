@@ -38,3 +38,6 @@ lerna-debug.log*
 
 #Electron-builder output
 /dist_electron
+
+#Intellij
+*.iml

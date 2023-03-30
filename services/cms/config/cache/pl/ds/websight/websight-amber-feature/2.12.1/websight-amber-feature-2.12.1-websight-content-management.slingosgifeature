@@ -1,0 +1,103 @@
+{
+  "id":"pl.ds.websight:websight-amber-feature:slingosgifeature:websight-content-management:2.12.1",
+  "title":"WebSight Amber: OSGi Sling Feature Model",
+  "description":"OSGi Sling Feature Model of WebSight Amber foundation project",
+  "vendor":"Dynamic Solutions sp. z o.o. sp. k.",
+  "license":"Dynamic Solutions License",
+  "bundles":[
+    {
+      "id":"org.apache.sling:org.apache.sling.servlet-helpers:1.4.2",
+      "start-order":"25"
+    },
+    {
+      "id":"pl.ds.websight:websight-cm-core:1.0.1",
+      "start-order":"25"
+    },
+    {
+      "id":"pl.ds.websight:websight-assets-core-api:1.0.1",
+      "start-order":"25"
+    },
+    {
+      "id":"pl.ds.websight:websight-assets-core-impl:1.0.1",
+      "start-order":"25"
+    },
+    {
+      "id":"pl.ds.websight:websight-components-core-api:4.0.1",
+      "start-order":"25"
+    },
+    {
+      "id":"pl.ds.websight:websight-components-core-impl:4.0.1",
+      "start-order":"25"
+    },
+    {
+      "id":"pl.ds.websight:websight-pages-core-api:3.0.2",
+      "start-order":"25"
+    },
+    {
+      "id":"pl.ds.websight:websight-pages-core-impl:3.0.2",
+      "start-order":"25"
+    },
+    {
+      "id":"pl.ds.websight:websight-tags-core-api:1.0.1",
+      "start-order":"25"
+    },
+    {
+      "id":"pl.ds.websight:websight-tags-core-impl:1.0.1",
+      "start-order":"25"
+    },
+    {
+      "id":"pl.ds.websight:websight-publishing-connectors-api:1.0.2",
+      "start-order":"25"
+    },
+    {
+      "id":"pl.ds.websight:websight-publishing-connectors-filesystem:1.0.2",
+      "start-order":"25"
+    },
+    {
+      "id":"pl.ds.websight:websight-publishing-framework:1.0.2",
+      "start-order":"25"
+    },
+    {
+      "id":"pl.ds.websight:websight-publishing-static-processor:1.0.2",
+      "start-order":"25"
+    },
+    {
+      "id":"pl.ds.websight:websight-publishing-view:1.0.2",
+      "start-order":"25"
+    },
+    {
+      "id":"pl.ds.websight:websight-dialogs-components:3.2.0",
+      "start-order":"25"
+    },
+    {
+      "id":"pl.ds.websight:websight-dialogs-service:3.2.0",
+      "start-order":"25"
+    },
+    {
+      "id":"pl.ds.websight:websight-dialogs-view:3.2.0",
+      "start-order":"25"
+    }
+  ],
+  "configurations":  {
+    "org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended~websight-publishing":    {
+      "user.mapping":[
+        "websight-publishing-framework=[websight-publish]"
+      ]
+    },
+    "pl.ds.websight.publishing.connectors.filesystem.FileSystemStorageConnector":    {
+      "directory.path":"docroot"
+    }
+  },
+  "content-packages:ARTIFACTS|true":[
+    "pl.ds.websight:websight-tags-core-content:zip:1.0.1"
+  ],
+  "repoinit:TEXT|true":[
+    "register privilege ws:publish",
+    "",
+    "create service user websight-publish with path system/websight",
+    "",
+    "set ACL for websight-publish",
+    "    allow   jcr:read,jcr:modifyProperties    on /content",
+    "end"
+  ]
+}

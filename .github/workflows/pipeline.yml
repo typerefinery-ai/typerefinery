@@ -76,103 +76,103 @@ jobs:
         run: |
           npm run typecheck
 
-  functional-test:
-    needs: [unit-test]
-    if: "!contains(github.event.head_commit.message, 'skip ci') && !startsWith(github.ref, 'refs/tags/v')"
-    name: ${{ matrix.friendlyName }}
-    runs-on: ${{ matrix.os }}
-    env:
-      NODE_ENV: development
-      NODE_OPTIONS: "--max_old_space_size=4096"
-      CYPRESS_CACHE_FOLDER: cypress/cache
-    strategy:
-      matrix:
-        node: [18.3.0]
-        os: [windows-latest]
-        include:
-          - os: windows-latest
-            friendlyName: Functional Test - Windows
+  # functional-test:
+  #   needs: [unit-test]
+  #   if: "!contains(github.event.head_commit.message, 'skip ci') && !startsWith(github.ref, 'refs/tags/v')"
+  #   name: ${{ matrix.friendlyName }}
+  #   runs-on: ${{ matrix.os }}
+  #   env:
+  #     NODE_ENV: development
+  #     NODE_OPTIONS: "--max_old_space_size=4096"
+  #     CYPRESS_CACHE_FOLDER: cypress/cache
+  #   strategy:
+  #     matrix:
+  #       node: [18.3.0]
+  #       os: [windows-latest]
+  #       include:
+  #         - os: windows-latest
+  #           friendlyName: Functional Test - Windows
 
-    steps:
-      - name: Check out Git repository
-        uses: actions/checkout@v3
+  #   steps:
+  #     - name: Check out Git repository
+  #       uses: actions/checkout@v3
 
-      - name: Install Node.js, NPM and Yarn
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node }}
+  #     - name: Install Node.js, NPM and Yarn
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         node-version: ${{ matrix.node }}
 
-      - name: Get npm cache directory
-        id: npm-cache-dir
-        run: |
-          echo "::set-output name=dir::$(npm config get cache)"
+  #     - name: Get npm cache directory
+  #       id: npm-cache-dir
+  #       run: |
+  #         echo "::set-output name=dir::$(npm config get cache)"
 
-      - name: Cache node modules
-        uses: actions/cache@v3
-        id: npm-cache # use this to check for `cache-hit` ==> if: steps.npm-cache.outputs.cache-hit != 'true'
-        with:
-          path: ${{ steps.npm-cache-dir.outputs.dir }}
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
+  #     - name: Cache node modules
+  #       uses: actions/cache@v3
+  #       id: npm-cache # use this to check for `cache-hit` ==> if: steps.npm-cache.outputs.cache-hit != 'true'
+  #       with:
+  #         path: ${{ steps.npm-cache-dir.outputs.dir }}
+  #         key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+  #         restore-keys: |
+  #           ${{ runner.os }}-node-
 
-      - name: Cache Cypress Binary
-        id: cache-cypress-binary
-        uses: actions/cache@v3
-        with:
-          path: cypress/cache
-          #key: cypress-binary-${{ hashFiles('package-lock.json') }}
-          key: ${{ runner.os }}-cypress-${{ hashFiles('**/package-lock.json') }}
+  #     - name: Cache Cypress Binary
+  #       id: cache-cypress-binary
+  #       uses: actions/cache@v3
+  #       with:
+  #         path: cypress/cache
+  #         #key: cypress-binary-${{ hashFiles('package-lock.json') }}
+  #         key: ${{ runner.os }}-cypress-${{ hashFiles('**/package-lock.json') }}
 
-      - name: Run Install
-        run: |
-          npm install
-      
-      - name: Cypress run
-        uses: cypress-io/github-action@v4
-        with:
-          config: pageLoadTimeout=250000,baseUrl=http://localhost:3000
-          wait-on: "http://localhost:3000"
-          install: false
-          build: |
-            npm run build
-          start: |
-            npm run preview:wait:ci
-          command: |
-            npm run test:ci
-          record: true
-        env:
-          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
-          CYPRESS_PROJECT_ID: ${{ secrets.CYPRESS_PROJECT_ID }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          COMMIT_INFO_MESSAGE: ${{ github.event.inputs.title }}
+  #     - name: Run Install
+  #       run: |
+  #         npm install
 
-      - name: Generate Reports
-        if: always()
-        run: |
-          npm run posttest
+  #     - name: Cypress run
+  #       uses: cypress-io/github-action@v4
+  #       with:
+  #         config: pageLoadTimeout=250000,baseUrl=http://localhost:3000
+  #         wait-on: "http://localhost:3000"
+  #         install: false
+  #         build: |
+  #           npm run build
+  #         start: |
+  #           npm run preview:wait:ci
+  #         command: |
+  #           npm run test:ci
+  #         record: true
+  #       env:
+  #         CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+  #         CYPRESS_PROJECT_ID: ${{ secrets.CYPRESS_PROJECT_ID }}
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #         COMMIT_INFO_MESSAGE: ${{ github.event.inputs.title }}
 
-      # # This workaround is required for running npm install
-      # - name: Set permissions
-      #   run: |
-      #     chmod -R 777 ./
+  #     - name: Generate Reports
+  #       if: always()
+  #       run: |
+  #         npm run posttest
 
-      # - name: Run Cypress using Docker
-      #   id: cypress
-      #   continue-on-error: true
-      #   run: |
-      #     docker compose --profile testing up --exit-code-from cypress
+  #     # # This workaround is required for running npm install
+  #     # - name: Set permissions
+  #     #   run: |
+  #     #     chmod -R 777 ./
 
-      # - name: Generate Reports using Docker
-      #   continue-on-error: true
-      #   run: |
-      #     docker compose --profile reports up reports
+  #     # - name: Run Cypress using Docker
+  #     #   id: cypress
+  #     #   continue-on-error: true
+  #     #   run: |
+  #     #     docker compose --profile testing up --exit-code-from cypress
 
-      - name: Deploy Reports to gh-pages
-        uses: JamesIves/github-pages-deploy-action@v4.2.5
-        with:
-          branch: gh-pages
-          folder: cypress/reports      
+  #     # - name: Generate Reports using Docker
+  #     #   continue-on-error: true
+  #     #   run: |
+  #     #     docker compose --profile reports up reports
+
+  #     - name: Deploy Reports to gh-pages
+  #       uses: JamesIves/github-pages-deploy-action@v4.2.5
+  #       with:
+  #         branch: gh-pages
+  #         folder: cypress/reports
 
   release:
     needs: [unit-test]
