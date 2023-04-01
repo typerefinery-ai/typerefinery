@@ -256,7 +256,7 @@ jobs:
       - name: Build Electron app
         run: |
           npm run app:build -- --publish=always
-        with:
+        env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # - uses: AButler/upload-release-assets@v2.0
