@@ -33,7 +33,7 @@ jobs:
           allowed_prefixes: "feature,stable,fix" # All branches should start with the given prefix
           ignore: main,master,develop # Ignore exactly matching branch names from convention
           min_length: 5 # Min length of the branch name
-          max_length: 200 # Max length of the branch name
+          max_length: 200 # Max length of the branch names
       - name: Skipped
         if: "startsWith(github.ref, 'refs/tags/')"
         run: echo "skipped"
@@ -251,44 +251,44 @@ jobs:
       #   run: |
       #     source <(curl -sL https://github.com/aem-design/aemdesign-docker/releases/latest/download/github_get_version.sh)
 
-      - name: create release ${{ env.GITHUB_TAG }}
-        if: "startsWith(github.ref, 'refs/tags/v')"
-        id: create_release
-        uses: ncipollo/release-action@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag: ${{ env.GITHUB_TAG }}
-          name: ${{ env.GITHUB_TAG }}
-          draft: false
-          prerelease: false
-
-      - name: Build Electron app
-        run: |
-          npm run app:build -- --publish=never
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - uses: AButler/upload-release-assets@v2.0
-        if: "startsWith(github.ref, 'refs/tags/v')"
-        with:
-          files: './dist_electron/*.exe;./dist_electron/latest*.yaml;./dist_electron/*.zip;./dist_electron/*.blockmap;./dist_electron/*.dmg;./dist_electron/*.AppImage;./dist_electron/*.snap'
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          release-tag: ${{ env.GITHUB_TAG }}
-
-      # - name: Build/release Electron app
-      #   uses: typerefinery-ai/action-electron-builder@v1
+      # - name: create release ${{ env.GITHUB_TAG }}
+      #   if: "startsWith(github.ref, 'refs/tags/v')"
+      #   id: create_release
+      #   uses: ncipollo/release-action@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       #   with:
-      #     # GitHub token, automatically provided to the action
-      #     # (No need to define this secret in the repo settings)
-      #     github_token: ${{ secrets.GITHUB_TOKEN }}
+      #     tag: ${{ env.GITHUB_TAG }}
+      #     name: ${{ env.GITHUB_TAG }}
+      #     draft: false
+      #     prerelease: false
 
-      #     # always publish
-      #     args: "-p always"
+      # - name: Build Electron app
+      #   run: |
+      #     npm run app:build -- --publish=never
+      #   env:
+      #     GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      #     # If the commit is tagged with a version (e.g. "v1.0.0"),
-      #     # release the app after building
-      #     release: ${{ startsWith(github.ref, 'refs/tags/v') }}
+      # - uses: AButler/upload-release-assets@v2.0
+      #   if: "startsWith(github.ref, 'refs/tags/v')"
+      #   with:
+      #     files: './dist_electron/*.exe;./dist_electron/latest*.yaml;./dist_electron/*.zip;./dist_electron/*.blockmap;./dist_electron/*.dmg;./dist_electron/*.AppImage;./dist_electron/*.snap'
+      #     repo-token: ${{ secrets.GITHUB_TOKEN }}
+      #     release-tag: ${{ env.GITHUB_TAG }}
+
+      - name: Build/release Electron app
+        uses: typerefinery-ai/action-electron-builder@v1
+        with:
+          # GitHub token, automatically provided to the action
+          # (No need to define this secret in the repo settings)
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+          # always publish
+          args: "-p always"
+
+          # If the commit is tagged with a version (e.g. "v1.0.0"),
+          # release the app after building
+          release: ${{ startsWith(github.ref, 'refs/tags/v') }}
 
       # - name: Build electron
       #   run: |
