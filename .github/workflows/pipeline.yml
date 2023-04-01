@@ -235,10 +235,10 @@ jobs:
       #     # Log in to Snap Store
       #     snapcraft_token: ${{ secrets.SNAPCRAFT_TOKEN }}
 
-      - name: get release notes
-        id: config
-        run: |
-          source <(curl -sL https://github.com/aem-design/aemdesign-docker/releases/latest/download/github_get_version.sh)
+      # - name: get release notes
+      #   id: config
+      #   run: |
+      #     source <(curl -sL https://github.com/aem-design/aemdesign-docker/releases/latest/download/github_get_version.sh)
 
       - name: create release ${{ env.GITHUB_TAG }}
         if: "startsWith(github.ref, 'refs/tags/v')"
@@ -249,7 +249,6 @@ jobs:
         with:
           tag: ${{ env.GITHUB_TAG }}
           name: ${{ env.GITHUB_TAG }}
-          body: ${{ steps.config.outputs.GIT_RELEASE_NOTES }}
           draft: false
           prerelease: false
 
