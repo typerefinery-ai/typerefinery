@@ -9,6 +9,17 @@ on:
   pull_request:
     types: [opened, reopened, synchronize]
 
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+# Allow one concurrent deployment
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
 jobs:
   branch-naming-rules:
     if: "!contains(github.event.head_commit.message , 'skip ci')"
@@ -22,7 +33,7 @@ jobs:
           allowed_prefixes: "feature,stable,fix" # All branches should start with the given prefix
           ignore: main,master,develop # Ignore exactly matching branch names from convention
           min_length: 5 # Min length of the branch name
-          max_length: 200 # Max length of the branch name
+          max_length: 200 # Max length of the branch names
       - name: Skipped
         if: "startsWith(github.ref, 'refs/tags/')"
         run: echo "skipped"
@@ -176,7 +187,7 @@ jobs:
 
   release:
     needs: [unit-test]
-    if: "!contains(github.event.head_commit.message, 'skip ci') && startsWith(github.ref, 'refs/tags/v')"
+    if: "!contains(github.event.head_commit.message, 'skip ci')"
     name: ${{ matrix.friendlyName }}
     runs-on: ${{ matrix.os }}
     env:
@@ -184,7 +195,11 @@ jobs:
     strategy:
       matrix:
         node: [18.3.0]
-        os: [macos-latest, ubuntu-latest, windows-latest]
+        os: [
+          # macos-latest,
+          # ubuntu-latest,
+          windows-latest
+        ]
         # os: [windows-latest]
         include:
           # - os: ubuntu-latest
@@ -231,12 +246,42 @@ jobs:
       #     # Log in to Snap Store
       #     snapcraft_token: ${{ secrets.SNAPCRAFT_TOKEN }}
 
+      # - name: get release notes
+      #   id: config
+      #   run: |
+      #     source <(curl -sL https://github.com/aem-design/aemdesign-docker/releases/latest/download/github_get_version.sh)
+
+      # - name: create release ${{ env.GITHUB_TAG }}
+      #   if: "startsWith(github.ref, 'refs/tags/v')"
+      #   id: create_release
+      #   uses: ncipollo/release-action@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     tag: ${{ env.GITHUB_TAG }}
+      #     name: ${{ env.GITHUB_TAG }}
+      #     draft: false
+      #     prerelease: false
+
+      # - name: Build Electron app
+      #   run: |
+      #     npm run app:build -- --publish=never
+      #   env:
+      #     GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # - uses: AButler/upload-release-assets@v2.0
+      #   if: "startsWith(github.ref, 'refs/tags/v')"
+      #   with:
+      #     files: './dist_electron/*.exe;./dist_electron/latest*.yaml;./dist_electron/*.zip;./dist_electron/*.blockmap;./dist_electron/*.dmg;./dist_electron/*.AppImage;./dist_electron/*.snap'
+      #     repo-token: ${{ secrets.GITHUB_TOKEN }}
+      #     release-tag: ${{ env.GITHUB_TAG }}
+
       - name: Build/release Electron app
-        uses: samuelmeuli/action-electron-builder@v1
+        uses: typerefinery-ai/action-electron-builder@v1
         with:
           # GitHub token, automatically provided to the action
           # (No need to define this secret in the repo settings)
-          github_token: ${{ secrets.github_token }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 
           # always publish
           args: "-p always"

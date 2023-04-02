@@ -141,7 +141,7 @@ When you want to create a new release, follow these steps:
 
 1. Update the version in your project's package.json file (e.g. `2022.3.24`)
 2. Commit and sign that change (`git commit -s -a -m "chore: release v2022.3.24"`)
-3. Tag and sign your commit (`git tag -s -a 2022.3.24 -m "2022.3.24"`). Make sure your tag name's format is `{YYYY}.{M}.{DD}`. Your workflow will use this tag to detect when to create a release
+3. Tag and sign your commit (`git tag -s -a v2022.3.24 -m "v2022.3.24"`). Make sure your tag name's format is `{YYYY}.{M}.{DD}`. Your workflow will use this tag to detect when to create a release
 4. Push your changes to GitHub (git push && git push --tags)
 
 ### Cypress Reports
