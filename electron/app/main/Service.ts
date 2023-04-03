@@ -223,7 +223,7 @@ export class Service extends EventEmitter<ServiceEvent> {
     this.#description = this.#options.description || ""
     this.#servicepath = servicepath
     this.#servicehome = servicehome
-    this.#servicedatapath = servicehome
+    this.#servicedatapath = servicedatapath
     // if server has datapath set ensure the sub path exist in the server data path
     if (this.#options.execconfig.datapath) {
       this.#servicedatapath = path.join(
