@@ -196,16 +196,16 @@ jobs:
       matrix:
         node: [18.3.0]
         os: [
-          # macos-latest,
-          # ubuntu-latest,
+          macos-latest,
+          ubuntu-latest,
           windows-latest
         ]
         # os: [windows-latest]
         include:
-          # - os: ubuntu-latest
-          #   friendlyName: Release - Ubuntu
-          # - os: macos-latest
-          #   friendlyName: Release - MacOS
+          - os: ubuntu-latest
+            friendlyName: Release - Ubuntu
+          - os: macos-latest
+            friendlyName: Release - MacOS
           - os: windows-latest
             friendlyName: Release - Windows
     steps:
@@ -238,6 +238,7 @@ jobs:
       - name: install dmg-license
         if: ${{ contains(matrix.os, 'macos') }}
         run: npm i dmg-license
+
       # - name: Install Snapcraft
       #   uses: samuelmeuli/action-snapcraft@v1
       #   # Only install Snapcraft on Ubuntu
@@ -245,36 +246,6 @@ jobs:
       #   with:
       #     # Log in to Snap Store
       #     snapcraft_token: ${{ secrets.SNAPCRAFT_TOKEN }}
-
-      # - name: get release notes
-      #   id: config
-      #   run: |
-      #     source <(curl -sL https://github.com/aem-design/aemdesign-docker/releases/latest/download/github_get_version.sh)
-
-      # - name: create release ${{ env.GITHUB_TAG }}
-      #   if: "startsWith(github.ref, 'refs/tags/v')"
-      #   id: create_release
-      #   uses: ncipollo/release-action@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     tag: ${{ env.GITHUB_TAG }}
-      #     name: ${{ env.GITHUB_TAG }}
-      #     draft: false
-      #     prerelease: false
-
-      # - name: Build Electron app
-      #   run: |
-      #     npm run app:build -- --publish=never
-      #   env:
-      #     GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # - uses: AButler/upload-release-assets@v2.0
-      #   if: "startsWith(github.ref, 'refs/tags/v')"
-      #   with:
-      #     files: './dist_electron/*.exe;./dist_electron/latest*.yaml;./dist_electron/*.zip;./dist_electron/*.blockmap;./dist_electron/*.dmg;./dist_electron/*.AppImage;./dist_electron/*.snap'
-      #     repo-token: ${{ secrets.GITHUB_TOKEN }}
-      #     release-tag: ${{ env.GITHUB_TAG }}
 
       - name: Build/release Electron app
         uses: typerefinery-ai/action-electron-builder@v1
