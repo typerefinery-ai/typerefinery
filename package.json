@@ -6,7 +6,7 @@
   "electronWindowTitle": "TypeRefinery",
   "companyName": "Innovolve.ai",
   "author": "TypeRefinery.ai",
-  "version": "2023.4.4",
+  "version": "2023.4.5",
   "appWidth": 1366,
   "appHeight": 768,
   "proxy": "http://127.0.0.1:8000",
