@@ -42,7 +42,17 @@ if (getEnvConfigWithDefault("CRASH_REPORTER_SUBMIT_URL")) {
   })
 }
 
-const logsDir = dataPath("logs")
+let logsDir = dataPath("logs")
+
+// create a new logs sub directory with date timestamp everytime the app starts
+const date = new Date()
+const dateStr = date
+  .toISOString()
+  .replace(/:/g, "-")
+  .replace(/.Z/g, "")
+  .replace(/T/g, "_")
+logsDir = path.join(logsDir, dateStr)
+
 // Setup logging to file after crash reporter.
 Object.assign(console, log.functions)
 log.transports.file.resolvePath = () => path.join(logsDir, "main.log")
@@ -139,7 +149,7 @@ logger.log(`isDev: ${isDev}`)
 
 // service manager
 const serviceManager = new ServiceManager(
-  dataPath("logs"),
+  logsDir,
   logger,
   LOCAL_SERVICES_PATH,
   LOCAL_SERVICES_USERDATA_PATH,
