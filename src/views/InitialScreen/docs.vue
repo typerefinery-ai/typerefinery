@@ -15,9 +15,6 @@
   }
 </script>
 <style scoped>
-  /* .docs {
-    margin: auto;
-  } */
   .iframeContent {
     height: 95vh;
     width: 68vw;
@@ -27,7 +24,4 @@
     border: none;
     overflow: scroll;
   }
-  /* .docs p {
-    margin-top: 15px;
-  } */
 </style>

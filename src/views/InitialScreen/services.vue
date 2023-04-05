@@ -51,9 +51,6 @@
 </script>
 <style scoped>
   .service {
-    margin-top: 20%;
+    margin: auto;
   }
-  /* .service p {
-    margin-top: 15px;
-  } */
 </style>
