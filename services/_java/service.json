@@ -14,6 +14,9 @@
       "darwin": "darwin/jre17/bin/java",
       "linux": "linux/jre17/bin/java",
       "default": "win32\\jre17\\bin\\java"
+    },
+    "globalenv": {
+      "JAVA": "${SERVICE_EXECUTABLE}"
     }
   }
 }
