@@ -4,7 +4,7 @@ import { createRouter, createWebHashHistory } from "vue-router"
 import Home from "@/views/Home.vue"
 import Workflow from "@/views/Workflow.vue"
 // import Chat from "@/components/Chat/index.vue"
-// import Maps from "@/components/Maps/index.vue"
+import InitialScreen from "@/views/InitialScreen/index.vue"
 import IframeComponent from "@/components/IframeComponent/index.vue"
 
 const router = createRouter({
@@ -17,6 +17,11 @@ const router = createRouter({
         default: Home,
         // dialog: Maps,
       },
+    },
+    {
+      path: "/initial",
+      name: "initial",
+      component: InitialScreen,
     },
     //Routing for experiences
     {
