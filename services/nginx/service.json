@@ -27,7 +27,8 @@
     "healthcheck": {
       "type": "http",
       "url": "http://localhost:${SERVICE_PORT}/health",
-      "expected_status": 200
+      "expected_status": 200,
+      "retries": 180
     },
     "commandconfig": {
       "source": "config/conf/nginx.conf.template",
