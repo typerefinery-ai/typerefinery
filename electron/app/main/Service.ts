@@ -1037,8 +1037,11 @@ export class Service extends EventEmitter<ServiceEvent> {
   // run health check tcp
   #runHealthCheckTcp(): boolean {
     if (this.#healthCheck && this.#serviceport) {
-      const hostname = this.#servicehost
+      let hostname = this.#servicehost
       const port = this.#serviceport
+      if (hostname == "localhost") {
+        hostname = "127.0.0.1"
+      }
       const socket = net.createConnection(port, hostname, () => {
         this.#setStatus(ServiceStatus.STARTED)
         this.#stopHealthCheck()
