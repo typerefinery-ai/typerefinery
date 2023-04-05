@@ -27,7 +27,7 @@
       "type": "http",
       "url": "http://localhost:${SERVICE_PORT}/",
       "expected_status": 404,
-      "retries": 30
+      "retries": 180
     },
     "depend_on": ["node"]
   }

@@ -173,8 +173,8 @@ class ServiceManager {
                 : ""
             let platformServicePath = servicePathResolved
             let servicePlatformPathResolved = servicePathResolved
-            // data path is service path + service name
-            let servicesDataRootResolved = path.join(
+            // data path is service data root + service name
+            const servicesDataRootResolved = path.join(
               this.#servicesdataroot,
               path.basename(servicePathResolved)
             )
@@ -186,12 +186,6 @@ class ServiceManager {
                 fs.statSync(platformServicePath).isDirectory()
               ) {
                 servicePlatformPathResolved = platformServicePath
-                // data path is service path + service name + platform name
-                servicesDataRootResolved = path.join(
-                  this.#servicesdataroot,
-                  path.basename(servicePathResolved),
-                  path.basename(platformServicePath)
-                )
               }
             }
             // create new ServiceConfig object

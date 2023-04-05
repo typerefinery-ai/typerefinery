@@ -30,25 +30,25 @@
     },
     "setup": {
       "win32": [
-        "; ${SERVICE_EXECUTABLE} --dbpath ${SERVICE_HOME}\\database --port ${SERVICE_PORT} &",
+        "; ${SERVICE_EXECUTABLE} --dbpath ${SERVICE_DATA_PATH} --port ${SERVICE_PORT} &",
         "; sleep 5",
         "; ${SERVICE_EXECUTABLE_CLI} admin --port ${SERVICE_PORT} --quiet --eval \"printjson(db.createUser({user: '${SERVICE_AUTH_USERNAME}',pwd: '${SERVICE_AUTH_PASSWORD}',roles: [{ role: 'root', db: 'admin' },]}))\"",
         "; ${SERVICE_EXECUTABLE_CLI} admin --port ${SERVICE_PORT} --quiet --eval 'db.shutdownServer()'"
       ],
       "darwin": [
-        "; ${SERVICE_EXECUTABLE} --dbpath ${SERVICE_HOME}\\database --port ${SERVICE_PORT} &",
+        "; ${SERVICE_EXECUTABLE} --dbpath ${SERVICE_DATA_PATH} --port ${SERVICE_PORT} &",
         "; sleep 5",
         "; ${SERVICE_EXECUTABLE_CLI} admin --port ${SERVICE_PORT} --quiet --eval \"printjson(db.createUser({user: '${SERVICE_AUTH_USERNAME}',pwd: '${SERVICE_AUTH_PASSWORD}',roles: [{ role: 'root', db: 'admin' },]}))\"",
         "; ${SERVICE_EXECUTABLE_CLI} admin --port ${SERVICE_PORT} --quiet --eval 'db.shutdownServer()'"
       ],
       "linux": [
-        "; ${SERVICE_EXECUTABLE} --dbpath ${SERVICE_HOME}\\database --port ${SERVICE_PORT} &",
+        "; ${SERVICE_EXECUTABLE} --dbpath ${SERVICE_DATA_PATH} --port ${SERVICE_PORT} &",
         "; sleep 5",
         "; ${SERVICE_EXECUTABLE_CLI} admin --port ${SERVICE_PORT} --quiet --eval \"printjson(db.createUser({user: '${SERVICE_AUTH_USERNAME}',pwd: '${SERVICE_AUTH_PASSWORD}',roles: [{ role: 'root', db: 'admin' },]}))\"",
         "; ${SERVICE_EXECUTABLE_CLI} admin --port ${SERVICE_PORT} --quiet --eval 'db.shutdownServer()'"
       ],
       "default": [
-        "; ${SERVICE_EXECUTABLE} --dbpath ${SERVICE_HOME}\\database --port ${SERVICE_PORT} &",
+        "; ${SERVICE_EXECUTABLE} --dbpath ${SERVICE_DATA_PATH} --port ${SERVICE_PORT} &",
         "; sleep 5",
         "; ${SERVICE_EXECUTABLE_CLI} admin --port ${SERVICE_PORT} --quiet --eval \"printjson(db.createUser({user: '${SERVICE_AUTH_USERNAME}',pwd: '${SERVICE_AUTH_PASSWORD}',roles: [{ role: 'root', db: 'admin' },]}))\"",
         "; ${SERVICE_EXECUTABLE_CLI} admin --port ${SERVICE_PORT} --quiet --eval 'db.shutdownServer()'"
