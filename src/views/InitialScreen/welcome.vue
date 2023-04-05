@@ -21,16 +21,4 @@
   .main {
     margin: auto;
   }
-  /* .welcome {
-    margin: auto;
-  } */
-  /* .footer {
-    flex: 0.5;
-  }
-  .footer .left-btn {
-    float: left;
-  } */
-  /* .footer .right-btn {
-    float: right;
-  } */
 </style>
