@@ -173,7 +173,7 @@ class ServiceManager {
                 : ""
             let platformServicePath = servicePathResolved
             let servicePlatformPathResolved = servicePathResolved
-            // data path is service path + service name
+            // data path is service data root + service name
             const servicesDataRootResolved = path.join(
               this.#servicesdataroot,
               path.basename(servicePathResolved)
