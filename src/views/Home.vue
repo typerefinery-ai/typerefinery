@@ -1,6 +1,6 @@
 <template>
   <template v-if="!servicesStarted && isElectron">
-    <loader />
+    <InitialScreen />
   </template>
   <template v-else>
     <project v-if="$route.params.id === 'project'" />
@@ -15,6 +15,7 @@
   import * as electronHelpers from "@/utils/electron"
   import Toast from "primevue/toast"
   import Loader from "@/components/Loader"
+  import InitialScreen from "@/views/InitialScreen/index.vue"
   import Settings from "@/components/Settings/Settings.vue"
   import SettingsStore from "@/store/Modules/Settings"
   import Services from "@/store/Modules/Services"
@@ -24,7 +25,7 @@
   const appDataModule = getModule(AppDataStore)
   export default {
     name: "Home",
-    components: { Project, Settings, Loader, Toast },
+    components: { Project, Settings, InitialScreen, Toast },
     computed: {
       settingsDialogVisible() {
         return settingsModule.data.settingsDialogVisible

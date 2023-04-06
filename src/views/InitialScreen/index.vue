@@ -39,17 +39,17 @@
   </div>
 </template>
 <script>
-  import welcome from "./welcome.vue"
-  import introduction from "./intro.vue"
-  import docs from "./docs.vue"
-  import services from "./services.vue"
+  import Welcome from "@/components/InitialTabSection/Welcome.vue"
+  import Introduction from "@/components/InitialTabSection/Intro.vue"
+  import Docs from "@/components/InitialTabSection/Docs.vue"
+  import Services from "@/components/InitialTabSection/Services.vue"
   export default {
     name: "InitialScreen",
     components: {
-      welcome,
-      introduction,
-      docs,
-      services,
+      Welcome,
+      Introduction,
+      Docs,
+      Services,
     },
     data() {
       return {
@@ -66,7 +66,6 @@
         const tabs = ["welcome", "intro", "services", "docs"]
         if (tabs.includes(tabName)) {
           this.type = tabName
-          console.log("tab", tabName)
         }
       },
     },
