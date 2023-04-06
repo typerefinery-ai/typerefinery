@@ -21,7 +21,6 @@
     },
     methods: {
       homePage() {
-        console.log("hii")
         window.location.href = "http://localhost:3000/#/home/project"
       },
     },
