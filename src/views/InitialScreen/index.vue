@@ -39,6 +39,15 @@
   </div>
 </template>
 <script>
+  import PrimeVue from "primevue/config"
+
+  import "primeflex/primeflex.css"
+
+  import "primevue/resources/themes/lara-light-blue/theme.css"
+
+  import "primevue/resources/primevue.min.css"
+
+  import "primeicons/primeicons.css"
   import Welcome from "@/components/InitialTabSection/Welcome.vue"
   import Introduction from "@/components/InitialTabSection/Intro.vue"
   import Docs from "@/components/InitialTabSection/Docs.vue"

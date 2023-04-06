@@ -1,5 +1,5 @@
 <template>
-  <template v-if="!servicesStarted && isElectron">
+  <template v-if="!servicesStarted && !successServiceNextPage && isElectron">
     <InitialScreen />
   </template>
   <template v-else>
@@ -32,6 +32,9 @@
       },
       servicesStarted() {
         return servicesModule.data.servicesStarted
+      },
+      successServiceNextPage() {
+        return servicesModule.data.successServiceNextPage
       },
       isElectron() {
         return electronHelpers.isElectron()

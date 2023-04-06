@@ -329,6 +329,7 @@
       "10": { "name": "local", "icon": "pi pi-cog" },
       "20": { "name": "online", "icon": "pi pi-globe" }
     },
+    "successServiceNextPage": false,
     "servicesStarted": false
   },
   "settings": {

@@ -4,16 +4,19 @@
       <h1>Services</h1>
       <div class="data-view-wrapper">
         <DataTable
-          :value="data"
+          :value="servicesList"
           striped-rows
           responsive-layout="scroll"
           :scrollable="true"
           scroll-height="415px"
         >
-          <Column field="year" header="Year"></Column>
-          <Column field="brand" header="Brand"></Column>
-          <Column field="color" header="Color"></Column>
+          <Column field="name" header="Name"></Column>
+          <Column field="servicetype" header="Servicetype"></Column>
+          <Column field="status" header="Status"></Column>
         </DataTable>
+      </div>
+      <div>
+        <Button label="Move to Home" @click="moveToHomePage"></Button>
       </div>
     </div>
   </div>
@@ -21,31 +24,32 @@
 <script>
   import DataTable from "primevue/datatable"
   import Column from "primevue/column"
+  import Button from "primevue/button"
+  import { getModule } from "vuex-module-decorators"
+  import Services from "@/store/Modules/Services"
+  const servicesModule = getModule(Services)
   export default {
     name: "Services",
     components: {
       DataTable,
       Column,
+      Button,
     },
     data() {
       return {
-        data: [
-          {
-            brand: "Volkswagen",
-            year: 2012,
-            color: "Orange",
-            vin: "dsad231ff",
-          },
-          { brand: "Audi", year: 2011, color: "Black", vin: "gwregre345" },
-          { brand: "Renault", year: 2005, color: "Gray", vin: "h354htr" },
-          { brand: "BMW", year: 2003, color: "Blue", vin: "j6w54qgh" },
-          { brand: "Mercedes", year: 1995, color: "Orange", vin: "hrtwy34" },
-          { brand: "Volvo", year: 2005, color: "Black", vin: "jejtyj" },
-          { brand: "Honda", year: 2012, color: "Yellow", vin: "g43gr" },
-          { brand: "Jaguar", year: 2013, color: "Orange", vin: "greg34" },
-          { brand: "Ford", year: 2000, color: "Black", vin: "h54hw5" },
-        ],
+        servicesList: [],
       }
+    },
+    async mounted() {
+      this.servicesList = await servicesModule.getServices()
+      if (!servicesModule.data.servicesStarted) {
+        alert("Services started")
+      }
+    },
+    methods: {
+      moveToHomePage() {
+        servicesModule.data.successServiceNextPage = true
+      },
     },
   }
 </script>

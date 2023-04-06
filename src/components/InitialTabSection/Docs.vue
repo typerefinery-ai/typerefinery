@@ -7,26 +7,16 @@
         height="100%"
       ></iframe>
     </div>
-    <div>
-      <Button label="Next" @click="homePage()" />
-    </div>
   </div>
 </template>
 <script>
   import Button from "primevue/button"
   export default {
     name: "Docs",
-    components: {
-      Button,
-    },
-    methods: {
-      homePage() {
-        window.location.href = "http://localhost:3000/#/home/project"
-      },
-    },
   }
 </script>
 <style scoped>
+  /* @import "../../styles/main"; */
   .iframeContent {
     height: 80vh;
     width: 68vw;
@@ -35,9 +25,5 @@
   .iframeContent iframe {
     border: none;
     overflow: scroll;
-  }
-  .p-button {
-    padding: 2px;
-    float: right;
   }
 </style>
