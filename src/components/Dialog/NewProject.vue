@@ -423,20 +423,23 @@
           const payload = { flowid, projectid, date }
           const url = "/flow/createsample"
           await restapi.post(url, payload)
-          servicesModule.stopService("totaljs-flow")
-          // @ts-expect-error ts-migrate(2339) FIXME: Property 'api' does not exist on type 'Window & typeof globalThis'
-          window.api?.response("sendServiceStatus", ({ id, output }) => {
-            const isFlow = id === "totaljs-flow"
-            if (isFlow && output === "60" && !this.serviceStopped) {
-              servicesModule.startService("totaljs-flow")
-              this.serviceStopped = true
-            } else if (isFlow && output === "120" && !this.serviceStarted) {
-              this.createInitialData(projectid, flowid)
-              this.serviceStarted = true
-            }
-          })
+          // servicesModule.stopService("totaljs-flow")
+          // // @ts-expect-error ts-migrate(2339) FIXME: Property 'api' does not exist on type 'Window & typeof globalThis'
+          // window.api?.response("sendServiceStatus", ({ id, output }) => {
+          //   const isFlow = id === "totaljs-flow"
+          //   if (isFlow && output === "60" && !this.serviceStopped) {
+          //     servicesModule.startService("totaljs-flow")
+          //     this.serviceStopped = true
+          //   } else if (isFlow && output === "120" && !this.serviceStarted) {
+          //     this.createInitialData(projectid, flowid)
+          //     this.serviceStarted = true
+          //   }
+          // })
           // JUST FOR WEB VERSION
           if (!this.isElectron) {
+            this.createInitialData(projectid, flowid)
+          }else {
+            servicesModule.restartService("totaljs-flow");
             this.createInitialData(projectid, flowid)
           }
         } catch (error) {
