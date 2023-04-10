@@ -439,7 +439,7 @@
           if (!this.isElectron) {
             this.createInitialData(projectid, flowid)
           }else {
-            servicesModule.restartService("totaljs-flow");
+            await servicesModule.restartService("totaljs-flow");
             this.createInitialData(projectid, flowid)
           }
         } catch (error) {

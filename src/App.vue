@@ -61,7 +61,7 @@
       },
       setServiceLoaded() {
         // @ts-expect-error ts-migrate(2339) FIXME: Property 'api' does not exist on type 'Window & typeof globalThis'
-        window.api?.response("sendServiceStatus", ({ id, output }) => {
+        window.api?.response("sendServiceStatus", async ({ id, output }) => {
           console.log(id, output, "output")
           if (this.servicesToCheck.includes(id) && output === "120") {
             const idx = this.servicesToCheck.indexOf(id)
@@ -72,7 +72,7 @@
           }else if(this.servicesToCheck.includes(id) && !["100", "104", "105", "25", "1", "15", "20", "25", "30", "90", "50"].includes(output)){
             servicesModule.setServicesStopped()
             // restart this service
-            servicesModule.restartService(id)
+            await servicesModule.restartService(id)
             
           }
         })

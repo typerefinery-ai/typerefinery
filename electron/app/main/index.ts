@@ -387,12 +387,12 @@ function addIpcEvents(window: BrowserWindow) {
       logger.log(`ipc getServices`)
       return serviceManager.getServicesSimple()
     },
-    restartService(serviceid: string): any {
+    async restartService(serviceid: string): Promise<any> {
       logger.log(`ipc restartService {serviceid}`)
       const aservice = serviceManager.getService(serviceid)
       if (aservice) {
-        aservice.stop()
-        aservice.start()
+        await aservice.stop()
+        await aservice.start()
       } else {
         logger.log(`service {serviceid} not found`)
         return false
