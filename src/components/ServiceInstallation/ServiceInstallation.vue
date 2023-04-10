@@ -24,7 +24,7 @@
             </button>
             <button class="tab_link dashboard" v-if="this.servicesLoaded" :class="{ active: activeTab == 'FINISH' }"
                 @click="onTabClicked('FINISH')">
-                Jump to Dashboard
+                Read to Roll, jump to the app
             </button>
         </div>
         <div class="content_container">
