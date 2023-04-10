@@ -69,6 +69,11 @@
             if (this.servicesToCheck.length === 0) {
               servicesModule.setServicesStarted()
             }
+          }else if(this.servicesToCheck.includes(id) && output != "120"){
+            servicesModule.setServicesStopped()
+            // restart this service
+            servicesModule.restartService(id)
+            
           }
         })
       },

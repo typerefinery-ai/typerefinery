@@ -30,6 +30,13 @@
                     <Tag :value="getStatusText(slotProps.data.status)" :severity="getSeverity(slotProps.data)" />
                 </template>
             </Column>
+            <Column header="Actions">
+                <template #body="{ data, index }">
+                    <!-- if getSeverity(slotProps.data) is danger then show the button -->
+
+                    <Button  type="button" size="small" icon="pi pi-refresh" @click="onRestartService(data, index)" />
+                </template>
+            </Column>
         </DataTable>
     </div>
 </template>
@@ -74,7 +81,13 @@ export default {
                 "DEPENDENCIESREADY" : "105",
                 "STARTED" : "120",
             },
-            lastFetched: 'Just now'
+            lastFetched: 'Just now',
+            servicesToCheck: [
+                "fastapi",
+                "typedb",
+                "totaljs-flow",
+                "totaljs-messageservice",
+            ]
         };
     },
     components: {
@@ -85,8 +98,7 @@ export default {
     },
     props: {
         services: {
-            type: Array,
-            required: true,
+            type: Array
         },
         getServices: {
             type: Function,
@@ -129,6 +141,13 @@ export default {
             this.getServices().then((response) => {
                 this.listOfServices = response;
                 this.lastFetched = new Date().toLocaleTimeString();
+                const requiredServices =  this.listOfServices.filter((service) => this.servicesToCheck.includes(service.id));
+                const reqServicesStarted = requiredServices.every((service) => service.status === "120");
+                if (!reqServicesStarted) {
+                    servicesModule.setServicesStopped()
+                } else {
+                    servicesModule.setServicesStarted()
+                }
             });
         },
         getStatusText(status) {
@@ -142,6 +161,15 @@ export default {
         onTabClicked(tab) {
             console.log('tab clicked', tab);
             this.$emit('tab-clicked', tab);
+        },
+        onRestartService(service, index) {
+            console.log(service.id, index)
+            servicesModule.restartService(service.id).then((response) => {
+                console.log('response', response)
+                if(response && response === true) {
+                   this.fetchServiceStatus();
+                }
+            });
         }
     }
 };
