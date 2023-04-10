@@ -69,7 +69,7 @@
             if (this.servicesToCheck.length === 0) {
               servicesModule.setServicesStarted()
             }
-          }else if(this.servicesToCheck.includes(id) && output != "120"){
+          }else if(this.servicesToCheck.includes(id) && !["100", "104", "105", "25", "1", "15", "20", "25", "30", "90", "50"].includes(output)){
             servicesModule.setServicesStopped()
             // restart this service
             servicesModule.restartService(id)
