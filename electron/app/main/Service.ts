@@ -657,7 +657,10 @@ export class Service extends EventEmitter<ServiceEvent> {
   }
 
   get isStarting() {
-    return this.#status === ServiceStatus.STARTING
+    return (
+      this.#status === ServiceStatus.STARTING ||
+      this.#status === ServiceStatus.DEPENDENCIESWAIT
+    )
   }
 
   get isInstalling() {
