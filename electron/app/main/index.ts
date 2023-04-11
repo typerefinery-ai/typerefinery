@@ -399,11 +399,11 @@ function addIpcEvents(window: BrowserWindow) {
       }
       return true
     },
-    startService(serviceid: string): any {
+    async startService(serviceid: string): Promise<any> {
       logger.log(`ipc startService {serviceid}`)
       const aservice = serviceManager.getService(serviceid)
       if (aservice) {
-        aservice.start()
+        await aservice.start();
       } else {
         logger.log(`service {serviceid} not found`)
         return false
