@@ -13,7 +13,7 @@
                     Installing services...
                     <span class="pi pi-spin pi-cog" role="status" aria-hidden="true"></span>
                 </div>
-                <div v-else class="mt-3 text-sm text-white hover:text-500">
+                <div v-else class="mt-3 text-sm text-white">
                     Required Services installed
                     <span class="pi pi-check" role="status" aria-hidden="true"></span>
                 </div>
@@ -22,9 +22,9 @@
                 @click="onTabClicked('DOCUMENTATION')">
                 Documentation
             </button>
-            <button class="tab_link dashboard" v-if="this.servicesLoaded" :class="{ active: activeTab == 'FINISH' }"
-                @click="onTabClicked('FINISH')">
-                Read to Roll, jump to the app
+            <button class="tab_link dashboard" v-if="this.servicesLoaded" @click="onTabClicked('FINISH')">
+                Read to Roll, jump to the app 
+                <i class="pi pi-arrow-right"></i>
             </button>
         </div>
         <div class="content_container">
@@ -35,7 +35,7 @@
             
     
             <!-- <welcome v-if="activeTab === 'WELCOME'" /> -->
-            <welcome v-if="activeTab === 'WELCOME'" />
+            <welcome v-if="activeTab === 'WELCOME'"  @tabClicked="onTabClicked" :isInitialTime="isInitialTime"  />
             <documentation v-if="activeTab === 'DOCUMENTATION'"></documentation>
             <services-content v-if="activeTab === 'SERVICES'" @tabClicked="onTabClicked" :getServices="getServices"
                 :servicesLoaded="servicesLoaded" :services="services"></services-content>
@@ -50,7 +50,6 @@ import { getModule } from "vuex-module-decorators"
 import { isProxy, toRaw } from 'vue';
 
 import Welcome from './Tabs/Welcome.vue';
-import Introduction from './Tabs/Introduction.vue';
 import Documentation from './Tabs/Documentation.vue';
 import ServicesContent from './Tabs/Services.vue';
 import WindowControls from '../Menu/WindowControls.vue';
@@ -61,7 +60,6 @@ export default {
     name: 'ServiceInstallation',
     components: {
         Welcome,
-        Introduction,
         Documentation,
         ServicesContent,
         WindowControls
@@ -87,16 +85,21 @@ export default {
             loading: false,
             error: false,
             errorMessage: '',
-            activeTab: 'WELCOME'
+            activeTab: 'WELCOME',
+            initialTime: 'true'
         };
     },
     computed: {
         servicesLoaded() {
             return servicesModule.data.servicesStarted
         },
+        isInitialTime() {
+            return this.initialTime;
+        }
     },
     methods: {
         onTabClicked(tab) {
+            this.initialTime = 'false';
             if (tab === 'FINISH') {
                 this.updateMoveToDashboard(true);
                 return;
@@ -175,4 +178,13 @@ export default {
     font-family: Roboto, Helvetica Neue Light, Helvetica Neue, Helvetica, Arial,
         Lucida Grande, sans-serif;
 }
+
+.dashboard {
+    background: #1e69e1 !important;
+}
+
+.dashboard i {
+    margin-left: 5px;
+}
+
 </style>

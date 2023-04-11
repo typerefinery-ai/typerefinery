@@ -1,18 +1,16 @@
 
 <template>
     <div class="card service_container">
-        <div class="mb-2" v-if="!servicesLoaded">
-            <p class="text-black text-md">
+        <div class="mb-5 mt-5" v-if="!servicesLoaded">
+            <p class="text-black text-lg">
                 Services are installing and starting. This may take a few minutes.
             </p>
-            <span class="text-blue-800 text-sm text-button" @click="onTabClicked('DOCUMENTATION')">Mean while, you can read the documentation.</span>
-
         </div>
-        <div class="mb-2" v-else>
-            <p class="text-black text-md">
+        <div class="mb-5 mt-5" v-else>
+            <p class="text-black text-lg mb-3">
                 Services are installed and running.
             </p>
-            <span class="text-blue-800 text-sm text-button" @click="onTabClicked('FINISH')">
+            <span class="text-blue-800 text-base mt-4 text-button" @click="onTabClicked('FINISH')">
                 Now you can jump to the dashboard.
             </span>
         </div>
@@ -28,13 +26,6 @@
             <Column header="Status">
                 <template #body="slotProps">
                     <Tag :value="getStatusText(slotProps.data.status)" :severity="getSeverity(slotProps.data)" />
-                </template>
-            </Column>
-            <Column header="Actions">
-                <template #body="{ data, index }">
-                    <!-- if getSeverity(slotProps.data) is danger then show the button -->
-
-                    <Button  type="button" size="small" icon="pi pi-refresh" @click="onRestartService(data, index)" />
                 </template>
             </Column>
         </DataTable>
@@ -87,7 +78,8 @@ export default {
                 "typedb",
                 "totaljs-flow",
                 "totaljs-messageservice",
-            ]
+            ],
+            timer: null
         };
     },
     components: {
@@ -106,14 +98,17 @@ export default {
         }
     },
     emits: ["tabClicked"],
-    mounted() {
-        this.fetchServiceStatus();
-    },
     
     computed: {
         servicesLoaded() {
             return servicesModule.data.servicesStarted
         },
+    },
+    mounted() {
+        this.fetchServiceStatus();
+        this.timer = setInterval(() => {
+            this.fetchServiceStatus();
+        }, 5000);
     },
     methods: {
         getSeverity(service) {
@@ -139,15 +134,15 @@ export default {
         },
         fetchServiceStatus() {
             this.getServices().then((response) => {
-                this.listOfServices = response;
                 this.lastFetched = new Date().toLocaleTimeString();
-                const requiredServices =  this.listOfServices.filter((service) => this.servicesToCheck.includes(service.id));
-                const reqServicesStarted = requiredServices.every((service) => service.status === "120");
-                if (!reqServicesStarted) {
-                    servicesModule.setServicesStopped()
-                } else {
-                    servicesModule.setServicesStarted()
-                }
+                const requiredServices =  response.filter((service) => this.servicesToCheck.includes(service.id));
+                this.listOfServices = requiredServices;
+                // const reqServicesStarted = requiredServices.every((service) => service.status === "120");
+                // if (!reqServicesStarted) {
+                //     servicesModule.setServicesStopped()
+                // } else {
+                //     servicesModule.setServicesStarted()
+                // }
             });
         },
         getStatusText(status) {
@@ -156,16 +151,16 @@ export default {
             
         },
         servicesLoaded() {
+            if(servicesModule.data.servicesStarted) {
+                clearInterval(this.timer);
+            }
             return servicesModule.data.servicesStarted
         },
         onTabClicked(tab) {
-            console.log('tab clicked', tab);
             this.$emit('tab-clicked', tab);
         },
         onRestartService(service, index) {
-            console.log(service.id, index)
             servicesModule.restartService(service.id).then((response) => {
-                console.log('response', response)
                 if(response && response === true) {
                    this.fetchServiceStatus();
                 }
@@ -178,8 +173,7 @@ export default {
 <style scoped>
     .service_container {
         width: 100%;
-        margin: auto;
-        padding: 10px;
+        padding: 25px;
     }
     .text-button {
         cursor: pointer;
