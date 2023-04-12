@@ -184,7 +184,7 @@ router.post(
             ctx.body = 'Creating folder successful!';
         } else if (type === 'UPLOAD_FILE') {
             du('Starting: ' + p);
-            console.log('Starting: ' + p);
+            // console.log('Starting: ' + p);
 
 
             //let fTmp = path.join(os.tmpdir(), Date.now().toString());    somehow, the files are gone on OSX
@@ -198,7 +198,7 @@ router.post(
             let appendix;
             let overwrite = ctx.query.overwrite;
 
-            console.log('overwrite: ' + overwrite);
+            // console.log('overwrite: ' + overwrite);
 
             currentUploads[requestNameUploading] = { size: ctx.headers['content-length'], currentSize: 0 };
             currentUploadsLast = Date.now();
