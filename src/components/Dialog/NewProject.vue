@@ -218,6 +218,7 @@
   import { oneDark } from "@codemirror/theme-one-dark"
   import { javascript } from "@codemirror/lang-javascript"
   import * as electronHelpers from "@/utils/electron"
+  import flowSample from './flow_sample.json'
   import restapi from "@/utils/restapi"
   import Dialog from "primevue/dialog"
   import Dropdown from "primevue/dropdown"
@@ -283,6 +284,7 @@
         themecode: `{\n  "attribute": {\n    "colorlist": "Oranges",\n    "cindex": 7,\n    "tcolorlist": "Greys",\n    "tindex": 0\n  },\n  "entity": {\n    "colorlist": "Blue-Green",\n    "cindex": 7,\n    "tcolorlist": "Greys",\n    "tindex": 0\n  },\n  "relation": {\n    "colorlist": "Blue-Green",\n    "cindex": 6,\n    "tcolorlist": "Greys",\n    "tindex": 7\n  },\n  "shadow": {\n    "colorlist": "Yellows",\n    "cindex": 2,\n    "tcolorlist": "Greys",\n    "tindex": 7\n  }\n}`,
         serviceStopped: false,
         serviceStarted: false,
+        defaultFlowData: flowSample
       }
     },
     // setup: () => ({ v$: useVuelidate() }),
@@ -419,29 +421,12 @@
       },
       async insertFlowData(projectid, flowid) {
         try {
-          const date = new Date().toISOString()
-          const payload = { flowid, projectid, date }
-          const url = "/flow/createsample"
-          await restapi.post(url, payload)
-          // servicesModule.stopService("totaljs-flow")
-          // // @ts-expect-error ts-migrate(2339) FIXME: Property 'api' does not exist on type 'Window & typeof globalThis'
-          // window.api?.response("sendServiceStatus", ({ id, output }) => {
-          //   const isFlow = id === "totaljs-flow"
-          //   if (isFlow && output === "60" && !this.serviceStopped) {
-          //     servicesModule.startService("totaljs-flow")
-          //     this.serviceStopped = true
-          //   } else if (isFlow && output === "120" && !this.serviceStarted) {
-          //     this.createInitialData(projectid, flowid)
-          //     this.serviceStarted = true
-          //   }
-          // })
-          // JUST FOR WEB VERSION
-          if (!this.isElectron) {
-            this.createInitialData(projectid, flowid)
-          }else {
-            await servicesModule.restartService("totaljs-flow");
-            this.createInitialData(projectid, flowid)
-          }
+          // replace PROJECT_ID from the payload with the actual project id.
+          const payload = JSON.parse(JSON.stringify(this.defaultFlowData).replace(/PROJECT_ID/g, projectid));
+          const url = "/flow/import";
+          const { data } = await restapi.post(url, payload);
+          flowid = data.value;
+          this.createInitialData(projectid, flowid);
         } catch (error) {
           console.log(error)
           errorToast(this)
