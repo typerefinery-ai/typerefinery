@@ -56,7 +56,7 @@ Function StartServer
   try {
     Invoke-Expression -Command "${NODE_PROGRAM_PATH} -v"
     Invoke-Expression -Command "${NPM_PROGRAM_PATH} -v"
-    Invoke-Expression -Command "${NPM_PROGRAM_PATH} start"
+    Invoke-Expression -Command "${NODE_PROGRAM_PATH} .\\bin\\node-file-manager-esm.mjs --log -d ${SERVICE_DATA_PATH} -p ${SERVICE_PORT}"
   } finally {
     Set-Location -Path "${CURRENT_PATH}"
   }
