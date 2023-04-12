@@ -478,10 +478,22 @@ export class Service extends EventEmitter<ServiceEvent> {
       .replaceAll("${SERVICE_PATH}", service.#servicepath)
       .replaceAll("${EXEC_SERVICE_PATH}", service.#execservicepath)
       .replaceAll("${SERVICE_DATA_PATH}", service.#servicedatapath)
+      .replaceAll(
+        "${SERVICE_DATA_PATH_ESC}",
+        this.isWindows
+          ? service.#servicedatapath.replaceAll("\\", "\\\\")
+          : service.#servicedatapath
+      ) // escape backslashes for windows
       .replaceAll("${SERVICE_PORT}", service.#serviceport + "")
       .replaceAll("${SERVICE_DEBUG_PORT}", service.#servicedebugport + "")
       .replaceAll("${SERVICE_HOST}", service.#servicehost + "")
       .replaceAll("${SERVICE_LOG_PATH}", service.#logsDir + "")
+      .replaceAll(
+        "${SERVICE_LOG_PATH_ESC}",
+        this.isWindows
+          ? (service.#logsDir + "").replaceAll("\\", "\\\\")
+          : service.#logsDir + ""
+      )
       .replaceAll("${SERVICE_AUTH_USERNAME}", service.username)
       .replaceAll("${SERVICE_AUTH_PASSWORD}", service.password)
       .replaceAll("${SERVICE_PID_FILE}", service.#servicepidfile)
@@ -645,7 +657,10 @@ export class Service extends EventEmitter<ServiceEvent> {
   }
 
   get isStarting() {
-    return this.#status === ServiceStatus.STARTING
+    return (
+      this.#status === ServiceStatus.STARTING ||
+      this.#status === ServiceStatus.DEPENDENCIESWAIT
+    )
   }
 
   get isInstalling() {
