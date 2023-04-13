@@ -37,7 +37,8 @@
       "MONGO_DB_URL": "mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_HOST}:${MONGO_PORT}"
     },
     "globalenv": {
-      "CMS_PORT": "${SERVICE_PORT}"
+      "CMS_PORT": "${SERVICE_PORT}",
+      "CMS_CACHE_PATH_ESC": "${SERVICE_DATA_PATH_ESC}\\docroot"
     }
   }
 }
