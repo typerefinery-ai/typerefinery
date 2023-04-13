@@ -1,7 +1,11 @@
 <template>
   <template v-if="isElectron && !moveToDashboard">
-    <service-installation :updateMoveToDashboard="updateMoveToDashboard" :servicesStarted="servicesStarted"
-      :getServices="getServices" />
+    <service-installation 
+      @updateMoveToDashboard="updateMoveToDashboard" 
+      :servicesStarted="servicesStarted"
+      :getServices="getServices"
+    >
+    </service-installation>
   </template>
   <template v-else>
     <project v-if="$route.params.id === 'project'" />
@@ -60,6 +64,7 @@ export default {
 
       window.onbeforeunload = function (e) {
         window.onunload = function () {
+          localStorage.setItem("moveToDashboard", false);
           window.localStorage.moveToDashboard = false;
         }
         return undefined;

@@ -72,11 +72,7 @@ export default {
         servicesStarted: {
             type: Boolean,
             required: true,
-        },
-        updateMoveToDashboard: {
-            type: Function,
-            required: true,
-        },
+        }
     },
     data() {
         return {
@@ -89,6 +85,7 @@ export default {
             initialTime: 'true'
         };
     },
+    emits: ['updateMoveToDashboard'],
     computed: {
         servicesLoaded() {
             return servicesModule.data.servicesStarted
@@ -101,7 +98,7 @@ export default {
         onTabClicked(tab) {
             this.initialTime = 'false';
             if (tab === 'FINISH') {
-                this.updateMoveToDashboard(true);
+                this.$emit('updateMoveToDashboard', true);
                 return;
             }
             this.activeTab = tab;
