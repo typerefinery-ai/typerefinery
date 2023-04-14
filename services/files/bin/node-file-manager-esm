@@ -1,0 +1,14 @@
+#!/usr/bin/env node
+
+/**
+ * node-file-manager-esm
+ *
+ * Copyright (c) 2019 by Nabil Redmann
+ */
+'use strict'
+
+
+require = require("esm")(module, {"force": true, "mode": "auto", "cjs": { "vars": true } });
+
+// register application
+module.exports = require('./node-file-manager-esm.mjs').default;

@@ -5,7 +5,7 @@ daemon off;
 worker_processes  1;
 
 #error_log  logs/error.log;
-error_log  logs/error.log  notice;
+error_log  "${SERVICE_LOG_PATH_ESC}/nginx-log-error.log"  notice;
 #error_log  logs/error.log  info;
 
 # pid        logs/nginx.pid;
@@ -24,7 +24,7 @@ http {
                       '$status $body_bytes_sent "$http_referer" '
                       '"$http_user_agent" "$http_x_forwarded_for"';
 
-    access_log  logs/access.log  main;
+    access_log  "${SERVICE_LOG_PATH_ESC}/nginx-log-access.log"  main;
 
     sendfile        on;
     #tcp_nopush     on;
@@ -44,16 +44,20 @@ http {
             return 200;
         }
 
-        location /libs/howlite/web_root {
-            root   html;
-        }
+#        location /apps/typerefinery/webroot {
+#            root   html;
+#        }
 
-        location ~ (.html|/)$ {
-            root   html/content/luna/pages;
-        }
+#        location /libs/howlite/web_root {
+#            root   html;
+#        }
+
+#        location ~ (.html|/)$ {
+#            root   html/content/typerefinery-showcase/pages;
+#        }
 
         location / {
-            root   html/content/luna;
+            root   ${CMS_CACHE_PATH_ESC};
         }
 
     }

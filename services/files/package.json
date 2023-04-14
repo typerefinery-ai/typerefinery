@@ -1,0 +1,70 @@
+{
+  "name": "node-file-manager-esm",
+  "version": "3.3.3",
+  "description": "A simple file manager, based on Koa and Angular.js. Standalone, Koa-mountable. Import-able as ES6 and Babel module.",
+  "main": "index.mjs",
+  "engines": {
+    "node": ">=10.5"
+  },
+  "config": {
+    "name": "File Manager"
+  },
+  "scripts": {
+    "start": "node ./bin/node-file-manager-esm.mjs --log -d ./data",
+    "start-debug": "DEBUG=* node ./bin/node-file-manager-esm.mjs --log",
+    "start-esm": "DEBUG=* node ./bin/node-file-manager-esm",
+    "start-if-docker": "node ./bin/node-file-manager-esm.mjs --log -d ./data",
+    "docker": "make"
+  },
+  "dependencies": {
+    "debug": "^4.1.1",
+    "fs-extra": "^8.1.0",
+    "http-auth": "git+https://github.com/BananaAcid/http-auth_feature-file.git",
+    "jszip": "^3.2.2",
+    "koa": "^2.11.0",
+    "koa-bodyparser": "^4.2.1",
+    "koa-mount": "^4.0.0",
+    "koa-router": "^8.0.7",
+    "koa-static": "^5.0.0",
+    "open": "^7.0.2",
+    "optimist": "^0.5.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BananaAcid/node-file-manager-esm.git"
+  },
+  "keywords": [
+    "upload",
+    "download",
+    "files",
+    "manager",
+    "koa",
+    "angular",
+    "web",
+    "server",
+    "modules",
+    "mount",
+    "esm",
+    "es6",
+    "gui"
+  ],
+  "author": {
+    "name": "bananaacid",
+    "email": "repo@bananaacid.de"
+  },
+  "contributors": [
+    {
+      "name": "efei",
+      "email": "efeigm@gmail.com"
+    }
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/BananaAcid/node-file-manager-esm/issues"
+  },
+  "homepage": "https://github.com/BananaAcid/node-file-manager-esm#readme",
+  "devDependencies": {
+    "@types/node": "^13.7.1",
+    "esm": "^3.2.25"
+  }
+}
