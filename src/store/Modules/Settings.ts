@@ -78,6 +78,8 @@ export default class Settings extends VuexModule {
           to: string
           id: string
           type: string
+          service: string
+          disabled: boolean
           subMenu: {
             id: string
             icon: string
@@ -89,23 +91,15 @@ export default class Settings extends VuexModule {
         }
       | {
           label: string
-          icon: string
           id: string
-          url: string
+          icon: string
           to: string
           type: string
+          service: string
+          disabled: boolean
+          url: string
           enabled: boolean
           subMenu: { id: string; to: string }[]
-        }
-      | {
-          label: string
-          id: string
-          icon: string
-          to: string
-          url: string
-          type: string
-          enabled: boolean
-          subMenu?: undefined
         }
   ) {
     const { id } = updatedValue
@@ -122,6 +116,8 @@ export default class Settings extends VuexModule {
           to: string
           id: string
           type: string
+          service: string
+          disabled: boolean
           subMenu: {
             id: string
             icon: string
@@ -133,23 +129,15 @@ export default class Settings extends VuexModule {
         }
       | {
           label: string
-          icon: string
           id: string
-          url: string
+          icon: string
           to: string
           type: string
+          service: string
+          disabled: boolean
+          url: string
           enabled: boolean
           subMenu: { id: string; to: string }[]
-        }
-      | {
-          label: string
-          id: string
-          icon: string
-          to: string
-          url: string
-          type: string
-          enabled: boolean
-          subMenu?: undefined
         }
   ) {
     if (experience.type === "experimental") {
@@ -167,6 +155,8 @@ export default class Settings extends VuexModule {
           to: string
           id: string
           type: string
+          service: string
+          disabled: boolean
           subMenu: {
             id: string
             icon: string
@@ -178,23 +168,15 @@ export default class Settings extends VuexModule {
         }
       | {
           label: string
-          icon: string
           id: string
-          url: string
+          icon: string
           to: string
           type: string
+          service: string
+          disabled: boolean
+          url: string
           enabled: boolean
           subMenu: { id: string; to: string }[]
-        }
-      | {
-          label: string
-          id: string
-          icon: string
-          to: string
-          url: string
-          type: string
-          enabled: boolean
-          subMenu?: undefined
         }
     )[]
   ) {

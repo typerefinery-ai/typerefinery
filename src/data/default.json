@@ -368,6 +368,8 @@
         "to": "/home/project",
         "id": "project",
         "type": "regular",
+        "service": "null",
+        "disabled": false,
         "subMenu": [
           {
             "id": "new-project",
@@ -408,46 +410,28 @@
         ]
       },
       {
-        "label": "Charts",
-        "icon": "pi pi-chart-pie",
-        "id": "charts",
-        "url": "http://localhost:8080/content/typerefinery-showcase/pages/pages/dashboard.html",
-        "to": "/experience/charts",
-        "type": "experimental",
-        "enabled": false,
-        "subMenu": [
-          { "id": "load-data", "to": "#" },
-          { "id": "load-links", "to": "#" }
-        ]
-      },
-      {
-        "label": "Maps",
+        "label": "CMS",
+        "id": "cms",
         "icon": "pi pi-sitemap",
-        "id": "maps",
-        "to": "/experience/maps",
+        "to": "/experience/cms",
         "type": "experimental",
-        "url": "https://kepler.gl/demo",
+        "service": "cms",
+        "disabled": false,
+        "url": "http://localhost:8113/",
         "enabled": false,
         "subMenu": [{ "id": "load-data", "to": "#" }]
       },
       {
-        "label": "Dashboard",
-        "id": "dashboard",
+        "label": "Totaljs flow",
         "icon": "pi pi-sitemap",
-        "to": "/experience/dashboard",
+        "id": "totaljs",
+        "to": "/experience/totaljs",
         "type": "experimental",
-        "url": "https://kepler.gl/demo",
+        "service": "totaljs-flow",
+        "disabled": false,
+        "url": "http://localhost:8111/",
         "enabled": false,
         "subMenu": [{ "id": "load-data", "to": "#" }]
-      },
-      {
-        "label": "Chat",
-        "id": "chat",
-        "icon": "pi pi-comment",
-        "to": "/experience/chats",
-        "url": "https://kepler.gl/demo",
-        "type": "experimental",
-        "enabled": false
       }
     ]
   }
