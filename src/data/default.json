@@ -339,7 +339,6 @@
     "settingsDialogVisible": false,
     "editDialog": false,
     "settingPath": null,
-    "previousIcon": "",
     "settings": [
       {
         "id": "general",
