@@ -129,7 +129,7 @@
             activeExperienceServiceStatus[0].status != "120"
           ) {
             element.disabled = true
-            settingsModule.data.previousIcon = element.icon
+            // settingsModule.data.previousIcon = element.icon
             element.icon = "pi pi-exclamation-triangle"
             settingsModule.updateMenuitem(element)
           }

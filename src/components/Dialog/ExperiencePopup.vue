@@ -199,6 +199,7 @@
             label: this.label,
             id: id,
             icon: this.icon,
+            experienceIcon: this.icon,
             to: `/experience/${id}`,
             type: "experimental",
             service: this.service,

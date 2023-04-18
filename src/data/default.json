@@ -366,6 +366,7 @@
       {
         "label": "Project",
         "icon": "pi pi-briefcase",
+        "experienceIcon": "pi pi-briefcase",
         "to": "/home/project",
         "id": "project",
         "type": "regular",
@@ -413,7 +414,8 @@
       {
         "label": "CMS",
         "id": "cms",
-        "icon": "pi pi-sitemap",
+        "icon": "pi pi-server",
+        "experienceIcon": "pi pi-server",
         "to": "/experience/cms",
         "type": "experimental",
         "service": "cms",

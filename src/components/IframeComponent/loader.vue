@@ -42,17 +42,14 @@
     cursor: pointer;
   }
   .container {
-    // display: flex;
-    // align-items: center;
-    // justify-content: center;
-    // height: 100vh;
+    height: 100vh;
     font-family: "Roboto";
     .placeholder {
       // margin: 15px;
       // padding: 5px;
       border-radius: 5px;
       div {
-        background: #e8e8e8;
+        background: white;
       }
       .workflow {
         float: right;

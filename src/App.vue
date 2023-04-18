@@ -70,11 +70,11 @@
               (element) => element.service == id
             )
             if (experienceObj.length > 0) {
-              experienceObj[0].disabled = false
-              experienceObj[0].icon =
-                settingsModule.data.previousIcon || experienceObj[0].icon
-              settingsModule.data.previousIcon = ""
-              settingsModule.updateMenuitem(experienceObj[0])
+              experienceObj.forEach((el) => {
+                el.disabled = false
+                el.icon = el.experienceIcon || el.icon
+                settingsModule.updateMenuitem(el)
+              })
             }
           }
           if (this.servicesToCheck.includes(id) && output === "120") {
