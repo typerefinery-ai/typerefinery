@@ -99,7 +99,12 @@ export default class Settings extends VuexModule {
           disabled: boolean
           url: string
           enabled: boolean
-          subMenu: { id: string; to: string }[]
+          subMenu: {
+            id: string
+            to: string
+            experimental: boolean
+            icon: string
+          }[]
         }
   ) {
     const { id } = updatedValue
@@ -137,7 +142,12 @@ export default class Settings extends VuexModule {
           disabled: boolean
           url: string
           enabled: boolean
-          subMenu: { id: string; to: string }[]
+          subMenu: {
+            id: string
+            to: string
+            experimental: boolean
+            icon: string
+          }[]
         }
   ) {
     if (experience.type === "experimental") {
@@ -176,7 +186,12 @@ export default class Settings extends VuexModule {
           disabled: boolean
           url: string
           enabled: boolean
-          subMenu: { id: string; to: string }[]
+          subMenu: {
+            id: string
+            to: string
+            experimental: boolean
+            icon: string
+          }[]
         }
     )[]
   ) {

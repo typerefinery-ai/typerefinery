@@ -339,6 +339,7 @@
     "settingsDialogVisible": false,
     "editDialog": false,
     "settingPath": null,
+    "previousIcon": "",
     "settings": [
       {
         "id": "general",
@@ -419,7 +420,14 @@
         "disabled": false,
         "url": "http://localhost:8113/",
         "enabled": false,
-        "subMenu": [{ "id": "load-data", "to": "#" }]
+        "subMenu": [
+          {
+            "id": "load-data",
+            "to": "#",
+            "experimental": false,
+            "icon": "pi pi-server"
+          }
+        ]
       },
       {
         "label": "Totaljs flow",
@@ -431,7 +439,14 @@
         "disabled": false,
         "url": "http://localhost:8111/",
         "enabled": false,
-        "subMenu": [{ "id": "load-data", "to": "#" }]
+        "subMenu": [
+          {
+            "id": "load-data",
+            "to": "#",
+            "experimental": false,
+            "icon": "pi pi-server"
+          }
+        ]
       }
     ]
   }
