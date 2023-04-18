@@ -1,8 +1,5 @@
 <template>
   <div>
-    <div v-if="loading">
-      <loader />
-    </div>
     <div class="app">
       <div class="header" :class="{ 'menu-hidden': !mainMenuVisible }">
         <main-menu
@@ -17,6 +14,9 @@
       </div>
       <!-- content -->
       <div class="iframe-container">
+        <div v-if="loading">
+          <loader />
+        </div>
         <iframe
           :src="`${experience.url}`"
           width="100%"
