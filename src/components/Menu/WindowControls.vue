@@ -8,7 +8,7 @@
   <menu-item v-if="isMaximized" tooltip="restore" @click.prevent="onRestore">
     <window-restore-icon :size="18" />
   </menu-item>
-  <menu-item tooltip="close" @click.prevent="onClose">
+  <menu-item tooltip="close" placeholder="Left" @click.prevent="onClose">
     <window-close-icon :size="18" />
   </menu-item>
 </template>
