@@ -19,7 +19,7 @@
 </template>
 <script>
   export default {
-    name: "Loadingpage",
+    name: "LoadingPage",
   }
 </script>
 <style scoped lang="scss">
