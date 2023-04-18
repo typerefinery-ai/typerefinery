@@ -50,7 +50,7 @@
             <div class="service-block">
               <span class="service-restart">
                 <Button
-                  :icon="`pi ${loading ? 'pi-spin pi-refresh' : 'pi-refresh'}`"
+                  :icon="`pi ${loading === service.id ? 'pi-spin pi-refresh' : 'pi-refresh'}`"
                   :style="{ 'pointer-events': loading ? 'none' : 'auto' }"
                   @click.stop="restartService(service)"
                 />
@@ -211,9 +211,9 @@
       }
     },
     methods: {
-      restartService(service) {
-        this.loading = true
-        servicesModule.restartService(service.id)
+      async restartService(service) {
+        this.loading = service.id;
+        await servicesModule.restartService(service.id)
         this.serviceListByStatus()
         const newService = servicesModule.data.services.filter(
           (el) => el.id == service.id
