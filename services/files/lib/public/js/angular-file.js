@@ -10,7 +10,8 @@
 /**
  * The ur.file module implements native support for file uploads in AngularJS.
  */
-angular.module('ur.file', []).config(['$provide', function($provide) {
+angular.module('ur.file', []).config(['$provide', '$locationProvider', function($provide, $locationProvider) {
+  $locationProvider.hashPrefix('');
 
   /**
    * XHR initialization, copied from Angular core, because it's buried inside $HttpProvider.

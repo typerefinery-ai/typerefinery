@@ -44,16 +44,20 @@ http {
             return 200;
         }
 
-        location /libs/howlite/web_root {
-            root   html;
-        }
+#        location /apps/typerefinery/webroot {
+#            root   html;
+#        }
 
-        location ~ (.html|/)$ {
-            root   html/content/luna/pages;
-        }
+#        location /libs/howlite/web_root {
+#            root   html;
+#        }
+
+#        location ~ (.html|/)$ {
+#            root   html/content/typerefinery-showcase/pages;
+#        }
 
         location / {
-            root   html/content/luna;
+            root   ${CMS_CACHE_PATH_ESC};
         }
 
     }

@@ -16,15 +16,21 @@
       "default": ["; ${NPM} install"]
     },
     "datapath": "./data",
+    "env": {
+      "FM_PORT": "${SERVICE_PORT}",
+      "FM_DIRECTORY": "${SERVICE_DATA_PATH}",
+      "FM_MAXSIZE": "300",
+      "FM_LOGGING": "true"
+    },
     "globalenv": {
       "FLOW_HOST_URL": "http://localhost:${SERVICE_PORT}",
       "FLOW_PORT": "${SERVICE_PORT}"
     },
     "commandline": {
-      "win32": "${SERVICE_PATH}\\lib\\index.js",
-      "darwin": "${SERVICE_PATH}/lib/index.js",
-      "linux": "${SERVICE_PATH}/lib/index.js",
-      "default": "${SERVICE_PATH}\\lib\\index.js"
+      "win32": "${SERVICE_PATH}\\bin\\node-file-manager-esm.mjs",
+      "darwin": "${SERVICE_PATH}/bin/node-file-manager-esm.mjs",
+      "linux": "${SERVICE_PATH}/bin/node-file-manager-esm.mjs",
+      "default": "${SERVICE_PATH}\\bin\\node-file-manager-esm.mjs"
     },
     "serviceport": 8199,
     "healthcheck": {
