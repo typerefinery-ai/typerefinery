@@ -12,6 +12,8 @@
   import Services from "@/store/Modules/Services"
   const appDataModule = getModule(AppData)
   const servicesModule = getModule(Services)
+  import Settings from "@/store/Modules/Settings"
+  const settingsModule = getModule(Settings)
 
   export default defineComponent({
     name: "App",
@@ -63,6 +65,18 @@
         // @ts-expect-error ts-migrate(2339) FIXME: Property 'api' does not exist on type 'Window & typeof globalThis'
         window.api?.response("sendServiceStatus", async ({ id, output }) => {
           console.log(id, output, "output")
+          if (output == "120") {
+            const experienceObj = settingsModule.data.listOfMenu.filter(
+              (element) => element.service == id
+            )
+            if (experienceObj.length > 0) {
+              experienceObj.forEach((el) => {
+                el.disabled = false
+                el.icon = el.experienceIcon || el.icon
+                settingsModule.updateMenuitem(el)
+              })
+            }
+          }
           if (this.servicesToCheck.includes(id) && output === "120") {
             const idx = this.servicesToCheck.indexOf(id)
             this.servicesToCheck.splice(idx, 1)

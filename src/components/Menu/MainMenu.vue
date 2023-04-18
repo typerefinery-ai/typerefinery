@@ -116,31 +116,24 @@
       },
     },
     async mounted() {
-      console.log("items", this.items)
       this.listOfActiveExperience = this.items
-      console.log("listOfActiveExperience", this.listOfActiveExperience)
       const services = await servicesModule.getServices()
       this.listOfActiveExperience.forEach((element) => {
-        console.log("ele", element)
         const serviceId = element.service
-        const activeExperienceServiceStatus = services.filter(
-          (el) => el.id == serviceId
-        )
-        console.log(
-          "activeExperienceServiceStatus",
-          activeExperienceServiceStatus
-        )
-        if (
-          activeExperienceServiceStatus != "undefined" &&
-          activeExperienceServiceStatus[0].status != "120"
-        ) {
-          element.disabled = true
-          element.icon = "pi pi-exclamation-triangle"
-          settingsModule.updateMenuitem(element)
+        if (serviceId != null) {
+          const activeExperienceServiceStatus = services.filter(
+            (el) => el.id == serviceId
+          )
+          if (
+            activeExperienceServiceStatus.length > 0 &&
+            activeExperienceServiceStatus[0].status != "120"
+          ) {
+            element.disabled = true
+            element.icon = "pi pi-exclamation-triangle"
+            settingsModule.updateMenuitem(element)
+          }
         }
       })
-      // const data = JSON.parse(JSON.stringify(settingsModule.data.listOfMenu))
-      // const services = await servicesModule.getServices()
     },
 
     methods: {
