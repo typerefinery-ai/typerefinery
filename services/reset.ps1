@@ -3,9 +3,8 @@ Param(
   [string]$USER_APP_PATH = ( $IsWindows ? "${env:APPDATA}\${ELECTRON_APP_NAME}" : ( $IsMacOS ? "~/Library/Application Support/${ELECTRON_APP_NAME}" : "${env:XDG_CONFIG_HOME }/${ELECTRON_APP_NAME}") ),
   [string]$USER_APP_LOG_PATH = "${USER_APP_PATH}\logs",
   [string]$USER_APP_SERVICES_PATH = "${USER_APP_PATH}\Electron",
-  [string]$GIT_CLEAN_CHECK = "git clean -xn services",
-  [string]$GIT_CLEAN_SERVICES = "git clean -xdf services",
-  [string]$GIT_CLEAN_LOGS = "git clean -xdf logs",
+  [string]$GIT_CLEAN_CHECK = "git clean -xn services; git clean -xn logs",
+  [string]$GIT_CLEAN = "git clean -xdf services; git clean -xdf logs",
   [string]$CURRENT_PATH = "${PWD}",
   [string]$OS = ( $IsWindows ? "win32" : ( $IsMacOS ? "darwin" : "linux" ) ),
   [switch]$CLEAN = $false,
@@ -23,8 +22,7 @@ Function PrintInfo
   printSectionLine "USER_APP_LOG_PATH: ${USER_APP_LOG_PATH}"
   printSectionLine "USER_APP_SERVICES_PATH: ${USER_APP_SERVICES_PATH}"
   printSectionLine "GIT_CLEAN_CHECK: ${GIT_CLEAN_CHECK}"
-  printSectionLine "GIT_CLEAN_SERVICES: ${GIT_CLEAN_SERVICES}"
-  printSectionLine "GIT_CLEAN_LOGS: ${GIT_CLEAN_LOGS}"
+  printSectionLine "GIT_CLEAN: ${GIT_CLEAN}"
   printSectionLine "CURRENT_PATH: ${CURRENT_PATH}"
 
 }
@@ -34,7 +32,12 @@ Function StartCheck
 
   printSectionBanner "Reset Check"
 
-  Invoke-Expression -Command "${GIT_CLEAN_CHECK}"
+  Set-Location -Path "${CURRENT_PATH}\.."
+  try {
+    Invoke-Expression -Command "${GIT_CLEAN_CHECK}"
+  } finally {
+    Set-Location -Path "${CURRENT_PATH}"
+  }
 
 }
 
@@ -43,7 +46,14 @@ Function StartReset
 
   printSectionBanner "Reset"
 
-  Invoke-Expression -Command "${GIT_CLEAN_CHECK}"
+  Set-Location -Path "${CURRENT_PATH}\.."
+  try {
+    Invoke-Expression -Command "${GIT_CLEAN}"
+  } finally {
+    Set-Location -Path "${CURRENT_PATH}"
+  }
+
+
 
 }
 
