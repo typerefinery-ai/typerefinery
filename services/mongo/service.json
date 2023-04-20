@@ -20,8 +20,8 @@
         "output": "win32"
       },
       "darwin": {
-        "name": "drwin.zip",
-        "output": "drwin"
+        "name": "darwin.zip",
+        "output": "darwin"
       },
       "linux": {
         "name": "linux.zip",
