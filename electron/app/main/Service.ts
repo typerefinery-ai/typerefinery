@@ -1130,7 +1130,7 @@ export class Service extends EventEmitter<ServiceEvent> {
       this.#log(
         `waiting for dependant services ${
           this.#id
-        } with env variables ${JSON.stringify(globalenv)}`
+        } with passed variables ${JSON.stringify(globalenv)}`
       )
 
       // wait untill all depend_on services are started
@@ -1806,7 +1806,12 @@ export class Service extends EventEmitter<ServiceEvent> {
                 this.#log(`service ${service.id} is available and ready.`)
               }
 
-              if (service.isRunnable && !service.isRunning) {
+              const tryToStart =
+                service.isRunnable == true && !service.isRunning
+
+              this.#log(`try to start service ${tryToStart == true}.`)
+
+              if (tryToStart == true) {
                 this.#log(`starting service ${service.id}.`)
                 //add this service to start chain
                 await service.start(globalenv, startchain)
