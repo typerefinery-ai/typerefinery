@@ -738,8 +738,10 @@ export class Service extends EventEmitter<ServiceEvent> {
   #register(process: ChildProcess) {
     this.#process = process
     if (process.pid) {
+      // this.#log(`creating service pid for service ${this.#id}`)
       this.#createServicePidFile(this.#servicepidfile, process.pid)
     }
+    // this.#log(`registering service exit event ${this.#id}`)
     process.once("exit", () => {
       this.#removeServicePidFile()
       this.#setStatus(ServiceStatus.STOPPED)
@@ -751,7 +753,9 @@ export class Service extends EventEmitter<ServiceEvent> {
       this.#process = void 0
     })
     // run health check if defined
+    // this.#log(`service healtcheck is ${this.#healthCheck != null}`)
     if (this.#healthCheck) {
+      // this.#log(`starting health check for service ${this.#id}`)
       this.#startHealthCheck(this.#healthCheck.retries || 10)
     }
   }
@@ -1203,6 +1207,7 @@ export class Service extends EventEmitter<ServiceEvent> {
           // send data to logs but it will be delayed as its buffered in 64k blocks :(
           stdio: ["ignore", this.#stdout, this.#stderr],
           windowsHide: true,
+          // detached: !this.isWindows, // only set this on linux and mac
         }
 
         this.#log(
@@ -1247,6 +1252,7 @@ export class Service extends EventEmitter<ServiceEvent> {
           }
 
           this.#register(process)
+          // this.#log(`service ${this.id} started and registered.`)
         } catch (error) {
           this.#setStatus(ServiceStatus.ERROR)
           this.#log(`error starting service ${this.id} with error ${error}`)
