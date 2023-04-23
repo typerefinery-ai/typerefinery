@@ -11,7 +11,7 @@
     "execservice": { "id": "node" },
     "setup": {
       "win32": ["; ${NPM} install"],
-      "darwin": ["; ${NPM} install"],
+      "darwin": ["; ${NPM} install --foreground-scripts]"],
       "linux": ["; ${NPM} install"],
       "default": ["; ${NPM} install"]
     },
@@ -22,7 +22,7 @@
       "MONGO_DB_URL": "mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@127.0.0.1:${MONGO_PORT}?retryWrites=true&w=majority&directConnection=true",
       "MONGO_DB_NAME": "bpmn"
     },
-    "datapath": "processes",
+    "datapath": "./processes",
     "commandline": {
       "win32": "app",
       "darwin": "app",

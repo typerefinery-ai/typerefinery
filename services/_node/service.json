@@ -37,7 +37,9 @@
     },
     "globalenv": {
       "NODE": "${SERVICE_EXECUTABLE}",
-      "NPM": "${SERVICE_EXECUTABLE_CLI}"
+      "NPM": "${SERVICE_EXECUTABLE_CLI}",
+      "NPM_SCRIPT": "${SERVICE_EXECUTABLE}/../../lib/node_modules/npm/lib/cli.js",
+      "PATH": "/Users/maxbarrass/projects/typerefinery.ai/typerefinery/services/_node/node-v18.6.0-darwin-x64/bin"
     }
   }
 }
