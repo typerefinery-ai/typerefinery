@@ -1611,7 +1611,7 @@ export class Service extends EventEmitter<ServiceEvent> {
             this.#log(
               `executing setup shell command: ${shellCommand} in ${
                 this.#servicepath
-              }.`
+              } with env ${JSON.stringify(this.environmentVariables)}.`
             )
             await os
               .runProcess(shellCommand, [], {
