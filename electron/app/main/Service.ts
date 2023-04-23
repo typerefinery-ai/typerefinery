@@ -1211,6 +1211,13 @@ export class Service extends EventEmitter<ServiceEvent> {
           )}`
         )
 
+        // if serviceExecutable does not exist exsit gracefuly
+        if (!fs.existsSync(serviceExecutable)) {
+          this.#log(`service executable not found at ${serviceExecutable}`)
+          this.#setStatus(ServiceStatus.ERROR)
+          return
+        }
+
         try {
           const process = spawn(serviceExecutable, commandline, options)
 
