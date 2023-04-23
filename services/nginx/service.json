@@ -16,8 +16,8 @@
     },
     "commandline": {
       "win32": "-p ${SERVICE_HOME}\\config",
-      "darwin": "-p ${SERVICE_HOME}/config",
-      "linux": "-p ${SERVICE_HOME}/config",
+      "darwin": "-p ${SERVICE_HOME}/config -c ${SERVICE_HOME}/config/conf/nginx.conf -e ${SERVICE_LOG_PATH}/nginx-error.log",
+      "linux": "-p ${SERVICE_HOME}/config -c ${SERVICE_HOME}/config/conf/nginx.conf -e ${SERVICE_LOG_PATH}/nginx-error.log",
       "default": "-p ${SERVICE_HOME}\\config"
     },
     "globalenv": {
@@ -26,7 +26,7 @@
     },
     "healthcheck": {
       "type": "http",
-      "url": "http://localhost:${SERVICE_PORT}/health",
+      "url": "http://127.0.0.1:${SERVICE_PORT}/health",
       "expected_status": 200,
       "retries": 180
     },
