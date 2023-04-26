@@ -472,6 +472,10 @@ export class Service extends EventEmitter<ServiceEvent> {
       .replaceAll("${SERVICE_HOME}", service.#servicehome)
       .replaceAll("${SERVICE_EXECUTABLE}", service.getServiceExecutable())
       .replaceAll(
+        "${SERVICE_EXECUTABLE_HOME}",
+        service.getServiceExecutable(true)
+      )
+      .replaceAll(
         "${SERVICE_EXECUTABLE_CLI}",
         service.getServiceExecutableCli()
       )
@@ -526,6 +530,7 @@ export class Service extends EventEmitter<ServiceEvent> {
     const envVar = {
       SERVICE_HOME: this.#servicehome,
       SERVICE_EXECUTABLE: this.getServiceExecutable(),
+      SERVICE_EXECUTABLE_HOME: this.getServiceExecutable(true),
       SERVICE_EXECUTABLE_CLI: this.getServiceExecutableCli(),
       SERVICE_PATH: this.#servicepath,
       EXEC_SERVICE_PATH: this.#execservicepath,
@@ -860,7 +865,7 @@ export class Service extends EventEmitter<ServiceEvent> {
   }
 
   // get service executable from options by platform
-  getServiceExecutable(): string {
+  getServiceExecutable(returnPath = false): string {
     let serviceExecutable: any = ""
     if (this.#options && this.#options.execconfig) {
       // if service is being executed by another service
@@ -876,7 +881,7 @@ export class Service extends EventEmitter<ServiceEvent> {
             serviceExecutableService.#servicehome,
             serviceExecutableService.getServiceExecutable()
           )
-          return serviceExecutable
+          // return serviceExecutable
         } else {
           this.#log("ExecService as been defined but no id was found")
         }
@@ -888,7 +893,7 @@ export class Service extends EventEmitter<ServiceEvent> {
         }
         //compile full path to executable
         serviceExecutable = path.resolve(this.#servicehome, serviceExecutable)
-        return serviceExecutable
+        // return serviceExecutable
       }
       if (serviceExecutable == null) {
         this.#log("could not determine service executable")
@@ -899,6 +904,9 @@ export class Service extends EventEmitter<ServiceEvent> {
       this.#log(
         `service is missing execconfig, service status is ${this.#status}`
       )
+    }
+    if (returnPath) {
+      return path.dirname(serviceExecutable)
     }
     return serviceExecutable
   }

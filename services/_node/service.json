@@ -30,16 +30,15 @@
       "default": "node-v18.6.0-win-x64\\node.exe"
     },
     "executablecli": {
-      "win32": "node-v18.6.0-win-x64\\npm.cmd",
-      "darwin": "node-v18.6.0-darwin-x64/bin/npm",
-      "linux": "node-v18.6.0-linux-x64/bin/npm",
-      "default": "node-v18.6.0-win-x64\\npm.cmd"
+      "win32": "node-v18.6.0-darwin-x64\\node_modules\\npm\\bin\\npm-cli.js",
+      "darwin": "node-v18.6.0-darwin-x64/lib/node_modules/npm/bin/npm-cli.js",
+      "linux": "node-v18.6.0-linux-x64/lib/node_modules/npm/bin/npm-cli.js",
+      "default": "node-v18.6.0-win-x64\\node_modules\\npm\\bin\\npm-cli.js"
     },
     "globalenv": {
       "NODE": "${SERVICE_EXECUTABLE}",
-      "NPM": "${SERVICE_EXECUTABLE_CLI}",
-      "NPM_SCRIPT": "${SERVICE_EXECUTABLE}/../../lib/node_modules/npm/lib/cli.js",
-      "PATH": "/Users/maxbarrass/projects/typerefinery.ai/typerefinery/services/_node/node-v18.6.0-darwin-x64/bin"
+      "NODE_HOME": "${SERVICE_EXECUTABLE_HOME}",
+      "NPM": "${SERVICE_EXECUTABLE_CLI}"
     }
   }
 }
