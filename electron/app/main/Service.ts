@@ -877,7 +877,7 @@ export class Service extends EventEmitter<ServiceEvent> {
             execservice.id
           )
           // get full path to executable service
-          const serviceExecutable = path.resolve(
+          serviceExecutable = path.resolve(
             serviceExecutableService.#servicehome,
             serviceExecutableService.getServiceExecutable()
           )
@@ -924,11 +924,11 @@ export class Service extends EventEmitter<ServiceEvent> {
             execservice.id
           )
           // get full path to executable service
-          const serviceExecutable = path.resolve(
+          serviceExecutableCli = path.resolve(
             serviceExecutableService.#servicehome,
-            serviceExecutableService.getServiceExecutable()
+            serviceExecutableService.getServiceExecutableCli()
           )
-          return serviceExecutable
+          //return serviceExecutable
         } else {
           this.#log("ExecService as been defined but no id was found")
         }
@@ -945,7 +945,7 @@ export class Service extends EventEmitter<ServiceEvent> {
           this.#servicehome,
           serviceExecutableCli
         )
-        return serviceExecutableCli
+        //return serviceExecutableCli
       }
       if (serviceExecutableCli == null) {
         this.#log("could not determine service executable")
@@ -1266,7 +1266,7 @@ export class Service extends EventEmitter<ServiceEvent> {
           this.#log(`error starting service ${this.id} with error ${error}`)
         }
       } else {
-        this.#log("unsuported service type")
+        this.#log("unsuported service type, serviceExecutable is not set.")
         return
       }
     } else {
