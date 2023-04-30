@@ -1,85 +1,86 @@
 <template>
-    <div class="main">
-        <div class="welcome">
-            <img src="/assets/logo.png" alt="logo" width="300" height="300" />
-            <h2 class="text-blue-900 text-3xl mb-3 mt-2">
-                Welcome to Typerefinery.io
-            </h2>
-            <p class="text-black text-xl">
-                We are building next generation Experience for Knowledge Graphs.
-            </p>
-            <p class="text-black text-lg mt-2">
-                Required services are being installed, you will have access to the app after the installation is complete. 
-                <!-- <i class="pi pi-spin pi-spinner" style="font-size: 1rem"></i> -->
-            </p>
-            <p class="mt-5 text-base text-500" v-if="isInitialTime == 'true'">
-                {{ getTimerText }}
-            </p>
-        </div>
+  <div class="main">
+    <div class="welcome">
+      <img src="/assets/logo.png" alt="logo" width="300" height="300" />
+      <h2 class="text-blue-900 text-3xl mb-3 mt-2">
+        Welcome to Typerefinery.io
+      </h2>
+      <p class="text-black text-xl">
+        We are building next generation Experience for Knowledge Graphs.
+      </p>
+      <p class="text-black text-lg mt-2">
+        Required services are being installed, you will have access to the app
+        after the installation is complete.
+        <!-- <i class="pi pi-spin pi-spinner" style="font-size: 1rem"></i> -->
+      </p>
+      <p class="mt-5 text-base text-500" v-if="isInitialTime == 'true'">
+        {{ getTimerText }}
+      </p>
     </div>
+  </div>
 </template>
 <script>
-export default {
+  export default {
     name: "Welcome",
     data() {
-        return {
-            timer: null,
-            time: 10,
-        };
+      return {
+        timer: null,
+        time: 10,
+      }
     },
     props: {
-        isInitialTime: {
-            type: String,
-            default: 'true'
-        }
+      isInitialTime: {
+        type: String,
+        default: "true",
+      },
     },
     computed: {
-        getTimerText() {
-            if(this.isInitialTime  == 'true') {
-                return `Will be redirected to the service tab in ${this.time} seconds`;
-            } else {
-                return ``;
-            }
+      getTimerText() {
+        if (this.isInitialTime == "true") {
+          return `Will be redirected to the service tab in ${this.time} seconds`
+        } else {
+          return ``
         }
+      },
     },
     emits: ["tabClicked"],
     mounted() {
-        console.log("isInitialTime: " + this.isInitialTime)
-        if(this.isInitialTime == 'true') {
-            console.log('startTimer')
-            this.startTimer();
-        }
+      console.log("isInitialTime: " + this.isInitialTime)
+      if (this.isInitialTime == "true") {
+        console.log("startTimer")
+        this.startTimer()
+      }
     },
     methods: {
-        onTabClicked(tab) {
-            this.$emit('tab-clicked', tab);
-        },
-        startTimer() {
-            setTimeout(() => {
-                if(this.isInitialTime == 'true') {
-                    clearInterval(this.timer);
-                    this.onTabClicked("SERVICES");
-                }
-            }, 10000);
+      onTabClicked(tab) {
+        this.$emit("tab-clicked", tab)
+      },
+      startTimer() {
+        setTimeout(() => {
+          if (this.isInitialTime == "true") {
+            clearInterval(this.timer)
+            this.onTabClicked("SERVICES")
+          }
+        }, 10000)
 
-            this.timer = setInterval(() => {
-                if (this.time > 0) {
-                    this.time--;
-                }
-            }, 1000);
-        }
-    }
-}
+        this.timer = setInterval(() => {
+          if (this.time > 0) {
+            this.time--
+          }
+        }, 1000)
+      },
+    },
+  }
 </script>
 <style scoped>
-.main {
+  .main {
     margin: auto;
-}
+  }
 
-.welcome {
+  .welcome {
     margin: auto;
     display: flex;
     flex-direction: column;
     align-items: center;
-}
+  }
 </style>
