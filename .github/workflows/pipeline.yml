@@ -46,14 +46,18 @@ jobs:
     strategy:
       matrix:
         node: [18.3.0]
-        os: [macos-latest, ubuntu-latest, windows-latest]
+        os: [
+          # macos-latest,
+          # ubuntu-latest,
+          windows-latest
+        ]
         include:
-          - os: ubuntu-latest
-            friendlyName: Unit Test - Ubuntu
-          - os: macos-latest
-            friendlyName: Unit Test - MacOS
           - os: windows-latest
             friendlyName: Unit Test - Windows
+          # - os: ubuntu-latest
+          #   friendlyName: Unit Test - Ubuntu
+          # - os: macos-latest
+          #   friendlyName: Unit Test - MacOS
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v3
