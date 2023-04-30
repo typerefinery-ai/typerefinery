@@ -16,6 +16,9 @@ Param(
   [string]$NPM_PROGRAM_PATH = ( Join-Path "${PWD}" "${NODE_SERVICE_NAME}" "node-${NODE_VERSION}-${NODE_OS}-${CPU_ARCH}" "${NODE_BIN}" "npm$NPM_EXT" ),
   [string]$SERVICE_HOME = ( Join-Path "${PWD}" "${SERVICE_NAME}"),
   [string]$SERVER_HOME = ( Join-Path "${PWD}" "${SERVICE_NAME}"),
+  [string]$MONGO_USERNAME = "mongoadmin",
+  [string]$MONGO_PASSWORD = "mongoadmin",
+  [string]$MONGO_PORT = "8180",
   [string]$SERVICE_DATA_PATH = "./database",
   [string]$SERVICE_PORT = "8190",
   [switch]$SETUP = $false,
@@ -77,6 +80,7 @@ printSectionBanner "Starting ${SERVICE_NAME} service"
 
 SetEnvVar "SERVICE_DATA_PATH" "${SERVICE_DATA_PATH}"
 SetEnvVar "SERVICE_PORT" "${SERVICE_PORT}"
+SetEnvVar "MONGO_DB_URL" "mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@127.0.0.1:${MONGO_PORT}?retryWrites=true&w=majority&directConnection=true"
 
 if ( $SETUP ) {
   StartSetup

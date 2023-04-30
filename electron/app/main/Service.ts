@@ -472,6 +472,10 @@ export class Service extends EventEmitter<ServiceEvent> {
       .replaceAll("${SERVICE_HOME}", service.#servicehome)
       .replaceAll("${SERVICE_EXECUTABLE}", service.getServiceExecutable())
       .replaceAll(
+        "${SERVICE_EXECUTABLE_HOME}",
+        service.getServiceExecutable(true)
+      )
+      .replaceAll(
         "${SERVICE_EXECUTABLE_CLI}",
         service.getServiceExecutableCli()
       )
@@ -526,6 +530,7 @@ export class Service extends EventEmitter<ServiceEvent> {
     const envVar = {
       SERVICE_HOME: this.#servicehome,
       SERVICE_EXECUTABLE: this.getServiceExecutable(),
+      SERVICE_EXECUTABLE_HOME: this.getServiceExecutable(true),
       SERVICE_EXECUTABLE_CLI: this.getServiceExecutableCli(),
       SERVICE_PATH: this.#servicepath,
       EXEC_SERVICE_PATH: this.#execservicepath,
@@ -657,7 +662,10 @@ export class Service extends EventEmitter<ServiceEvent> {
   }
 
   get isStarting() {
-    return this.#status === ServiceStatus.STARTING
+    return (
+      this.#status === ServiceStatus.STARTING ||
+      this.#status === ServiceStatus.DEPENDENCIESWAIT
+    )
   }
 
   get isInstalling() {
@@ -735,8 +743,10 @@ export class Service extends EventEmitter<ServiceEvent> {
   #register(process: ChildProcess) {
     this.#process = process
     if (process.pid) {
+      // this.#log(`creating service pid for service ${this.#id}`)
       this.#createServicePidFile(this.#servicepidfile, process.pid)
     }
+    // this.#log(`registering service exit event ${this.#id}`)
     process.once("exit", () => {
       this.#removeServicePidFile()
       this.#setStatus(ServiceStatus.STOPPED)
@@ -748,7 +758,9 @@ export class Service extends EventEmitter<ServiceEvent> {
       this.#process = void 0
     })
     // run health check if defined
+    // this.#log(`service healtcheck is ${this.#healthCheck != null}`)
     if (this.#healthCheck) {
+      // this.#log(`starting health check for service ${this.#id}`)
       this.#startHealthCheck(this.#healthCheck.retries || 10)
     }
   }
@@ -853,7 +865,7 @@ export class Service extends EventEmitter<ServiceEvent> {
   }
 
   // get service executable from options by platform
-  getServiceExecutable(): string {
+  getServiceExecutable(returnPath = false): string {
     let serviceExecutable: any = ""
     if (this.#options && this.#options.execconfig) {
       // if service is being executed by another service
@@ -865,11 +877,11 @@ export class Service extends EventEmitter<ServiceEvent> {
             execservice.id
           )
           // get full path to executable service
-          const serviceExecutable = path.resolve(
+          serviceExecutable = path.resolve(
             serviceExecutableService.#servicehome,
             serviceExecutableService.getServiceExecutable()
           )
-          return serviceExecutable
+          // return serviceExecutable
         } else {
           this.#log("ExecService as been defined but no id was found")
         }
@@ -881,7 +893,7 @@ export class Service extends EventEmitter<ServiceEvent> {
         }
         //compile full path to executable
         serviceExecutable = path.resolve(this.#servicehome, serviceExecutable)
-        return serviceExecutable
+        // return serviceExecutable
       }
       if (serviceExecutable == null) {
         this.#log("could not determine service executable")
@@ -892,6 +904,9 @@ export class Service extends EventEmitter<ServiceEvent> {
       this.#log(
         `service is missing execconfig, service status is ${this.#status}`
       )
+    }
+    if (returnPath) {
+      return path.dirname(serviceExecutable)
     }
     return serviceExecutable
   }
@@ -909,11 +924,11 @@ export class Service extends EventEmitter<ServiceEvent> {
             execservice.id
           )
           // get full path to executable service
-          const serviceExecutable = path.resolve(
+          serviceExecutableCli = path.resolve(
             serviceExecutableService.#servicehome,
-            serviceExecutableService.getServiceExecutable()
+            serviceExecutableService.getServiceExecutableCli()
           )
-          return serviceExecutable
+          //return serviceExecutable
         } else {
           this.#log("ExecService as been defined but no id was found")
         }
@@ -930,7 +945,7 @@ export class Service extends EventEmitter<ServiceEvent> {
           this.#servicehome,
           serviceExecutableCli
         )
-        return serviceExecutableCli
+        //return serviceExecutableCli
       }
       if (serviceExecutableCli == null) {
         this.#log("could not determine service executable")
@@ -1123,7 +1138,7 @@ export class Service extends EventEmitter<ServiceEvent> {
       this.#log(
         `waiting for dependant services ${
           this.#id
-        } with env variables ${JSON.stringify(globalenv)}`
+        } with passed variables ${JSON.stringify(globalenv)}`
       )
 
       // wait untill all depend_on services are started
@@ -1200,6 +1215,7 @@ export class Service extends EventEmitter<ServiceEvent> {
           // send data to logs but it will be delayed as its buffered in 64k blocks :(
           stdio: ["ignore", this.#stdout, this.#stderr],
           windowsHide: true,
+          // detached: !this.isWindows, // only set this on linux and mac
         }
 
         this.#log(
@@ -1207,6 +1223,13 @@ export class Service extends EventEmitter<ServiceEvent> {
             options
           )}`
         )
+
+        // if serviceExecutable does not exist exsit gracefuly
+        if (!fs.existsSync(serviceExecutable)) {
+          this.#log(`service executable not found at ${serviceExecutable}`)
+          this.#setStatus(ServiceStatus.ERROR)
+          return
+        }
 
         try {
           const process = spawn(serviceExecutable, commandline, options)
@@ -1237,12 +1260,13 @@ export class Service extends EventEmitter<ServiceEvent> {
           }
 
           this.#register(process)
+          // this.#log(`service ${this.id} started and registered.`)
         } catch (error) {
           this.#setStatus(ServiceStatus.ERROR)
           this.#log(`error starting service ${this.id} with error ${error}`)
         }
       } else {
-        this.#log("unsuported service type")
+        this.#log("unsuported service type, serviceExecutable is not set.")
         return
       }
     } else {
@@ -1595,7 +1619,7 @@ export class Service extends EventEmitter<ServiceEvent> {
             this.#log(
               `executing setup shell command: ${shellCommand} in ${
                 this.#servicepath
-              }.`
+              } with env ${JSON.stringify(this.environmentVariables)}.`
             )
             await os
               .runProcess(shellCommand, [], {
@@ -1790,7 +1814,12 @@ export class Service extends EventEmitter<ServiceEvent> {
                 this.#log(`service ${service.id} is available and ready.`)
               }
 
-              if (service.isRunnable && !service.isRunning) {
+              const tryToStart =
+                service.isRunnable == true && !service.isRunning
+
+              this.#log(`try to start service ${tryToStart == true}.`)
+
+              if (tryToStart == true) {
                 this.#log(`starting service ${service.id}.`)
                 //add this service to start chain
                 await service.start(globalenv, startchain)

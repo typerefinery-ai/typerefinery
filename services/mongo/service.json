@@ -20,8 +20,8 @@
         "output": "win32"
       },
       "darwin": {
-        "name": "drwin.zip",
-        "output": "drwin"
+        "name": "darwin.zip",
+        "output": "darwin"
       },
       "linux": {
         "name": "linux.zip",
@@ -36,12 +36,16 @@
         "; ${SERVICE_EXECUTABLE_CLI} admin --port ${SERVICE_PORT} --quiet --eval 'db.shutdownServer()'"
       ],
       "darwin": [
+        "; chmod +x ${SERVICE_EXECUTABLE}",
+        "; chmod +x ${SERVICE_EXECUTABLE_CLI}",
         "; ${SERVICE_EXECUTABLE} --dbpath ${SERVICE_DATA_PATH} --port ${SERVICE_PORT} &",
         "; sleep 5",
         "; ${SERVICE_EXECUTABLE_CLI} admin --port ${SERVICE_PORT} --quiet --eval \"printjson(db.createUser({user: '${SERVICE_AUTH_USERNAME}',pwd: '${SERVICE_AUTH_PASSWORD}',roles: [{ role: 'root', db: 'admin' },]}))\"",
         "; ${SERVICE_EXECUTABLE_CLI} admin --port ${SERVICE_PORT} --quiet --eval 'db.shutdownServer()'"
       ],
       "linux": [
+        "; chmod +x ${SERVICE_EXECUTABLE}",
+        "; chmod +x ${SERVICE_EXECUTABLE_CLI}",
         "; ${SERVICE_EXECUTABLE} --dbpath ${SERVICE_DATA_PATH} --port ${SERVICE_PORT} &",
         "; sleep 5",
         "; ${SERVICE_EXECUTABLE_CLI} admin --port ${SERVICE_PORT} --quiet --eval \"printjson(db.createUser({user: '${SERVICE_AUTH_USERNAME}',pwd: '${SERVICE_AUTH_PASSWORD}',roles: [{ role: 'root', db: 'admin' },]}))\"",

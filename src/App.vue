@@ -1,6 +1,6 @@
 <template>
   <div class="app-wrapper">
-    <router-view />
+    <router-view :key="$route.path" />
   </div>
 </template>
 
@@ -12,6 +12,8 @@
   import Services from "@/store/Modules/Services"
   const appDataModule = getModule(AppData)
   const servicesModule = getModule(Services)
+  import Settings from "@/store/Modules/Settings"
+  const settingsModule = getModule(Settings)
 
   export default defineComponent({
     name: "App",
@@ -61,8 +63,20 @@
       },
       setServiceLoaded() {
         // @ts-expect-error ts-migrate(2339) FIXME: Property 'api' does not exist on type 'Window & typeof globalThis'
-        window.api?.response("sendServiceStatus", ({ id, output }) => {
+        window.api?.response("sendServiceStatus", async ({ id, output }) => {
           console.log(id, output, "output")
+          if (output == "120") {
+            const experienceObj = settingsModule.data.listOfMenu.filter(
+              (element) => element.service == id
+            )
+            if (experienceObj.length > 0) {
+              experienceObj.forEach((el) => {
+                el.disabled = false
+                el.icon = el.experienceIcon || el.icon
+                settingsModule.updateMenuitem(el)
+              })
+            }
+          }
           if (this.servicesToCheck.includes(id) && output === "120") {
             const idx = this.servicesToCheck.indexOf(id)
             this.servicesToCheck.splice(idx, 1)
@@ -70,6 +84,12 @@
               servicesModule.setServicesStarted()
             }
           }
+          // else if(this.servicesToCheck.includes(id) && !["100", "104", "105", "25", "1", "15", "20", "25", "30", "90", "50"].includes(output)){
+          //   servicesModule.setServicesStopped()
+          //   // restart this service
+          //   await servicesModule.startService(id)
+            
+          // }
         })
       },
       // TODO: Fix this code

@@ -1,0 +1,46 @@
+{
+  "id": "files",
+  "name": "Files store",
+  "description": "Node based file manager",
+  "enabled": true,
+  "status": "30",
+  "logoutput": "",
+  "icon": "pi pi-globe",
+  "servicetype": 10,
+  "execconfig": {
+    "execservice": { "id": "node" },
+    "setup": {
+      "win32": ["; ${NODE} ${NODE_HOME}\\node_modules\\npm\\bin\\npm-cli.js install"],
+      "darwin": ["; ${NODE} ${NODE_HOME}\\node_modules\\npm\\bin\\npm-cli.js install"],
+      "linux": ["; ${NODE} ${NODE_HOME}\\node_modules\\npm\\bin\\npm-cli.js} install"],
+      "default": ["; ${NODE} ${NODE_HOME}\\node_modules\\npm\\bin\\npm-cli.js install"]
+    },
+    "datapath": "./data",
+    "env": {
+      "FM_PORT": "${SERVICE_PORT}",
+      "FM_DIRECTORY": "${SERVICE_DATA_PATH}",
+      "FM_MAXSIZE": "300",
+      "FM_LOGGING": "true"
+    },
+    "globalenv": {
+      "FLOW_HOST_URL": "http://localhost:${SERVICE_PORT}",
+      "FLOW_PORT": "${SERVICE_PORT}"
+    },
+    "commandline": {
+      "win32": "${SERVICE_PATH}\\bin\\node-file-manager-esm.mjs",
+      "darwin": "${SERVICE_PATH}/bin/node-file-manager-esm.mjs",
+      "linux": "${SERVICE_PATH}/bin/node-file-manager-esm.mjs",
+      "default": "${SERVICE_PATH}\\bin\\node-file-manager-esm.mjs"
+    },
+    "serviceport": 8199,
+    "healthcheck": {
+      "type": "http",
+      "url": "http://127.0.0.1:${SERVICE_PORT}/",
+      "expected_status": 200,
+      "retries": 180
+    },
+    "depend_on": [
+      "node"
+    ]
+  }
+}

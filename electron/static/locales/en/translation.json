@@ -6,7 +6,8 @@
   "prompt": {
     "confirm": "Confirm",
     "quit": "Yes, Quit",
-    "minimize": "No, Just Minimize",
+    "minimize": "Run in Background",
+    "no":"No ",
     "msg": "Are you sure you want to quit?"
   }
 }

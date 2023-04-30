@@ -64,10 +64,12 @@
         "label": "Label",
         "icon": "Icon",
         "url": "Url",
+        "service": "Services",
+        "placeholder": "Select the service",
         "buttons": {
           "cancel": "Cancel",
           "add": "Add",
-          "save": "Save"
+          "update": "Update"
         }
       }
     },

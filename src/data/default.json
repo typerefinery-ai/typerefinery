@@ -365,9 +365,12 @@
       {
         "label": "Project",
         "icon": "pi pi-briefcase",
+        "experienceIcon": "pi pi-briefcase",
         "to": "/home/project",
         "id": "project",
         "type": "regular",
+        "service": "null",
+        "disabled": false,
         "subMenu": [
           {
             "id": "new-project",
@@ -408,46 +411,43 @@
         ]
       },
       {
-        "label": "Charts",
-        "icon": "pi pi-chart-pie",
-        "id": "charts",
-        "url": "http://localhost:8080/content/typerefinery-showcase/pages/pages/dashboard.html",
-        "to": "/experience/charts",
+        "label": "CMS",
+        "id": "cms",
+        "icon": "pi pi-server",
+        "experienceIcon": "pi pi-server",
+        "to": "/experience/cms",
         "type": "experimental",
+        "service": "cms",
+        "disabled": false,
+        "url": "http://localhost:8113/",
         "enabled": false,
         "subMenu": [
-          { "id": "load-data", "to": "#" },
-          { "id": "load-links", "to": "#" }
+          {
+            "id": "load-data",
+            "to": "#",
+            "experimental": false,
+            "icon": "pi pi-server"
+          }
         ]
       },
       {
-        "label": "Maps",
+        "label": "Totaljs flow",
         "icon": "pi pi-sitemap",
-        "id": "maps",
-        "to": "/experience/maps",
+        "id": "totaljs",
+        "to": "/experience/totaljs",
         "type": "experimental",
-        "url": "https://kepler.gl/demo",
+        "service": "totaljs-flow",
+        "disabled": false,
+        "url": "http://localhost:8111/",
         "enabled": false,
-        "subMenu": [{ "id": "load-data", "to": "#" }]
-      },
-      {
-        "label": "Dashboard",
-        "id": "dashboard",
-        "icon": "pi pi-sitemap",
-        "to": "/experience/dashboard",
-        "type": "experimental",
-        "url": "https://kepler.gl/demo",
-        "enabled": false,
-        "subMenu": [{ "id": "load-data", "to": "#" }]
-      },
-      {
-        "label": "Chat",
-        "id": "chat",
-        "icon": "pi pi-comment",
-        "to": "/experience/chats",
-        "url": "https://kepler.gl/demo",
-        "type": "experimental",
-        "enabled": false
+        "subMenu": [
+          {
+            "id": "load-data",
+            "to": "#",
+            "experimental": false,
+            "icon": "pi pi-server"
+          }
+        ]
       }
     ]
   }

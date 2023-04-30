@@ -75,9 +75,12 @@ export default class Settings extends VuexModule {
       | {
           label: string
           icon: string
+          experienceIcon: string
           to: string
           id: string
           type: string
+          service: string
+          disabled: boolean
           subMenu: {
             id: string
             icon: string
@@ -89,23 +92,40 @@ export default class Settings extends VuexModule {
         }
       | {
           label: string
-          icon: string
           id: string
-          url: string
+          icon: string
+          experienceIcon: string
           to: string
           type: string
+          service: string
+          disabled: boolean
+          url: string
           enabled: boolean
-          subMenu: { id: string; to: string }[]
+          subMenu: {
+            id: string
+            to: string
+            experimental: boolean
+            icon: string
+          }[]
         }
       | {
           label: string
-          id: string
           icon: string
-          to: string
-          url: string
+          id: string
+          // Mutations
+          to: string // Mutations
           type: string
+          service: string
+          disabled: boolean
+          url: string
           enabled: boolean
-          subMenu?: undefined
+          subMenu: {
+            id: string
+            to: string
+            experimental: boolean
+            icon: string
+          }[]
+          experienceIcon?: undefined
         }
   ) {
     const { id } = updatedValue
@@ -119,9 +139,12 @@ export default class Settings extends VuexModule {
       | {
           label: string
           icon: string
+          experienceIcon: string
           to: string
           id: string
           type: string
+          service: string
+          disabled: boolean
           subMenu: {
             id: string
             icon: string
@@ -133,23 +156,40 @@ export default class Settings extends VuexModule {
         }
       | {
           label: string
-          icon: string
           id: string
-          url: string
+          icon: string
+          experienceIcon: string
           to: string
           type: string
+          service: string
+          disabled: boolean
+          url: string
           enabled: boolean
-          subMenu: { id: string; to: string }[]
+          subMenu: {
+            id: string
+            to: string
+            experimental: boolean
+            icon: string
+          }[]
         }
       | {
           label: string
-          id: string
           icon: string
-          to: string
-          url: string
+          id: string
+          // Mutations
+          to: string // Mutations
           type: string
+          service: string
+          disabled: boolean
+          url: string
           enabled: boolean
-          subMenu?: undefined
+          subMenu: {
+            id: string
+            to: string
+            experimental: boolean
+            icon: string
+          }[]
+          experienceIcon?: undefined
         }
   ) {
     if (experience.type === "experimental") {
@@ -164,9 +204,12 @@ export default class Settings extends VuexModule {
       | {
           label: string
           icon: string
+          experienceIcon: string
           to: string
           id: string
           type: string
+          service: string
+          disabled: boolean
           subMenu: {
             id: string
             icon: string
@@ -178,23 +221,39 @@ export default class Settings extends VuexModule {
         }
       | {
           label: string
-          icon: string
           id: string
-          url: string
+          icon: string
+          experienceIcon: string
           to: string
           type: string
+          service: string
+          disabled: boolean
+          url: string
           enabled: boolean
-          subMenu: { id: string; to: string }[]
+          subMenu: {
+            id: string
+            to: string
+            experimental: boolean
+            icon: string
+          }[]
         }
       | {
           label: string
-          id: string
           icon: string
+          id: string
           to: string
-          url: string
           type: string
+          service: string
+          disabled: boolean
+          url: string
           enabled: boolean
-          subMenu?: undefined
+          subMenu: {
+            id: string
+            to: string
+            experimental: boolean
+            icon: string
+          }[]
+          experienceIcon?: undefined
         }
     )[]
   ) {

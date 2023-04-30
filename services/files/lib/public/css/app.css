@@ -1,0 +1,114 @@
+.toast div.rounded {
+    width: 1em;
+    height: 1em;
+    background: rgb(115, 230, 0);
+}
+
+.toast div.rounded.error {
+    background: rgb(255, 65, 65);
+}
+
+#toast-template {
+    display: none;
+}
+
+#toast-container {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    z-index: 1;
+}
+
+.sortable {
+    cursor: pointer;
+}
+
+.btn-toolbar>* {
+    margin-top: .2em;
+    margin-left: 0;
+    margin-right: 0 !important;
+}
+
+.btn-toolbar>*>* {
+    margin-right: 0 !important;
+}
+
+.delete-button {
+    /*border-top-left-radius: 0;
+    border-bottom-left-radius: 0;*/
+    height: 100%;
+}
+
+.breadcrumb .icon-home {
+    line-height: 1.5em;
+    padding-right: .5em;
+}
+
+
+
+/* based on https://codepen.io/jasesmith/pen/EeVmWZ */
+input[type=checkbox],
+input[type=radio] {
+    position: relative;
+    appearance: none;
+    -webkit-appearance: none;
+    font-size: inherit;
+    width: 1em;
+    margin: 0;
+    color: inherit;
+    outline: none;
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    transition: 300ms ease-out;
+}
+
+input[type=checkbox]::after,
+input[type=radio]::after {
+    content: "\f111";
+    /* circle */
+    display: inline-block;
+    text-align: center;
+    width: 1em;
+    transition: 300ms ease-out;
+    color: white;
+    text-shadow: 0 0 2px black;
+}
+
+input[type=radio]:checked::after {
+    font-weight: 900;
+}
+
+input[type=radio]:active {
+    transform: scale(.6);
+}
+
+input[type=radio]+span {
+    margin-left: .35em;
+}
+
+input[type=checkbox]:checked::after {
+    content: "\f058";
+    /* check-circle */
+    color: inherit;
+    text-shadow: 0 0 2px transparent;
+}
+
+input[type=radio]:checked::after {
+    content: "\f192";
+    /* dot-circle */
+}
+
+.filerow progress {
+    display: block;
+    width: 100%;
+}
+
+label.btn {
+    margin-bottom: 0;
+}
+
+.filemaxsize {
+    font-size: small;
+    line-height: 1;
+    margin-right: 1em;
+}

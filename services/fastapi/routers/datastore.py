@@ -67,6 +67,48 @@ async def update_project(projectid: str, body: ProjectModel):
 async def read_projects():
   return ProjectUtils.read_projects(engine=engine)
 
+# @Logger.catch
+# @router.get("/datastore/projects") 
+# async def read_projects(): 
+#   return ProjectUtils.read_projects(engine=engine) 
+
+@Logger.catch
+@router.get("/datastore/projects/cms") 
+async def read_projects(): 
+  return {
+   "columns":[
+      {
+         "field":"projectid",
+         "title":"Project Id"
+      },
+      {
+         "field":"flowid",
+         "title":"Flow Id"
+      },
+      {
+         "field":"icon",
+         "title":"Icon"
+      },
+      {
+         "field":"data",
+         "title":"Data"
+      },
+      {
+         "field":"flowoutputlist",
+         "title":"Flow Output List"
+      },
+      {
+         "field":"label",
+         "title":"Label"
+      },
+      {
+         "field":"description",
+         "title":"Description"
+      }
+   ],
+   "data":ProjectUtils.read_projects(engine=engine)
+}
+
 @Logger.catch
 @router.get("/datastore/project/{projectid}")
 async def read_project(projectid: str):
@@ -93,6 +135,55 @@ async def update_connection(connectionid: str, body: ConnectionModel):
 @router.get("/datastore/connection")
 async def read_connections():
   return ConnectionUtils.read_connections(engine=engine)
+
+@Logger.catch
+@router.get("/datastore/connectios/cms") 
+async def connection_list():
+  return {
+   "columns":[
+      {
+         "field":"connectionid",
+         "title":"Connection Id"
+      },
+      {
+         "field":"projectid",
+         "title":"Project Id"
+      },
+       {
+         "field":"database",
+         "title":"Database"
+      },
+       {
+         "field":"type",
+         "title":"Type"
+      },
+      {
+         "field":"icon",
+         "title":"Icon"
+      },
+       {
+         "field":"host",
+         "title":"Host"
+      },
+      {
+         "field":"port",
+         "title":"Port"
+      },
+      {
+         "field":"scope",
+         "title":"Scope"
+      },
+      {
+         "field":"label",
+         "title":"Label"
+      },
+      {
+         "field":"description",
+         "title":"Description"
+      }
+   ],
+   "data": ConnectionUtils.read_connections(engine=engine)
+}
 
 @Logger.catch
 @router.get("/datastore/connection/{connectionid}")
@@ -122,6 +213,54 @@ async def read_querys():
   return QueryUtils.read_querys(engine=engine)
 
 @Logger.catch
+@router.get("/datastore/queries/cms") 
+async def query_list():
+  return {
+    "columns":[
+      {
+         "field":"projectid",
+         "title":"Project Id"
+      },
+      {
+         "field":"queryid",
+         "title":"Query Id"
+      },
+       {
+         "field":"query",
+         "title":"Query"
+      },
+       {
+         "field":"type",
+         "title":"Type"
+      },
+      {
+         "field":"icon",
+         "title":"Icon"
+      },
+       {
+         "field":"data",
+         "title":"Data"
+      },
+      {
+         "field":"scope",
+         "title":"Scope"
+      },
+      {
+         "field":"label",
+         "title":"Label"
+      },
+      {
+         "field":"description",
+         "title":"Description"
+      }
+   ],
+   "data": QueryUtils.read_querys(engine=engine)
+
+  }
+
+
+
+@Logger.catch
 @router.get("/datastore/query/{queryid}")
 async def read_query(queryid: str):
   return QueryUtils.read_query(queryid=queryid, engine=engine)
@@ -147,6 +286,55 @@ async def update_theme(themeid: str, body: ThemeModel):
 @router.get("/datastore/theme")
 async def read_themes():
   return ThemeUtils.read_themes(engine=engine)
+
+@Logger.catch
+@router.get("/datastore/themes/cms") 
+async def theme_list():
+  return {
+    "columns":[
+      {
+         "field":"projectid",
+         "title":"Project Id"
+      },
+      {
+         "field":"themeid",
+         "title":"Theme Id"
+      },
+       {
+         "field":"theme",
+         "title":"Theme"
+      },
+       {
+         "field":"type",
+         "title":"Type"
+      },
+      {
+         "field":"icon",
+         "title":"Icon"
+      },
+      {
+         "field":"scope",
+         "title":"Scope"
+      },
+      {
+         "field":"label",
+         "title":"Label"
+      },
+      {
+         "field":"description",
+         "title":"Description"
+      },
+      {
+         "field":"data",
+         "title":"Data"
+      }
+      
+   ],
+   "data": ThemeUtils.read_themes(engine=engine)
+
+
+  }
+
 
 @Logger.catch
 @router.get("/datastore/theme/{themeid}")

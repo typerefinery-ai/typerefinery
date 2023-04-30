@@ -2,42 +2,44 @@
   <div class="main-menu-wrapper" @mouseleave="closeMainMenu">
     <TabMenu :model="items" @mouseover="openMainMenu"> </TabMenu>
     <div v-if="subMenuVisible">
-    <div
-    
-      class="main-submenu"
-      :class="{ overlay: !mainMenuVisible, 'hide-it': !showSubMenuOverlay }"
-    >
-      <div class="submenu-item-wrapper">
-        <div
-          v-for="item in subItems"
-          :key="item.id"
-          class="main-submenu--item hover:text-primary cursor-pointer"
-          @click="handleProject(item.id)"
-        >
-          <i :class="item.icon"></i>
-          {{ $t(`components.project.${item.id}`) }}
-        </div>
-        <Projects v-if="projectdialog" @close="closemodal" />
-        <NewConnections v-if="connectionDialog" @close="connectionclosemodal" />
-        <NewQuery v-if="queryDialog" @close="queryclosemodal" />
-        <NewTheme v-if="themeDialog" @close="themeclosemodal" />
-        <NewTransformer
-          v-if="transformerDialog"
-          @close="transformerclosemodal"
-        />
-        <NewAlgorithm v-if="algorithmDialog" @close="algorithmclosemodal" />
-      </div>
-      <!-- icon -->
       <div
-        v-if="mainMenuVisible"
-        v-tooltip="$t(`tooltips.hide-menu-bar`)"
-        class="icon-wrapper hover:text-primary"
-        @click="toggleView"
+        class="main-submenu"
+        :class="{ overlay: !mainMenuVisible, 'hide-it': !showSubMenuOverlay }"
       >
-        <i class="pi pi-angle-double-up"></i>
+        <div class="submenu-item-wrapper">
+          <div
+            v-for="item in subItems"
+            :key="item.id"
+            class="main-submenu--item hover:text-primary cursor-pointer"
+            @click="handleProject(item.id)"
+          >
+            <i :class="item.icon"></i>
+            {{ $t(`components.project.${item.id}`) }}
+          </div>
+          <Projects v-if="projectdialog" @close="closemodal" />
+          <NewConnections
+            v-if="connectionDialog"
+            @close="connectionclosemodal"
+          />
+          <NewQuery v-if="queryDialog" @close="queryclosemodal" />
+          <NewTheme v-if="themeDialog" @close="themeclosemodal" />
+          <NewTransformer
+            v-if="transformerDialog"
+            @close="transformerclosemodal"
+          />
+          <NewAlgorithm v-if="algorithmDialog" @close="algorithmclosemodal" />
+        </div>
+        <!-- icon -->
+        <div
+          v-if="mainMenuVisible"
+          v-tooltip="$t(`tooltips.hide-menu-bar`)"
+          class="icon-wrapper hover:text-primary"
+          @click="toggleView"
+        >
+          <i class="pi pi-angle-double-up"></i>
+        </div>
       </div>
     </div>
-  </div>
   </div>
 </template>
 
@@ -56,6 +58,8 @@
   const themesModule = getModule(Themes)
   const settingsModule = getModule(Settings)
   const appDataModule = getModule(AppData)
+  import Services from "@/store/Modules/Services"
+  const servicesModule = getModule(Services)
   export default {
     name: "MainMenu",
     components: {
@@ -69,13 +73,14 @@
     },
     props: {
       mainMenuVisible: { type: Boolean, required: true },
-      subMenuVisible: { type: Boolean, required: false,default:true },
+      subMenuVisible: { type: Boolean, required: false, default: true },
     },
     emits: ["toggle"],
     data() {
       return {
         showSubMenuOverlay: false,
         projectdialog: false,
+        listOfActiveExperience: [],
       }
     },
     computed: {
@@ -83,7 +88,7 @@
         return themesModule.getGlobalThemes
       },
       items() {
-        const data=JSON.parse(JSON.stringify(settingsModule.data.listOfMenu))
+        const data = JSON.parse(JSON.stringify(settingsModule.data.listOfMenu))
         return data.filter((el) => {
           if (el.type === "regular") return el
           else return el.enabled
@@ -110,7 +115,26 @@
         return appDataModule.data.algorithmDialog
       },
     },
-    
+    async mounted() {
+      this.listOfActiveExperience = this.items
+      const services = await servicesModule.getServices()
+      this.listOfActiveExperience.forEach((element) => {
+        const serviceId = element.service
+        if (serviceId != null) {
+          const activeExperienceServiceStatus = services.filter(
+            (el) => el.id == serviceId
+          )
+          if (
+            activeExperienceServiceStatus.length > 0 &&
+            activeExperienceServiceStatus[0].status != "120"
+          ) {
+            element.disabled = true
+            element.icon = "pi pi-exclamation-triangle"
+            settingsModule.updateMenuitem(element)
+          }
+        }
+      })
+    },
 
     methods: {
       closemodal() {
@@ -176,6 +200,9 @@
 </script>
 
 <style lang="scss" scoped>
+  .tabs {
+    color: red;
+  }
   .main-submenu {
     display: flex;
     padding: 12px 10px;

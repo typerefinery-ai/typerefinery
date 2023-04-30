@@ -286,16 +286,25 @@ app.whenReady().then(() => {
     logger.log("mainWindow.on close")
     const choice = dialog.showMessageBoxSync(mainWindow, {
       type: "question",
-      buttons: [i18n.t("prompt.quit"), i18n.t("prompt.minimize")],
+      buttons: [
+        i18n.t("prompt.quit"),
+        i18n.t("prompt.no"),
+        i18n.t("prompt.minimize"),
+      ],
       title: i18n.t("prompt.confirm"),
       message: i18n.t("prompt.msg"),
+      defaultId: 1,
+      cancelId: 1,
     })
-    if (choice === 1) {
-      e.preventDefault()
-      mainWindow.hide()
-    } else {
+    if (choice === 0) {
       mainWindow.webContents.send("sendServiceStopped")
       serviceManager.stopAll()
+    } else if (choice === 1) {
+      e.preventDefault()
+      //Dialog will be closed by clicking "X" button.
+    } else {
+      e.preventDefault()
+      mainWindow.hide()
     }
   })
 
@@ -387,23 +396,23 @@ function addIpcEvents(window: BrowserWindow) {
       logger.log(`ipc getServices`)
       return serviceManager.getServicesSimple()
     },
-    restartService(serviceid: string): any {
+    async restartService(serviceid: string): Promise<any> {
       logger.log(`ipc restartService {serviceid}`)
       const aservice = serviceManager.getService(serviceid)
       if (aservice) {
-        aservice.stop()
-        aservice.start()
+        await aservice.stop()
+        await aservice.start()
       } else {
         logger.log(`service {serviceid} not found`)
         return false
       }
       return true
     },
-    startService(serviceid: string): any {
+    async startService(serviceid: string): Promise<any> {
       logger.log(`ipc startService {serviceid}`)
       const aservice = serviceManager.getService(serviceid)
       if (aservice) {
-        aservice.start()
+        await aservice.start();
       } else {
         logger.log(`service {serviceid} not found`)
         return false
