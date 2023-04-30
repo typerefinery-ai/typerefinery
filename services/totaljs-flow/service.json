@@ -10,10 +10,10 @@
   "execconfig": {
     "execservice": { "id": "node" },
     "setup": {
-      "win32": ["; ${NPM} install"],
-      "darwin": ["; ${NPM} install"],
-      "linux": ["; ${NPM} install"],
-      "default": ["; ${NPM} install"]
+      "win32": ["; ${NODE} ${NODE_HOME}\\node_modules\\npm\\bin\\npm-cli.js install"],
+      "darwin": ["; ${NODE} ${NODE_HOME}/lib/node_modules/npm/bin/npm-cli.js install"],
+      "linux": ["; ${NODE} ${NODE_HOME}/lib/node_modules/npm/bin/npm-cli.js install"],
+      "default": ["; ${NODE} ${NODE_HOME}\\node_modules\\npm\\bin\\npm-cli.js install"]
     },
     "datapath": "./database",
     "globalenv": {
