@@ -219,9 +219,15 @@ jobs:
 
       - name: Remove service contents that are not required for this OS build.
         if: ${{ contains(matrix.os, 'windows') }}
-        run: bash ./services/filter-files.sh ${OS_NAME}
-        env:
-          OS_NAME: ${{ matrix.os }}
+        run: ./services/filter-files.ps1 win32
+
+      - name: Remove service contents that are not required for this OS build.
+        if: ${{ contains(matrix.os, 'macos') }}
+        run: bash ./services/filter-files.sh darwin
+
+      - name: Remove service contents that are not required for this OS build.
+        if: ${{ contains(matrix.os, 'linux') }}
+        run: bash ./services/filter-files.sh linux
 
       # - name: Get npm cache directory
       #   id: npm-cache-dir
