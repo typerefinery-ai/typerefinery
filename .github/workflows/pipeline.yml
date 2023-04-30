@@ -217,6 +217,12 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
 
+      - name: Remove service contents that are not required for this OS build.
+        if: ${{ contains(matrix.os, 'windows') }}
+        run: bash ./services/filer-files.sh ${OS_NAME}
+        env:
+          OS_NAME: ${{ matrix.os }}
+
       # - name: Get npm cache directory
       #   id: npm-cache-dir
       #   run: |
