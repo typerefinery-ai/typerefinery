@@ -22,6 +22,9 @@
       "MESSAGESERVICE_URL": "http://localhost:${SERVICE_PORT}",
       "MESSAGESERVICE_PORT": "${SERVICE_PORT}"
     },
+    "env": {
+      "NODE_ENV": "development"
+    },
     "serviceport": 8112,
     "healthcheck": {
       "type": "http",

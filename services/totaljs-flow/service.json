@@ -20,6 +20,9 @@
       "FLOW_HOST_URL": "http://localhost:${SERVICE_PORT}",
       "FLOW_PORT": "${SERVICE_PORT}"
     },
+    "env": {
+      "NODE_ENV": "development"
+    },
     "commandline": {
       "win32": "${SERVICE_PATH}\\index.js",
       "darwin": "${SERVICE_PATH}/index.js",
