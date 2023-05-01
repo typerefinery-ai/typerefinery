@@ -60,10 +60,27 @@ app.add_middleware(
 
 
 Logger.add(os.path.join(CONFIG.APP_LOG_LOCATION, f"{__name__}.py.log"), rotation="1 day")
+NODE_HOME_FOLDER_NAME = "node-v18.6.0-win-x64"
+# set NODE_HOME_FOLDER_NAME based on OS for windows, linux and darwin
+if os.name == "nt":
+  NODE_HOME_FOLDER_NAME = "node-v18.6.0-win-x64"
+elif os.name == "posix":
+  NODE_HOME_FOLDER_NAME = "node-v18.6.0-linux-x64"
+elif os.name == "darwin":
+  NODE_HOME_FOLDER_NAME = "node-v18.6.0-darwin-x64"
 
-CONFIG.APP_SERVICE_NODE_LOCATION = os.path.abspath(os.path.join(CONFIG.APP_SCRIPT_PATH, "..", "_node", "node-v18.6.0-win-x64"))
-CONFIG.APP_SERVICE_NODE_EXECUTABLE = os.path.join(CONFIG.APP_SERVICE_NODE_LOCATION, "node.exe")
-CONFIG.APP_SERVICE_NPM_EXECUTABLE = os.path.join(CONFIG.APP_SERVICE_NODE_LOCATION, "node_modules", "npm", "bin", "npm-cli.js")
+CONFIG.APP_SERVICE_NODE_LOCATION = os.getenv("NODE_HOME", os.path.abspath(os.path.join(CONFIG.APP_SCRIPT_PATH, "..", "_node", NODE_HOME_FOLDER_NAME)))
+NODE_EXECUTABLE_FILENAME = "node.exe"
+# set NODE_EXECUTABLE_FILENAME file name based on OS for windows, linux and darwin
+if os.name == "nt":
+  NODE_EXECUTABLE_FILENAME = "node.exe"
+else:
+  NODE_EXECUTABLE_FILENAME = "node"
+
+
+
+CONFIG.APP_SERVICE_NODE_EXECUTABLE = os.getenv("NODE", os.path.join(CONFIG.APP_SERVICE_NODE_LOCATION, NODE_EXECUTABLE_FILENAME))
+CONFIG.APP_SERVICE_NPM_EXECUTABLE = os.getenv("NPM", os.path.join(CONFIG.APP_SERVICE_NODE_LOCATION, "node_modules", "npm", "bin", "npm-cli.js") )
 
 Logger.info(CONFIG.toString())
 
