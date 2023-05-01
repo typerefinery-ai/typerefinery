@@ -19,6 +19,7 @@
         </div>
         <iframe
           :src="`${experience.url}`"
+          name="disable-x-frame-options"
           width="100%"
           height="100%"
           :frameborder="0"
