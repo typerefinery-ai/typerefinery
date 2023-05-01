@@ -46,14 +46,18 @@ jobs:
     strategy:
       matrix:
         node: [18.3.0]
-        os: [macos-latest, ubuntu-latest, windows-latest]
+        os: [
+          # macos-latest,
+          # ubuntu-latest,
+          windows-latest
+        ]
         include:
-          - os: ubuntu-latest
-            friendlyName: Unit Test - Ubuntu
-          - os: macos-latest
-            friendlyName: Unit Test - MacOS
           - os: windows-latest
             friendlyName: Unit Test - Windows
+          # - os: ubuntu-latest
+          #   friendlyName: Unit Test - Ubuntu
+          # - os: macos-latest
+          #   friendlyName: Unit Test - MacOS
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v3
@@ -196,18 +200,18 @@ jobs:
       matrix:
         node: [18.3.0]
         os: [
-          macos-latest,
-          ubuntu-latest,
+          # macos-latest,
+          # ubuntu-latest,
           windows-latest
         ]
         # os: [windows-latest]
         include:
-          - os: ubuntu-latest
-            friendlyName: Release - Ubuntu
-          - os: macos-latest
-            friendlyName: Release - MacOS
           - os: windows-latest
             friendlyName: Release - Windows
+          # - os: ubuntu-latest
+          #   friendlyName: Release - Ubuntu
+          # - os: macos-latest
+          #   friendlyName: Release - MacOS
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v3
@@ -216,6 +220,18 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node }}
+
+      - name: Remove service contents that are not required for this OS build.
+        if: ${{ contains(matrix.os, 'windows') }}
+        run: ./services/prep-win32.ps1 -DOREMOVE
+
+      # - name: Remove service contents that are not required for this OS build.
+      #   if: ${{ contains(matrix.os, 'macos') }}
+      #   run: bash ./services/prep-darwin.sh true
+
+      # - name: Remove service contents that are not required for this OS build.
+      #   if: ${{ contains(matrix.os, 'linux') }}
+      #   run: bash ./services/prep-linux.sh true
 
       # - name: Get npm cache directory
       #   id: npm-cache-dir
