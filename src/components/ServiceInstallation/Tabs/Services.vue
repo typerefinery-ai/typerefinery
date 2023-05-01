@@ -1,11 +1,11 @@
 <template>
   <div class="card service-container">
-    <div class="mb-5 mt-5" v-if="!servicesLoaded">
+    <div v-if="!servicesLoaded" class="mb-5 mt-5">
       <p class="text-black text-lg">
         Services are installing and starting. This may take a few minutes.
       </p>
     </div>
-    <div class="mb-5 mt-5" v-else>
+    <div v-else class="mb-5 mt-5">
       <p class="text-black text-lg mb-3">Services are installed and running.</p>
       <span
         class="text-blue-800 text-base mt-4 text-button"
@@ -16,9 +16,9 @@
     </div>
     <DataTable
       scrollable
-      scrollHeight="80vh"
+      scroll-height="80vh"
       :value="listOfServices"
-      tableStyle="min-width: 50rem; width: 100%"
+      table-style="min-width: 50rem; width: 100%"
       :scrollable="true"
     >
       <template #header>
@@ -30,10 +30,10 @@
             >Last fetched: {{ lastFetched }}</span
           >
           <Button
-            @click="fetchServiceStatus()"
             icon="pi pi-refresh"
             rounded
             raised
+            @click="fetchServiceStatus()"
           />
         </div>
       </template>
@@ -66,8 +66,25 @@
   const servicesModule = getModule(Services)
   export default {
     name: "Services",
+    components: {
+      DataTable,
+      Column,
+      Button,
+      Tag,
+    },
+    props: {
+      services: {
+        type: Array,
+      },
+      getServices: {
+        type: Function,
+        required: true,
+      },
+    },
+    emits: ["tabClicked"],
     data() {
       return {
+        availableStatus: "",
         listOfServices: [],
         statusToTextLookup: {
           INVALIDCONFIG: "-10",
@@ -97,25 +114,17 @@
           "totaljs-flow",
           "totaljs-messageservice",
         ],
+        servicesToCheckTypeDB: [
+          "fastapi",
+          "typedb",
+          "totaljs-flow",
+          "totaljs-messageservice",
+          "typedb-init",
+          "typedb-sample",
+        ],
         timer: null,
       }
     },
-    components: {
-      DataTable,
-      Column,
-      Button,
-      Tag,
-    },
-    props: {
-      services: {
-        type: Array,
-      },
-      getServices: {
-        type: Function,
-        required: true,
-      },
-    },
-    emits: ["tabClicked"],
 
     computed: {
       servicesLoaded() {
@@ -123,6 +132,7 @@
       },
     },
     mounted() {
+      this.availableStatus = servicesModule.data.serviceAvailable
       this.fetchServiceStatus()
       this.timer = setInterval(() => {
         this.fetchServiceStatus()
@@ -150,11 +160,21 @@
       },
       fetchServiceStatus() {
         this.getServices().then((response) => {
+          const servicesToBeRender = []
+
           this.lastFetched = new Date().toLocaleTimeString()
           const requiredServices = response.filter((service) =>
             this.servicesToCheck.includes(service.id)
           )
-          this.listOfServices = requiredServices
+          const requiredServicesTypeDb = response.filter((service) =>
+            this.servicesToCheckTypeDB.includes(service.id)
+          )
+          if (this.availableStatus) {
+            this.servicesToBeRender = requiredServices
+          } else {
+            this.servicesToBeRender = requiredServicesTypeDb
+          }
+          this.listOfServices = this.servicesToBeRender
           // const reqServicesStarted = requiredServices.every((service) => service.status === "120");
           // if (!reqServicesStarted) {
           //     servicesModule.setServicesStopped()

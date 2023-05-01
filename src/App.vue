@@ -19,12 +19,8 @@
     name: "App",
     data() {
       return {
-        servicesToCheck: [
-          "fastapi",
-          "typedb",
-          "totaljs-flow",
-          "totaljs-messageservice",
-        ],
+        servicesToCheck: ["typedb", "totaljs-flow", "totaljs-messageservice"],
+        servicesToCheckTypeDB: ["typedb-init", "typedb-sample"],
       }
     },
     async created() {
@@ -77,10 +73,21 @@
               })
             }
           }
-          if (this.servicesToCheck.includes(id) && output === "120") {
+          if (
+            (this.servicesToCheck.includes(id) ||
+              this.servicesToCheckTypeDB.includes(id)) &&
+            (output === "120" || output === "50")
+          ) {
             const idx = this.servicesToCheck.indexOf(id)
             this.servicesToCheck.splice(idx, 1)
-            if (this.servicesToCheck.length === 0) {
+            const idxTypeDb = this.servicesToCheckTypeDB.indexOf(id)
+
+            this.servicesToCheckTypeDB.splice(idxTypeDb, 1)
+            servicesModule.data.serviceAvailable = true
+            if (
+              this.servicesToCheck.length === 0 &&
+              this.servicesToCheckTypeDB.length === 0
+            ) {
               servicesModule.setServicesStarted()
             }
           }
@@ -88,7 +95,7 @@
           //   servicesModule.setServicesStopped()
           //   // restart this service
           //   await servicesModule.startService(id)
-            
+
           // }
         })
       },

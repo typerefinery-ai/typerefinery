@@ -329,7 +329,8 @@
       "10": { "name": "local", "icon": "pi pi-cog" },
       "20": { "name": "online", "icon": "pi pi-globe" }
     },
-    "servicesStarted": false
+    "servicesStarted": false,
+    "serviceAvailable": false
   },
   "settings": {
     "language": "en",
