@@ -19,7 +19,12 @@
     name: "App",
     data() {
       return {
-        servicesToCheck: ["typedb", "totaljs-flow", "totaljs-messageservice"],
+        servicesToCheck: [
+          "fastapi",
+          "typedb",
+          "totaljs-flow",
+          "totaljs-messageservice",
+        ],
         servicesToCheckTypeDB: ["typedb-init", "typedb-sample"],
       }
     },
