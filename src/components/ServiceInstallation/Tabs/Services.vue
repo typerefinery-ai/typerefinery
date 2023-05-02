@@ -84,7 +84,7 @@
     emits: ["tabClicked"],
     data() {
       return {
-        availableStatus: "",
+        isAvailableTypeDBInitAndSample: "",
         listOfServices: [],
         statusToTextLookup: {
           INVALIDCONFIG: "-10",
@@ -161,21 +161,16 @@
       },
       fetchServiceStatus() {
         this.getServices().then((response) => {
-          const servicesToBeRender = []
-
           this.lastFetched = new Date().toLocaleTimeString()
-          const requiredServices = response.filter((service) =>
-            this.servicesToCheck.includes(service.id)
-          )
-          const requiredServicesTypeDb = response.filter((service) =>
-            this.servicesToCheckBeforeMovingToDashboard.includes(service.id)
-          )
           if (this.isAvailableTypeDBInitAndSample) {
-            this.servicesToBeRender = requiredServices
+            this.listOfServices = response.filter((service) =>
+              this.servicesToCheck.includes(service.id)
+            )
           } else {
-            this.servicesToBeRender = requiredServicesTypeDb
+            this.listOfServices = response.filter((service) =>
+              this.servicesToCheckBeforeMovingToDashboard.includes(service.id)
+            )
           }
-          this.listOfServices = this.servicesToBeRender
           // const reqServicesStarted = requiredServices.every((service) => service.status === "120");
           // if (!reqServicesStarted) {
           //     servicesModule.setServicesStopped()
