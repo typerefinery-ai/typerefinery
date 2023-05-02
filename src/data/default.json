@@ -330,7 +330,7 @@
       "20": { "name": "online", "icon": "pi pi-globe" }
     },
     "servicesStarted": false,
-    "serviceAvailable": false
+    "isAvailableTypeDBInitAndSample": false
   },
   "settings": {
     "language": "en",

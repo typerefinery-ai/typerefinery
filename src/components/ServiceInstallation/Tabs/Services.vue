@@ -114,7 +114,7 @@
           "totaljs-flow",
           "totaljs-messageservice",
         ],
-        servicesToCheckTypeDB: [
+        servicesToCheckBeforeMovingToDashboard: [
           "fastapi",
           "typedb",
           "totaljs-flow",
@@ -132,7 +132,8 @@
       },
     },
     mounted() {
-      this.availableStatus = servicesModule.data.serviceAvailable
+      this.isAvailableTypeDBInitAndSample =
+        servicesModule.data.isAvailableTypeDBInitAndSample
       this.fetchServiceStatus()
       this.timer = setInterval(() => {
         this.fetchServiceStatus()
@@ -167,9 +168,9 @@
             this.servicesToCheck.includes(service.id)
           )
           const requiredServicesTypeDb = response.filter((service) =>
-            this.servicesToCheckTypeDB.includes(service.id)
+            this.servicesToCheckBeforeMovingToDashboard.includes(service.id)
           )
-          if (this.availableStatus) {
+          if (this.isAvailableTypeDBInitAndSample) {
             this.servicesToBeRender = requiredServices
           } else {
             this.servicesToBeRender = requiredServicesTypeDb

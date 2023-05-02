@@ -88,7 +88,7 @@
             const idxTypeDb = this.servicesToCheckTypeDB.indexOf(id)
 
             this.servicesToCheckTypeDB.splice(idxTypeDb, 1)
-            servicesModule.data.serviceAvailable = true
+            servicesModule.data.isAvailableTypeDBInitAndSample = true
             if (
               this.servicesToCheck.length === 0 &&
               this.servicesToCheckTypeDB.length === 0
