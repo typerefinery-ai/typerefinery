@@ -1186,6 +1186,19 @@
         "ai.typerefinery.websight:typerefinery-distribution:slingosgifeature:typerefinery:1.0.0-SNAPSHOT"
       ]
     },
+    "org.apache.sling.engine.impl.SlingMainServlet~typerefinery":    {
+      "sling.additional.response.headers":[
+        "X-Content-Type-Options=nosniff",
+        "Cache-control=no-cache",
+        "Strict-Transport-Security=max-age=31536000"
+      ],
+      ":configurator:feature-origins-sling.additional.response.headers":[
+        "ai.typerefinery.websight:typerefinery-distribution:slingosgifeature:typerefinery:1.0.0-SNAPSHOT"
+      ],
+      ":configurator:feature-origins":[
+        "ai.typerefinery.websight:typerefinery-distribution:slingosgifeature:typerefinery:1.0.0-SNAPSHOT"
+      ]
+    },
     "org.apache.sling.commons.log.LogManager":    {
       ":configurator:feature-origins":[
         "pl.ds.websight:websight-base-sling-feature:slingosgifeature:base:1.6.0"
