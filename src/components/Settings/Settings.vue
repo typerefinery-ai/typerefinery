@@ -53,6 +53,7 @@
           :variant="'table'"
           :field="path.tabField"
         />
+        <config v-if="selected == 'config'" :field="path.tabField" />
       </div>
     </div>
   </Dialog>
@@ -64,6 +65,7 @@
   import ProfileInfo from "./Profile.vue"
   import GeneralInfo from "./General.vue"
   import ServicesList from "../Services"
+  import Config from "./Config.vue"
   import Settings from "@/store/Modules/Settings"
   import Services from "@/store/Modules/Services"
   const settingsModule = getModule(Settings)
@@ -71,7 +73,7 @@
 
   export default {
     name: "Settings",
-    components: { Dialog, ProfileInfo, GeneralInfo, ServicesList },
+    components: { Dialog, ProfileInfo, GeneralInfo, ServicesList, Config },
     emits: ["hide"],
     data() {
       return {
@@ -89,6 +91,9 @@
           tabField: path[1],
         }
       },
+    },
+    mounted() {
+      console.log("path", this.path)
     },
     methods: {
       closeDialog() {

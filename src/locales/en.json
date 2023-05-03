@@ -32,7 +32,8 @@
         "general": "General",
         "profile": "Profile",
         "privacy": "Privacy",
-        "services": "Services"
+        "services": "Services",
+        "config": "Config"
       },
       "services": {
         "status": "Showing services according to status",
