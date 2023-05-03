@@ -396,6 +396,16 @@ function addIpcEvents(window: BrowserWindow) {
       logger.log(`ipc getServices`)
       return serviceManager.getServicesSimple()
     },
+    getAppPath(): any {
+      const appPath = app.getPath("appData") + `\\TypeRefinery`
+      logger.log(`app.appPath: ${appPath}`)
+      return appPath
+    },
+    getAppLogs(): any {
+      const appLogs = app.getPath("logs")
+      logger.log(`app.appLogs: ${appLogs}`)
+      return appLogs
+    },
     async restartService(serviceid: string): Promise<any> {
       logger.log(`ipc restartService {serviceid}`)
       const aservice = serviceManager.getService(serviceid)
@@ -412,7 +422,7 @@ function addIpcEvents(window: BrowserWindow) {
       logger.log(`ipc startService {serviceid}`)
       const aservice = serviceManager.getService(serviceid)
       if (aservice) {
-        await aservice.start();
+        await aservice.start()
       } else {
         logger.log(`service {serviceid} not found`)
         return false
