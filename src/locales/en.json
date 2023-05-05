@@ -72,6 +72,10 @@
           "add": "Add",
           "update": "Update"
         }
+      },
+      "config": {
+        "app-path": "App Path",
+        "data-path": "App Data Path"
       }
     },
     "chat": {
@@ -386,6 +390,10 @@
     "help": "Help",
     "profile": "User profile",
     "settings": "Open Settings",
-    "edit-experience": "Edit Experience"
+    "edit-experience": "Edit Experience",
+    "open-location": "Open Location",
+    "copy-path": "Copy Path",
+    "app-path-desc": "Path of the installed app location",
+    "app-data-desc": "Path of the installed app data loaction"
   }
 }

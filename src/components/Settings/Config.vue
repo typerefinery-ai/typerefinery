@@ -1,29 +1,71 @@
 <template>
   <div class="config-settings">
-    <div>
-      <h3>App Path</h3>
+    <div class="app-path-wrapper">
+      <div class="text-wrapper">
+        <p>{{ $t(`components.setting.config.app-path`) }}</p>
+        <span
+          v-tooltip="$t(`tooltips.app-path-desc`)"
+          class="pi pi-info-circle"
+          aria-hidden="true"
+        ></span>
+      </div>
       <div>
         <InputText
           id="appPath"
           v-model="appInstalledPath"
           :value="appInstalledPath"
+          readonly
         />
         <span
+          id="icon"
+          v-tooltip="$t(`tooltips.copy-path`)"
           :class="iconAppPath"
           aria-hidden="true"
           @click="copyToclipBoardAppPath('appPath')"
         ></span>
+        <span
+          id="icon"
+          v-tooltip="$t(`tooltips.open-location`)"
+          class="pi pi-folder-open"
+          aria-hidden="true"
+          @click="openAppPathExplorer()"
+        ></span>
+        <!-- <Button @click="openAppPathExplorer()">Go to</Button> -->
+        <!-- <div><i class="pi pi-folder-open" ></i></div> -->
       </div>
     </div>
-    <div>
-      <h3>Logs Path</h3>
-      <div>
-        <InputText id="logPath" v-model="logs" :value="logs" />
+    <div class="wrapper">
+      <div class="text-wrapper">
+        <p>{{ $t(`components.setting.config.data-path`) }}</p>
         <span
+          v-tooltip="$t(`tooltips.app-data-desc`)"
+          class="pi pi-info-circle"
+          aria-hidden="true"
+        ></span>
+      </div>
+      <div>
+        <InputText
+          id="logPath"
+          v-model="appDataPath"
+          :value="appDataPath"
+          readonly
+        />
+        <span
+          id="icon"
+          v-tooltip="$t(`tooltips.copy-path`)"
           :class="iconLogPath"
           aria-hidden="true"
-          @click="copyToclipBoardLogPath('logPath')"
+          @click="copyToclipBoardDataPath('logPath')"
         ></span>
+        <span
+          id="icon"
+          v-tooltip="$t(`tooltips.open-location`)"
+          class="pi pi-folder-open"
+          aria-hidden="true"
+          @click="openAppDataPathExplorer()"
+        ></span>
+
+        <!-- <Button @click="openAppDataPathExplorer()">Go to</Button> -->
       </div>
     </div>
   </div>
@@ -39,7 +81,7 @@
       return {
         iconAppPath: "pi pi-copy",
         iconLogPath: "pi pi-copy",
-        logs: "",
+        appDataPath: "",
         appInstalledPath: "",
       }
     },
@@ -49,11 +91,19 @@
       ipc.getAppPath().then((value) => {
         this.appInstalledPath = value
       })
-      ipc.getAppLogs().then((value) => {
-        this.logs = value
+      ipc.getAppDataPath().then((value) => {
+        this.appDataPath = value
       })
     },
     methods: {
+      openAppPathExplorer() {
+        const { ipc } = window
+        ipc.getDirectory(this.appInstalledPath)
+      },
+      openAppDataPathExplorer() {
+        const { ipc } = window
+        ipc.getDirectory(this.appDataPath)
+      },
       copyToclipBoardAppPath(id) {
         document.getElementById(`${id}`).select()
         //Copies the selected text to clipboard
@@ -61,15 +111,17 @@
         this.iconAppPath = "pi pi-check"
         setTimeout(() => {
           this.iconAppPath = "pi pi-copy"
+          document.getElementById(`${id}`).blur()
         }, 3000)
       },
-      copyToclipBoardLogPath(id) {
+      copyToclipBoardDataPath(id) {
         document.getElementById(`${id}`).select()
         //Copies the selected text to clipboard
         document.execCommand("copy")
         this.iconLogPath = "pi pi-check"
         setTimeout(() => {
           this.iconLogPath = "pi pi-copy"
+          document.getElementById(`${id}`).blur()
         }, 3000)
       },
     },
@@ -77,8 +129,25 @@
 </script>
 <style lang="scss">
   .config-settings {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 150px;
+    p {
+      margin-top: -2px;
+    }
+    .text-wrapper {
+      display: flex;
+      margin-bottom: 12px;
+    }
     span {
       margin-left: 7px;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+    #icon {
+      font-size: 1.5rem;
+      color: #3f51b5;
     }
   }
 </style>
