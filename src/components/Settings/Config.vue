@@ -53,7 +53,7 @@
         <span
           id="icon"
           v-tooltip="$t(`tooltips.copy-path`)"
-          :class="iconLogPath"
+          :class="iconDataPath"
           aria-hidden="true"
           @click="copyToclipBoardDataPath('logPath')"
         ></span>
@@ -80,7 +80,7 @@
     data() {
       return {
         iconAppPath: "pi pi-copy",
-        iconLogPath: "pi pi-copy",
+        iconDataPath: "pi pi-copy",
         appDataPath: "",
         appInstalledPath: "",
       }
@@ -118,9 +118,9 @@
         document.getElementById(`${id}`).select()
         //Copies the selected text to clipboard
         document.execCommand("copy")
-        this.iconLogPath = "pi pi-check"
+        this.iconDataPath = "pi pi-check"
         setTimeout(() => {
-          this.iconLogPath = "pi pi-copy"
+          this.iconDataPath = "pi pi-copy"
           document.getElementById(`${id}`).blur()
         }, 3000)
       },
