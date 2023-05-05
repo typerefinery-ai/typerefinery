@@ -133,8 +133,12 @@
     flex-direction: column;
     justify-content: space-between;
     height: 150px;
+    .p-inputtext {
+      width: 53vh;
+    }
     p {
       margin-top: -2px;
+      font-weight: bold;
     }
     .text-wrapper {
       display: flex;
