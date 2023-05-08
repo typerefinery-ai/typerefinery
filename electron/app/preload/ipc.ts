@@ -58,11 +58,14 @@ export const sharedAppIpc = {
   isNormal: new IPCMethod<[], boolean>("isNormal"),
   setBadgeCount: new IPCMethod<[number], boolean>("setBadgeCount"),
   getServices: new IPCMethod<[], any[]>("getServices"),
+  getDirectory: new IPCMethod<[string], any[]>("getDirectory"),
   restartService: new IPCMethod<[string], any[]>("restartService"),
   stopService: new IPCMethod<[string], any[]>("stopService"),
   startService: new IPCMethod<[string], any[]>("startService"),
   startAll: new IPCMethod<[], any[]>("startAll"),
   stopAll: new IPCMethod<[], any[]>("stopAll"),
+  getAppPath: new IPCMethod<[string], any[]>("getAppPath"),
+  getAppDataPath: new IPCMethod<[string], any[]>("getAppDataPath"),
 }
 
 export type AppIPC = {

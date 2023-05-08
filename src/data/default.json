@@ -329,7 +329,8 @@
       "10": { "name": "local", "icon": "pi pi-cog" },
       "20": { "name": "online", "icon": "pi pi-globe" }
     },
-    "servicesStarted": false
+    "servicesStarted": false,
+    "isAvailableTypeDBInitAndSample": false
   },
   "settings": {
     "language": "en",
@@ -359,6 +360,11 @@
         "id": "services",
         "label": "Services",
         "icon": "pi pi-cog"
+      },
+      {
+        "id": "config",
+        "label": "Config",
+        "icon": "pi pi-folder"
       }
     ],
     "listOfMenu": [
