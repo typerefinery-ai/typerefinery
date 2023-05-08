@@ -23,7 +23,7 @@
                 Documentation
             </button>
             <button class="tab_link dashboard" v-if="this.servicesLoaded" @click="onTabClicked('FINISH')">
-                Read to Roll, jump to the app 
+                Read to Roll, jump to the app
                 <i class="pi pi-arrow-right"></i>
             </button>
         </div>
@@ -32,16 +32,37 @@
                 <window-controls />
             </div>
             <div class="content">
-            
-    
-            <!-- <welcome v-if="activeTab === 'WELCOME'" /> -->
-            <welcome v-if="activeTab === 'WELCOME'"  @tabClicked="onTabClicked" :isInitialTime="isInitialTime"  />
-            <documentation v-if="activeTab === 'DOCUMENTATION'"></documentation>
-            <services-content v-if="activeTab === 'SERVICES'" @tabClicked="onTabClicked" :getServices="getServices"
-                :servicesLoaded="servicesLoaded" :services="services"></services-content>
+
+
+                <!-- <welcome v-if="activeTab === 'WELCOME'" /> -->
+                <welcome v-if="activeTab === 'WELCOME'" @tabClicked="onTabClicked" :isInitialTime="isInitialTime" />
+                <documentation v-if="activeTab === 'DOCUMENTATION'"></documentation>
+                <services-content v-if="activeTab === 'SERVICES'" @tabClicked="onTabClicked" :getServices="getServices"
+                    :servicesLoaded="servicesLoaded" :services="services"></services-content>
+            </div>
         </div>
-        </div>
-       
+        <Dialog v-model:visible="showAuthModal" class="projects-dialog" modal :style="{ width: '35vw', height: '365px' }">
+            <template #header>
+                <span class="p-dialog-title">
+                    Login/Register
+                </span>
+            </template>
+            <div class="field">
+                <label for="email">
+                    Email Address
+                </label>
+                <InputText id="email" v-model="email" />
+            </div>
+            <div class="field">
+                <label for="username">
+                    User name
+                </label>
+                <InputText id="username" v-model="username" />
+            </div>
+            <template #footer>
+                <Button label="Let's Go!" @click="loginHandler()" />
+            </template>
+        </Dialog>
     </div>
 </template>
 
@@ -53,16 +74,26 @@ import Welcome from './Tabs/Welcome.vue';
 import Documentation from './Tabs/Documentation.vue';
 import ServicesContent from './Tabs/Services.vue';
 import WindowControls from '../Menu/WindowControls.vue';
+import Dialog from "primevue/dialog"
+import Panel from "primevue/panel"
+import InputText from "primevue/inputtext"
+import Button from "primevue/button"
 
 import Services from "@/store/Modules/Services"
+import Auth from "@/store/Modules/Auth"
 const servicesModule = getModule(Services)
+const authModule = getModule(Auth)
 export default {
     name: 'ServiceInstallation',
     components: {
         Welcome,
         Documentation,
         ServicesContent,
-        WindowControls
+        WindowControls,
+        Dialog,
+        Panel,
+        InputText,
+        Button
     },
     props: {
         getServices: {
@@ -82,7 +113,10 @@ export default {
             error: false,
             errorMessage: '',
             activeTab: 'WELCOME',
-            initialTime: 'true'
+            initialTime: 'true',
+            showAuthModal: false,
+            username: '',
+            email: ''
         };
     },
     emits: ['updateMoveToDashboard'],
@@ -97,18 +131,35 @@ export default {
     methods: {
         onTabClicked(tab) {
             this.initialTime = 'false';
+            
             if (tab === 'FINISH') {
+                if (!authModule.data.isLoggedIn) {
+                    this.showAuthModal = true;
+                    return;
+                }
                 this.$emit('updateMoveToDashboard', true);
                 return;
             }
             this.activeTab = tab;
+        },
+        async loginHandler() {
+            await authModule.login({
+                username: this.username,
+                email: this.email,
+                alias: this.username,
+                isLoggedIn: true
+            });
+            H.identify(this.email, {
+                username: this.username
+            });
+            this.$emit('updateMoveToDashboard', true);
+            return;
         }
     }
 };
 </script>
 
 <style scoped lang="scss">
-
 .controller_container {
     display: flex;
     align-items: center;
@@ -119,6 +170,7 @@ export default {
     float: right;
     right: 0;
 }
+
 /* Style the tab */
 .container .tab {
     font-family: Roboto, Helvetica Neue Light, Helvetica Neue, Helvetica, Arial,
@@ -183,5 +235,4 @@ export default {
 .dashboard i {
     margin-left: 5px;
 }
-
 </style>

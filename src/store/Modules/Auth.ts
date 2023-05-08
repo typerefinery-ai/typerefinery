@@ -1,4 +1,4 @@
-import { Module, VuexModule, Mutation } from "vuex-module-decorators"
+import { Module, VuexModule, Mutation, Action } from "vuex-module-decorators"
 import store from "../index"
 import sampleData from "@/data/default.json"
 
@@ -22,5 +22,22 @@ export default class Auth extends VuexModule {
   @Mutation
   setEmail(email: string) {
     this.data.email = email
+  }
+  @Mutation
+  setUser(user: any) {
+    this.data = user
+  }
+
+  // action for login
+  @Action({ rawError: true })
+  async login(userPayload: any) {
+    try {
+      // const response = await restapi.post(`/auth/login`, data)
+      // const user = response.data
+      this.context.commit("setUser", userPayload)
+      return userPayload
+    } catch (error) {
+      console.log(error)
+    }
   }
 }

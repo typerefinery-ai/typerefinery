@@ -10,9 +10,19 @@ import { loadFonts } from "./plugins/webfontloader"
 import Vuelidate from "vuelidate"
 import ConfirmationService from "primevue/confirmationservice"
 import ToastService from "primevue/toastservice"
+import { H } from "highlight.run"
 
 loadFonts()
-
+H.init("jgo9w6gl", {
+  environment: "production",
+  networkRecording: {
+    enabled: true,
+    recordHeadersAndBody: true,
+    urlBlocklist: [
+      // insert full or partial urls that you don't want to record here
+    ],
+  },
+})
 const app = createApp(App)
 app.directive("vuelidate", Vuelidate)
 app.use(i18n)

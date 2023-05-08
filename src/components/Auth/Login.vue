@@ -58,7 +58,8 @@
     data() {
       return {
         email: "",
-        password: "",
+        username: "",
+        alias: ""
       }
     },
     methods: {

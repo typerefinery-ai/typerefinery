@@ -20,9 +20,10 @@
     "sidebarVisible": true
   },
   "auth": {
-    "username": "TypeRefinery User",
+    "username": "dev",
     "email": "info@typerefinery.io",
-    "alias": "Me"
+    "alias": "Developer",
+    "isLoggedIn": false
   },
   "connections": {
     "type": "connections",
