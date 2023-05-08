@@ -1,115 +1,151 @@
 <template>
-    <div class="container">
-        <div class="tab">
-            <!-- <button class="tab_link" :class="{ active: activeTab == 'WELCOME' }" @click="onTabClicked('WELCOME')">
+  <div class="container">
+    <div class="tab">
+      <!-- <button class="tab_link" :class="{ active: activeTab == 'WELCOME' }" @click="onTabClicked('WELCOME')">
                 Welcome
             </button> -->
-            <button class="tab_link" :class="{ active: activeTab == 'WELCOME' }" @click="onTabClicked('WELCOME')">
-                Welcome
-            </button>
-            <button class="tab_link" :class="{ active: activeTab == 'SERVICES' }" @click="onTabClicked('SERVICES')">
-                Services
-                <div v-if="!this.servicesLoaded" class="mt-3 text-white text-sm hover:text-500">
-                    Installing services...
-                    <span class="pi pi-spin pi-cog" role="status" aria-hidden="true"></span>
-                </div>
-                <div v-else class="mt-3 text-sm text-white">
-                    Required Services installed
-                    <span class="pi pi-check" role="status" aria-hidden="true"></span>
-                </div>
-            </button>
-            <button class="tab_link" :class="{ active: activeTab == 'DOCUMENTATION' }"
-                @click="onTabClicked('DOCUMENTATION')">
-                Documentation
-            </button>
-            <button class="tab_link dashboard" v-if="this.servicesLoaded" @click="onTabClicked('FINISH')">
-                Read to Roll, jump to the app 
-                <i class="pi pi-arrow-right"></i>
-            </button>
+      <button
+        class="tab_link"
+        :class="{ active: activeTab == 'WELCOME' }"
+        @click="onTabClicked('WELCOME')"
+      >
+        Welcome
+      </button>
+      <button
+        class="tab_link"
+        :class="{ active: activeTab == 'SERVICES' }"
+        @click="onTabClicked('SERVICES')"
+      >
+        Services
+        <div
+          v-if="!this.servicesLoaded"
+          class="mt-3 text-white text-sm hover:text-500"
+        >
+          Installing services...
+          <span
+            class="pi pi-spin pi-cog"
+            role="status"
+            aria-hidden="true"
+          ></span>
         </div>
-        <div class="content_container">
-            <div class="controller_container">
-                <window-controls />
-            </div>
-            <div class="content">
-            
-    
-            <!-- <welcome v-if="activeTab === 'WELCOME'" /> -->
-            <welcome v-if="activeTab === 'WELCOME'"  @tabClicked="onTabClicked" :isInitialTime="isInitialTime"  />
-            <documentation v-if="activeTab === 'DOCUMENTATION'"></documentation>
-            <services-content v-if="activeTab === 'SERVICES'" @tabClicked="onTabClicked" :getServices="getServices"
-                :servicesLoaded="servicesLoaded" :services="services"></services-content>
+        <div v-else class="mt-3 text-sm text-white">
+          Required Services installed
+          <span class="pi pi-check" role="status" aria-hidden="true"></span>
         </div>
-        </div>
-       
+      </button>
+      <button
+        class="tab_link"
+        :class="{ active: activeTab == 'DOCUMENTATION' }"
+        @click="onTabClicked('DOCUMENTATION')"
+      >
+        Documentation
+      </button>
+      <button
+        class="tab_link dashboard"
+        v-if="this.servicesLoaded"
+        @click="onTabClicked('FINISH')"
+      >
+        Read to Roll, jump to the app
+        <i class="pi pi-arrow-right"></i>
+      </button>
     </div>
+    <div class="content_container">
+      <div class="controller_dragWindowHeader">
+        <div class="controller_container">
+          <window-controls />
+        </div>
+      </div>
+      <div class="content">
+        <!-- <welcome v-if="activeTab === 'WELCOME'" /> -->
+        <welcome
+          v-if="activeTab === 'WELCOME'"
+          @tabClicked="onTabClicked"
+          :isInitialTime="isInitialTime"
+        />
+        <documentation v-if="activeTab === 'DOCUMENTATION'"></documentation>
+        <services-content
+          v-if="activeTab === 'SERVICES'"
+          @tabClicked="onTabClicked"
+          :getServices="getServices"
+          :servicesLoaded="servicesLoaded"
+          :services="services"
+        ></services-content>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
-import { getModule } from "vuex-module-decorators"
-import { isProxy, toRaw } from 'vue';
+  import { getModule } from "vuex-module-decorators"
+  import { isProxy, toRaw } from "vue"
 
-import Welcome from './Tabs/Welcome.vue';
-import Documentation from './Tabs/Documentation.vue';
-import ServicesContent from './Tabs/Services.vue';
-import WindowControls from '../Menu/WindowControls.vue';
+  import Welcome from "./Tabs/Welcome.vue"
+  import Documentation from "./Tabs/Documentation.vue"
+  import ServicesContent from "./Tabs/Services.vue"
+  import WindowControls from "../Menu/WindowControls.vue"
 
-import Services from "@/store/Modules/Services"
-const servicesModule = getModule(Services)
-export default {
-    name: 'ServiceInstallation',
+  import Services from "@/store/Modules/Services"
+  const servicesModule = getModule(Services)
+  export default {
+    name: "ServiceInstallation",
     components: {
-        Welcome,
-        Documentation,
-        ServicesContent,
-        WindowControls
+      Welcome,
+      Documentation,
+      ServicesContent,
+      WindowControls,
     },
     props: {
-        getServices: {
-            type: Function,
-            required: true,
-        },
-        servicesStarted: {
-            type: Boolean,
-            required: true,
-        }
+      getServices: {
+        type: Function,
+        required: true,
+      },
+      servicesStarted: {
+        type: Boolean,
+        required: true,
+      },
     },
     data() {
-        return {
-            services: [],
-            servicesStarted: false,
-            loading: false,
-            error: false,
-            errorMessage: '',
-            activeTab: 'WELCOME',
-            initialTime: 'true'
-        };
+      return {
+        services: [],
+        servicesStarted: false,
+        loading: false,
+        error: false,
+        errorMessage: "",
+        activeTab: "WELCOME",
+        initialTime: "true",
+      }
     },
-    emits: ['updateMoveToDashboard'],
+    emits: ["updateMoveToDashboard"],
     computed: {
-        servicesLoaded() {
-            return servicesModule.data.servicesStarted
-        },
-        isInitialTime() {
-            return this.initialTime;
-        }
+      servicesLoaded() {
+        return servicesModule.data.servicesStarted
+      },
+      isInitialTime() {
+        return this.initialTime
+      },
     },
     methods: {
-        onTabClicked(tab) {
-            this.initialTime = 'false';
-            if (tab === 'FINISH') {
-                this.$emit('updateMoveToDashboard', true);
-                return;
-            }
-            this.activeTab = tab;
+      onTabClicked(tab) {
+        this.initialTime = "false"
+        if (tab === "FINISH") {
+          this.$emit("updateMoveToDashboard", true)
+          return
         }
-    }
-};
+        this.activeTab = tab
+      },
+    },
+  }
 </script>
 
 <style scoped lang="scss">
-
-.controller_container {
+  .controller_dragWindowHeader {
+    width: 100%;
+    position: fixed;
+    z-index: 999;
+    height: 30px;
+    -webkit-app-region: drag;
+  }
+  .controller_container {
     display: flex;
     align-items: center;
     justify-content: right;
@@ -118,11 +154,12 @@ export default {
     background: white;
     float: right;
     right: 0;
-}
-/* Style the tab */
-.container .tab {
+    -webkit-app-region: no-drag;
+  }
+  /* Style the tab */
+  .container .tab {
     font-family: Roboto, Helvetica Neue Light, Helvetica Neue, Helvetica, Arial,
-        Lucida Grande, sans-serif;
+      Lucida Grande, sans-serif;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -131,10 +168,10 @@ export default {
     background-color: #3b82f6;
     width: 30%;
     height: 100vh;
-}
+  }
 
-/* Style the buttons that are used to open the tab content */
-.tab button {
+  /* Style the buttons that are used to open the tab content */
+  .tab button {
     margin-top: 1;
     display: block;
     background-color: inherit;
@@ -147,25 +184,25 @@ export default {
     cursor: pointer;
     transition: 0.3s;
     font-size: 18px;
-}
+  }
 
-/* Change background color of buttons on hover */
-.tab button:hover {
+  /* Change background color of buttons on hover */
+  .tab button:hover {
     background-color: #618ed7;
-}
+  }
 
-.tabLinks {
+  .tabLinks {
     height: 2vh;
-}
+  }
 
-/* Create an active/current "tab button" class */
-.tab button.active {
+  /* Create an active/current "tab button" class */
+  .tab button.active {
     background-color: #2f68c4;
     color: white;
-}
+  }
 
-/* Style the tab content */
-.container .content {
+  /* Style the tab content */
+  .container .content {
     display: flex;
     float: left;
     width: 70%;
@@ -173,15 +210,14 @@ export default {
     color: black;
     background: white;
     font-family: Roboto, Helvetica Neue Light, Helvetica Neue, Helvetica, Arial,
-        Lucida Grande, sans-serif;
-}
+      Lucida Grande, sans-serif;
+  }
 
-.dashboard {
+  .dashboard {
     background: #1e69e1 !important;
-}
+  }
 
-.dashboard i {
+  .dashboard i {
     margin-left: 5px;
-}
-
+  }
 </style>
