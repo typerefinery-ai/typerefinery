@@ -8,6 +8,7 @@ import {
   // MenuItem,
   // nativeImage,
   crashReporter,
+  shell,
 } from "electron"
 import * as path from "path"
 import i18n from "./i18n"
@@ -396,6 +397,22 @@ function addIpcEvents(window: BrowserWindow) {
       logger.log(`ipc getServices`)
       return serviceManager.getServicesSimple()
     },
+    //app path
+    getAppPath(): any {
+      const appPath = app.getPath("exe")
+      logger.log(`app.appPath: ${appPath}`)
+      return appPath
+    },
+    //App data path
+    getAppDataPath(): any {
+      const appAppDataPath = app.getPath("appData") + `\\TypeRefinery`
+      logger.log(`app.appLogs: ${appAppDataPath}`)
+      return appAppDataPath
+    },
+    getDirectory(path): any {
+      shell.showItemInFolder(path) // Show the given file in a file manager. If possible, select the file.
+      // shell.openPath(path)
+    },
     async restartService(serviceid: string): Promise<any> {
       logger.log(`ipc restartService {serviceid}`)
       const aservice = serviceManager.getService(serviceid)
@@ -412,7 +429,7 @@ function addIpcEvents(window: BrowserWindow) {
       logger.log(`ipc startService {serviceid}`)
       const aservice = serviceManager.getService(serviceid)
       if (aservice) {
-        await aservice.start();
+        await aservice.start()
       } else {
         logger.log(`service {serviceid} not found`)
         return false
