@@ -114,7 +114,7 @@
     "roboto-fontface": "*",
     "socket.io-client": "^4.5.1",
     "splitpanes": "^3.1.1",
-    "total4": "^0.0.65",
+    "total4": "^0.0.81",
     "tree-kill": "^1.2.2",
     "typedb-client": "^2.11.1",
     "vite-plugin-markdown-vue": "^0.1.2",
