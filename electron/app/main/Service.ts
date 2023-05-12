@@ -119,6 +119,7 @@ export interface ExecConfig {
   servicedebugport?: number
   servicehost?: string
   healthcheck?: HealthCheck
+  debugLog?: boolean
 }
 
 export interface SetupArchive {
@@ -206,6 +207,7 @@ export class Service extends EventEmitter<ServiceEvent> {
   #processEnv: { [key: string]: string } = {} // passed to process
   #globalEnv: { [key: string]: string } = {} // pass when service was created
   #healthCheckTimeout: any
+  #debugLog: boolean
   constructor(
     logsDir: string,
     logger: Logger,
@@ -236,6 +238,7 @@ export class Service extends EventEmitter<ServiceEvent> {
     this.#events = events
     this.#serviceManager = serviceManager
     this.#id = this.#options.id
+    this.#debugLog = this.#options.execconfig?.debugLog || false
     this.#serviceport = this.#options.execconfig?.serviceport || 0
     this.#servicedebugport = this.#options.execconfig?.servicedebugport || 0
     this.#servicehost = this.#options.execconfig?.servicehost || "localhost"
@@ -261,12 +264,12 @@ export class Service extends EventEmitter<ServiceEvent> {
       this.#logger.error(err)
     })
     this.#stderr.on("open", () => {
-      this.#logWrite(`log open.`)
+      this.#logWrite("info", `log open.`)
     })
     this.#stderr.on("finish", () => {
-      this.#logWrite(`log finished.`)
+      this.#logWrite("info", `log finished.`)
     })
-    this.#errorWrite(`service error log ${this.#stderr.path}.`)
+    this.#errorWrite("info", `service error log ${this.#stderr.path}.`)
     this.#log(`service error log ${this.#stderr.path}`)
 
     // create stdout log file for service executable
@@ -283,12 +286,12 @@ export class Service extends EventEmitter<ServiceEvent> {
       this.#logger.error(err)
     })
     this.#stdout.on("open", () => {
-      this.#logWrite(`log open.`)
+      this.#logWrite("info", `log open.`)
     })
     this.#stdout.on("finish", () => {
-      this.#logWrite(`log finished.`)
+      this.#logWrite("info", `log finished.`)
     })
-    this.#logWrite(`service console log ${this.#stdout.path}.`)
+    this.#logWrite("info", `service console log ${this.#stdout.path}.`)
     this.#log(`service console log ${this.#stdout.path}`)
 
     const config = options.execconfig
@@ -1105,18 +1108,25 @@ export class Service extends EventEmitter<ServiceEvent> {
   ): Promise<void> {
     //quick fail if disabled
     if (!this.isEnabled) {
-      this.#logWrite(`quick fail if disabled, isEnabled: ${this.isEnabled}.`)
+      this.#logWrite(
+        "info",
+        `quick fail if disabled, isEnabled: ${this.isEnabled}.`
+      )
       this.#log(`service ${this.#id} is disabled`)
       return
     }
 
     this.#logWrite(
-      `starting ${this.#status}, isStarted:${this.isStarted}, isStopped:${this.isStopped}`
+      "info",
+      `starting ${this.#status}, isStarted:${this.isStarted}, isStopped:${
+        this.isStopped
+      }`
     )
 
     //quick fail if already starting
     if (this.isStarting || this.isInstalling) {
       this.#logWrite(
+        "info",
         `quick fail if already starting, isStarting:${this.isStarting}, isInstalling:${this.isInstalling}.`
       )
       this.#log(`service ${this.#id} is already starting.`)
@@ -1125,13 +1135,22 @@ export class Service extends EventEmitter<ServiceEvent> {
 
     //quick fail already started
     if (this.isStarted) {
-      this.#logWrite(`quick fail already started, isStarted:${this.isStarted}.`)
+      this.#logWrite(
+        "info",
+        `quick fail already started, isStarted:${this.isStarted}.`
+      )
       this.#log(
         `service ${this.#id} already started with pid ${this.#process?.pid}`
       )
       return
     }
 
+    this.#logWrite(
+      "info",
+      `waiting for dependent services ${waitfordependencies}, ${
+        this.#options.execconfig.depend_on
+      }, ${this.#options.execconfig.depend_on?.length}.`
+    )
     if (
       waitfordependencies &&
       this.#options.execconfig.depend_on &&
@@ -1163,6 +1182,8 @@ export class Service extends EventEmitter<ServiceEvent> {
     }
     // compile environment variables
     this.compileEnvironmentVariables(globalenv)
+
+    this.#logWrite("info", `environmentVariables: ${this.environmentVariables}`)
 
     this.#log(
       `starting service ${this.#id} with env variables ${JSON.stringify(
@@ -1410,28 +1431,41 @@ export class Service extends EventEmitter<ServiceEvent> {
   }
 
   // write to service error log
-  #errorWrite(message: any) {
-    this.#stderr.write(`\n${this.#timestamp} ${message}\n`)
+  #errorWrite(type: string, message: any) {
+    this.#stderr.write(
+      `\n${this.#timestamp} ${type.toUpperCase()} ${message}\n`
+    )
   }
 
   // write to service log
-  #logWrite(message: any) {
-    this.#stdout.write(`\n${this.#timestamp} ${message}\n`)
+  #logWrite(type: string, message: any) {
+    this.#stdout.write(
+      `\n${this.#timestamp} ${type.toUpperCase()} ${message}\n`
+    )
   }
 
   #log(message: any) {
     this.#logger.log(message)
     this.emit("log", this.#id, message)
+    if (this.#debugLog) {
+      this.#logWrite("info", message)
+    }
   }
 
   #warn(message: any) {
     this.#logger.warn(message)
     this.emit("log", this.#id, message)
+    if (this.#debugLog) {
+      this.#logWrite("warn", message)
+    }
   }
 
   #debug(message: any) {
     this.#logger.debug(message)
     this.emit("log", this.#id, message)
+    if (this.#debugLog) {
+      this.#logWrite("debug", message)
+    }
   }
 
   #setStatus(newstatus: ServiceStatus) {

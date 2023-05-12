@@ -8,6 +8,7 @@
   "icon": "pi pi-globe",
   "servicetype": 10,
   "execconfig": {
+    "debugLog": true,
     "execservice": { "id": "node" },
     "setup": {
       "win32": ["; ${NODE} ${NODE_HOME}\\node_modules\\npm\\bin\\npm-cli.js install"],
