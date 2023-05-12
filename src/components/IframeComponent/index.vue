@@ -20,6 +20,8 @@
         <iframe
           :src="`${experience.url}`"
           name="disable-x-frame-options"
+          referrerpolicy="unsafe-url"
+          csp="default-src *; style-src 'unsafe-inline' *; script-src 'unsafe-inline' *"
           width="100%"
           height="100%"
           :frameborder="0"
