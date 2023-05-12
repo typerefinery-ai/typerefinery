@@ -126,11 +126,11 @@
       }
     },
 
-    computed: {
-      servicesLoaded() {
-        return servicesModule.data.servicesStarted
-      },
-    },
+    // computed: {
+    //   servicesLoaded() {
+    //     return servicesModule.data.servicesStarted
+    //   },
+    // },
     mounted() {
       this.isAvailableTypeDBInitAndSample =
         servicesModule.data.isAvailableTypeDBInitAndSample
