@@ -9,19 +9,19 @@
         }"
         @click="handleView('viz')"
       />
-      <Button
+      <!-- <Button
         :label="$t(`components.output.table`)"
         class="p-button-raised"
         :class="{
           'p-button-text p-button-plain': activeView !== 'table',
         }"
         @click="handleView('table')"
-      />
+      /> -->
     </div>
     <div class="config-container-content">
       <!-- <graph-view v-show="activeView === 'viz'" /> -->
       <object v-show="activeView === 'viz' && path" :data="path"></object>
-      <table-view v-show="activeView === 'table'" />
+      <!-- <table-view v-show="activeView === 'table'" /> -->
     </div>
   </div>
 </template>
@@ -29,7 +29,7 @@
 <script>
   // import axios from "axios"
   import Button from "primevue/button"
-  import TableView from "../Table/TableView.vue"
+  // import TableView from "../Table/TableView.vue"
   import Projects from "@/store/Modules/Projects"
   import { getModule } from "vuex-module-decorators"
   const projectsModule = getModule(Projects)
@@ -39,7 +39,7 @@
     name: "Output",
     components: {
       Button,
-      TableView,
+      // TableView,
       // GraphView,
     },
     props: {
