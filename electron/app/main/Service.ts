@@ -261,12 +261,12 @@ export class Service extends EventEmitter<ServiceEvent> {
       this.#logger.error(err)
     })
     this.#stderr.on("open", () => {
-      this.#stdout.write(`log open\n`)
+      this.#logWrite(`log open.`)
     })
     this.#stderr.on("finish", () => {
-      this.#stdout.write(`log finished`)
+      this.#logWrite(`log finished.`)
     })
-    this.#stderr.write(`service error log ${this.#stderr.path}.\n`)
+    this.#errorWrite(`service error log ${this.#stderr.path}.`)
     this.#log(`service error log ${this.#stderr.path}`)
 
     // create stdout log file for service executable
@@ -283,12 +283,12 @@ export class Service extends EventEmitter<ServiceEvent> {
       this.#logger.error(err)
     })
     this.#stdout.on("open", () => {
-      this.#stdout.write(`log open`)
+      this.#logWrite(`log open.`)
     })
     this.#stdout.on("finish", () => {
-      this.#stdout.write(`log finished`)
+      this.#logWrite(`log finished.`)
     })
-    this.#stdout.write(`service console log ${this.#stdout.path}.\n`)
+    this.#logWrite(`service console log ${this.#stdout.path}.`)
     this.#log(`service console log ${this.#stdout.path}`)
 
     const config = options.execconfig
@@ -1105,22 +1105,27 @@ export class Service extends EventEmitter<ServiceEvent> {
   ): Promise<void> {
     //quick fail if disabled
     if (!this.isEnabled) {
+      this.#logWrite(`quick fail if disabled, isEnabled: ${this.isEnabled}.`)
       this.#log(`service ${this.#id} is disabled`)
       return
     }
 
-    this.#stdout.write(
-      `\nstarting ${this.#status}, ${this.isStarted}, ${this.isStopped} \n`
+    this.#logWrite(
+      `starting ${this.#status}, isStarted:${this.isStarted}, isStopped:${this.isStopped}`
     )
 
     //quick fail if already starting
     if (this.isStarting || this.isInstalling) {
+      this.#logWrite(
+        `quick fail if already starting, isStarting:${this.isStarting}, isInstalling:${this.isInstalling}.`
+      )
       this.#log(`service ${this.#id} is already starting.`)
       return
     }
 
     //quick fail already started
     if (this.isStarted) {
+      this.#logWrite(`quick fail already started, isStarted:${this.isStarted}.`)
       this.#log(
         `service ${this.#id} already started with pid ${this.#process?.pid}`
       )
@@ -1402,6 +1407,16 @@ export class Service extends EventEmitter<ServiceEvent> {
         }
       }
     }
+  }
+
+  // write to service error log
+  #errorWrite(message: any) {
+    this.#stderr.write(`\n${this.#timestamp} ${message}\n`)
+  }
+
+  // write to service log
+  #logWrite(message: any) {
+    this.#stdout.write(`\n${this.#timestamp} ${message}\n`)
   }
 
   #log(message: any) {
@@ -1879,5 +1894,13 @@ export class Service extends EventEmitter<ServiceEvent> {
       )
     })
     return template
+  }
+
+  /**
+   * get string timestamp
+   * @returns timestamp
+   */
+  #timestamp(): string {
+    return new Date().toISOString()
   }
 }
