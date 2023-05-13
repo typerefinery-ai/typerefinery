@@ -326,10 +326,14 @@ app.whenReady().then(() => {
     logger.log("mainWindow.webContents.on did-finish-load")
     // check installed.txt file exists
     const isFirstRun = isFirstInstall()
+    logger.log(`first run: ${isFirstRun}`)
+    logger.log(`mainWindow.webContents.on did-finish-load startAll.`)
     serviceManager.startAll(!isFirstRun)
     // create file installed.txt
     if (isFirstRun) {
+      logger.log("create first run file.")
       createFirstInstallFile()
+      logger.log(`next run will be first run?: ${isFirstInstall()}`)
     }
   })
 })
@@ -467,7 +471,15 @@ function addIpcEvents(window: BrowserWindow) {
     },
     startAll(): any {
       logger.log(`ipc startAll`)
-      serviceManager.startAll()
+      const isFirstRun = isFirstInstall()
+      logger.log(`first run: ${isFirstRun}`)
+      serviceManager.startAll(!isFirstRun)
+      // create file installed.txt
+      if (isFirstRun) {
+        logger.log("create first run file.")
+        createFirstInstallFile()
+        logger.log(`next run will be first run?: ${isFirstInstall()}`)
+      }
     },
     stopAll(): any {
       logger.log(`ipc stopAll`)
