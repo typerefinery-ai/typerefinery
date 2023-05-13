@@ -218,7 +218,7 @@
     },
     "win": {
       "target": "nsis",
-      "icon": "dist/main/assets/icon.ico"
+      "icon": "dist/main/assets/logo.png"
     },
     "nsis": {
       "menuCategory": false,
@@ -246,7 +246,15 @@
       "output": "dist_electron"
     },
     "extraFiles": [
-      "services/**/*"
+      "services/**/*",
+      "!services/*/*.setup",
+      "!services/*/*.pid",
+      "!services/*/node_modules/**/*",
+      "!services/*/tmp/**/*",
+      "!services/*/win32/**/*",
+      "!services/*/linux/**/*",
+      "!services/*/darwin/**/*",
+      "services/*/${platform}/**/*"
     ],
     "publish": {
       "provider": "github",
