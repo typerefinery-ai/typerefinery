@@ -220,9 +220,20 @@
       "target": "nsis-web",
       "icon": "dist/main/assets/logo.png"
     },
+    "nsis": {
+      "menuCategory": false,
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "deleteAppDataOnUninstall": false,
+      "runAfterFinish": true,
+      "installerHeaderIcon": "dist/main/assets/icon.ico",
+      "installerIcon": "dist/main/assets/icon.ico",
+      "uninstallerIcon": "dist/main/assets/icon.ico"
+    },
     "nsisWeb": {
       "menuCategory": false,
-      "oneClick": true,
+      "oneClick": false,
       "perMachine": false,
       "allowToChangeInstallationDirectory": true,
       "deleteAppDataOnUninstall": false,
