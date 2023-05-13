@@ -221,9 +221,9 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
 
-      - name: Remove service contents that are not required for this OS build.
-        if: ${{ contains(matrix.os, 'windows') }}
-        run: ./services/prep-win32.ps1 -DOREMOVE
+      # - name: Remove service contents that are not required for this OS build.
+      #   if: ${{ contains(matrix.os, 'windows') }}
+      #   run: ./services/prep-win32.ps1 -DOREMOVE
 
       # - name: Remove service contents that are not required for this OS build.
       #   if: ${{ contains(matrix.os, 'macos') }}
