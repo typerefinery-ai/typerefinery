@@ -258,7 +258,7 @@ class ServiceManager {
   }
 
   // start all services
-  async startAll() {
+  async startAll(forceInstall = false) {
     this.#sortServices()
 
     for (const service of this.#services) {
@@ -274,7 +274,7 @@ class ServiceManager {
 
     for (const service of this.#services) {
       this.#logger.log(`starting service ${service.id}`)
-      await service.start(this.globalEnv)
+      await service.start(this.globalEnv, [service.id], true, forceInstall)
       // collect global environment variables from service and add to globalenv in case they have changed
       Object.assign(this.#globalenv, service.globalEnvironmentVariables)
 

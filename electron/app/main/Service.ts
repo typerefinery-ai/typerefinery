@@ -1104,7 +1104,8 @@ export class Service extends EventEmitter<ServiceEvent> {
   async start(
     globalenv: { [key: string]: string } = {},
     startchain: string[] = [this.id],
-    waitfordependencies = true
+    waitfordependencies = true,
+    forceInstall = false
   ): Promise<void> {
     //quick fail if disabled
     if (!this.isEnabled) {
@@ -1209,8 +1210,8 @@ export class Service extends EventEmitter<ServiceEvent> {
     }
 
     this.#log(`do service setup`)
-    //run setup if it exists
-    await this.#doSetup()
+    //run setup if it exists and force reinstall if needed
+    await this.#doSetup(forceInstall)
 
     if (this.isRunnable) {
       this.#log(`starting ${this.#id}`)

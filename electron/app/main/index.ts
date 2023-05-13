@@ -17,6 +17,8 @@ import { ServiceManager } from "./ServiceManager"
 import { Logger } from "./Logger"
 import {
   dataPath,
+  isFirstInstall,
+  createFirstInstallFile,
   // resourceBinary
 } from "./Resources"
 import log from "electron-log"
@@ -312,7 +314,13 @@ app.whenReady().then(() => {
   // wait for window to be ready before loading services.
   mainWindow.webContents.on("did-finish-load", function () {
     logger.log("mainWindow.webContents.on did-finish-load")
-    serviceManager.startAll()
+    // check installed.txt file exists
+    const isFirstRun = isFirstInstall()
+    serviceManager.startAll(!isFirstRun)
+    // create file installed.txt
+    if (isFirstRun) {
+      createFirstInstallFile()
+    }
   })
 })
 
