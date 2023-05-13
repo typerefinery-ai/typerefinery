@@ -34,6 +34,8 @@ import { t } from "i18next"
 import { type AppIPC, sharedAppIpc } from "../preload/ipc"
 import { Service } from "./Service"
 
+import updateElectronApp from "update-electron-app"
+
 // setup crash reporter first
 if (getEnvConfigWithDefault("CRASH_REPORTER_SUBMIT_URL")) {
   // Start crash reporter before setting up logging
@@ -94,6 +96,14 @@ logger.log(
     "production"
   )}`
 )
+
+if (!isDev) {
+  // run auto update
+  updateElectronApp({
+    repo: "typerefinery-ai/typerefinery",
+    updateInterval: "1 hour",
+  })
+}
 
 let mainWindow: BrowserWindow
 let mainWindowState: ElectronWindowState.State
