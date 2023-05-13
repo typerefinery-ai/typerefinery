@@ -217,10 +217,10 @@
       "icon": "dist/main/assets/logo.icns"
     },
     "win": {
-      "target": "nsis",
+      "target": "nsis-web",
       "icon": "dist/main/assets/logo.png"
     },
-    "nsis": {
+    "nsisWeb": {
       "menuCategory": false,
       "oneClick": true,
       "perMachine": false,
