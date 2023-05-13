@@ -265,6 +265,8 @@ jobs:
 
       - name: Build/release Electron app
         uses: typerefinery-ai/action-electron-builder@v1
+        env:
+          DEBUG: electron-builder,electron-builder:*
         with:
           # GitHub token, automatically provided to the action
           # (No need to define this secret in the repo settings)
