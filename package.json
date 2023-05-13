@@ -218,7 +218,7 @@
     },
     "win": {
       "target": "nsis",
-      "icon": "logo.png"
+      "icon": "dist/main/assets/icon.ico"
     },
     "nsis": {
       "menuCategory": false,
