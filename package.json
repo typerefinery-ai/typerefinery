@@ -225,7 +225,7 @@
       "oneClick": true,
       "perMachine": false,
       "allowToChangeInstallationDirectory": false,
-      "deleteAppDataOnUninstall": true,
+      "deleteAppDataOnUninstall": false,
       "runAfterFinish": true,
       "installerHeaderIcon": "dist/main/assets/icon.ico",
       "installerIcon": "dist/main/assets/icon.ico",
