@@ -8,18 +8,19 @@
   "icon": "pi pi-globe",
   "servicetype": 10,
   "execconfig": {
+    "debugLog": true,
     "serviceorder": 1,
     "setuparchive": {
       "win32": {
-        "name": "win32\\node-v18.6.0-win-x64.zip",
+        "name": "node-v18.6.0-win-x64.zip",
         "output": "node-v18.6.0-win-x64"
       },
       "darwin": {
-        "name": "darwin/node-v18.6.0-darwin-x64.tar.gz",
+        "name": "node-v18.6.0-darwin-x64.tar.gz",
         "output": "node-v18.6.0-darwin-x64"
       },
       "linux": {
-        "name": "linux/node-v18.6.0-linux-x64.tar.gz",
+        "name": "node-v18.6.0-linux-x64.tar.gz",
         "output": "node-v18.6.0-linux-x64"
       }
     },

@@ -327,6 +327,7 @@ export class Service extends EventEmitter<ServiceEvent> {
         this.#setuparchiveFile = path.join(this.#servicepath, setupArchive.name)
         this.#setuparchiveOutputPath = path.join(
           this.#servicehome,
+          this.platform,
           setupArchive.output
         )
         this.#log(
@@ -351,6 +352,8 @@ export class Service extends EventEmitter<ServiceEvent> {
     })
 
     this.#log(`service ${this.#id} loaded with status ${this.#status}.`)
+    const isSetup = this.isSetup
+    this.#log(`is setup ${isSetup}.`)
     this.#checkRunning()
   }
 
@@ -894,8 +897,14 @@ export class Service extends EventEmitter<ServiceEvent> {
         if (serviceExecutable == null) {
           serviceExecutable = this.#options.execconfig.executable.default || ""
         }
+        const hasSetupArchive = this.hasSetupArchive
+        const platfromPath = hasSetupArchive ? this.platform : ""
         //compile full path to executable
-        serviceExecutable = path.resolve(this.#servicehome, serviceExecutable)
+        serviceExecutable = path.resolve(
+          this.#servicehome,
+          platfromPath,
+          serviceExecutable
+        )
         // return serviceExecutable
       }
       if (serviceExecutable == null) {
@@ -943,9 +952,13 @@ export class Service extends EventEmitter<ServiceEvent> {
           serviceExecutableCli =
             this.#options.execconfig.executablecli.default || ""
         }
+
+        const hasSetupArchive = this.hasSetupArchive
+        const platfromPath = hasSetupArchive ? this.platform : ""
         //compile full path to executable
         serviceExecutableCli = path.resolve(
           this.#servicehome,
+          platfromPath,
           serviceExecutableCli
         )
         //return serviceExecutableCli
@@ -1209,7 +1222,7 @@ export class Service extends EventEmitter<ServiceEvent> {
       }
     }
 
-    this.#log(`do service setup`)
+    this.#log(`do service setup, install: ${forceInstall}`)
     //run setup if it exists and force reinstall if needed
     await this.#doSetup(forceInstall)
 
@@ -1433,16 +1446,18 @@ export class Service extends EventEmitter<ServiceEvent> {
 
   // write to service error log
   #errorWrite(type: string, message: any) {
-    this.#stderr.write(
-      `\n${this.#timestamp} ${type.toUpperCase()} ${message}\n`
-    )
+    if (this.#stderr) {
+      const timestamp = this.#timestamp
+      this.#stderr.write(`\n${timestamp} ${type.toUpperCase()} ${message}\n`)
+    }
   }
 
   // write to service log
   #logWrite(type: string, message: any) {
-    this.#stdout.write(
-      `\n${this.#timestamp} ${type.toUpperCase()} ${message}\n`
-    )
+    if (this.#stdout) {
+      const timestamp = this.#timestamp
+      this.#stdout.write(`\n${timestamp} ${type.toUpperCase()} ${message}\n`)
+    }
   }
 
   #log(message: any) {
@@ -1482,13 +1497,23 @@ export class Service extends EventEmitter<ServiceEvent> {
   }
 
   get isSetup() {
+    this.#debug(`setup: ${this.#options.execconfig.setup}`)
+    this.#debug(`setuparchive: ${this.#options.execconfig.setuparchive}`)
+    this.#debug(`setupstatefile: ${this.#setupstatefile}`)
+    this.#debug(`setuparchiveOutputPath: ${this.#setuparchiveOutputPath}`)
+    let isSetup = false
+    if (this.#setupstatefile) {
+      isSetup = os.isPathExist(this.#setupstatefile)
+    }
+    this.#debug(`isSetup: ${isSetup}`)
+
     if (
       !this.#options.execconfig.setup &&
       !this.#options.execconfig.setuparchive
     ) {
       return true
     } else if (this.#options.execconfig.setup) {
-      return os.isPathExist(this.#setupstatefile)
+      return isSetup
     } else if (this.#options.execconfig.setuparchive) {
       if (!this.#doValidateSetup()) {
         this.#debug(
@@ -1935,7 +1960,7 @@ export class Service extends EventEmitter<ServiceEvent> {
    * get string timestamp
    * @returns timestamp
    */
-  #timestamp(): string {
+  get #timestamp(): string {
     return new Date().toISOString()
   }
 }
