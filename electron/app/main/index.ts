@@ -328,7 +328,7 @@ app.whenReady().then(() => {
     const isFirstRun = isFirstInstall()
     logger.log(`first run: ${isFirstRun}`)
     logger.log(`mainWindow.webContents.on did-finish-load startAll.`)
-    serviceManager.startAll(!isFirstRun)
+    serviceManager.startAll(isFirstRun)
     // create file installed.txt
     if (isFirstRun) {
       logger.log("create first run file.")
@@ -473,7 +473,7 @@ function addIpcEvents(window: BrowserWindow) {
       logger.log(`ipc startAll`)
       const isFirstRun = isFirstInstall()
       logger.log(`first run: ${isFirstRun}`)
-      serviceManager.startAll(!isFirstRun)
+      serviceManager.startAll(isFirstRun)
       // create file installed.txt
       if (isFirstRun) {
         logger.log("create first run file.")
