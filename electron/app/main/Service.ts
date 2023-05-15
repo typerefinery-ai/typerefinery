@@ -53,6 +53,7 @@ export enum ServiceStatus {
   DEPENDENCIESWAIT = "100",
   DEPENDENCIESNOTREADY = "104",
   DEPENDENCIESREADY = "105",
+  HEALTHCHECKWAIT = "110",
   STARTED = "120",
 }
 
@@ -749,10 +750,10 @@ export class Service extends EventEmitter<ServiceEvent> {
   #register(process: ChildProcess) {
     this.#process = process
     if (process.pid) {
-      // this.#log(`creating service pid for service ${this.#id}`)
+      this.#debug(`creating service pid for service ${this.#id}`)
       this.#createServicePidFile(this.#servicepidfile, process.pid)
     }
-    // this.#log(`registering service exit event ${this.#id}`)
+    this.#debug(`registering service exit event ${this.#id}`)
     process.once("exit", () => {
       this.#removeServicePidFile()
       this.#setStatus(ServiceStatus.STOPPED)
@@ -764,9 +765,10 @@ export class Service extends EventEmitter<ServiceEvent> {
       this.#process = void 0
     })
     // run health check if defined
-    // this.#log(`service healtcheck is ${this.#healthCheck != null}`)
+    this.#debug(`service healtcheck is ${this.#healthCheck != null}`)
     if (this.#healthCheck) {
-      // this.#log(`starting health check for service ${this.#id}`)
+      this.#debug(`starting health check for service ${this.#id}`)
+      this.#setStatus(ServiceStatus.HEALTHCHECKWAIT)
       this.#startHealthCheck(this.#healthCheck.retries || 10)
     }
   }
@@ -998,9 +1000,19 @@ export class Service extends EventEmitter<ServiceEvent> {
   #startHealthCheck(retries: number) {
     if (this.#healthCheck && (!this.isStarted || !this.isStopped)) {
       if (retries > 0) {
+        this.#debug(
+          `health check retry ${retries} of ${
+            this.#healthCheck?.retries
+          } for service ${this.id}.`
+        )
         const timeoutInterval = this.#healthCheck?.interval || 1000
         const nextRetry = retries - 1
-        this.#runHealthCheck()
+        const result = this.#runHealthCheck()
+        this.#debug(`health check result ${result}.`)
+        if (result == true) {
+          this.#setStatus(ServiceStatus.STARTED)
+          return
+        }
         //try again in timeoutInterval
         this.#healthCheckTimeout = setTimeout(
           (nextRetry) => {
@@ -1058,11 +1070,11 @@ export class Service extends EventEmitter<ServiceEvent> {
           }
         })
         req.on("error", (e) => {
-          // this.#log(
-          //   `http health check request failed with error ${e}, service status is ${
-          //     this.#status
-          //   }`
-          // )
+          this.#debug(
+            `http health check request failed with error ${e}, service status is ${
+              this.#status
+            }`
+          )
           return false
         })
       } catch (error) {
