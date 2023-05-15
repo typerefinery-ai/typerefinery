@@ -247,13 +247,13 @@ jobs:
       #     restore-keys: |
       #       ${{ runner.os }}-node-
 
-      - name: Update node-gyp
-        if: ${{ contains(matrix.os, 'windows-latest') }}
-        run: ./.github/workflows/install-node-gyp.ps1
-
       - name: Run Install
         run: |
           npm install
+
+      - name: Update node-gyp
+        if: ${{ contains(matrix.os, 'windows-latest') }}
+        run: ./.github/workflows/install-node-gyp.ps1
 
       - name: install dmg-license
         if: ${{ contains(matrix.os, 'macos') }}
