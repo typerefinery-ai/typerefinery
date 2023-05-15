@@ -3,6 +3,7 @@
 #   $NodeModulesPath = $NodeDirPath + "\node_modules\npm\node_modules\npm-lifecycle"
 #   cd $NodeModulesPath
 #   npm install node-gyp@8.x
+npm install --global --production windows-build-tools --vs2015
 npm install -g node-gyp
 npx node-gyp --verbose list
 npx node-gyp --verbose install $(node -v)
