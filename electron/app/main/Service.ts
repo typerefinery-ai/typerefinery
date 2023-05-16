@@ -1209,7 +1209,7 @@ export class Service extends EventEmitter<ServiceEvent> {
     // compile environment variables
     this.compileEnvironmentVariables(globalenv)
 
-    this.#logWrite("info", `environmentVariables: ${this.environmentVariables}`)
+    this.#logWrite("info", `environmentVariables: ${JSON.stringify(this.environmentVariables)}`)
 
     this.#log(
       `starting service ${this.#id} with env variables ${JSON.stringify(
@@ -1288,12 +1288,12 @@ export class Service extends EventEmitter<ServiceEvent> {
 
           this.#log([
             "spawn",
-            {
+            process.pid,
+            JSON.stringify({
               serviceExecutable: serviceExecutable,
               commandline: commandline,
               options: options,
-            },
-            process.pid,
+            }),
           ])
 
           // monitor console
