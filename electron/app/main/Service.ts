@@ -262,13 +262,14 @@ export class Service extends EventEmitter<ServiceEvent> {
       highWaterMark: 100,
     })
     this.#stderr.on("error", (err) => {
-      this.#logger.error(err)
+      // this.#logger.error(err)
+      this.#logWrite("erorr", JSON.stringify(err))
     })
     this.#stderr.on("open", () => {
-      this.#logWrite("info", `log open.`)
+      this.#logWrite("info", `log stderr open.`)
     })
     this.#stderr.on("finish", () => {
-      this.#logWrite("info", `log finished.`)
+      this.#logWrite("info", `log stderr finished.`)
     })
     this.#errorWrite("info", `service error log ${this.#stderr.path}.`)
     this.#log(`service error log ${this.#stderr.path}`)
@@ -284,10 +285,11 @@ export class Service extends EventEmitter<ServiceEvent> {
       highWaterMark: 100,
     })
     this.#stdout.on("error", (err) => {
-      this.#logger.error(err)
+      // this.#logger.error(err)
+      this.#logWrite("erorr", JSON.stringify(err))
     })
     this.#stdout.on("open", () => {
-      this.#logWrite("info", `log open.`)
+      this.#logWrite("info", `log stdout open.`)
     })
     this.#stdout.on("finish", () => {
       this.#logWrite("info", `log finished.`)
@@ -1208,6 +1210,25 @@ export class Service extends EventEmitter<ServiceEvent> {
       // wait untill all depend_on services are started
       const depend_on_services_started =
         await this.#waitForDependOnServicesAsync(globalenv, startchain)
+
+      this.#log(
+        `waited for dependant services ${
+          this.#id
+        } result ${depend_on_services_started}`
+      )
+
+      // for each service id in startchain, check if it is started
+      for (const serviceid of startchain) {
+        const service = this.#serviceManager.getService(serviceid)
+        if (service) {
+          if (!service.isStarted) {
+            this.#logWrite(
+              "info",
+              `dependant service ${serviceid} not started, service status is ${service.status}.`
+            )
+          }
+        }
+      }
 
       if (!depend_on_services_started) {
         this.#log(
