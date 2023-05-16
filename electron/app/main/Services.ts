@@ -6,6 +6,7 @@ import { dataPath, resourceBinary } from "./Resources"
 import path from "path"
 import config from "../../../package.json"
 import fs from "fs"
+import process from "node:process"
 
 const pageAutoRefreshEverySeconds = 10
 
@@ -56,7 +57,30 @@ const serviceManager = new ServiceManager(
   }
 )
 
-//starting services aotomatically
+/**
+ * Stop all services on exit
+ * @param {NodeJS.SignalsListener} signal
+ */
+async function signalExitHandler(signal) {
+  console.log("terminating - service manager stopAll.")
+  logger.log("terminating - service manager stopAll.")
+  if (serviceManager) {
+    await serviceManager.stopAll()
+  }
+  process.exit()
+}
+
+// listen for TERM signal .e.g. ctr+c
+process.on("beforeExit", signalExitHandler)
+process.on("exit", signalExitHandler)
+process.on("SIGBREAK", signalExitHandler)
+process.on("SIGINT", signalExitHandler)
+process.on("SIGQUIT", signalExitHandler)
+process.on("SIGTERM", signalExitHandler)
+
+logger.log("service manager console hooks loaded.")
+
+//starting services automatically
 const isAutoStart = process.env.SERVICES_AUTOSTART === "true"
 logger.log("service manager isAutoStart: {}", isAutoStart)
 if (isAutoStart) {
@@ -109,7 +133,9 @@ function getServicePage(service: Service) {
           <div class="row align-items-center">
             <div class="col">
               <div class="lh-1">
-                <h1 class="h5 mb-0 text-white lh-1">Service: ${service.name} <a type="button" href="/services" class="btn btn-secondary"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-house" viewBox="0 0 16 16" data-darkreader-inline-fill="" style="--darkreader-inline-fill:currentColor;"><path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L2 8.207V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V8.207l.646.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.707 1.5ZM13 7.207V13.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V7.207l5-5 5 5Z"></path></svg></a></h1>
+                <h1 class="h5 mb-0 text-white lh-1">Service: ${
+                  service.name
+                } <a type="button" href="/services" class="btn btn-secondary"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-house" viewBox="0 0 16 16" data-darkreader-inline-fill="" style="--darkreader-inline-fill:currentColor;"><path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L2 8.207V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V8.207l.646.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.707 1.5ZM13 7.207V13.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V7.207l5-5 5 5Z"></path></svg></a></h1>
               </div>
             </div>
             <div class="col">
@@ -128,15 +154,21 @@ function getServicePage(service: Service) {
         <h6 class="border-bottom pb-2 mb-3">Config</h6>
         <div class="input-group input-group-sm mb-1">
           <span class="input-group-text" id="inputGroup-sizing-sm">Id</span>
-          <input type="text" value="${service.id}" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+          <input type="text" value="${
+            service.id
+          }" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
         </div>
         <div class="input-group input-group-sm mb-1">
           <span class="input-group-text" id="inputGroup-sizing-sm">Description</span>
-          <input type="text" value="${service.description}" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+          <input type="text" value="${
+            service.description
+          }" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
         </div>
         <div class="input-group input-group-sm mb-1">
           <span class="input-group-text" id="inputGroup-sizing-sm">Enabled</span>
-          <input type="text" value="${service.isEnabled}" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+          <input type="text" value="${
+            service.isEnabled
+          }" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
         </div>
         <div class="input-group input-group-sm mb-1">
           <span class="input-group-text" id="inputGroup-sizing-sm">Status</span>
@@ -144,7 +176,9 @@ function getServicePage(service: Service) {
         </div>
         <div class="input-group input-group-sm mb-1">
           <span class="input-group-text" id="inputGroup-sizing-sm">Port</span>
-          <input type="text" value="${service.port}" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+          <input type="text" value="${
+            service.port
+          }" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
         </div>
         <div class="input-group input-group-sm mb-1">
           <span class="input-group-text" id="inputGroup-sizing-sm">Exec Service</span>
@@ -156,31 +190,45 @@ function getServicePage(service: Service) {
         </div>
         <div class="input-group input-group-sm mb-1">
           <span class="input-group-text" id="inputGroup-sizing-sm">Command Line</span>
-          <input type="text" value="${service.getServiceCommand(true)}" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+          <input type="text" value="${service.getServiceCommand(
+            true
+          )}" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
         </div>
         <div class="input-group input-group-sm mb-1">
           <span class="input-group-text" id="inputGroup-sizing-sm">Command Line Cli</span>
-          <input type="text" value="${service.getServiceCommandCli(true)}" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+          <input type="text" value="${service.getServiceCommandCli(
+            true
+          )}" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
         </div>
         <div class="input-group input-group-sm mb-1">
           <span class="input-group-text" id="inputGroup-sizing-sm">Is Setup</span>
-          <input type="text" value="${service.isSetup}" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+          <input type="text" value="${
+            service.isSetup
+          }" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
         </div>
         <div class="input-group input-group-sm mb-1">
           <span class="input-group-text" id="inputGroup-sizing-sm">Setup Status File</span>
-          <input type="text" value="${service.setupstatefile}" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+          <input type="text" value="${
+            service.setupstatefile
+          }" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
         </div>
         <div class="input-group input-group-sm mb-1">
           <span class="input-group-text" id="inputGroup-sizing-sm">Archive File</span>
-          <input type="text" value="${service.getArchiveForPlatform?.name}" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+          <input type="text" value="${
+            service.getArchiveForPlatform?.name
+          }" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
         </div>
         <div class="input-group input-group-sm mb-1">
           <span class="input-group-text" id="inputGroup-sizing-sm">Archive Output</span>
-          <input type="text" value="${service.setuparchiveOutputPath}" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+          <input type="text" value="${
+            service.setuparchiveOutputPath
+          }" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
         </div>
         <div class="input-group input-group-sm mb-1">
           <span class="input-group-text" id="inputGroup-sizing-sm">Is Running</span>
-          <input type="text" value="${service.isRunning}" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+          <input type="text" value="${
+            service.isRunning
+          }" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
         </div>
       </div>
 
@@ -194,7 +242,9 @@ function getServicePage(service: Service) {
       <div class="my-3 p-3 bg-body rounded shadow-sm">
         <h6 class="border-bottom pb-2 mb-3">Setup Command line</h6>
         <div class="border border-1 bg-secondary-subtle p-3 fs-6">
-        <pre><code id="env" style="font-size: 8pt">${JSON.stringify(service.setup)}</code></pre>
+        <pre><code id="env" style="font-size: 8pt">${JSON.stringify(
+          service.setup
+        )}</code></pre>
         </div>
       </div>
 
@@ -841,19 +891,3 @@ app.get("/services/status", (req, res, next) => {
   })
 })
 
-/**
- * Stop all services on exit
- * @param {NodeJS.SignalsListener} signal
- */
-async function signalExitHandler(signal) {
-  console.log("terminating - service manager stopAll.")
-  logger.log("terminating - service manager stopAll.")
-  await serviceManager.stopAll()
-  process.exit()
-}
-
-// listen for TERM signal .e.g. ctr+c
-process.on("SIGBREAK", signalExitHandler)
-process.on("SIGINT", signalExitHandler)
-process.on("SIGQUIT", signalExitHandler)
-process.on("SIGTERM", signalExitHandler)
