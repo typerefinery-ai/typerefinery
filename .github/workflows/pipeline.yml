@@ -272,43 +272,50 @@ jobs:
       #     # Log in to Snap Store
       #     snapcraft_token: ${{ secrets.SNAPCRAFT_TOKEN }}
 
-      - name: Build/release Electron app
-        uses: typerefinery-ai/action-electron-builder@v1
-        env:
-          DEBUG: electron-builder,electron-builder:*
-        with:
-          # GitHub token, automatically provided to the action
-          # (No need to define this secret in the repo settings)
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-
-          # always publish
-          args: "-p always -c.releaseInfo.releaseName=\"${{ github.ref }}\""
-
-          use_vue_cli: true
-
-          # If the commit is tagged with a version (e.g. "v1.0.0"),
-          # release the app after building
-          release: ${{ startsWith(github.ref, 'refs/tags/v') }}
-
-      # - name: Build electron
-      #   run: |
-      #     npm run app:build
+      # - name: Build/release Electron app
+      #   uses: typerefinery-ai/action-electron-builder@v1
       #   env:
-      #     GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # - name: Release
-      #   uses: softprops/action-gh-release@v1
-      #   if: startsWith(github.ref, 'refs/tags/')
+      #     DEBUG: electron-builder,electron-builder:*
       #   with:
-      #     token: ${{ secrets.GITHUB_TOKEN }}
-      #     fail_on_unmatched_files: false
-      #     generate_release_notes: true
-      #     files: |
-      #       dist_electron/*.exe
-      #       dist_electron/*.exe.blockmap
-      #       dist_electron/*.AppImage
-      #       dist_electron/*.snap
-      #       dist_electron/*-mac.zip
-      #       dist_electron/*.dmg
-      #       dist_electron/*.dmg.blockmap
-      #       dist_electron/latest*.yml
+      #     # GitHub token, automatically provided to the action
+      #     # (No need to define this secret in the repo settings)
+      #     github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      #     # always publish
+      #     args: "-p always -c.releaseInfo.releaseName=\"${{ github.ref }}\""
+
+      #     use_vue_cli: true
+
+      #     # If the commit is tagged with a version (e.g. "v1.0.0"),
+      #     # release the app after building
+      #     release: ${{ startsWith(github.ref, 'refs/tags/v') }}
+
+      - name: Build electron
+        run: |
+          npm run app:build
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # - name: Upload Artifact
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: release_on_${{ matrix. os }}
+      #     path: dist_electron/
+      #     retention-days: 5
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fail_on_unmatched_files: false
+          generate_release_notes: true
+          files: |
+            dist_electron/*.exe
+            dist_electron/*.exe.blockmap
+            dist_electron/*.AppImage
+            dist_electron/*.snap
+            dist_electron/*-mac.zip
+            dist_electron/*.dmg
+            dist_electron/*.dmg.blockmap
+            dist_electron/latest*.yml
