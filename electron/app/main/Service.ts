@@ -304,14 +304,14 @@ export class Service extends EventEmitter<ServiceEvent> {
 
     // set service setup check, leave state file in the service root so that its removed on app update
     this.#setupstatefile = path.join(
-      this.#servicesroot,
+      this.#servicepath,
       path.basename(this.#servicehome) + ".setup"
     )
     this.#ensurePathToFile(this.#setupstatefile)
 
     // set service pid and check if its not running, leave pid file in the service root so that its removed on app update
     this.#servicepidfile = path.join(
-      this.#servicesroot,
+      this.#servicepath,
       path.basename(this.#servicehome) + ".pid"
     )
     this.#ensurePathToFile(this.#servicepidfile)
