@@ -17,6 +17,8 @@ import { ServiceManager } from "./ServiceManager"
 import { Logger } from "./Logger"
 import {
   dataPath,
+  isFirstInstall,
+  createFirstInstallFile,
   // resourceBinary
 } from "./Resources"
 import log from "electron-log"
@@ -31,6 +33,8 @@ import ElectronWindowState from "electron-window-state"
 import { t } from "i18next"
 import { type AppIPC, sharedAppIpc } from "../preload/ipc"
 import { Service } from "./Service"
+
+import updateElectronApp from "update-electron-app"
 
 // setup crash reporter first
 if (getEnvConfigWithDefault("CRASH_REPORTER_SUBMIT_URL")) {
@@ -92,6 +96,14 @@ logger.log(
     "production"
   )}`
 )
+
+if (!isDev) {
+  // run auto update
+  updateElectronApp({
+    repo: "typerefinery-ai/typerefinery",
+    updateInterval: "1 hour",
+  })
+}
 
 let mainWindow: BrowserWindow
 let mainWindowState: ElectronWindowState.State
@@ -312,7 +324,17 @@ app.whenReady().then(() => {
   // wait for window to be ready before loading services.
   mainWindow.webContents.on("did-finish-load", function () {
     logger.log("mainWindow.webContents.on did-finish-load")
-    serviceManager.startAll()
+    // check installed.txt file exists
+    const isFirstRun = isFirstInstall()
+    logger.log(`first run: ${isFirstRun}`)
+    logger.log(`mainWindow.webContents.on did-finish-load startAll.`)
+    serviceManager.startAll(isFirstRun)
+    // create file installed.txt
+    if (isFirstRun) {
+      logger.log("create first run file.")
+      createFirstInstallFile()
+      logger.log(`next run will be first run?: ${isFirstInstall()}`)
+    }
   })
 })
 
@@ -449,7 +471,15 @@ function addIpcEvents(window: BrowserWindow) {
     },
     startAll(): any {
       logger.log(`ipc startAll`)
-      serviceManager.startAll()
+      const isFirstRun = isFirstInstall()
+      logger.log(`first run: ${isFirstRun}`)
+      serviceManager.startAll(isFirstRun)
+      // create file installed.txt
+      if (isFirstRun) {
+        logger.log("create first run file.")
+        createFirstInstallFile()
+        logger.log(`next run will be first run?: ${isFirstInstall()}`)
+      }
     },
     stopAll(): any {
       logger.log(`ipc stopAll`)

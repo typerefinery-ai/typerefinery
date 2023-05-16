@@ -109,12 +109,16 @@
         },
         lastFetched: "Just now",
         servicesToCheck: [
+          "cms",
+          "mongo",
           "fastapi",
           "typedb",
           "totaljs-flow",
           "totaljs-messageservice",
         ],
         servicesToCheckBeforeMovingToDashboard: [
+          "cms",
+          "mongo",
           "fastapi",
           "typedb",
           "totaljs-flow",
@@ -126,11 +130,11 @@
       }
     },
 
-    // computed: {
-    //   servicesLoaded() {
-    //     return servicesModule.data.servicesStarted
-    //   },
-    // },
+    computed: {
+      servicesLoaded() {
+        return servicesModule.data.servicesStarted
+      },
+    },
     mounted() {
       this.isAvailableTypeDBInitAndSample =
         servicesModule.data.isAvailableTypeDBInitAndSample

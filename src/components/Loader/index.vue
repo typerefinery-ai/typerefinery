@@ -98,7 +98,7 @@
       async handleClick() {
         // await serviceModule.stopAllServices()
         // await serviceModule.startAllServices()
-        
+
         // Clearing the local storage and refreshing the app.
         localStorage.clear()
         window.location.reload()
@@ -126,12 +126,11 @@
     cursor: pointer;
   }
   .container {
-    
     // display: flex;
     // align-items: center;
     // justify-content: center;
     // height: 100vh;
-    font-family: 'Roboto';
+    font-family: "Roboto";
     .placeholder {
       margin: 15px;
       padding: 10px;

@@ -6,7 +6,7 @@
   "electronWindowTitle": "TypeRefinery",
   "companyName": "Innovolve.ai",
   "author": "TypeRefinery.ai",
-  "version": "2023.5.11",
+  "version": "2023.5.16",
   "appWidth": 1366,
   "appHeight": 768,
   "proxy": "http://127.0.0.1:8000",
@@ -67,11 +67,11 @@
     "posttest": "npm run report:merge && npm run report:generate && npm run report:moveScreenshots && npm run report:moveVideos && npm run report:moveData",
     "services": "cross-env SERVICES_AUTOSTART=true npx ts-node --esm electron/app/main/Services.ts",
     "servicesdebug": "cross-env SERVICES_AUTOSTART=false npx ts-node --esm electron/app/main/Services.ts",
-    "servicesprod": "cross-env SERVICES_AUTOSTART=true NODE_ENV=production npx ts-node --esm electron/app/main/Services.ts"
+    "servicesprod": "cross-env SERVICES_AUTOSTART=true NODE_ENV=production npx ts-node --esm electron/app/main/Services.ts",
+    "prettier": "npx prettier --write src"
   },
   "main": "dist/main/index.cjs",
   "dependencies": {
-    "@achrinza/node-ipc": "^10.1.6",
     "@codemirror/lang-javascript": "^6.0.0",
     "@codemirror/lang-python": "^6.0.0",
     "@codemirror/theme-one-dark": "^6.0.0",
@@ -117,6 +117,7 @@
     "total4": "^0.0.81",
     "tree-kill": "^1.2.2",
     "typedb-client": "^2.11.1",
+    "update-electron-app": "^2.0.1",
     "vite-plugin-markdown-vue": "^0.1.2",
     "vue": "^3.2.31",
     "vue-codemirror": "^6.0.0",
@@ -133,6 +134,7 @@
     "winston": "^3.7.2"
   },
   "devDependencies": {
+    "@electron/notarize": "^1.2.3",
     "@rollup/plugin-node-resolve": "^13.3.0",
     "@rollup/plugin-typescript": "^8.3.2",
     "@rushstack/eslint-patch": "^1.1.0",
@@ -164,7 +166,6 @@
     "electron": "^24.2.0",
     "electron-builder": "^23.6.0",
     "electron-devtools-installer": "^3.2.0",
-    "@electron/notarize": "^1.2.3",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
@@ -175,6 +176,7 @@
     "mochawesome": "^7.0.1",
     "mochawesome-merge": "^4.2.1",
     "mochawesome-report-generator": "^6.0.1",
+    "node-gyp": "^9.3.1",
     "postcss-html": "^1.3.0",
     "prettier": "^2.4.1",
     "rollup": "^2.75.6",
@@ -218,14 +220,25 @@
     },
     "win": {
       "target": "nsis",
-      "icon": "dist/main/assets/icon.ico"
+      "icon": "dist/main/assets/logo.png"
     },
     "nsis": {
       "menuCategory": false,
-      "oneClick": true,
+      "oneClick": false,
       "perMachine": false,
-      "allowToChangeInstallationDirectory": false,
-      "deleteAppDataOnUninstall": true,
+      "allowToChangeInstallationDirectory": true,
+      "deleteAppDataOnUninstall": false,
+      "runAfterFinish": true,
+      "installerHeaderIcon": "dist/main/assets/icon.ico",
+      "installerIcon": "dist/main/assets/icon.ico",
+      "uninstallerIcon": "dist/main/assets/icon.ico"
+    },
+    "nsisWeb": {
+      "menuCategory": false,
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "deleteAppDataOnUninstall": false,
       "runAfterFinish": true,
       "installerHeaderIcon": "dist/main/assets/icon.ico",
       "installerIcon": "dist/main/assets/icon.ico",
@@ -246,14 +259,21 @@
       "output": "dist_electron"
     },
     "extraFiles": [
-      "services/**/*"
+      "services/**/*",
+      "!services/*/*.setup",
+      "!services/*/*.pid",
+      "!services/*/node_modules/**/*",
+      "!services/*/tmp/**/*",
+      "!services/*/win32/**/*",
+      "!services/*/linux/**/*",
+      "!services/*/darwin/**/*",
+      "services/*/${platform}/**/*"
     ],
     "publish": {
       "provider": "github",
       "repo": "typerefinery",
       "owner": "typerefinery-ai",
       "releaseType": "release"
-    },
-    "beforePack": "./myBeforePackHook.js"
+    }
   }
 }

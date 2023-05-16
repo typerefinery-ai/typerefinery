@@ -53,6 +53,7 @@ export enum ServiceStatus {
   DEPENDENCIESWAIT = "100",
   DEPENDENCIESNOTREADY = "104",
   DEPENDENCIESREADY = "105",
+  HEALTHCHECKWAIT = "110",
   STARTED = "120",
 }
 
@@ -301,16 +302,16 @@ export class Service extends EventEmitter<ServiceEvent> {
 
     this.#servicesroot = path.resolve(path.dirname(servicepath))
 
-    // set service setup check
+    // set service setup check, leave state file in the service root so that its removed on app update
     this.#setupstatefile = path.join(
-      this.#servicedatapath,
+      this.#servicesroot,
       path.basename(this.#servicehome) + ".setup"
     )
     this.#ensurePathToFile(this.#setupstatefile)
 
-    // set service pid and check if its not running
+    // set service pid and check if its not running, leave pid file in the service root so that its removed on app update
     this.#servicepidfile = path.join(
-      this.#servicedatapath,
+      this.#servicesroot,
       path.basename(this.#servicehome) + ".pid"
     )
     this.#ensurePathToFile(this.#servicepidfile)
@@ -327,6 +328,7 @@ export class Service extends EventEmitter<ServiceEvent> {
         this.#setuparchiveFile = path.join(this.#servicepath, setupArchive.name)
         this.#setuparchiveOutputPath = path.join(
           this.#servicehome,
+          this.platform,
           setupArchive.output
         )
         this.#log(
@@ -351,6 +353,8 @@ export class Service extends EventEmitter<ServiceEvent> {
     })
 
     this.#log(`service ${this.#id} loaded with status ${this.#status}.`)
+    const isSetup = this.isSetup
+    this.#log(`is setup ${isSetup}.`)
     this.#checkRunning()
   }
 
@@ -746,10 +750,10 @@ export class Service extends EventEmitter<ServiceEvent> {
   #register(process: ChildProcess) {
     this.#process = process
     if (process.pid) {
-      // this.#log(`creating service pid for service ${this.#id}`)
+      this.#debug(`creating service pid for service ${this.#id}`)
       this.#createServicePidFile(this.#servicepidfile, process.pid)
     }
-    // this.#log(`registering service exit event ${this.#id}`)
+    this.#debug(`registering service exit event ${this.#id}`)
     process.once("exit", () => {
       this.#removeServicePidFile()
       this.#setStatus(ServiceStatus.STOPPED)
@@ -761,9 +765,10 @@ export class Service extends EventEmitter<ServiceEvent> {
       this.#process = void 0
     })
     // run health check if defined
-    // this.#log(`service healtcheck is ${this.#healthCheck != null}`)
+    this.#debug(`service healtcheck is ${this.#healthCheck != null}`)
     if (this.#healthCheck) {
-      // this.#log(`starting health check for service ${this.#id}`)
+      this.#debug(`starting health check for service ${this.#id}`)
+      this.#setStatus(ServiceStatus.HEALTHCHECKWAIT)
       this.#startHealthCheck(this.#healthCheck.retries || 10)
     }
   }
@@ -894,8 +899,14 @@ export class Service extends EventEmitter<ServiceEvent> {
         if (serviceExecutable == null) {
           serviceExecutable = this.#options.execconfig.executable.default || ""
         }
+        const hasSetupArchive = this.hasSetupArchive
+        const platfromPath = hasSetupArchive ? this.platform : ""
         //compile full path to executable
-        serviceExecutable = path.resolve(this.#servicehome, serviceExecutable)
+        serviceExecutable = path.resolve(
+          this.#servicehome,
+          platfromPath,
+          serviceExecutable
+        )
         // return serviceExecutable
       }
       if (serviceExecutable == null) {
@@ -943,9 +954,13 @@ export class Service extends EventEmitter<ServiceEvent> {
           serviceExecutableCli =
             this.#options.execconfig.executablecli.default || ""
         }
+
+        const hasSetupArchive = this.hasSetupArchive
+        const platfromPath = hasSetupArchive ? this.platform : ""
         //compile full path to executable
         serviceExecutableCli = path.resolve(
           this.#servicehome,
+          platfromPath,
           serviceExecutableCli
         )
         //return serviceExecutableCli
@@ -985,9 +1000,19 @@ export class Service extends EventEmitter<ServiceEvent> {
   #startHealthCheck(retries: number) {
     if (this.#healthCheck && (!this.isStarted || !this.isStopped)) {
       if (retries > 0) {
+        this.#debug(
+          `health check retry ${retries} of ${
+            this.#healthCheck?.retries
+          } for service ${this.id}.`
+        )
         const timeoutInterval = this.#healthCheck?.interval || 1000
         const nextRetry = retries - 1
-        this.#runHealthCheck()
+        const result = this.#runHealthCheck()
+        this.#debug(`health check result ${result}.`)
+        if (result == true) {
+          this.#setStatus(ServiceStatus.STARTED)
+          return
+        }
         //try again in timeoutInterval
         this.#healthCheckTimeout = setTimeout(
           (nextRetry) => {
@@ -1045,11 +1070,11 @@ export class Service extends EventEmitter<ServiceEvent> {
           }
         })
         req.on("error", (e) => {
-          // this.#log(
-          //   `http health check request failed with error ${e}, service status is ${
-          //     this.#status
-          //   }`
-          // )
+          this.#debug(
+            `http health check request failed with error ${e}, service status is ${
+              this.#status
+            }`
+          )
           return false
         })
       } catch (error) {
@@ -1104,7 +1129,8 @@ export class Service extends EventEmitter<ServiceEvent> {
   async start(
     globalenv: { [key: string]: string } = {},
     startchain: string[] = [this.id],
-    waitfordependencies = true
+    waitfordependencies = true,
+    forceInstall = false
   ): Promise<void> {
     //quick fail if disabled
     if (!this.isEnabled) {
@@ -1208,9 +1234,9 @@ export class Service extends EventEmitter<ServiceEvent> {
       }
     }
 
-    this.#log(`do service setup`)
-    //run setup if it exists
-    await this.#doSetup()
+    this.#log(`do service setup, install: ${forceInstall}`)
+    //run setup if it exists and force reinstall if needed
+    await this.#doSetup(forceInstall)
 
     if (this.isRunnable) {
       this.#log(`starting ${this.#id}`)
@@ -1432,16 +1458,18 @@ export class Service extends EventEmitter<ServiceEvent> {
 
   // write to service error log
   #errorWrite(type: string, message: any) {
-    this.#stderr.write(
-      `\n${this.#timestamp} ${type.toUpperCase()} ${message}\n`
-    )
+    if (this.#stderr) {
+      const timestamp = this.#timestamp
+      this.#stderr.write(`\n${timestamp} ${type.toUpperCase()} ${message}\n`)
+    }
   }
 
   // write to service log
   #logWrite(type: string, message: any) {
-    this.#stdout.write(
-      `\n${this.#timestamp} ${type.toUpperCase()} ${message}\n`
-    )
+    if (this.#stdout) {
+      const timestamp = this.#timestamp
+      this.#stdout.write(`\n${timestamp} ${type.toUpperCase()} ${message}\n`)
+    }
   }
 
   #log(message: any) {
@@ -1481,13 +1509,23 @@ export class Service extends EventEmitter<ServiceEvent> {
   }
 
   get isSetup() {
+    this.#debug(`setup: ${this.#options.execconfig.setup}`)
+    this.#debug(`setuparchive: ${this.#options.execconfig.setuparchive}`)
+    this.#debug(`setupstatefile: ${this.#setupstatefile}`)
+    this.#debug(`setuparchiveOutputPath: ${this.#setuparchiveOutputPath}`)
+    let isSetup = false
+    if (this.#setupstatefile) {
+      isSetup = os.isPathExist(this.#setupstatefile)
+    }
+    this.#debug(`isSetup: ${isSetup}`)
+
     if (
       !this.#options.execconfig.setup &&
       !this.#options.execconfig.setuparchive
     ) {
       return true
     } else if (this.#options.execconfig.setup) {
-      return os.isPathExist(this.#setupstatefile)
+      return isSetup
     } else if (this.#options.execconfig.setuparchive) {
       if (!this.#doValidateSetup()) {
         this.#debug(
@@ -1934,7 +1972,7 @@ export class Service extends EventEmitter<ServiceEvent> {
    * get string timestamp
    * @returns timestamp
    */
-  #timestamp(): string {
+  get #timestamp(): string {
     return new Date().toISOString()
   }
 }

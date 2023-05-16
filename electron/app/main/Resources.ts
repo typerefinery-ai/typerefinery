@@ -1,6 +1,26 @@
 import { app } from "electron"
-import { mkdirSync } from "fs"
+import { existsSync, writeFile, mkdirSync } from "fs"
 import path from "path"
+
+// add ability to check if it is first install by checking if file exists in app folder
+export function isFirstInstall() {
+  const firstInstallFileFilePath = path.join(process.cwd(), "installed.txt")
+  // if file exists, then it is not first install
+  if (existsSync(firstInstallFileFilePath)) {
+    return false
+  }
+  return true
+}
+
+// create file in app folder to indicate that it is not first install
+export function createFirstInstallFile() {
+  const firstInstallFileFilePath = path.join(process.cwd(), "installed.txt")
+  writeFile(firstInstallFileFilePath, "", function (err) {
+    if (err) {
+      console.log(err)
+    }
+  })
+}
 
 export function resourcePath(...segments: string[]) {
   const filepath = app.isPackaged
