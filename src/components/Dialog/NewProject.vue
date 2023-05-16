@@ -218,7 +218,7 @@
   import { oneDark } from "@codemirror/theme-one-dark"
   import { javascript } from "@codemirror/lang-javascript"
   import * as electronHelpers from "@/utils/electron"
-  import flowSample from './flow_sample.json'
+  import flowSample from "./flow_sample.json"
   import restapi from "@/utils/restapi"
   import Dialog from "primevue/dialog"
   import Dropdown from "primevue/dropdown"
@@ -284,7 +284,7 @@
         themecode: `{\n  "attribute": {\n    "colorlist": "Oranges",\n    "cindex": 7,\n    "tcolorlist": "Greys",\n    "tindex": 0\n  },\n  "entity": {\n    "colorlist": "Blue-Green",\n    "cindex": 7,\n    "tcolorlist": "Greys",\n    "tindex": 0\n  },\n  "relation": {\n    "colorlist": "Blue-Green",\n    "cindex": 6,\n    "tcolorlist": "Greys",\n    "tindex": 7\n  },\n  "shadow": {\n    "colorlist": "Yellows",\n    "cindex": 2,\n    "tcolorlist": "Greys",\n    "tindex": 7\n  }\n}`,
         serviceStopped: false,
         serviceStarted: false,
-        defaultFlowData: flowSample
+        defaultFlowData: flowSample,
       }
     },
     // setup: () => ({ v$: useVuelidate() }),
@@ -422,11 +422,16 @@
       async insertFlowData(projectid, flowid) {
         try {
           // replace PROJECT_ID from the payload with the actual project id.
-          const payload = JSON.parse(JSON.stringify(this.defaultFlowData).replace(/PROJECT_ID/g, projectid));
-          const url = "/flow/import";
-          const { data } = await restapi.post(url, payload);
-          flowid = data.value;
-          this.createInitialData(projectid, flowid);
+          const payload = JSON.parse(
+            JSON.stringify(this.defaultFlowData).replace(
+              /PROJECT_ID/g,
+              projectid
+            )
+          )
+          const url = "/flow/import"
+          const { data } = await restapi.post(url, payload)
+          flowid = data.value
+          this.createInitialData(projectid, flowid)
         } catch (error) {
           console.log(error)
           errorToast(this)

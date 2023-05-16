@@ -533,16 +533,19 @@
         }
         if (scope === "global") {
           // add to global connections
-          connectionsModule.createGlobalConnection(data).then(() => {
-            this.stateSaveSuccess(
-              "components.dialog.connections.info.connection-save-globally"
-            )
-          }).catch(err => {
-            console.log(err)
-            this.stateSaveFailed(
-              "components.dialog.connections.info.connection-save-global-failed"
-            )
-          })
+          connectionsModule
+            .createGlobalConnection(data)
+            .then(() => {
+              this.stateSaveSuccess(
+                "components.dialog.connections.info.connection-save-globally"
+              )
+            })
+            .catch((err) => {
+              console.log(err)
+              this.stateSaveFailed(
+                "components.dialog.connections.info.connection-save-global-failed"
+              )
+            })
         } else {
           // add to local connections
           projectsModule
@@ -551,12 +554,13 @@
               this.stateSaveSuccess(
                 "components.dialog.connections.info.connection-save-locally"
               )
-            }).catch(err => {
-            console.log(err)
-            this.stateSaveFailed(
-              "components.dialog.connections.info.connection-save-locally-failed"
-            )
-          })
+            })
+            .catch((err) => {
+              console.log(err)
+              this.stateSaveFailed(
+                "components.dialog.connections.info.connection-save-locally-failed"
+              )
+            })
         }
       },
       stateSaveSuccess(messageid) {
