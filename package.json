@@ -71,7 +71,6 @@
   },
   "main": "dist/main/index.cjs",
   "dependencies": {
-    "@achrinza/node-ipc": "^10.1.6",
     "@codemirror/lang-javascript": "^6.0.0",
     "@codemirror/lang-python": "^6.0.0",
     "@codemirror/theme-one-dark": "^6.0.0",
