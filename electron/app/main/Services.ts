@@ -64,9 +64,7 @@ const serviceManager = new ServiceManager(
 async function signalExitHandler(signal) {
   console.log("terminating - service manager stopAll.")
   logger.log("terminating - service manager stopAll.")
-  if (serviceManager) {
-    await serviceManager.stopAll()
-  }
+  await serviceManager.stopAll()
   process.exit()
 }
 
