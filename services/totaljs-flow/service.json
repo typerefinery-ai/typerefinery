@@ -38,8 +38,7 @@
     },
     "depend_on": [
       "node",
-      "totaljs-messageservice",
-      "fastapi"
+      "totaljs-messageservice"
     ]
   }
 }
