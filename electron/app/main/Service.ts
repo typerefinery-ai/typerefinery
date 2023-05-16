@@ -671,7 +671,10 @@ export class Service extends EventEmitter<ServiceEvent> {
   get isStarting() {
     return (
       this.#status === ServiceStatus.STARTING ||
-      this.#status === ServiceStatus.DEPENDENCIESWAIT
+      this.#status === ServiceStatus.DEPENDENCIESWAIT ||
+      this.#status === ServiceStatus.DEPENDENCIESNOTREADY ||
+      this.#status === ServiceStatus.DEPENDENCIESREADY ||
+      this.#status === ServiceStatus.HEALTHCHECKWAIT
     )
   }
 
@@ -1011,7 +1014,7 @@ export class Service extends EventEmitter<ServiceEvent> {
   #startHealthCheck(retries: number) {
     if (this.#healthCheck && (!this.isStarted || !this.isStopped)) {
       if (retries > 0) {
-        this.#debug(
+        this.#log(
           `health check retry ${retries} of ${
             this.#healthCheck?.retries
           } for service ${this.id}.`
@@ -1019,7 +1022,7 @@ export class Service extends EventEmitter<ServiceEvent> {
         const timeoutInterval = this.#healthCheck?.interval || 1000
         const nextRetry = retries - 1
         const result = this.#runHealthCheck()
-        this.#debug(`health check result ${result}.`)
+        this.#log(`health check result ${result}.`)
         if (result == true) {
           this.#setStatus(ServiceStatus.STARTED)
           return
