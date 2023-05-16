@@ -754,7 +754,18 @@ export class Service extends EventEmitter<ServiceEvent> {
       this.#createServicePidFile(this.#servicepidfile, process.pid)
     }
     this.#debug(`registering service exit event ${this.#id}`)
-    process.once("exit", () => {
+
+    process.on("close", () => {
+      this.#removeServicePidFile()
+      this.#setStatus(ServiceStatus.STOPPED)
+      this.#log(
+        `process ${this.#id} with pid ${
+          this.#process?.pid
+        } closed, service status is ${this.#status}`
+      )
+      this.#process = void 0
+    })
+    process.on("exit", () => {
       this.#removeServicePidFile()
       this.#setStatus(ServiceStatus.STOPPED)
       this.#log(
