@@ -1,5 +1,5 @@
 # Autodetect text files
-* text=lf
+* text=auto eol=lf 
 
 # keep binaries
 *.dll binary
