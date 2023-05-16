@@ -109,12 +109,16 @@
         },
         lastFetched: "Just now",
         servicesToCheck: [
+          "cms",
+          "mongo",
           "fastapi",
           "typedb",
           "totaljs-flow",
           "totaljs-messageservice",
         ],
         servicesToCheckBeforeMovingToDashboard: [
+          "cms",
+          "mongo",
           "fastapi",
           "typedb",
           "totaljs-flow",
