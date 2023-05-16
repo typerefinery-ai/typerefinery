@@ -15,7 +15,6 @@
       </span>
     </div>
     <DataTable
-      scrollable
       scroll-height="80vh"
       :value="listOfServices"
       table-style="min-width: 50rem; width: 100%"
@@ -131,9 +130,9 @@
     },
 
     computed: {
-      servicesLoaded() {
-        return servicesModule.data.servicesStarted
-      },
+      // servicesLoaded() {
+      //   return servicesModule.data.servicesStarted
+      // },
     },
     mounted() {
       this.isAvailableTypeDBInitAndSample =

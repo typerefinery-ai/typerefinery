@@ -107,7 +107,6 @@
     data() {
       return {
         services: [],
-        servicesStarted: false,
         loading: false,
         error: false,
         errorMessage: "",
