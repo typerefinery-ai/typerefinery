@@ -10,6 +10,21 @@
   },
   "bundles":[
     {
+      "id":"pl.ds.bulma:bulma-backend:1.0.10",
+      "start-order":"25",
+      "feature-origins":"ai.typerefinery.websight:typerefinery-distribution:slingosgifeature:bulma:1.0.0-SNAPSHOT"
+    },
+    {
+      "id":"pl.ds.bulma:bulma-table-service:1.0.10",
+      "start-order":"25",
+      "feature-origins":"ai.typerefinery.websight:typerefinery-distribution:slingosgifeature:bulma:1.0.0-SNAPSHOT"
+    },
+    {
+      "id":"pl.ds.bulma:bulma-table-view:1.0.10",
+      "start-order":"25",
+      "feature-origins":"ai.typerefinery.websight:typerefinery-distribution:slingosgifeature:bulma:1.0.0-SNAPSHOT"
+    },
+    {
       "id":"pl.ds.howlite:howlite-core:1.0.6",
       "start-order":"25",
       "feature-origins":"ai.typerefinery.websight:typerefinery-distribution:slingosgifeature:howlite:1.0.0-SNAPSHOT"
@@ -2296,6 +2311,7 @@
     }
   },
   "assembled-features:ARTIFACTS|TRANSIENT":[
+    "ai.typerefinery.websight:typerefinery-distribution:slingosgifeature:bulma:1.0.0-SNAPSHOT",
     "ai.typerefinery.websight:typerefinery-distribution:slingosgifeature:howlite:1.0.0-SNAPSHOT",
     "ai.typerefinery.websight:typerefinery-distribution:slingosgifeature:typerefinery-showcase:1.0.0-SNAPSHOT",
     "ai.typerefinery.websight:typerefinery-distribution:slingosgifeature:typerefinery:1.0.0-SNAPSHOT",
@@ -2415,6 +2431,10 @@
     }
   ],
   "content-packages:ARTIFACTS|true":[
+    {
+      "id":"pl.ds.bulma:bulma-content:zip:1.0.10",
+      "feature-origins":"ai.typerefinery.websight:typerefinery-distribution:slingosgifeature:bulma:1.0.0-SNAPSHOT"
+    },
     {
       "id":"ai.typerefinery.websight:typerefinery-tests-content:zip:1.0.0-SNAPSHOT",
       "feature-origins":"ai.typerefinery.websight:typerefinery-distribution:slingosgifeature:typerefinery-showcase:1.0.0-SNAPSHOT"
