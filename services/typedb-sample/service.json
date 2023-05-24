@@ -29,6 +29,9 @@
     "commandline": {
       "default": ""
     },
+    "env": {
+      "LOGURU_LEVEL": "INFO"
+    },
     "depend_on": [
       "typedb"
     ]

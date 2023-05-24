@@ -148,6 +148,7 @@ def initialiselogs(server):
     with TypeDB.core_client(typedb_connection) as client:
         with client.session(server["database"], SessionType.DATA) as session:
             # insert null event
+            logger.info(" - insert null event")
             graql_insert = 'insert  $a isa event, has eventName "TraceStop";'
             with session.transaction(TransactionType.WRITE) as write_transaction:
                     insert_iterator = write_transaction.query().insert(graql_insert)
@@ -158,11 +159,16 @@ def initialiselogs(server):
                     ## to persist changes, write transaction must always be committed (closed)
                     write_transaction.commit()
             # insert the raw activity names
+            logger.info(" - insert the raw activity names L1")
             #load_footlogger.debug_types(session)
             load_classic_logs(session, classic.L1,'L1')
+            logger.info(" - insert the raw activity names L2")
             load_classic_logs(session, classic.L2,'L2')
+            logger.info(" - insert the raw activity names L3")
             load_classic_logs(session, classic.L3,'L3')
+            logger.info(" - insert the raw activity names L4")
             load_classic_logs(session, classic.L4,'L4')
+            logger.info(" - insert the raw activity names L5")
             load_classic_logs(session, classic.L5,'L5')
 
 
@@ -179,7 +185,9 @@ def main():
         "port": args.port,
         "database": args.db
     }
+    logger.info("======== Import Starting =========")
     initialiselogs(server)
+    logger.info("======== Import Finished =========")
 
 
 if __name__ == '__main__':
