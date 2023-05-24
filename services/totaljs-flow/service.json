@@ -21,7 +21,8 @@
       "FLOW_PORT": "${SERVICE_PORT}"
     },
     "env": {
-      "NODE_ENV": "development"
+      "NODE_ENV": "development",
+      "PATH": "${NODE_HOME}"
     },
     "commandline": {
       "win32": "${SERVICE_PATH}\\index.js",

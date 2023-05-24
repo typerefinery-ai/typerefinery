@@ -24,7 +24,8 @@
       "MESSAGESERVICE_PORT": "${SERVICE_PORT}"
     },
     "env": {
-      "NODE_ENV": "development"
+      "NODE_ENV": "development",
+      "PATH": "${NODE_HOME}"
     },
     "serviceport": 8112,
     "healthcheck": {
