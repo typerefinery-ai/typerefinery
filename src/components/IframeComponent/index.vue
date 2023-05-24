@@ -20,7 +20,7 @@
         <iframe
           :src="`${experience.url}`"
           name="disable-x-frame-options"
-          referrerpolicy="unsafe-url"
+          referrerpolicy="strict-origin-when-cross-origin"
           csp="default-src *; style-src 'unsafe-inline' *; script-src 'unsafe-inline' *"
           width="100%"
           height="100%"
