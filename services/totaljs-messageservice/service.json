@@ -6,7 +6,7 @@
   "status": "30",
   "logoutput": "",
   "icon": "pi pi-globe",
-  "servicetype": 10,
+  "servicelocation": 10,
   "execconfig": {
     "debugLog": true,
     "execservice": { "id": "node" },

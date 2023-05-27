@@ -6,7 +6,7 @@
   "status": "-1",
   "logoutput": "",
   "icon": "pi pi-cog",
-  "servicetype": 10,
+  "servicelocation": 10,
   "execconfig": {
     "serviceorder": 1,
     "executable": {
