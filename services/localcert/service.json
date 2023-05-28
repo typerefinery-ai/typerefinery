@@ -1,0 +1,35 @@
+{
+  "id": "localcert",
+  "name": "Localcert Service",
+  "description": "Localcert",
+  "enabled": true,
+  "status": "30",
+  "logoutput": "",
+  "servicetype": 50,
+  "icon": "pi pi-globe",
+  "servicelocation": 10,
+  "execconfig": {
+    "debuglog": true,
+    "serviceorder": 2,
+    "ignoreexiterror": true,
+    "executable": {
+      "win32": "win32\\localcert.exe",
+      "darwin": "darwin/localcert",
+      "linux": "linux/localcert",
+      "default": "win32\\localcert"
+    },
+    "commandline": {
+      "win32": " -dataDir ${SERVICE_HOME}\\data -acceptTerms -localCert ${SERVICE_HOME}\\data\\cert.pem -localKey ${SERVICE_HOME}\\data\\key.pem -forceRenew",
+      "darwin": " -dataDir ${SERVICE_HOME}/data -acceptTerms -localCert ${SERVICE_HOME}/data/cert.pem -localKey ${SERVICE_HOME}/data/key.pem -forceRenew",
+      "linux": " -dataDir ${SERVICE_HOME}/data -acceptTerms -localCert ${SERVICE_HOME}/data/cert.pem -localKey ${SERVICE_HOME}/data/key.pem -forceRenew",
+      "default": " -dataDir ${SERVICE_HOME}\\data -acceptTerms -localCert ${SERVICE_HOME}\\data\\cert.pem -localKey ${SERVICE_HOME}\\data\\key.pem -forceRenew"
+    },
+    "outputvarregex": {
+      "CERT_DOMAIN": ".*domain \"[*][.](.*)\".*"
+    },
+    "globalenv": {
+      "CERT_FILE": "${SERVICE_HOME}\\data\\cert.pem",
+      "CERT_KEY": "${SERVICE_HOME}\\data\\key.pem"
+    }
+  }
+}
