@@ -11,6 +11,20 @@
     "serviceorder": 3,
     "serviceport": 8100,
     "serviceconsoleport": 8100,
+    "portmapping": {
+      "HTTP": "9100",
+      "HTTPS": "9200",
+      "HTTPS_TRAEFIK": "9201",
+      "HTTPS_NGINX": "9210",
+      "HTTPS_CMS": "9220",
+      "HTTPS_FLOW": "9230",
+      "HTTPS_FLOWTMS": "9240",
+      "HTTPS_API": "9250",
+      "HTTPS_FILES": "9260",
+      "HTTPS_BPMN": "9270",
+      "TCP_MOGNO": "9310",
+      "TCP_TYPEDB": "8320"
+    },
     "executable": {
       "win32": "bin\\traefik.exe",
       "darwin": "bin/traefik",
