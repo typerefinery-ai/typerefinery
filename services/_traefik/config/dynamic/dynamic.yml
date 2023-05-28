@@ -1,0 +1,159 @@
+
+http:
+  routers:
+    nginx:
+      rule: Host(`nginx.localhost`)
+      service: api@internal
+      entrypoints: websecure
+      middlewares:
+        - error-pages
+
+    traefikdashboard:
+      rule: Host(`traefik.localhost`)
+      service: api@internal
+      entrypoints: web
+      middlewares:
+        - error-pages
+    error-router:
+      rule: "HostRegexp(`{host:.+}`)"
+      priority: 1
+      entryPoints:
+        - web
+        - websecure
+      service: noop@internal
+      middlewares:
+        - error-pages
+    # http-catchall:
+    #   rule: "HostRegexp(`{host:.+}`)"
+    #   entryPoints:
+    #     - web
+    #   service: noop@internal
+    cms:
+      # rule: "Host(`localhost.otyxkyrzsmq7zymck4d3wbmpaa.user.localcert.dev`)"
+      rule: 'Host(`{{ env "HOST_DOMAIN" }}`)'
+      # rule: "Host(`cms.user.typerefinery.ai`)"
+      entryPoints:
+        - websecure
+      service: cms
+      tls: true
+      middlewares:
+        # - redirect-to-https
+        - error-pages
+      # tls:
+      #   certResolver: letsencrypt
+        # domains:
+        #   - main: "user.typerefinery.ai"
+        #     sans:
+        #       - "*.user.typerefinery.ai"
+      # middlewares:
+      #   - cmsAuth
+          # - default-security-headers
+    # traefikdashboard:
+    #   rule: "Host(`localhost`)"
+    #   entrypoints:
+    #     - traefik
+    #   service:
+    #     - api@internal
+    # Recommended default middleware for most of the services
+    # Use with traefik.http.routers.myRouter.middlewares: "default@file"
+    # Equivale  nt of traefik.http.routers.myRouter.middlewares: "default-security-headers@file,error-pages@file,gzip@file"
+    # default:
+    #   chain:
+    #     middlewares:
+    #       # - default-security-headers
+    #       - middlewares-cookies
+
+  middlewares:
+    default:
+      chain:
+        middlewares:
+          # - redirect-to-https
+          - error-pages
+
+    error-pages:
+      errors:
+        query: "/_errors_/{status}.html"
+        service: nginx
+        status:
+          - "400-599"
+          # - "403-404"
+          # - "500"
+          # - "503"
+
+    # Redirect to https
+    redirect-to-https:
+      redirectScheme:
+        scheme: https
+        permanent: true
+
+    # CMS Authentication
+    cms-auth:
+      forwardAuth:
+        address: '{{ env "CMS_URL_AUTH" }}'
+        trustForwardHeader: true
+        authResponseHeaders:
+          - "Websight-Token"
+        authRequestHeaders:
+          - "Websight-Token"
+
+  services:
+    cms:
+      loadBalancer:
+        passHostHeader: true
+        servers:
+          - url: '{{ env "CMS_URL" }}'
+    fastapi:
+      loadBalancer:
+        passHostHeader: true
+        servers:
+          - url: '{{ env "API_URL" }}'
+    flow:
+      loadBalancer:
+        passHostHeader: true
+        servers:
+          - url: '{{ env "FLOW_HOST_URL" }}'
+    tms:
+      loadBalancer:
+        passHostHeader: true
+        servers:
+          - url: '{{ env "MESSAGESERVICE_URL" }}'
+
+    nginx:
+      loadBalancer:
+        passHostHeader: true
+        servers:
+          - url: '{{ env "NGINX_URL" }}'
+
+tcp:
+  services:
+    mongo:
+      loadBalancer:
+        servers:
+          - port: '{{ env "MONGO_PORT" }}'
+    typedb:
+      loadBalancer:
+        servers:
+          - port: '{{ env "TYPEDB_PORT" }}'
+
+  routers:
+    mongo:
+      rule: HostSNI(`*`)
+      entrypoints: mongo
+      service: mongo
+      middlewares: tcp-localhost-ip-whitelist
+    typedb:
+      rule: HostSNI(`*`)
+      entrypoints: typedb
+      service: typedb
+      middlewares: tcp-localhost-ip-whitelist
+
+  middlewares:
+    tcp-localhost-ip-whitelist:
+      ipwhitelist:
+        sourcerange: 127.0.0.0/1
+
+
+tls:
+  certificates:
+    - certFile: {{env "CERT_FILE"}}
+      keyFile: {{env "CERT_KEY"}}
