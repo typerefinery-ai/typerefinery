@@ -3,6 +3,7 @@ import {
   type ServiceConfig,
   type ServiceEvents,
   type SericeConfigFile,
+  ServiceStatus,
   Service,
 } from "./Service"
 import fs from "fs"
@@ -106,8 +107,11 @@ class ServiceManager {
   }
 
   #updateGlobalEnv() {
-    this.getGlobalEnv()
-    // for each service update globalenv
+    this.#globalenv = this.getGlobalEnv()
+    this.#pushGLobalEnvToServices()
+  }
+
+  #pushGLobalEnvToServices() {
     this.#services.forEach((service: Service) => {
       service.setGlobalEnvironmentVariables(this.#globalenv)
     })
@@ -117,18 +121,35 @@ class ServiceManager {
   #loadServices() {
     this.#serviceConfigList.forEach((serviceConfig: ServiceConfig) => {
       // name, servicepath, servicesroot, servicetype, options
-      this.#services.push(
-        new Service(
-          this.#logsDir,
-          this.#logger,
-          serviceConfig.servicehome,
-          serviceConfig.servicepath,
-          serviceConfig.servicesdataroot,
-          serviceConfig.options,
-          this.#serviceEvents,
-          this
-        )
+      const service = new Service(
+        this.#logsDir,
+        this.#logger,
+        serviceConfig.servicehome,
+        serviceConfig.servicepath,
+        serviceConfig.servicesdataroot,
+        serviceConfig.options,
+        this.#serviceEvents,
+        this
       )
+
+      // service.on("status", (id: string, status: any) => {
+      //   // update global env
+      //   console.log("\n\n\nservice status", id, status)
+      //   if (
+      //     status == ServiceStatus.STARTED ||
+      //     status == ServiceStatus.COMPLETED
+      //   ) {
+      //     console.log("\n\n\nupdating env")
+      //     this.#updateGlobalEnv()
+      //   }
+      // })
+      service.on("globalEnv", (id: string, globalEnv: any) => {
+        // update global env
+        Object.assign(this.#globalenv, globalEnv)
+        this.#pushGLobalEnvToServices()
+      })
+
+      this.#services.push(service)
     })
   }
 

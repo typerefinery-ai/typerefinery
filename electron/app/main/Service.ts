@@ -24,8 +24,9 @@ export interface ServiceEvents {
 }
 
 export type ServiceEvent = {
-  readonly status: (id: string, output: any) => void
+  readonly status: (id: string, status: any) => void
   readonly log: (id: string, output: any) => void
+  readonly globalEnv: (id: string, globalEnv: any) => void
 }
 
 export enum SignalType {
@@ -55,9 +56,16 @@ export enum ServiceStatus {
   DEPENDENCIESREADY = "105",
   HEALTHCHECKWAIT = "110",
   STARTED = "120",
+  COMPLETEDERROR = "200",
+  COMPLETED = "220",
 }
 
 export enum ServiceType {
+  SERVICE = 10,
+  UTILITY = 50,
+}
+
+export enum ServiceLocation {
   LOCAL = "10",
   ONLINE = "20",
 }
@@ -121,6 +129,8 @@ export interface ExecConfig {
   servicehost?: string
   healthcheck?: HealthCheck
   debugLog?: boolean
+  outputvarregex?: { [key: string]: string } // used to check values of console output stdout key is variable, value is regex
+  ignoreexiterror?: boolean
 }
 
 export interface SetupArchive {
@@ -171,6 +181,7 @@ export interface SericeConfigFile {
   logoutput?: string
   icon?: string
   servicetype?: ServiceType
+  servicelocation?: ServiceLocation
   execconfig: ExecConfig
   actions?: ServiceActionsConfig
 }
@@ -209,6 +220,8 @@ export class Service extends EventEmitter<ServiceEvent> {
   #globalEnv: { [key: string]: string } = {} // pass when service was created
   #healthCheckTimeout: any
   #debugLog: boolean
+  #exitCode: number | null | undefined
+  #exitSignal: NodeJS.Signals | null | undefined
   constructor(
     logsDir: string,
     logger: Logger,
@@ -390,6 +403,10 @@ export class Service extends EventEmitter<ServiceEvent> {
     return ""
   }
 
+  get servicetype(): ServiceType {
+    return this.#options.servicetype || ServiceType.SERVICE
+  }
+
   getActionForPlatform(action: string): string {
     if (this.#options.actions) {
       const platfromSpecificAction: string =
@@ -479,6 +496,12 @@ export class Service extends EventEmitter<ServiceEvent> {
 
     return command
       .replaceAll("${SERVICE_HOME}", service.#servicehome)
+      .replaceAll(
+        "${SERVICE_HOME_ESC}",
+        this.isWindows
+          ? service.#servicehome.replaceAll("\\", "\\\\")
+          : service.#servicehome
+      ) // escape backslashes for windows
       .replaceAll("${SERVICE_EXECUTABLE}", service.getServiceExecutable())
       .replaceAll(
         "${SERVICE_EXECUTABLE_HOME}",
@@ -528,7 +551,48 @@ export class Service extends EventEmitter<ServiceEvent> {
       Object.assign(envVar, args)
     }
     this.#processEnv = envVar
+
+    // update vars if they contain ${}
+    for (const [key, value] of Object.entries(this.#processEnv)) {
+      if (value.includes("${")) {
+        // replace possible variables in value
+        this.#processEnv[key] = this.#getServiceCommand(value, this)
+      }
+    }
+
     return this.#processEnv
+  }
+
+  #handleProcessOutput(log: string) {
+    if (this.#options.execconfig?.outputvarregex) {
+      const logVars: { [key: string]: string } =
+        this.#extractVariablesFromLog(log)
+
+      // if logVars is not empty
+      if (Object.keys(logVars).length > 0) {
+        // add logVars to this.#globalEnv to pass to other services
+        this.#log(`extracted variables from log: ${JSON.stringify(logVars)}`)
+        this.setGlobalEnvironmentVariables(logVars)
+        this.emit("globalEnv", this.id, this.#globalEnv)
+      }
+    }
+    this.#logWrite("info", log)
+  }
+
+  // for each log line check if it matches the regex from the config list of Key/Value list in #options.outputvarregex
+  #extractVariablesFromLog(log: string): { [key: string]: string } {
+    const envVars = {}
+    if (this.#options.execconfig?.outputvarregex) {
+      for (const [key, regex] of Object.entries(
+        this.#options.execconfig?.outputvarregex
+      )) {
+        const match = log.match(regex)
+        if (match && match.length > 0) {
+          envVars[key] = match[1]
+        }
+      }
+    }
+    return envVars
   }
 
   /**
@@ -568,6 +632,7 @@ export class Service extends EventEmitter<ServiceEvent> {
   setGlobalEnvironmentVariables(args: { [key: string]: string } = {}) {
     // add this.globalEnvironmentVariables into envVar
     Object.assign(this.#globalEnv, args)
+    this.compileEnvironmentVariables()
   }
 
   /**
@@ -575,8 +640,15 @@ export class Service extends EventEmitter<ServiceEvent> {
    */
   get globalEnvironmentVariables() {
     const envVar = {}
+    // if this.#globalEnv is empty get it from execconfig
+    const globalEnv =
+      Object.keys(this.#globalEnv).length == 0
+        ? this.#options.execconfig?.globalenv
+        : this.#globalEnv
+
+    //const globalEnv = this.#globalEnv || this.#options.execconfig?.globalenv
     // for each attribute in globalenv update is value
-    const serviceEnvVar = this.#options.execconfig?.globalenv || {}
+    const serviceEnvVar = globalEnv || {}
     for (const key in serviceEnvVar) {
       if (serviceEnvVar[key]) {
         const value = serviceEnvVar[key]
@@ -663,7 +735,10 @@ export class Service extends EventEmitter<ServiceEvent> {
   }
 
   get isStarted() {
-    return this.#status === ServiceStatus.STARTED
+    return (
+      this.#status === ServiceStatus.STARTED ||
+      this.#status === ServiceStatus.COMPLETED
+    )
   }
 
   get isStopped() {
@@ -693,6 +768,9 @@ export class Service extends EventEmitter<ServiceEvent> {
     } else {
       return false
     }
+  }
+  get isDone() {
+    return this.#status === ServiceStatus.COMPLETED
   }
 
   isDependantOnService(serviceid: string): boolean {
@@ -736,6 +814,7 @@ export class Service extends EventEmitter<ServiceEvent> {
       status: this.#status,
       icon: this.#options.icon,
       servicetype: this.#options.servicetype,
+      servicelocation: this.#options.servicelocation,
       servicepath: this.#servicepath,
       servicepidfile: this.#servicepidfile,
     }
@@ -751,6 +830,26 @@ export class Service extends EventEmitter<ServiceEvent> {
     return JSON.stringify(Object.assign({}, this.#getSimpleInfo()), null, "  ")
   }
 
+  #processCompleted(event: string, code: number, signal: NodeJS.Signals) {
+    //if this servicetype is a utility service, the update service status to COMPLETEDOK
+    this.#log(
+      `service with type ${
+        this.#options.servicetype
+      } event ${event} exit code ${code} signal ${signal}, ${
+        this.#options.execconfig?.ignoreexiterror ? "ignoring" : "not ignoring"
+      }}`
+    )
+    if (this.#options.servicetype === ServiceType.UTILITY) {
+      if (code === 0 || this.#options.execconfig?.ignoreexiterror) {
+        this.#setStatus(ServiceStatus.COMPLETED)
+      } else {
+        this.#setStatus(ServiceStatus.COMPLETEDERROR)
+      }
+    } else {
+      this.#setStatus(ServiceStatus.STOPPED)
+    }
+  }
+
   // register process and run health check
   #register(process: ChildProcess) {
     this.#process = process
@@ -759,25 +858,51 @@ export class Service extends EventEmitter<ServiceEvent> {
       this.#createServicePidFile(this.#servicepidfile, process.pid)
     }
     this.#debug(`registering service exit event ${this.#id}`)
-
-    process.on("close", () => {
+    // handle process close this will run always after exit or error
+    process.on("close", (code: number, signal: NodeJS.Signals) => {
+      this.#exitCode = code
+      this.#exitSignal = signal
       this.#removeServicePidFile()
-      this.#setStatus(ServiceStatus.STOPPED)
       this.#log(
         `process ${this.#id} with pid ${
           this.#process?.pid
-        } closed, service status is ${this.#status}`
+        } closed, with exit code ${code} and signal ${signal}, service status is ${
+          this.#status
+        }`
       )
+      this.#processCompleted("close", code, signal)
       this.#process = void 0
     })
-    process.on("exit", () => {
+    // handle process exit
+    process.on("exit", (code: number, signal: NodeJS.Signals) => {
+      this.#exitCode = code
+      this.#exitSignal = signal
       this.#removeServicePidFile()
-      this.#setStatus(ServiceStatus.STOPPED)
       this.#log(
         `process ${this.#id} with pid ${
           this.#process?.pid
-        } exited, service status is ${this.#status}`
+        } exited, with exit code ${code} and signal ${signal}, service status is ${
+          this.#status
+        }`
       )
+      this.#processCompleted("exit", code, signal)
+      this.#process = void 0
+    })
+    // handle process error
+    process.on("error", (err: Error) => {
+      this.#exitCode = this.#process?.exitCode || 1
+      this.#exitSignal = this.#process?.signalCode || "SIGUNUSED"
+      this.#removeServicePidFile()
+      this.#log(`process ${this.#id} errored.`)
+      this.#log(err.toString())
+      this.#log(
+        `process ${this.#id} with pid ${
+          this.#process?.pid
+        } errored, with exit code ${this.#exitCode}, service status is ${
+          this.#status
+        }`
+      )
+      this.#processCompleted("error", this.#exitCode, this.#exitSignal)
       this.#process = void 0
     })
     // run health check if defined
@@ -1244,7 +1369,10 @@ export class Service extends EventEmitter<ServiceEvent> {
     // compile environment variables
     this.compileEnvironmentVariables(globalenv)
 
-    this.#logWrite("info", `environmentVariables: ${JSON.stringify(this.environmentVariables)}`)
+    this.#logWrite(
+      "info",
+      `environmentVariables: ${JSON.stringify(this.environmentVariables)}`
+    )
 
     this.#log(
       `starting service ${this.#id} with env variables ${JSON.stringify(
@@ -1300,14 +1428,19 @@ export class Service extends EventEmitter<ServiceEvent> {
           env: this.environmentVariables,
           shell: false,
           // send data to logs but it will be delayed as its buffered in 64k blocks :(
-          stdio: ["ignore", this.#stdout, this.#stderr],
+          // stdio: ["ignore", this.#stdout, this.#stderr],
           windowsHide: true,
           // detached: !this.isWindows, // only set this on linux and mac
         }
 
         this.#log(
-          `starting service ${serviceExecutable}, ${commandline}, ${JSON.stringify(
-            options
+          `starting service ${serviceExecutable}, commandline: ${commandline}, config: ${JSON.stringify(
+            {
+              cwd: options.cwd,
+              env: options.env,
+              shell: options.shell,
+              windowsHide: options.windowsHide,
+            }
           )}`
         )
 
@@ -1318,6 +1451,7 @@ export class Service extends EventEmitter<ServiceEvent> {
           return
         }
 
+        //run the service process
         try {
           const process = spawn(serviceExecutable, commandline, options)
 
@@ -1335,18 +1469,32 @@ export class Service extends EventEmitter<ServiceEvent> {
           if (process.stdout) {
             process.stdout.setEncoding("utf8")
             process.stdout.on("data", (data) => {
-              this.#log(data)
+              this.#handleProcessOutput(data)
+            })
+            process.stdout.on("end", (data) => {
+              this.#logWrite("info", `output log closed ${data}`)
             })
           }
           // monitor error log
           if (process.stderr) {
             process.stderr.setEncoding("utf8")
             process.stderr.on("data", (data) => {
-              this.#log(data)
+              this.#logWrite("error", data)
+              this.#errorWrite("error", data)
+            })
+            process.stderr.on("end", (data) => {
+              this.#logWrite("info", `error log closed ${data}`)
             })
           }
 
           this.#register(process)
+
+          // if service is utility, wait for it to exit
+          if (this.#options.servicetype === ServiceType.UTILITY) {
+            this.#log(`service ${this.id} is utility, waiting for exit.`)
+            await this.#waitForProcessExitAsync(process)
+            this.#log(`service ${this.id} exited.`)
+          }
           // this.#log(`service ${this.id} started and registered.`)
         } catch (error) {
           this.#setStatus(ServiceStatus.ERROR)
@@ -1362,6 +1510,18 @@ export class Service extends EventEmitter<ServiceEvent> {
       return
     }
   }
+
+  #waitForProcessExitAsync(process: ChildProcess) {
+    return new Promise<void>((resolve, reject) => {
+      process.on("exit", (code, signal) => {
+        this.#log(
+          `service ${this.id} exited with code ${code} and signal ${signal}`
+        )
+        resolve()
+      })
+    })
+  }
+
   //cretae pid file for service
   #createServicePidFile(servicepidfile: string, pid: number) {
     if (this.#process && pid && servicepidfile) {
@@ -1495,7 +1655,7 @@ export class Service extends EventEmitter<ServiceEvent> {
   #errorWrite(type: string, message: any) {
     if (this.#stderr) {
       const timestamp = this.#timestamp
-      this.#stderr.write(`\n${timestamp} ${type.toUpperCase()} ${message}\n`)
+      this.#stderr.write(`${timestamp} ${type.toUpperCase()} ${message}\n`)
     }
   }
 
@@ -1503,7 +1663,7 @@ export class Service extends EventEmitter<ServiceEvent> {
   #logWrite(type: string, message: any) {
     if (this.#stdout) {
       const timestamp = this.#timestamp
-      this.#stdout.write(`\n${timestamp} ${type.toUpperCase()} ${message}\n`)
+      this.#stdout.write(`${timestamp} ${type.toUpperCase()} ${message}\n`)
     }
   }
 
@@ -1937,14 +2097,16 @@ export class Service extends EventEmitter<ServiceEvent> {
               }
 
               const tryToStart =
-                service.isRunnable == true && !service.isRunning
+                service.isRunnable == true &&
+                !service.isRunning &&
+                !service.isDone
 
               this.#log(`try to start service ${tryToStart == true}.`)
 
               if (tryToStart == true) {
                 this.#log(`starting service ${service.id}.`)
                 //add this service to start chain
-                await service.start(globalenv, startchain)
+                await service.start(this.#serviceManager.globalEnv, startchain)
 
                 //Make sure all the services are started.
                 if (!service.isRunning) {

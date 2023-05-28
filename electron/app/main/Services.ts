@@ -62,8 +62,8 @@ const serviceManager = new ServiceManager(
  * @param {NodeJS.SignalsListener} signal
  */
 async function signalExitHandler(signal) {
-  console.log("terminating - service manager stopAll.")
-  logger.log("terminating - service manager stopAll.")
+  console.log(`terminating - service manager stopAll, signal ${signal}.`)
+  logger.log(`terminating - service manager stopAll, signal ${signal}.`)
   await serviceManager.stopAll()
   process.exit()
 }
@@ -99,10 +99,16 @@ function getServicePage(service: Service) {
   const pathSeparator = process.platform === "win32" ? "\\" : "/"
   let statusBackground = "bg-warning"
 
-  if (service.status === ServiceStatus.STARTED) {
+  if (
+    service.status === ServiceStatus.STARTED ||
+    service.status === ServiceStatus.COMPLETED
+  ) {
     statusBackground = "bg-success"
   }
-  if (service.status === ServiceStatus.STOPPED) {
+  if (
+    service.status === ServiceStatus.STOPPED ||
+    service.status === ServiceStatus.COMPLETEDERROR
+  ) {
     statusBackground = "bg-danger"
   }
   if (service.status === ServiceStatus.DISABLED) {
@@ -454,10 +460,16 @@ function getServicesPage(services: Service[]) {
       }
       let statusBackground = "bg-warning"
 
-      if (service.status === ServiceStatus.STARTED) {
+      if (
+        service.status === ServiceStatus.STARTED ||
+        service.status === ServiceStatus.COMPLETED
+      ) {
         statusBackground = "bg-success"
       }
-      if (service.status === ServiceStatus.STOPPED) {
+      if (
+        service.status === ServiceStatus.STOPPED ||
+        service.status === ServiceStatus.COMPLETEDERROR
+      ) {
         statusBackground = "bg-danger"
       }
       if (service.status === ServiceStatus.DISABLED) {
@@ -888,4 +900,3 @@ app.get("/services/status", (req, res, next) => {
     message: result ? "Services are started" : `${serviceId} is not started.`,
   })
 })
-
