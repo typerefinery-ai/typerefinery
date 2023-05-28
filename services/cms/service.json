@@ -39,6 +39,8 @@
     },
     "globalenv": {
       "CMS_PORT": "${SERVICE_PORT}",
+      "CMS_URL": "http://localhost:${SERVICE_PORT}",
+      "CMS_URL_AUTH": "http://localhost:${SERVICE_PORT}/apps/websight-authentication/login.html",
       "CMS_CACHE_PATH_ESC": "${SERVICE_DATA_PATH_ESC}\\docroot"
     }
   }
