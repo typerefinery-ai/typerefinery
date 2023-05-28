@@ -21,10 +21,13 @@
           :src="`${experience.url}`"
           name="disable-x-frame-options"
           referrerpolicy="strict-origin-when-cross-origin"
-          csp="default-src *; style-src 'unsafe-inline' *; script-src 'unsafe-inline' *"
+          sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation"
+          allow="encrypted-media; fullscreen; oversized-images; picture-in-picture; sync-xhr; geolocation;"
+          allowpaymentrequest="true"
           width="100%"
           height="100%"
           :frameborder="0"
+          allowpopups
           allowfullscreen
           @load="onObjLoad()"
         ></iframe>
