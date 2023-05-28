@@ -3,10 +3,18 @@ http:
   routers:
     nginx:
       rule: Host(`nginx.localhost`)
-      service: api@internal
-      entrypoints: websecure
-      middlewares:
-        - error-pages
+      # rule: ( Host(`{{ env "HOST_DOMAIN" }}`) && PathPrefix(`/nginx`) ) || Host(`nginx.localhost`)
+      service: nginx
+      entrypoints:
+        - web
+        - websecure
+    flow:
+      rule: Host(`flow.localhost`)
+      # rule: ( Host(`{{ env "HOST_DOMAIN" }}`) && PathPrefix(`/flow`) ) || Host(`flow.localhost`)
+      service: flow
+      entrypoints:
+        - web
+        - websecure
 
     traefikdashboard:
       rule: Host(`traefik.localhost`)
@@ -14,8 +22,9 @@ http:
       entrypoints: web
       middlewares:
         - error-pages
+
     error-router:
-      rule: "HostRegexp(`{host:.+}`)"
+      rule: HostRegexp(`{host:.+}`)
       priority: 1
       entryPoints:
         - web
@@ -23,45 +32,26 @@ http:
       service: noop@internal
       middlewares:
         - error-pages
+
     # http-catchall:
     #   rule: "HostRegexp(`{host:.+}`)"
     #   entryPoints:
     #     - web
     #   service: noop@internal
+
     cms:
-      # rule: "Host(`localhost.otyxkyrzsmq7zymck4d3wbmpaa.user.localcert.dev`)"
-      rule: 'Host(`{{ env "HOST_DOMAIN" }}`)'
+      rule: Host(`{{ env "HOST_DOMAIN" }}`)
+      # rule: ( Host(`{{ env "HOST_DOMAIN" }}`) && PathPrefix(`/cms`) ) || Host(`cms.localhost`)
       # rule: "Host(`cms.user.typerefinery.ai`)"
       entryPoints:
+        - web
         - websecure
       service: cms
       tls: true
       middlewares:
-        # - redirect-to-https
+        - stripprefix-cms
+        # - replacepath-cms
         - error-pages
-      # tls:
-      #   certResolver: letsencrypt
-        # domains:
-        #   - main: "user.typerefinery.ai"
-        #     sans:
-        #       - "*.user.typerefinery.ai"
-      # middlewares:
-      #   - cmsAuth
-          # - default-security-headers
-    # traefikdashboard:
-    #   rule: "Host(`localhost`)"
-    #   entrypoints:
-    #     - traefik
-    #   service:
-    #     - api@internal
-    # Recommended default middleware for most of the services
-    # Use with traefik.http.routers.myRouter.middlewares: "default@file"
-    # Equivale  nt of traefik.http.routers.myRouter.middlewares: "default-security-headers@file,error-pages@file,gzip@file"
-    # default:
-    #   chain:
-    #     middlewares:
-    #       # - default-security-headers
-    #       - middlewares-cookies
 
   middlewares:
     default:
@@ -85,6 +75,30 @@ http:
       redirectScheme:
         scheme: https
         permanent: true
+
+    replacepath-cms:
+      replacePath:
+        path: "/cms"
+
+    stripprefix-cms:
+      stripPrefix:
+        prefixes:
+          - "/cms"
+
+    stripprefix-flow:
+      stripPrefix:
+        prefixes:
+          - "/flow"
+
+    stripprefix-nginx:
+      stripPrefix:
+        prefixes:
+          - "/nginx"
+
+    stripprefix-traefik:
+      stripPrefix:
+        prefixes:
+          - "/traefik"
 
     # CMS Authentication
     cms-auth:
