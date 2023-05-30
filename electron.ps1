@@ -1,2 +1,1 @@
-npm run electron:start
-
+Invoke-Expression -Command "npm run electron:start"
