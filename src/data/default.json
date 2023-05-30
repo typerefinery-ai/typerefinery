@@ -323,14 +323,52 @@
       "30": { "name": "stopping", "color": "blue" },
       "60": { "name": "stopped", "color": "purple" },
       "90": { "name": "starting", "color": "blue" },
-      "120": { "name": "started", "color": "green" }
+      "120": { "name": "started", "color": "green" },
+      "200": { "name": "completederror", "color": "red" },
+      "220": { "name": "completed", "color": "green" }
     },
     "serviceTypeEnum": {
       "10": { "name": "local", "icon": "pi pi-cog" },
       "20": { "name": "online", "icon": "pi pi-globe" }
     },
     "servicesStarted": false,
-    "isAvailableTypeDBInitAndSample": false
+    "isAvailableTypeDBInitAndSample": false,
+    "globalenv": {
+      "CMS_PORT": "8113",
+      "CMS_URL": "http://localhost:8113",
+      "CMS_URL_AUTH": "http://localhost:8113/apps/websight-authentication/login.html",
+      "CMS_CACHE_PATH_ESC": "C:\\\\projects\\\\typerefinery-ai\\\\typerefinery\\\\services\\\\cms\\\\server\\\\data\\docroot",
+      "API_URL": "http://localhost:8000",
+      "API_PORT": "8000",
+      "FLOW_HOST_URL": "http://localhost:8111",
+      "FLOW_PORT": "8111",
+      "MONGO_USERNAME": "mongoadmin",
+      "MONGO_PASSWORD": "mongoadmin",
+      "MONGO_HOST": "localhost",
+      "MONGO_PORT": "8180",
+      "NGINX_URL": "http://localhost:8114",
+      "NGINX_PORT": "8114",
+      "MESSAGESERVICE_URL": "http://localhost:8112",
+      "MESSAGESERVICE_PORT": "8112",
+      "TYPEDB_DB": "typerefinery",
+      "TYPEDB_PORT": "8729",
+      "TYPEDB_HOST": "localhost",
+      "JAVA": "C:\\projects\\typerefinery-ai\\typerefinery\\services\\_java\\win32\\jre17\\bin\\java.exe",
+      "CERT_FILE": "C:\\projects\\typerefinery-ai\\typerefinery\\services\\_localcert\\data\\cert.pem",
+      "CERT_KEY": "C:\\projects\\typerefinery-ai\\typerefinery\\services\\_localcert\\data\\key.pem",
+      "NODE": "C:\\projects\\typerefinery-ai\\typerefinery\\services\\_node\\win32\\node-v18.6.0-win-x64\\node.exe",
+      "NODE_HOME": "C:\\projects\\typerefinery-ai\\typerefinery\\services\\_node\\win32\\node-v18.6.0-win-x64",
+      "NPM": "C:\\projects\\typerefinery-ai\\typerefinery\\services\\_node\\win32\\node-v18.6.0-darwin-x64\\node_modules\\npm\\bin\\npm-cli.js",
+      "PYTHON": "C:\\projects\\typerefinery-ai\\typerefinery\\services\\_python\\win32\\python.exe",
+      "TRAEFIK_HTTP_PORT": "8100",
+      "TRAEFIK_HTTPS_PORT": "8101",
+      "TRAEFIK_MONGO_PORT": "8108",
+      "TRAEFIK_TYPEDB_PORT": "8109",
+      "TRAEFIK_INTERNAL_PORT": "8102",
+      "TRAEFIK_HOST_DOMAIN": "localhost.wvcnvx5bk43b25eqz2iaemrnmi.user.localcert.dev",
+      "TRAEFIK_HOST_DOMAIN_URL": "localhost.wvcnvx5bk43b25eqz2iaemrnmi.user.localcert.dev",
+      "CERT_DOMAIN": "wvcnvx5bk43b25eqz2iaemrnmi.user.localcert.dev"
+    }
   },
   "settings": {
     "language": "en",
@@ -425,7 +463,7 @@
         "type": "experimental",
         "service": "cms",
         "disabled": false,
-        "url": "http://localhost:8113/",
+        "url": "https://${TRAEFIK_HOST_DOMAIN}:${TRAEFIK_HTTPS_PORT}/",
         "enabled": false,
         "subMenu": [
           {
@@ -456,5 +494,41 @@
         ]
       }
     ]
+  },
+  "globalenv": {
+    "CMS_PORT": "8113",
+    "CMS_URL": "http://localhost:8113",
+    "CMS_URL_AUTH": "http://localhost:8113/apps/websight-authentication/login.html",
+    "CMS_CACHE_PATH_ESC": "C:\\\\projects\\\\typerefinery-ai\\\\typerefinery\\\\services\\\\cms\\\\server\\\\data\\docroot",
+    "API_URL": "http://localhost:8000",
+    "API_PORT": "8000",
+    "FLOW_HOST_URL": "http://localhost:8111",
+    "FLOW_PORT": "8111",
+    "MONGO_USERNAME": "mongoadmin",
+    "MONGO_PASSWORD": "mongoadmin",
+    "MONGO_HOST": "localhost",
+    "MONGO_PORT": "8180",
+    "NGINX_URL": "http://localhost:8114",
+    "NGINX_PORT": "8114",
+    "MESSAGESERVICE_URL": "http://localhost:8112",
+    "MESSAGESERVICE_PORT": "8112",
+    "TYPEDB_DB": "typerefinery",
+    "TYPEDB_PORT": "8729",
+    "TYPEDB_HOST": "localhost",
+    "JAVA": "C:\\projects\\typerefinery-ai\\typerefinery\\services\\_java\\win32\\jre17\\bin\\java.exe",
+    "CERT_FILE": "C:\\projects\\typerefinery-ai\\typerefinery\\services\\_localcert\\data\\cert.pem",
+    "CERT_KEY": "C:\\projects\\typerefinery-ai\\typerefinery\\services\\_localcert\\data\\key.pem",
+    "NODE": "C:\\projects\\typerefinery-ai\\typerefinery\\services\\_node\\win32\\node-v18.6.0-win-x64\\node.exe",
+    "NODE_HOME": "C:\\projects\\typerefinery-ai\\typerefinery\\services\\_node\\win32\\node-v18.6.0-win-x64",
+    "NPM": "C:\\projects\\typerefinery-ai\\typerefinery\\services\\_node\\win32\\node-v18.6.0-darwin-x64\\node_modules\\npm\\bin\\npm-cli.js",
+    "PYTHON": "C:\\projects\\typerefinery-ai\\typerefinery\\services\\_python\\win32\\python.exe",
+    "TRAEFIK_HTTP_PORT": "8100",
+    "TRAEFIK_HTTPS_PORT": "8101",
+    "TRAEFIK_MONGO_PORT": "8108",
+    "TRAEFIK_TYPEDB_PORT": "8109",
+    "TRAEFIK_INTERNAL_PORT": "8102",
+    "TRAEFIK_HOST_DOMAIN": "localhost.wvcnvx5bk43b25eqz2iaemrnmi.user.localcert.dev",
+    "TRAEFIK_HOST_DOMAIN_URL": "localhost.wvcnvx5bk43b25eqz2iaemrnmi.user.localcert.dev",
+    "CERT_DOMAIN": "wvcnvx5bk43b25eqz2iaemrnmi.user.localcert.dev"
   }
 }
