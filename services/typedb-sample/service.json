@@ -5,6 +5,7 @@
   "enabled": true,
   "status": "-1",
   "icon": "pi pi-cog",
+  "servicetype": 50,
   "servicelocation": 10,
   "execconfig": {
     "execservice": { "id": "python" },
