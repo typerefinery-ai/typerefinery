@@ -3,14 +3,14 @@ http:
   routers:
     nginx:
       rule: Host(`nginx.localhost`)
-      # rule: ( Host(`{{ env "HOST_DOMAIN" }}`) && PathPrefix(`/nginx`) ) || Host(`nginx.localhost`)
+      # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/nginx`) ) || Host(`nginx.localhost`)
       service: nginx
       entrypoints:
         - web
         - websecure
     flow:
       rule: Host(`flow.localhost`)
-      # rule: ( Host(`{{ env "HOST_DOMAIN" }}`) && PathPrefix(`/flow`) ) || Host(`flow.localhost`)
+      # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/flow`) ) || Host(`flow.localhost`)
       service: flow
       entrypoints:
         - web
@@ -40,8 +40,8 @@ http:
     #   service: noop@internal
 
     cms:
-      rule: Host(`{{ env "HOST_DOMAIN" }}`)
-      # rule: ( Host(`{{ env "HOST_DOMAIN" }}`) && PathPrefix(`/cms`) ) || Host(`cms.localhost`)
+      rule: Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`)
+      # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/cms`) ) || Host(`cms.localhost`)
       # rule: "Host(`cms.user.typerefinery.ai`)"
       entryPoints:
         - web
