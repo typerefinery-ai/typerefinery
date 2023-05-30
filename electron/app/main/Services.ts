@@ -54,6 +54,7 @@ const serviceManager = new ServiceManager(
   },
   {
     sendServiceList,
+    sendGlobalEnv,
   }
 )
 
@@ -99,12 +100,13 @@ function getServicePage(service: Service) {
   const pathSeparator = process.platform === "win32" ? "\\" : "/"
   let statusBackground = "bg-warning"
 
-  if (
-    service.status === ServiceStatus.STARTED ||
-    service.status === ServiceStatus.COMPLETED
-  ) {
+  if (service.status === ServiceStatus.STARTED) {
     statusBackground = "bg-success"
   }
+  if (service.status === ServiceStatus.COMPLETED) {
+    statusBackground = "bg-success-subtle"
+  }
+
   if (
     service.status === ServiceStatus.STOPPED ||
     service.status === ServiceStatus.COMPLETEDERROR
@@ -454,17 +456,20 @@ function getServicesPage(services: Service[]) {
           Object.values(ServiceStatus).findIndex((x) => x === service.status)
         ]
       const configured = service.isSetup ? "configured" : "not configured"
-      let serviceLink = `<a href="http://localhost:${service.port}" target="_blank">${service.port}</a>`
+      let serviceLink = ""
+      if (service.port) {
+        serviceLink = `<a href="http://localhost:${service.port}" target="_blank">${service.port}</a>`
+      }
       if (service.port && service.port <= 0) {
         serviceLink = ""
       }
       let statusBackground = "bg-warning"
 
-      if (
-        service.status === ServiceStatus.STARTED ||
-        service.status === ServiceStatus.COMPLETED
-      ) {
+      if (service.status === ServiceStatus.STARTED) {
         statusBackground = "bg-success"
+      }
+      if (service.status === ServiceStatus.COMPLETED) {
+        statusBackground = "bg-success-subtle"
       }
       if (
         service.status === ServiceStatus.STOPPED ||
@@ -488,12 +493,12 @@ function getServicesPage(services: Service[]) {
       <td>${configured.toUpperCase()}</td>
       <td>${serviceLink}</td>
       <td>
-        <button type="button" class="btn btn-success" onclick="triggerServiceAPI('${
-          service.id
-        }','start')">Start</button>
-        <button type="button" class="btn btn-danger" onclick="triggerServiceAPI('${
-          service.id
-        }','stop')">Stop</button>
+        <button type="button" class="btn btn-success ${
+          !service.isRunnable ? "disabled" : ""
+        }" onclick="triggerServiceAPI('${service.id}','start')">Start</button>
+        <button type="button" class="btn btn-danger ${
+          !service.isRunnable ? "disabled" : ""
+        }" onclick="triggerServiceAPI('${service.id}','stop')">Stop</button>
         <button type="button" class="btn btn-danger" onclick="triggerServiceAPI('${
           service.id
         }','setup')">${actionSetupLabel}</button>
@@ -751,6 +756,10 @@ function displayDependencyTree(d3, data) {
 
 }
   `
+}
+
+function sendGlobalEnv(globalenv: { [key: string]: string }) {
+  logger.log(`globalEnv: ${JSON.stringify(globalenv)}`)
 }
 
 function sendServiceList(serviceConfigList: Service[]) {
