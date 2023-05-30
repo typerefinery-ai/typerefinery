@@ -1,1 +1,1 @@
-npm run servicesdebug
+Invoke-Expression -Command "npm run servicesdebug"
