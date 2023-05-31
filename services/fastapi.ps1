@@ -7,6 +7,7 @@ Param(
   [string]$PYTHON_HOME = ( Join-Path "${PWD}" "_python" "${OS}"),
   [string]$PYTHON_BIN = ( $IsWindows ? "" : "bin" ),
   [string]$PYTHON_PATH = ( Join-Path "${PWD}" "_python" "${OS}" "${PYTHON_BIN}"),
+  [string]$PYTHON_PATH_SCRIPTS = ( Join-Path "${PYTHON_PATH}" "Scripts"),
   [string]$PYTHON = ( Join-Path "${PWD}" "_python" "${OS}" "${PYTHON_BIN}" "python"),
   [string]$SERVER_HOME = ( Join-Path "${PWD}" "${SERVICE_NAME}"),
   [string]$SERVER_REQUIREMENTS = ( Join-Path "${SERVER_HOME}" "requirements.txt" ),
@@ -34,6 +35,7 @@ Function PrintInfo
   printSectionLine "PYTHONPACKAGES: ${PYTHONPACKAGES}"
   printSectionLine "PYTHONPATH: ${PYTHONPATH}"
   printSectionLine "PYTHON: ${PYTHON}"
+  printSectionLine "PYTHON_PATH_SCRIPTS: ${PYTHON_PATH_SCRIPTS}"
 
   printSectionLine "PYTHONHOME: ${env:PYTHONHOME}"
   printSectionLine "PYTHONPATH: ${env:PYTHONPATH}"
@@ -93,7 +95,7 @@ Function StartSetup
     if ( $IsWindows ) {
       python get-pip.py
     }
-    Invoke-Expression -Command "${PYTHON} -m pip install --target="${PYTHONPACKAGES}" -r "${SERVER_REQUIREMENTS}""
+    Invoke-Expression -Command "${PYTHON} -m pip install --use-pep517 ""parse (==1.19.0)"" --target=""${PYTHONPACKAGES}"" -r ""${SERVER_REQUIREMENTS}"""
   } finally {
     Set-Location -Path "${CURRENT_PATH}"
   }
@@ -130,7 +132,7 @@ Function RunScriptGroup
 }
 
 # SetPath "${PYTHON_HOME}"
-SetEnvPath "PATH" "${PYTHON_PATH}"
+SetEnvPath "PATH" "${PYTHON_PATH}" "${PYTHON_PATH_SCRIPTS}"
 
 SetEnvPath "PYTHONPATH" "${SERVER_HOME}" "${PYTHONPACKAGES}"
 SetEnvPath "PYTHONHOME" "${PYTHON_HOME}"
