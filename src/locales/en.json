@@ -65,6 +65,17 @@
         "label": "Label",
         "icon": "Icon",
         "url": "Url",
+        "urlformatted": "Url Fromatted",
+        "iframeconfig": {
+          "title": "Embed Config",
+          "name": "Name",
+          "referrerpolicy": "Referrer Policy",
+          "sandbox": "Sandbox",
+          "allowfullscreen": "Allow Full Screen",
+          "allowpaymentrequest": "Allow Payment Request",
+          "allowpopups": "Allow Popups",
+          "allow": "Allow"
+        },
         "service": "Services",
         "placeholder": "Select the service",
         "buttons": {

@@ -70,128 +70,14 @@ export default class Settings extends VuexModule {
   }
   //Update store after edit
   @Mutation
-  updateMenuitem(
-    updatedValue:
-      | {
-          label: string
-          icon: string
-          experienceIcon: string
-          to: string
-          id: string
-          type: string
-          service: string
-          disabled: boolean
-          subMenu: {
-            id: string
-            icon: string
-            to: string
-            experimental: boolean
-          }[]
-          url?: undefined
-          enabled?: undefined
-        }
-      | {
-          label: string
-          id: string
-          icon: string
-          experienceIcon: string
-          to: string
-          type: string
-          service: string
-          disabled: boolean
-          url: string
-          enabled: boolean
-          subMenu: {
-            id: string
-            to: string
-            experimental: boolean
-            icon: string
-          }[]
-        }
-      | {
-          label: string
-          icon: string
-          id: string
-          // Mutations
-          to: string // Mutations
-          type: string
-          service: string
-          disabled: boolean
-          url: string
-          enabled: boolean
-          subMenu: {
-            id: string
-            to: string
-            experimental: boolean
-            icon: string
-          }[]
-          experienceIcon?: undefined
-        }
-  ) {
+  updateMenuitem(updatedValue: any) {
     const { id } = updatedValue
     const expIdx = this.data.listOfMenu.findIndex((el) => el.id === id)
     this.data.listOfMenu[expIdx] = updatedValue
   }
   //Add experience to the listOfMenu in store
   @Mutation
-  addExprience(
-    experience:
-      | {
-          label: string
-          icon: string
-          experienceIcon: string
-          to: string
-          id: string
-          type: string
-          service: string
-          disabled: boolean
-          subMenu: {
-            id: string
-            icon: string
-            to: string
-            experimental: boolean
-          }[]
-          url?: undefined
-          enabled?: undefined
-        }
-      | {
-          label: string
-          id: string
-          icon: string
-          experienceIcon: string
-          to: string
-          type: string
-          service: string
-          disabled: boolean
-          url: string
-          enabled: boolean
-          subMenu: {
-            id: string
-            to: string
-            experimental: boolean
-            icon: string
-          }[]
-        }
-      | {
-          label: string
-          icon: string
-          id: string
-          // Mutations
-          to: string // Mutations
-          type: string
-          service: string
-          disabled: boolean
-          url: string
-          enabled: boolean
-          subMenu: {
-            id: string
-            to: string
-            experimental: boolean
-            icon: string
-          }[]
-          experienceIcon?: undefined
-        }
-  ) {
+  addExprience(experience: any) {
     if (experience.type === "experimental") {
       this.data.listOfMenu.push(experience)
     }
@@ -199,64 +85,7 @@ export default class Settings extends VuexModule {
   }
   //update listOfMenu after orderlist save
   @Mutation
-  updateList(
-    orderedList: (
-      | {
-          label: string
-          icon: string
-          experienceIcon: string
-          to: string
-          id: string
-          type: string
-          service: string
-          disabled: boolean
-          subMenu: {
-            id: string
-            icon: string
-            to: string
-            experimental: boolean
-          }[]
-          url?: undefined
-          enabled?: undefined
-        }
-      | {
-          label: string
-          id: string
-          icon: string
-          experienceIcon: string
-          to: string
-          type: string
-          service: string
-          disabled: boolean
-          url: string
-          enabled: boolean
-          subMenu: {
-            id: string
-            to: string
-            experimental: boolean
-            icon: string
-          }[]
-        }
-      | {
-          label: string
-          icon: string
-          id: string
-          to: string
-          type: string
-          service: string
-          disabled: boolean
-          url: string
-          enabled: boolean
-          subMenu: {
-            id: string
-            to: string
-            experimental: boolean
-            icon: string
-          }[]
-          experienceIcon?: undefined
-        }
-    )[]
-  ) {
+  updateList(orderedList: any[]) {
     this.data.listOfMenu = orderedList
   }
 }

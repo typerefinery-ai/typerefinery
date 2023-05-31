@@ -52,8 +52,91 @@
       </div>
       <div class="field">
         <label for="url">{{ $t(`components.setting.experience.url`) }}</label>
-        <InputText id="url" v-model="url" />
+        <InputText id="url" v-model="url" @input="formatUrl" />
       </div>
+      <div class="field">
+        <label for="urlformatted">{{
+          $t(`components.setting.experience.urlformatted`)
+        }}</label>
+        <InputText id="urlformatted" v-model="urlformatted" />
+      </div>
+      <!-- iframe settings -->
+      <Accordion>
+        <AccordionTab>
+          <template #header>
+            {{ $t(`components.setting.experience.iframeconfig.title`) }}
+          </template>
+          <div class="field">
+            <label for="referrerpolicy">{{
+              $t(`components.setting.experience.iframeconfig.referrerpolicy`)
+            }}</label>
+            <InputText
+              id="referrerpolicy"
+              placeholder="strict-origin-when-cross-origin"
+              v-model="iframeconfig.referrerpolicy"
+            />
+          </div>
+          <div class="field">
+            <label for="name">{{
+              $t(`components.setting.experience.iframeconfig.name`)
+            }}</label>
+            <InputText
+              id="name"
+              placeholder="disable-x-frame-options"
+              v-model="iframeconfig.name"
+            />
+          </div>
+          <div class="field">
+            <label for="sandbox">{{
+              $t(`components.setting.experience.iframeconfig.sandbox`)
+            }}</label>
+            <InputText
+              id="sandbox"
+              placeholder="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation"
+              v-model="iframeconfig.sandbox"
+            />
+          </div>
+          <div class="field">
+            <label for="allow">{{
+              $t(`components.setting.experience.iframeconfig.allow`)
+            }}</label>
+            <InputText
+              id="allow"
+              placeholder="encrypted-media; fullscreen; oversized-images; picture-in-picture; sync-xhr; geolocation;"
+              v-model="iframeconfig.allow"
+            />
+          </div>
+          <div class="field">
+            <label for="allowfullscreen">{{
+              $t(`components.setting.experience.iframeconfig.allowfullscreen`)
+            }}</label>
+            <InputSwitch
+              id="allowfullscreen"
+              :model-value="iframeconfig.allowfullscreen"
+            />
+          </div>
+          <div class="field">
+            <label for="allowpaymentrequest">{{
+              $t(
+                `components.setting.experience.iframeconfig.allowpaymentrequest`
+              )
+            }}</label>
+            <InputSwitch
+              id="allowpaymentrequest"
+              :model-value="iframeconfig.allowpaymentrequest"
+            />
+          </div>
+          <div class="field">
+            <label for="allowpopups">{{
+              $t(`components.setting.experience.iframeconfig.allowpopups`)
+            }}</label>
+            <InputSwitch
+              id="allowpopups"
+              :model-value="iframeconfig.allowpopups"
+            />
+          </div>
+        </AccordionTab>
+      </Accordion>
       <template #footer>
         <Button
           :label="$t(`components.setting.experience.buttons.cancel`)"
@@ -83,6 +166,9 @@
 <script>
   import { getModule } from "vuex-module-decorators"
   import Dialog from "primevue/dialog"
+  import Accordion from "primevue/accordion"
+  import AccordionTab from "primevue/accordiontab"
+  import InputSwitch from "primevue/inputswitch"
   import Button from "primevue/button"
   import Projects from "@/store/Modules/Projects"
   import AppData from "@/store/Modules/AppData"
@@ -110,6 +196,9 @@
       Button,
       Dropdown,
       InputText,
+      Accordion,
+      AccordionTab,
+      InputSwitch,
     },
     props: {
       editDialog: { type: Boolean, default: false },
@@ -134,6 +223,15 @@
         name: "",
         icon: "",
         url: "",
+        urlformatted: "",
+        iframeconfig: {
+          referrerpolicy: "",
+          sandbox: "",
+          allow: "",
+          allowfullscreen: "",
+          allowpaymentrequest: "",
+          allowpopups: "",
+        },
         service: "",
         services: [],
       }
@@ -156,25 +254,74 @@
       },
     },
     async mounted() {
+      // get all services
       this.services = await this.getServices()
+      // add none to the list
+      this.services.push({
+        id: "",
+        name: "None",
+        type: "",
+        status: "",
+        url: "",
+        icon: "",
+      })
+      // get all experiences
       this.listOfExperiences = JSON.parse(
         JSON.stringify(settingsModule.data.listOfMenu)
       )
+      console.log("listOfExperiences", this.listOfExperiences)
+      console.log("type", this.type)
+      console.log("payload", this.payload)
+      // update ui based on type of operation
       if (this.type === "UPDATE") {
-        ;(this.label = this.payload.label),
-          (this.icon = this.payload.icon),
-          (this.url = this.payload.url),
-          (this.service = this.payload.service),
-          (this.editElements = true)
+        this.label = this.payload.label
+        this.icon = this.payload.icon
+        this.url = this.payload.url
+        this.service = this.payload.service
+        this.iframeconfig = this.payload.iframeconfig
+        this.editElements = true
       } else if (this.type === "ADD") {
-        ;(this.label = ""),
-          (this.icon = ""),
-          (this.url = ""),
-          (this.service = ""),
-          (this.addElements = true)
+        this.addElements = true
+        this.label = ""
+        this.icon = ""
+        this.url = ""
+        this.service = ""
+        this.iframeconfig = {
+          referrerpolicy: "",
+          sandbox: "",
+          allow: "",
+          allowfullscreen: "",
+          allowpaymentrequest: "",
+          allowpopups: "",
+        }
       }
+      // get global env to format url
+      const { ipc } = window
+      ipc.getGlobalEnv().then((value) => {
+        this.globalenv = value
+        console.log("getGlobalEnv exp value", this.globalenv)
+        this.formatUrl()
+      })
     },
     methods: {
+      formatUrl() {
+        console.log("this.globalenv", this.globalenv)
+        if (this.globalenv) {
+          console.log("formatUrl", this.url)
+          let urlformatted = this.url
+          if (this.url.includes("${")) {
+            console.log("getGlobalEnv exp value", this.globalenv)
+            // update variables in url
+            for (const [key, value] of Object.entries(this.globalenv)) {
+              urlformatted = urlformatted.replaceAll(`\${${key}}`, value)
+            }
+
+            console.log("this.url updated", urlformatted)
+          }
+          this.urlformatted = urlformatted
+          console.log("formatUrl done", this.urlformatted)
+        }
+      },
       async getServices() {
         return await servicesModule.getServices()
       },
@@ -188,6 +335,14 @@
           icon: this.icon,
           url: this.url,
           service: this.service,
+          iframeconfig: {
+            referrerpolicy: this.iframeconfig.referrerpolicy,
+            sandbox: this.iframeconfig.sandbox,
+            allow: this.iframeconfig.allow,
+            allowfullscreen: this.iframeconfig.allowfullscreen,
+            allowpaymentrequest: this.iframeconfig.allowpaymentrequest,
+            allowpopups: this.iframeconfig.allowpopups,
+          },
         }
         settingsModule.updateMenuitem(data)
         this.fetchingLatestExperience()
@@ -207,6 +362,14 @@
             url: this.url,
             enabled: false,
             subMenu: [{ id: "load-data", to: "#" }],
+            iframeconfig: {
+              referrerpolicy: this.iframeconfig.referrerpolicy,
+              sandbox: this.iframeconfig.sandbox,
+              allow: this.iframeconfig.allow,
+              allowfullscreen: this.iframeconfig.allowfullscreen,
+              allowpaymentrequest: this.iframeconfig.allowpaymentrequest,
+              allowpopups: this.iframeconfig.allowpopups,
+            },
           }
         settingsModule.addExprience(data)
         this.fetchingLatestExperience()

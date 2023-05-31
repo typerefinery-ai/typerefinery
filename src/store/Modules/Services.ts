@@ -71,6 +71,26 @@ export default class Services extends VuexModule {
     return this.data.services
   }
 
+  @Action({ rawError: true })
+  async getGlobalEnv() {
+    // @ts-expect-error ts-migrate(2339) FIXME: Property 'ipc' does not exist on type 'Window & typeof globalThis'
+    const { ipc } = window
+    if (ipc && ipc.getServices) {
+      const globalenv = await ipc.getGlobalEnv()
+      console.log("ipc globalenv", this.data.globalenv)
+      this.context.commit("setGlobalEnv", globalenv)
+    }
+    // this.services = []
+    // services.forEach((service: any) => {
+    //   this.services.push(service)
+    // })
+    console.log("store globalenv", this.data.globalenv)
+    return this.data.globalenv
+  }
+
+  get globalEnv() {
+    return this.data.globalenv
+  }
   get serviceList() {
     return this.data.services
   }
@@ -231,5 +251,12 @@ export default class Services extends VuexModule {
   @Mutation
   setServicesStopped() {
     this.data.servicesStarted = false
+  }
+
+  @Mutation
+  setGlobalEnv(globalenv: any) {
+    // const data = JSON.parse(JSON.stringify(this.data))
+    // const nodes = data.globalenv
+    this.data.globalenv = globalenv
   }
 }

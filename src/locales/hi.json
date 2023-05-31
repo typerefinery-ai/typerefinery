@@ -66,6 +66,17 @@
         "label": "लेबल",
         "icon": "आइकन",
         "url": "यूआरएल",
+        "urlformatted": "यूआरएल (फॉर्मेटेड)",
+        "iframeconfig": {
+          "title": "आईफ्रेम कॉन्फ़िग",
+          "name": "एल्गोरिथम का नाम",
+          "referrerpolicy": "रेफरर नीति",
+          "sandbox": "सैंडबॉक्स",
+          "allowfullscreen": "पूर्ण स्क्रीन देखें",
+          "allowpaymentrequest": "भुगतान अनुरोध की अनुमति दें",
+          "allowpopups": "पॉपअप विंडो की अनुमति दें",
+          "allow": "अनुमति दें"
+        },
         "service": "सेवा",
         "placeholder": "सेवा का चयन करें",
         "buttons": {
