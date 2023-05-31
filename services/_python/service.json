@@ -19,17 +19,17 @@
     "setup": {
       "win32": [
         "get-pip.py --no-warn-script-location",
-        "-m pip install --ignore-installed --no-warn-script-location -r ${SERVICE_PATH}\\requirements.txt"
+        "-m pip install --ignore-installed --no-warn-script-location -r ${SERVICE_PATH}\\win32\\requirements.txt"
       ],
       "darwin": [
-        "-m pip install --ignore-installed --no-warn-script-location -r ${SERVICE_PATH}/requirements.txt"
+        "-m pip install --ignore-installed --no-warn-script-location -r ${SERVICE_PATH}/darwin/requirements.txt"
       ],
       "linux": [
-        "-m pip install --ignore-installed --no-warn-script-location -r ${SERVICE_PATH}/requirements.txt"
+        "-m pip install --ignore-installed --no-warn-script-location -r ${SERVICE_PATH}/linux/requirements.txt"
       ],
       "default": [
         "get-pip.py --no-warn-script-location",
-        "-m pip install --ignore-installed --no-warn-script-location -r ${SERVICE_PATH}\\requirements.txt"
+        "-m pip install --ignore-installed --no-warn-script-location -r ${SERVICE_PATH}\\win32\\requirements.txt"
       ]
     },
     "globalenv": {
