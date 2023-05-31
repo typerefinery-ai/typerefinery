@@ -1,8 +1,9 @@
 import * as path from "path"
-import { ChildProcess, spawn, type SpawnOptions } from "child_process"
+import child_process from "child_process"
+import { ChildProcess, type SpawnOptions } from "child_process"
 import { type ServiceManager } from "./ServiceManager"
 import { Logger } from "./Logger"
-import fs, { createWriteStream, WriteStream } from "fs"
+import fs, { WriteStream } from "fs"
 import { http } from "follow-redirects"
 import net from "net"
 import EventEmitter from "eventemitter3"
@@ -267,7 +268,7 @@ export class Service extends EventEmitter<ServiceEvent> {
     // create stderr log file for service executable
     this.#stderrLogFile = path.join(logsDir, `${this.#id}-error.log`)
     this.#ensurePathToFile(this.#stderrLogFile)
-    this.#stderr = createWriteStream(this.#stderrLogFile, {
+    this.#stderr = fs.createWriteStream(this.#stderrLogFile, {
       flags: "a",
       mode: 0o666,
       autoClose: true,
@@ -290,7 +291,7 @@ export class Service extends EventEmitter<ServiceEvent> {
     // create stdout log file for service executable
     this.#stdoutLogFile = path.join(logsDir, `${this.#id}-console.log`)
     this.#ensurePathToFile(this.#stdoutLogFile)
-    this.#stdout = createWriteStream(this.#stdoutLogFile, {
+    this.#stdout = fs.createWriteStream(this.#stdoutLogFile, {
       flags: "a",
       mode: 0o666,
       autoClose: true,
@@ -1453,7 +1454,11 @@ export class Service extends EventEmitter<ServiceEvent> {
 
         //run the service process
         try {
-          const process = spawn(serviceExecutable, commandline, options)
+          const process = child_process.spawn(
+            serviceExecutable,
+            commandline,
+            options
+          )
 
           this.#log([
             "spawn",
@@ -1505,8 +1510,13 @@ export class Service extends EventEmitter<ServiceEvent> {
         return
       }
     } else {
-      this.#setStatus(ServiceStatus.AVAILABLE)
       this.#log("service is not runnable, done.")
+      // if servicetype is utility, set status to completed
+      if (this.#options.servicetype === ServiceType.UTILITY) {
+        this.#setStatus(ServiceStatus.COMPLETED)
+      } else {
+        this.#setStatus(ServiceStatus.AVAILABLE)
+      }
       return
     }
   }

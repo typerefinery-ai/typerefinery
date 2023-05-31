@@ -55,6 +55,10 @@
       async getServices() {
         return await servicesModule.getServices()
       },
+      // get all the services
+      async getGlobalEnv() {
+        return await servicesModule.getGlobalEnv()
+      },
       updateMoveToDashboard() {
         this.moveToDashboard = true
 

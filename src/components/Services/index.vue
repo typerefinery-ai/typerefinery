@@ -373,6 +373,12 @@
     &[status="120"] {
       background-color: v-bind("serviceStatusColorList['started']");
     }
+    &[status="200"] {
+      background-color: v-bind("serviceStatusColorList['completedwerror']");
+    }
+    &[status="220"] {
+      background-color: v-bind("serviceStatusColorList['completed']");
+    }
   }
 
   .service-button {
@@ -441,6 +447,12 @@
     }
     &[status="120"] {
       color: v-bind("serviceStatusColorList['started']");
+    }
+    &[status="200"] {
+      color: v-bind("serviceStatusColorList['completedwerror']");
+    }
+    &[status="220"] {
+      color: v-bind("serviceStatusColorList['completed']");
     }
   }
 </style>

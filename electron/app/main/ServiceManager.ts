@@ -9,7 +9,6 @@ import {
 import fs from "fs"
 import glob from "glob"
 import { Logger } from "./Logger"
-import { createWriteStream } from "fs"
 import { Writable } from "node:stream"
 import { getPortFree } from "./Utils"
 
@@ -17,6 +16,7 @@ const serviceManagerLog = "servicemanager.log"
 
 interface ServiceManagerEvents {
   sendServiceList: (serviceConfigList: Service[]) => void
+  sendGlobalEnv: (globalenv: { [key: string]: string }) => void
 }
 
 class ServiceManager {
@@ -50,7 +50,7 @@ class ServiceManager {
     this.#serviceManagerEvents = serviceManagerEvents
 
     this.#logWritablePath = path.join(logsDir, serviceManagerLog)
-    this.#logWritable = createWriteStream(this.#logWritablePath, {
+    this.#logWritable = fs.createWriteStream(this.#logWritablePath, {
       flags: "a",
       mode: 0o666,
       highWaterMark: 0,
@@ -97,6 +97,11 @@ class ServiceManager {
       this.#serviceManagerEvents.sendServiceList(this.#services)
     }
 
+    // send globalenv to app
+    if (this.#serviceManagerEvents.sendGlobalEnv) {
+      this.#serviceManagerEvents.sendGlobalEnv(this.#globalenv)
+    }
+
     if (restart) {
       await this.startAll()
     }
@@ -109,6 +114,10 @@ class ServiceManager {
   #updateGlobalEnv() {
     this.#globalenv = this.getGlobalEnv()
     this.#pushGLobalEnvToServices()
+
+    if (this.#serviceManagerEvents.sendGlobalEnv) {
+      this.#serviceManagerEvents.sendGlobalEnv(this.#globalenv)
+    }
   }
 
   #pushGLobalEnvToServices() {

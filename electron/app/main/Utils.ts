@@ -1,6 +1,6 @@
 import * as config from "../../../package.json"
 import portfinder from "portfinder"
-import { spawn, type SpawnOptions } from "node:child_process"
+import child_process, { type SpawnOptions } from "node:child_process"
 import fs from "fs"
 import http, { type RequestOptions } from "node:http"
 
@@ -73,7 +73,7 @@ export const os = {
           options.stdio = ["ignore", "pipe", "pipe"]
         }
       }
-      const child = spawn(command, args, options)
+      const child = child_process.spawn(command, args, options)
       if (child.stdout) {
         child.stdout.on("data", (data) => {
           resolve(data.toString())

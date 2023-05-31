@@ -105,6 +105,8 @@
           DEPENDENCIESNOTREADY: "104",
           DEPENDENCIESREADY: "105",
           STARTED: "120",
+          COMPLETEDERROR: "200",
+          COMPLETED: "220",
         },
         lastFetched: "Just now",
         servicesToCheck: [
@@ -135,6 +137,7 @@
       // },
     },
     mounted() {
+      //HACK FIXME: needs a better name
       this.isAvailableTypeDBInitAndSample =
         servicesModule.data.isAvailableTypeDBInitAndSample
       this.fetchServiceStatus()
@@ -156,6 +159,7 @@
             return "info"
 
           case "120":
+          case "220":
             return "success"
 
           default:
