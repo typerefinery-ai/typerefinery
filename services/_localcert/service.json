@@ -12,6 +12,7 @@
     "debuglog": true,
     "serviceorder": 2,
     "ignoreexiterror": true,
+    "datapath": "/data",
     "executable": {
       "win32": "win32\\localcert.exe",
       "darwin": "darwin/localcert",
