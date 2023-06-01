@@ -2,16 +2,18 @@
   <div class="card service-container">
     <div v-if="!servicesLoaded" class="mb-5 mt-5">
       <p class="text-black text-lg">
-        Services are installing and starting. This may take a few minutes.
+        {{ $t(`components.serviceinstallation.tabs.services.loadingtitle`) }}
       </p>
     </div>
     <div v-else class="mb-5 mt-5">
-      <p class="text-black text-lg mb-3">Services are installed and running.</p>
+      <p class="text-black text-lg mb-3">
+        {{ $t(`components.serviceinstallation.tabs.services.readytitle`) }}
+      </p>
       <span
         class="text-blue-800 text-base mt-4 text-button"
         @click="onTabClicked('FINISH')"
       >
-        Now you can jump to the dashboard.
+        {{ $t(`components.serviceinstallation.tabs.services.skiptitle`) }}
       </span>
     </div>
     <DataTable
@@ -24,9 +26,15 @@
         <div
           class="flex flex-wrap align-items-center justify-content-between gap-2"
         >
-          <span class="text-xl text-900 font-bold">Services</span>
+          <span class="text-xl text-900 font-bold">{{
+            $t(`components.serviceinstallation.tabs.services.tabletitle`)
+          }}</span>
           <span class="text-sm text-900 font-bold"
-            >Last fetched: {{ lastFetched }}</span
+            >{{
+              $t(
+                `components.serviceinstallation.tabs.services.lastupdatedfieldtitle`
+              )
+            }}: {{ lastFetched }}</span
           >
           <Button
             icon="pi pi-refresh"

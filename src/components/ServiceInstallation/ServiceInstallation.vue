@@ -1,27 +1,24 @@
 <template>
   <div class="container">
     <div class="tab">
-      <!-- <button class="tab_link" :class="{ active: activeTab == 'WELCOME' }" @click="onTabClicked('WELCOME')">
-                Welcome
-            </button> -->
       <button
         class="tab_link"
         :class="{ active: activeTab == 'WELCOME' }"
         @click="onTabClicked('WELCOME')"
       >
-        Welcome
+        {{ $t(`components.serviceinstallation.tabs.welcome.title`) }}
       </button>
       <button
         class="tab_link"
         :class="{ active: activeTab == 'SERVICES' }"
         @click="onTabClicked('SERVICES')"
       >
-        Services
+        {{ $t(`components.serviceinstallation.tabs.services.title`) }}
         <div
           v-if="!this.servicesLoaded"
           class="mt-3 text-white text-sm hover:text-500"
         >
-          Installing services...
+          {{ $t(`components.serviceinstallation.tabs.services.subtitle`) }}
           <span
             class="pi pi-spin pi-cog"
             role="status"
@@ -29,7 +26,7 @@
           ></span>
         </div>
         <div v-else class="mt-3 text-sm text-white">
-          Required Services installed
+          {{ $t(`components.serviceinstallation.tabs.services.ready`) }}
           <span class="pi pi-check" role="status" aria-hidden="true"></span>
         </div>
       </button>
@@ -38,14 +35,14 @@
         :class="{ active: activeTab == 'DOCUMENTATION' }"
         @click="onTabClicked('DOCUMENTATION')"
       >
-        Documentation
+        {{ $t(`components.serviceinstallation.tabs.documentation.title`) }}
       </button>
       <button
         class="tab_link dashboard"
         v-if="this.servicesLoaded"
         @click="onTabClicked('FINISH')"
       >
-        Read to Roll, jump to the app
+        {{ $t(`components.serviceinstallation.tabs.done.title`) }}
         <i class="pi pi-arrow-right"></i>
       </button>
     </div>
