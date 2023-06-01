@@ -112,10 +112,7 @@
             }}</label>
             <InputSwitch
               id="allowfullscreen"
-              true-value="true"
-              false-value="false"
-              :model-value="iframeconfig.allowfullscreen"
-              @input="iframeconfig.allowfullscreen = $event"
+              v-model="iframeconfig.allowfullscreen"
             />
           </div>
           <div class="field">
@@ -126,19 +123,14 @@
             }}</label>
             <InputSwitch
               id="allowpaymentrequest"
-              :model-value="iframeconfig.allowpaymentrequest"
-              @input="handleFeatureToggle($event, slotProps.item.id)"
+              v-model="iframeconfig.allowpaymentrequest"
             />
           </div>
           <div class="field">
             <label for="allowpopups">{{
               $t(`components.setting.experience.iframeconfig.allowpopups`)
             }}</label>
-            <InputSwitch
-              id="allowpopups"
-              :model-value="iframeconfig.allowpopups"
-              @input="handleFeatureToggle($event, slotProps.item.id)"
-            />
+            <InputSwitch id="allowpopups" v-model="iframeconfig.allowpopups" />
           </div>
         </AccordionTab>
       </Accordion>
@@ -311,6 +303,10 @@
       })
     },
     methods: {
+      handleFeatureToggle(enabled, id) {
+        settingsModule.toggleExperimentalFeatures(id)
+        this.fetchingLatestExperience()
+      },
       formatUrl() {
         console.log("this.globalenv", this.globalenv)
         if (this.globalenv) {
