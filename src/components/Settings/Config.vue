@@ -70,10 +70,10 @@
     </div>
     <div class="wrapper pt-3">
       <div class="text-wrapper">
-        <h3>Environment Variables</h3>
+        <h3>{{ $t(`components.setting.config.envvar`) }}</h3>
       </div>
       <div class="text-wrapper">
-        <p>These environment variables can be used in Experience URL's.</p>
+        <p>{{ $t(`components.setting.config.envvarinfo`) }}</p>
       </div>
       <div class="text-wrapper">
         <DataTable

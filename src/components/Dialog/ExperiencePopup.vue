@@ -67,16 +67,6 @@
             {{ $t(`components.setting.experience.iframeconfig.title`) }}
           </template>
           <div class="field">
-            <label for="referrerpolicy">{{
-              $t(`components.setting.experience.iframeconfig.referrerpolicy`)
-            }}</label>
-            <InputText
-              id="referrerpolicy"
-              placeholder="strict-origin-when-cross-origin"
-              v-model="iframeconfig.referrerpolicy"
-            />
-          </div>
-          <div class="field">
             <label for="name">{{
               $t(`components.setting.experience.iframeconfig.name`)
             }}</label>
@@ -84,6 +74,16 @@
               id="name"
               placeholder="disable-x-frame-options"
               v-model="iframeconfig.name"
+            />
+          </div>
+          <div class="field">
+            <label for="referrerpolicy">{{
+              $t(`components.setting.experience.iframeconfig.referrerpolicy`)
+            }}</label>
+            <InputText
+              id="referrerpolicy"
+              placeholder="strict-origin-when-cross-origin"
+              v-model="iframeconfig.referrerpolicy"
             />
           </div>
           <div class="field">
@@ -112,7 +112,10 @@
             }}</label>
             <InputSwitch
               id="allowfullscreen"
+              true-value="true"
+              false-value="false"
               :model-value="iframeconfig.allowfullscreen"
+              @input="iframeconfig.allowfullscreen = $event"
             />
           </div>
           <div class="field">
@@ -124,6 +127,7 @@
             <InputSwitch
               id="allowpaymentrequest"
               :model-value="iframeconfig.allowpaymentrequest"
+              @input="handleFeatureToggle($event, slotProps.item.id)"
             />
           </div>
           <div class="field">
@@ -133,6 +137,7 @@
             <InputSwitch
               id="allowpopups"
               :model-value="iframeconfig.allowpopups"
+              @input="handleFeatureToggle($event, slotProps.item.id)"
             />
           </div>
         </AccordionTab>
@@ -225,6 +230,7 @@
         url: "",
         urlformatted: "",
         iframeconfig: {
+          name: "",
           referrerpolicy: "",
           sandbox: "",
           allow: "",
@@ -287,6 +293,7 @@
         this.url = ""
         this.service = ""
         this.iframeconfig = {
+          name: "",
           referrerpolicy: "",
           sandbox: "",
           allow: "",
@@ -336,6 +343,7 @@
           url: this.url,
           service: this.service,
           iframeconfig: {
+            name: this.iframeconfig.name,
             referrerpolicy: this.iframeconfig.referrerpolicy,
             sandbox: this.iframeconfig.sandbox,
             allow: this.iframeconfig.allow,
@@ -344,6 +352,7 @@
             allowpopups: this.iframeconfig.allowpopups,
           },
         }
+        console.log("editMenuItem data", data)
         settingsModule.updateMenuitem(data)
         this.fetchingLatestExperience()
         this.closeDialog()
@@ -363,6 +372,7 @@
             enabled: false,
             subMenu: [{ id: "load-data", to: "#" }],
             iframeconfig: {
+              name: this.iframeconfig.name,
               referrerpolicy: this.iframeconfig.referrerpolicy,
               sandbox: this.iframeconfig.sandbox,
               allow: this.iframeconfig.allow,
@@ -371,6 +381,8 @@
               allowpopups: this.iframeconfig.allowpopups,
             },
           }
+
+        console.log("addMenuItem data", data)
         settingsModule.addExprience(data)
         this.fetchingLatestExperience()
         this.closeDialog()

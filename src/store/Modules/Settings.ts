@@ -71,13 +71,16 @@ export default class Settings extends VuexModule {
   //Update store after edit
   @Mutation
   updateMenuitem(updatedValue: any) {
+    // console.log("updateMenuitem", updatedValue)
     const { id } = updatedValue
     const expIdx = this.data.listOfMenu.findIndex((el) => el.id === id)
+    // console.log("updateMenuitem updating", this.data.listOfMenu[expIdx])
     this.data.listOfMenu[expIdx] = updatedValue
   }
   //Add experience to the listOfMenu in store
   @Mutation
   addExprience(experience: any) {
+    // console.log("addExprience", experience)
     if (experience.type === "experimental") {
       this.data.listOfMenu.push(experience)
     }

@@ -18,10 +18,12 @@
           <loader />
         </div>
         <iframe
+          v-if="sandbox"
           :src="url"
           :name="name"
           :referrerpolicy="referrerpolicy"
           :sandbox="sandbox"
+          :sandbox2="iframeconfig.sandbox"
           :allow="allow"
           :allowpaymentrequest="allowpaymentrequest"
           width="100%"
@@ -29,6 +31,16 @@
           :frameborder="0"
           :allowpopups="allowpopups"
           :allowfullscreen="allowfullscreen"
+          @load="onObjLoad()"
+        ></iframe>
+        <iframe
+          v-else
+          :src="url"
+          :name="name"
+          width="100%"
+          height="100%"
+          nosandbox
+          :frameborder="0"
           @load="onObjLoad()"
         ></iframe>
       </div>
@@ -64,6 +76,15 @@
         allowpaymentrequest: undefined,
         allowpopups: undefined,
         allowfullscreen: undefined,
+        iframeconfig: {
+          name: undefined,
+          referrerpolicy: undefined,
+          sandbox: undefined,
+          allow: undefined,
+          allowpaymentrequest: undefined,
+          allowpopups: undefined,
+          allowfullscreen: undefined,
+        },
       }
     },
     mounted() {
@@ -84,7 +105,12 @@
       this.referrerpolicy = iframeconfig.referrerpolicy
         ? iframeconfig.referrerpolicy
         : undefined
-      this.sandbox = iframeconfig.sandbox ? iframeconfig.sandbox : undefined
+      this.sandbox = iframeconfig.sandbox
+      this.iframeconfig.sandbox = iframeconfig.sandbox
+      if (!this.sandbox) {
+        console.log("iframeconfig.sandbox", this.sandbox)
+        delete this.iframeconfig.sandbox
+      }
       this.allow = iframeconfig.allow ? iframeconfig.allow : undefined
       this.allowpaymentrequest = iframeconfig.allowpaymentrequest
         ? "true"
@@ -107,8 +133,8 @@
         this.globalenv = res
         console.log("iframe getGlobalEnv", this.globalenv)
         if (globalenv) {
-          let urlformatted = this.url
-          if (this.url.indexOf("${")) {
+          if (this.url.indexOf("${") > 0) {
+            let urlformatted = this.url
             console.log("iframe getGlobalEnv exp value", this.globalenv)
             // update variables in url
             for (const [key, value] of Object.entries(this.globalenv)) {
@@ -120,9 +146,9 @@
             }
 
             console.log("iframe urlformatted updated", urlformatted)
+            this.url = urlformatted
           }
-          this.url = urlformatted
-          console.log("iframe this.url updated", this.url)
+          console.log("iframe this.url", this.url)
         } else {
           console.log("experienceConfig could not get config")
         }

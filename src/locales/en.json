@@ -86,7 +86,9 @@
       },
       "config": {
         "app-path": "App Path",
-        "data-path": "App Data Path"
+        "data-path": "App Data Path",
+        "envvar": "Environment Variables",
+        "envvarinfo": "These environment variables can be used in Experience URL's."
       }
     },
     "chat": {
