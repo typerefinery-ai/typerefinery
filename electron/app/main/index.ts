@@ -253,14 +253,11 @@ async function createWindow() {
   mainWindow.webContents.session.webRequest.onHeadersReceived(
     { urls: ["*://*/*"] },
     (details, callback) => {
-      const frameName = details.frame?.name
       if (details && details.responseHeaders) {
-        if (frameName === "disable-x-frame-options") {
-          if (details.responseHeaders["X-Frame-Options"]) {
-            delete details.responseHeaders["X-Frame-Options"]
-          } else if (details.responseHeaders["x-frame-options"]) {
-            delete details.responseHeaders["x-frame-options"]
-          }
+        if (details.responseHeaders["X-Frame-Options"]) {
+          delete details.responseHeaders["X-Frame-Options"]
+        } else if (details.responseHeaders["x-frame-options"]) {
+          delete details.responseHeaders["x-frame-options"]
         }
       }
       callback({ cancel: false, responseHeaders: details.responseHeaders })
