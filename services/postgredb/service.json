@@ -66,8 +66,10 @@
       "default": "-D ${SERVICE_DATA_PATH} -h ${SERVICE_HOST} -p ${SERVICE_PORT}"
     },
     "globalenv": {
-      "POSTGREDB_HOST": "${SERVICE_HOST}",
-      "POSTGREDB_PORT": "${SERVICE_PORT}"
+      "POSTGRE_HOST": "${SERVICE_HOST}",
+      "POSTGRE_PORT": "${SERVICE_PORT}",
+      "POSTGRE_AUTH_USERNAME": "${SERVICE_AUTH_USERNAME}",
+      "POSTGRE_AUTH_PASSWORD": "${SERVICE_AUTH_PASSWORD}"
     },
     "healthcheck": {
       "type": "tcp",
