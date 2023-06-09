@@ -3,12 +3,12 @@ import {
   type ServiceConfig,
   type ServiceEvents,
   type SericeConfigFile,
+  ServiceStatus,
   Service,
 } from "./Service"
 import fs from "fs"
 import glob from "glob"
 import { Logger } from "./Logger"
-import { createWriteStream } from "fs"
 import { Writable } from "node:stream"
 import { getPortFree } from "./Utils"
 
@@ -16,6 +16,7 @@ const serviceManagerLog = "servicemanager.log"
 
 interface ServiceManagerEvents {
   sendServiceList: (serviceConfigList: Service[]) => void
+  sendGlobalEnv: (globalenv: { [key: string]: string }) => void
 }
 
 class ServiceManager {
@@ -49,7 +50,7 @@ class ServiceManager {
     this.#serviceManagerEvents = serviceManagerEvents
 
     this.#logWritablePath = path.join(logsDir, serviceManagerLog)
-    this.#logWritable = createWriteStream(this.#logWritablePath, {
+    this.#logWritable = fs.createWriteStream(this.#logWritablePath, {
       flags: "a",
       mode: 0o666,
       highWaterMark: 0,
@@ -96,6 +97,11 @@ class ServiceManager {
       this.#serviceManagerEvents.sendServiceList(this.#services)
     }
 
+    // send globalenv to app
+    if (this.#serviceManagerEvents.sendGlobalEnv) {
+      this.#serviceManagerEvents.sendGlobalEnv(this.#globalenv)
+    }
+
     if (restart) {
       await this.startAll()
     }
@@ -106,8 +112,15 @@ class ServiceManager {
   }
 
   #updateGlobalEnv() {
-    this.getGlobalEnv()
-    // for each service update globalenv
+    this.#globalenv = this.getGlobalEnv()
+    this.#pushGLobalEnvToServices()
+
+    if (this.#serviceManagerEvents.sendGlobalEnv) {
+      this.#serviceManagerEvents.sendGlobalEnv(this.#globalenv)
+    }
+  }
+
+  #pushGLobalEnvToServices() {
     this.#services.forEach((service: Service) => {
       service.setGlobalEnvironmentVariables(this.#globalenv)
     })
@@ -117,18 +130,35 @@ class ServiceManager {
   #loadServices() {
     this.#serviceConfigList.forEach((serviceConfig: ServiceConfig) => {
       // name, servicepath, servicesroot, servicetype, options
-      this.#services.push(
-        new Service(
-          this.#logsDir,
-          this.#logger,
-          serviceConfig.servicehome,
-          serviceConfig.servicepath,
-          serviceConfig.servicesdataroot,
-          serviceConfig.options,
-          this.#serviceEvents,
-          this
-        )
+      const service = new Service(
+        this.#logsDir,
+        this.#logger,
+        serviceConfig.servicehome,
+        serviceConfig.servicepath,
+        serviceConfig.servicesdataroot,
+        serviceConfig.options,
+        this.#serviceEvents,
+        this
       )
+
+      // service.on("status", (id: string, status: any) => {
+      //   // update global env
+      //   console.log("\n\n\nservice status", id, status)
+      //   if (
+      //     status == ServiceStatus.STARTED ||
+      //     status == ServiceStatus.COMPLETED
+      //   ) {
+      //     console.log("\n\n\nupdating env")
+      //     this.#updateGlobalEnv()
+      //   }
+      // })
+      service.on("globalEnv", (id: string, globalEnv: any) => {
+        // update global env
+        Object.assign(this.#globalenv, globalEnv)
+        this.#pushGLobalEnvToServices()
+      })
+
+      this.#services.push(service)
     })
   }
 

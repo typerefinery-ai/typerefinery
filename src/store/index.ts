@@ -61,6 +61,12 @@ const Queries = new VuexPersistence({
   reducer: (state: any) => ({ Queries: state.Queries }),
 })
 
+const GlobalEnv = new VuexPersistence({
+  key: "globalenv",
+  storage: window.localStorage,
+  reducer: (state: any) => ({ GlobalEnv: state.GlobalEnv }),
+})
+
 export default createStore({
   plugins: [
     // Algorithms.plugin,
@@ -73,5 +79,6 @@ export default createStore({
     Settings.plugin,
     Themes.plugin,
     Queries.plugin,
+    GlobalEnv.plugin,
   ],
 })

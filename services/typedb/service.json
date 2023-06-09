@@ -5,7 +5,7 @@
   "enabled": true,
   "status": "30",
   "icon": "pi pi-database",
-  "servicetype": 10,
+  "servicelocation": 10,
   "execconfig": {
     "execservice": { "id": "java" },
     "commandline": {

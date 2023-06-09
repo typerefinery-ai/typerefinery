@@ -1177,7 +1177,9 @@
     },
     "org.apache.sling.jcr.repoinit.RepositoryInitializer~repoinit2":    {
       "scripts":[
-        " create service user sling-adminall with path system/sling \n        set ACL for sling-adminall\n            allow   jcr:all    on /\n            allow   jcr:read,rep:write    on /content\n        end\n"
+        "# create admin service for content access\n create service user sling-adminall with path system/sling \n        set ACL for sling-adminall\n            allow   jcr:all    on /\n            allow   jcr:read,rep:write    on /content\n        end\n",
+        "# create admin group\ncreate group admins\nset ACL for admins\n    allow jcr:all on /\nend\n\n# content-package installer\ncreate user admin with password admin\nadd admin to group admins\n",
+        "# create normal users group\ncreate group contributors\nset ACL for contributors\n    allow jcr:read on /content\nend\n"
       ],
       ":configurator:feature-origins-scripts":[
         "ai.typerefinery.websight:typerefinery-distribution:slingosgifeature:typerefinery:1.0.0-SNAPSHOT"
@@ -1193,6 +1195,32 @@
         "Strict-Transport-Security=max-age=31536000"
       ],
       ":configurator:feature-origins-sling.additional.response.headers":[
+        "ai.typerefinery.websight:typerefinery-distribution:slingosgifeature:typerefinery:1.0.0-SNAPSHOT"
+      ],
+      ":configurator:feature-origins":[
+        "ai.typerefinery.websight:typerefinery-distribution:slingosgifeature:typerefinery:1.0.0-SNAPSHOT"
+      ]
+    },
+    "pl.ds.websight.publishing.connectors.filesystem.FileSystemStorageConnector~typerefinery":    {
+      "directory.path":"$[env:PUBLISH_DOCROOT;default=docroot]",
+      ":configurator:feature-origins-directory.path":[
+        "ai.typerefinery.websight:typerefinery-distribution:slingosgifeature:typerefinery:1.0.0-SNAPSHOT"
+      ],
+      ":configurator:feature-origins":[
+        "ai.typerefinery.websight:typerefinery-distribution:slingosgifeature:typerefinery:1.0.0-SNAPSHOT"
+      ]
+    },
+    "ai.typerefinery.websight.authentication.token.TokenAuthenticationHandler":    {
+      "login.page":"/apps/websight-authentication/login.html",
+      "cookie.name":"websight.auth",
+      "cookie.samesite":"none",
+      ":configurator:feature-origins-cookie.name":[
+        "ai.typerefinery.websight:typerefinery-distribution:slingosgifeature:typerefinery:1.0.0-SNAPSHOT"
+      ],
+      ":configurator:feature-origins-login.page":[
+        "ai.typerefinery.websight:typerefinery-distribution:slingosgifeature:typerefinery:1.0.0-SNAPSHOT"
+      ],
+      ":configurator:feature-origins-cookie.samesite":[
         "ai.typerefinery.websight:typerefinery-distribution:slingosgifeature:typerefinery:1.0.0-SNAPSHOT"
       ],
       ":configurator:feature-origins":[

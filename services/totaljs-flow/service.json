@@ -6,7 +6,7 @@
   "status": "30",
   "logoutput": "",
   "icon": "pi pi-globe",
-  "servicetype": 10,
+  "servicelocation": 10,
   "execconfig": {
     "execservice": { "id": "node" },
     "setup": {
@@ -21,7 +21,8 @@
       "FLOW_PORT": "${SERVICE_PORT}"
     },
     "env": {
-      "NODE_ENV": "development"
+      "NODE_ENV": "development",
+      "PATH": "${NODE_HOME}"
     },
     "commandline": {
       "win32": "${SERVICE_PATH}\\index.js",
@@ -38,8 +39,7 @@
     },
     "depend_on": [
       "node",
-      "totaljs-messageservice",
-      "fastapi"
+      "totaljs-messageservice"
     ]
   }
 }

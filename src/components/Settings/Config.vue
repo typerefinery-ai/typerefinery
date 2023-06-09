@@ -34,7 +34,7 @@
         <!-- <div><i class="pi pi-folder-open" ></i></div> -->
       </div>
     </div>
-    <div class="wrapper">
+    <div class="wrapper pt-3">
       <div class="text-wrapper">
         <p>{{ $t(`components.setting.config.data-path`) }}</p>
         <span
@@ -68,14 +68,41 @@
         <!-- <Button @click="openAppDataPathExplorer()">Go to</Button> -->
       </div>
     </div>
+    <div class="wrapper pt-3">
+      <div class="text-wrapper">
+        <h3>{{ $t(`components.setting.config.envvar`) }}</h3>
+      </div>
+      <div class="text-wrapper">
+        <p>{{ $t(`components.setting.config.envvarinfo`) }}</p>
+      </div>
+      <div class="text-wrapper">
+        <DataTable
+          :value="globalenv"
+          table-style="min-width: 25rem"
+          class="p-datatable-sm"
+        >
+          <Column field="id" header="Key"></Column>
+          <Column field="value" header="Value"></Column>
+        </DataTable>
+        <!-- <ul>
+          <li v-for="genv in globalenv" :key="genv.id">
+            {{ `${genv.id}` }}={{ `${genv.value}` }}
+          </li>
+        </ul> -->
+      </div>
+    </div>
   </div>
 </template>
 <script>
   import InputText from "primevue/inputtext"
+  import DataTable from "primevue/datatable"
+  import Column from "primevue/column"
   export default {
     name: "Config",
     components: {
       InputText,
+      DataTable,
+      Column,
     },
     data() {
       return {
@@ -83,6 +110,7 @@
         iconDataPath: "pi pi-copy",
         appDataPath: "",
         appInstalledPath: "",
+        globalenv: [],
       }
     },
     mounted() {
@@ -93,6 +121,17 @@
       })
       ipc.getAppDataPath().then((value) => {
         this.appDataPath = value
+      })
+      ipc.getGlobalEnv().then((value) => {
+        console.log("getGlobalEnv", value)
+        let globalenv = []
+        // for each entry in value object create a new line with key=value
+        Object.entries(value).forEach(([key, val]) => {
+          globalenv.push({ id: key, value: val })
+        })
+
+        console.log("getGlobalEnv value", globalenv)
+        this.globalenv = globalenv
       })
     },
     methods: {

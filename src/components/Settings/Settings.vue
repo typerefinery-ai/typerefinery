@@ -53,6 +53,7 @@
           :variant="'table'"
           :field="path.tabField"
         />
+        <!-- config tab -->
         <config v-if="selected == 'config'" :field="path.tabField" />
       </div>
     </div>
@@ -87,8 +88,8 @@
       path() {
         const path = settingsModule.data.settingPath?.split("/")
         return {
-          tab: path[0],
-          tabField: path[1],
+          tab: path[0], // used to navigate to a tab
+          tabField: path[1], // used to navigate to a field in the tab
         }
       },
     },

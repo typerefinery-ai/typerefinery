@@ -1,0 +1,73 @@
+{
+  "id": "traefik",
+  "name": "Traefik Service",
+  "description": "Traefik 2.10.1",
+  "enabled": true,
+  "status": "30",
+  "logoutput": "",
+  "icon": "pi pi-globe",
+  "servicelocation": 10,
+  "execconfig": {
+    "serviceorder": 3,
+    "serviceport": 8100,
+    "serviceconsoleport": 8100,
+    "portmapping": {
+      "HTTP": "9100",
+      "HTTPS": "9200",
+      "HTTPS_TRAEFIK": "9201",
+      "HTTPS_NGINX": "9210",
+      "HTTPS_CMS": "9220",
+      "HTTPS_FLOW": "9230",
+      "HTTPS_FLOWTMS": "9240",
+      "HTTPS_API": "9250",
+      "HTTPS_FILES": "9260",
+      "HTTPS_BPMN": "9270",
+      "TCP_MOGNO": "9310",
+      "TCP_TYPEDB": "8320"
+    },
+    "executable": {
+      "win32": "bin\\traefik.exe",
+      "darwin": "bin/traefik",
+      "linux": "bin/traefik",
+      "default": "bin\\traefik"
+    },
+    "globalenv": {
+      "TRAEFIK_HTTP_PORT": "${SERVICE_PORT}",
+      "TRAEFIK_HTTPS_PORT": "8101",
+      "TRAEFIK_MONGO_PORT": "8108",
+      "TRAEFIK_TYPEDB_PORT": "8109",
+      "TRAEFIK_INTERNAL_PORT": "8102",
+      "TRAEFIK_HOST_DOMAIN": "localhost.${CERT_DOMAIN}",
+      "TRAEFIK_HOST_DOMAIN_URL": "localhost.${CERT_DOMAIN}"
+    },
+    "commandline": {
+      "win32": " --log.level=DEBUG --providers.file.filename=${SERVICE_HOME}\\config\\dynamic\\dynamic.yml --api.insecure=true --api.dashboard=true --entryPoints.web.address=\":${TRAEFIK_HTTP_PORT}\" --entryPoints.websecure.address=\":${TRAEFIK_HTTPS_PORT}\" --entryPoints.traefik.address=\":${TRAEFIK_INTERNAL_PORT}\" --entryPoints.mongo.address=\":${TRAEFIK_MONGO_PORT}\" --entryPoints.typedb.address=\":${TRAEFIK_TYPEDB_PORT}\" --serversTransport.insecureSkipVerify=true",
+      "darwin": " --log.level=DEBUG --providers.file.filename=${SERVICE_HOME}/config/dynamic/dynamic.yml --api.insecure=true --api.dashboard=true --entryPoints.web.address=\":${TRAEFIK_HTTP_PORT}\" --entryPoints.websecure.address=\":${TRAEFIK_HTTPS_PORT}\" --entryPoints.traefik.address=\":${TRAEFIK_INTERNAL_PORT}\" --entryPoints.mongo.address=\":${TRAEFIK_MONGO_PORT}\" --entryPoints.typedb.address=\":${TRAEFIK_TYPEDB_PORT}\" --serversTransport.insecureSkipVerify=true",
+      "linux": " --log.level=DEBUG --providers.file.filename=${SERVICE_HOME}/config/dynamic/dynamic.yml --api.insecure=true --api.dashboard=true --entryPoints.web.address=\":${TRAEFIK_HTTP_PORT}\" --entryPoints.websecure.address=\":${TRAEFIK_HTTPS_PORT}\" --entryPoints.traefik.address=\":${TRAEFIK_INTERNAL_PORT}\" --entryPoints.mongo.address=\":${TRAEFIK_MONGO_PORT}\" --entryPoints.typedb.address=\":${TRAEFIK_TYPEDB_PORT}\" --serversTransport.insecureSkipVerify=true",
+      "default": " --log.level=DEBUG --providers.file.filename=${SERVICE_HOME}\\config\\dynamic\\dynamic.yml --api.insecure=true --api.dashboard=true --entryPoints.web.address=\":${TRAEFIK_HTTP_PORT}\" --entryPoints.websecure.address=\":${TRAEFIK_HTTPS_PORT}\" --entryPoints.traefik.address=\":${TRAEFIK_INTERNAL_PORT}\" --entryPoints.mongo.address=\":${TRAEFIK_MONGO_PORT}\" --entryPoints.typedb.address=\":${TRAEFIK_TYPEDB_PORT}\" --serversTransport.insecureSkipVerify=true"
+    },
+    "healthcheck": {
+      "type": "http",
+      "url": "http://127.0.0.1:${SERVICE_PORT}/dashboard",
+      "expected_status": 200,
+      "retries": 180
+    },
+    "depend_on": [
+      "localcert"
+    ],
+    "setuparchive": {
+      "win32": {
+        "name": "win32.zip",
+        "output": "win32"
+      },
+      "darwin": {
+        "name": "darwin.zip",
+        "output": "darwin"
+      },
+      "linux": {
+        "name": "linux.zip",
+        "output": "linux"
+      }
+    }
+  }
+}

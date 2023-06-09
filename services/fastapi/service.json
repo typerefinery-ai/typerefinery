@@ -5,14 +5,14 @@
   "enabled": true,
   "status": "-1",
   "icon": "pi pi-cog",
-  "servicetype": 10,
+  "servicelocation": 10,
   "execconfig": {
     "execservice": { "id": "python" },
     "setup": {
-      "win32": ["-m pip install --ignore-installed --target=${SERVICE_PATH}\\__packages__ -r ${SERVICE_PATH}\\requirements.txt"],
-      "darwin": ["-m pip install --ignore-installed --target=${SERVICE_PATH}/__packages__ -r ${SERVICE_PATH}/requirements.txt"],
-      "linux": ["-m pip install --ignore-installed --target=${SERVICE_PATH}/__packages__ -r ${SERVICE_PATH}/requirements.txt"],
-      "default": ["-m pip install --ignore-installed --target=${SERVICE_PATH}\\__packages__ -r ${SERVICE_PATH}\\requirements.txt"]
+      "win32": ["-m pip install --ignore-installed --use-pep517 \"parse (==1.19.0)\" --target=${SERVICE_PATH}\\__packages__ -r ${SERVICE_PATH}\\requirements.txt"],
+      "darwin": ["-m pip install --ignore-installed --use-pep517 \"parse (==1.19.0)\" --target=${SERVICE_PATH}/__packages__ -r ${SERVICE_PATH}/requirements.txt"],
+      "linux": ["-m pip install --ignore-installed --use-pep517 \"parse (==1.19.0)\" --target=${SERVICE_PATH}/__packages__ -r ${SERVICE_PATH}/requirements.txt"],
+      "default": ["-m pip install --ignore-installed --use-pep517 \"parse (==1.19.0)\" --target=${SERVICE_PATH}\\__packages__ -r ${SERVICE_PATH}\\requirements.txt"]
     },
     "env": {
       "PYTHONPATH": "${SERVICE_PATH}"
@@ -32,9 +32,7 @@
       "retries": 180
     },
     "depend_on": [
-      "python",
-      "totaljs-flow",
-      "totaljs-messageservice"
+      "python"
     ]
   }
 }

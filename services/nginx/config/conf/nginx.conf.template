@@ -38,6 +38,15 @@ http {
         listen       ${SERVICE_PORT};
         index        Homepage.html;
 
+        error_page  401    /_errors_/401.html;
+        error_page  403    /_errors_/403.html;
+        error_page  404    /_errors_/404.html;
+        error_page  418    /_errors_/418.html;
+        error_page  500 504 505 506 507 508  /_errors_/500.html;
+        error_page  501    /_errors_/501.html;
+        error_page  502    /_errors_/502.html;
+        error_page  503    /_errors_/503.html;
+
         location /health {
             access_log off;
             add_header  Content-Type    text/html;
@@ -58,6 +67,10 @@ http {
 
         location / {
             root   ${CMS_CACHE_PATH_ESC};
+        }
+
+        location ~ ^/_errors_/(.*)$ {
+          alias ${SERVICE_HOME_ESC}/config/html/_errors_/$1;
         }
 
     }

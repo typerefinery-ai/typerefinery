@@ -65,6 +65,17 @@
         "label": "Label",
         "icon": "Icon",
         "url": "Url",
+        "urlformatted": "Url Fromatted",
+        "iframeconfig": {
+          "title": "Embed Config",
+          "name": "Name",
+          "referrerpolicy": "Referrer Policy",
+          "sandbox": "Sandbox",
+          "allowfullscreen": "Allow Full Screen",
+          "allowpaymentrequest": "Allow Payment Request",
+          "allowpopups": "Allow Popups",
+          "allow": "Allow"
+        },
         "service": "Services",
         "placeholder": "Select the service",
         "buttons": {
@@ -75,7 +86,9 @@
       },
       "config": {
         "app-path": "App Path",
-        "data-path": "App Data Path"
+        "data-path": "App Data Path",
+        "envvar": "Environment Variables",
+        "envvarinfo": "These environment variables can be used in Experience URL's."
       }
     },
     "chat": {
@@ -370,6 +383,33 @@
     },
     "theme": {
       "theme": "Theme"
+    },
+    "serviceinstallation": {
+      "tabs": {
+        "welcome": {
+          "title": "Welcome",
+          "heading": "Welcome to Typerefinery.io",
+          "intro": "We are building next generation Experience for Knowledge Graphs.",
+          "note": "Required services are being installed, you will have access to the app after the installation is complete."
+        },
+        "services": {
+          "title": "Services",
+          "subtitle": "Installing services...",
+          "ready": "Required Services installed",
+          "heading": "Installing Services",
+          "loadingtitle": "Services are installing and starting. This may take a few minutes.",
+          "readytitle": "Services are installed and running.",
+          "skiptitle": "Now you can jump to the dashboard.",
+          "lastupdatedfieldtitle": "Last fetched:",
+          "tabletitle": "Services"
+        },
+        "documentation": {
+          "title": "Documentation"
+        },
+        "done": {
+          "title": "Read to Roll, jump to the app"
+        }
+      }
     }
   },
   "tooltips": {

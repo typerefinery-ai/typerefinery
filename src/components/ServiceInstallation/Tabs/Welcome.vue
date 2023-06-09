@@ -3,14 +3,13 @@
     <div class="welcome">
       <img src="/assets/logo.png" alt="logo" width="300" height="300" />
       <h2 class="text-blue-900 text-3xl mb-3 mt-2">
-        Welcome to Typerefinery.io
+        {{ $t(`components.serviceinstallation.tabs.welcome.heading`) }}
       </h2>
       <p class="text-black text-xl">
-        We are building next generation Experience for Knowledge Graphs.
+        {{ $t(`components.serviceinstallation.tabs.welcome.intro`) }}
       </p>
       <p class="text-black text-lg mt-2">
-        Required services are being installed, you will have access to the app
-        after the installation is complete.
+        {{ $t(`components.serviceinstallation.tabs.welcome.note`) }}
         <!-- <i class="pi pi-spin pi-spinner" style="font-size: 1rem"></i> -->
       </p>
       <p class="mt-5 text-base text-500" v-if="isInitialTime == 'true'">

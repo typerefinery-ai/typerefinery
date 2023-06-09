@@ -66,6 +66,7 @@ export const sharedAppIpc = {
   stopAll: new IPCMethod<[], any[]>("stopAll"),
   getAppPath: new IPCMethod<[string], any[]>("getAppPath"),
   getAppDataPath: new IPCMethod<[string], any[]>("getAppDataPath"),
+  getGlobalEnv: new IPCMethod<[], any[]>("getGlobalEnv"),
 }
 
 export type AppIPC = {

@@ -1,0 +1,173 @@
+
+http:
+  routers:
+    nginx:
+      rule: Host(`nginx.localhost`)
+      # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/nginx`) ) || Host(`nginx.localhost`)
+      service: nginx
+      entrypoints:
+        - web
+        - websecure
+    flow:
+      rule: Host(`flow.localhost`)
+      # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/flow`) ) || Host(`flow.localhost`)
+      service: flow
+      entrypoints:
+        - web
+        - websecure
+
+    traefikdashboard:
+      rule: Host(`traefik.localhost`)
+      service: api@internal
+      entrypoints: web
+      middlewares:
+        - error-pages
+
+    error-router:
+      rule: HostRegexp(`{host:.+}`)
+      priority: 1
+      entryPoints:
+        - web
+        - websecure
+      service: noop@internal
+      middlewares:
+        - error-pages
+
+    # http-catchall:
+    #   rule: "HostRegexp(`{host:.+}`)"
+    #   entryPoints:
+    #     - web
+    #   service: noop@internal
+
+    cms:
+      rule: Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`)
+      # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/cms`) ) || Host(`cms.localhost`)
+      # rule: "Host(`cms.user.typerefinery.ai`)"
+      entryPoints:
+        - web
+        - websecure
+      service: cms
+      tls: true
+      middlewares:
+        - stripprefix-cms
+        # - replacepath-cms
+        - error-pages
+
+  middlewares:
+    default:
+      chain:
+        middlewares:
+          # - redirect-to-https
+          - error-pages
+
+    error-pages:
+      errors:
+        query: "/_errors_/{status}.html"
+        service: nginx
+        status:
+          - "400-599"
+          # - "403-404"
+          # - "500"
+          # - "503"
+
+    # Redirect to https
+    redirect-to-https:
+      redirectScheme:
+        scheme: https
+        permanent: true
+
+    replacepath-cms:
+      replacePath:
+        path: "/cms"
+
+    stripprefix-cms:
+      stripPrefix:
+        prefixes:
+          - "/cms"
+
+    stripprefix-flow:
+      stripPrefix:
+        prefixes:
+          - "/flow"
+
+    stripprefix-nginx:
+      stripPrefix:
+        prefixes:
+          - "/nginx"
+
+    stripprefix-traefik:
+      stripPrefix:
+        prefixes:
+          - "/traefik"
+
+    # CMS Authentication
+    cms-auth:
+      forwardAuth:
+        address: '{{ env "CMS_URL_AUTH" }}'
+        trustForwardHeader: true
+        authResponseHeaders:
+          - "Websight-Token"
+        authRequestHeaders:
+          - "Websight-Token"
+
+  services:
+    cms:
+      loadBalancer:
+        passHostHeader: true
+        servers:
+          - url: '{{ env "CMS_URL" }}'
+    fastapi:
+      loadBalancer:
+        passHostHeader: true
+        servers:
+          - url: '{{ env "API_URL" }}'
+    flow:
+      loadBalancer:
+        passHostHeader: true
+        servers:
+          - url: '{{ env "FLOW_HOST_URL" }}'
+    tms:
+      loadBalancer:
+        passHostHeader: true
+        servers:
+          - url: '{{ env "MESSAGESERVICE_URL" }}'
+
+    nginx:
+      loadBalancer:
+        passHostHeader: true
+        servers:
+          - url: '{{ env "NGINX_URL" }}'
+
+tcp:
+  services:
+    mongo:
+      loadBalancer:
+        servers:
+          - port: '{{ env "MONGO_PORT" }}'
+    typedb:
+      loadBalancer:
+        servers:
+          - port: '{{ env "TYPEDB_PORT" }}'
+
+  routers:
+    mongo:
+      rule: HostSNI(`*`)
+      entrypoints: mongo
+      service: mongo
+      middlewares: tcp-localhost-ip-whitelist
+    typedb:
+      rule: HostSNI(`*`)
+      entrypoints: typedb
+      service: typedb
+      middlewares: tcp-localhost-ip-whitelist
+
+  middlewares:
+    tcp-localhost-ip-whitelist:
+      ipwhitelist:
+        sourcerange: 127.0.0.0/1
+
+
+tls:
+  certificates:
+    - certFile: {{env "CERT_FILE"}}
+      keyFile: {{env "CERT_KEY"}}

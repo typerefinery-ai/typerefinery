@@ -30,7 +30,11 @@
             <label for="username">
               {{ slotProps.item.label }}
             </label>
-            <div v-if="slotProps.item.id === 'project'">
+            <div
+              v-if="
+                slotProps.item.id === 'project' || slotProps.item.id === 'none'
+              "
+            >
               <div>
                 <p class="text-black">Service not required</p>
               </div>
@@ -127,9 +131,16 @@
       this.listOfServices = await servicesModule.getServices()
     },
     methods: {
+      //FIXME: this should be named something more approprioate as it used to hide component
       fetchlastestServiceWithExperience(experienceId, serviceId) {
+        // dont view toggle switch for following experiences as they are default
         if (experienceId == "project") {
           return false
+        }
+
+        // show view toggle switch for any experience that do not have a service
+        if (serviceId == "none" || serviceId == "") {
+          return true
         }
 
         const services = this.listOfServices
@@ -157,7 +168,7 @@
       //fetching latest list of experience from vue store
       fetchingLatestExperience() {
         this.listOfExperiences = JSON.parse(
-          JSON.stringify(settingsModule.data.listOfMenu)
+          JSON.stringify(settingsModule.data.listOfMenu) //HACK FIXME: need to rename listOfMenu to listOfExperience
         )
         // .filter((el) => el.type === "experimental")
         // this.serviceBasedUrl = JSON.parse(

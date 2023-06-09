@@ -38,6 +38,16 @@ FlowUtils = FlowUtils()
 sqlite_file_name = os.path.join(CONFIG.APP_USER_DATA_LOCATION, "database.db")
 sqlite_url = f"sqlite:///{sqlite_file_name}"
 
+# check if database file exists and if not create the path and sqlite file
+if not os.path.exists(sqlite_file_name):
+  # check if path exists
+  if not os.path.exists(CONFIG.APP_USER_DATA_LOCATION):
+    Logger.info(f"database path does not exist, creating: {CONFIG.APP_USER_DATA_LOCATION}")
+    os.makedirs(CONFIG.APP_USER_DATA_LOCATION)
+    # create sqlite file
+    Logger.info(f"creating database: {sqlite_file_name}")
+    open(sqlite_file_name, 'a').close()
+
 connect_args = {"check_same_thread": False}
 engine = create_engine(sqlite_url, echo=True, connect_args=connect_args)
 
@@ -68,13 +78,13 @@ async def read_projects():
   return ProjectUtils.read_projects(engine=engine)
 
 # @Logger.catch
-# @router.get("/datastore/projects") 
-# async def read_projects(): 
-#   return ProjectUtils.read_projects(engine=engine) 
+# @router.get("/datastore/projects")
+# async def read_projects():
+#   return ProjectUtils.read_projects(engine=engine)
 
 @Logger.catch
-@router.get("/datastore/projects/cms") 
-async def read_projects(): 
+@router.get("/datastore/projects/cms")
+async def read_projects():
   return {
    "columns":[
       {
@@ -137,7 +147,7 @@ async def read_connections():
   return ConnectionUtils.read_connections(engine=engine)
 
 @Logger.catch
-@router.get("/datastore/connectios/cms") 
+@router.get("/datastore/connectios/cms")
 async def connection_list():
   return {
    "columns":[
@@ -213,7 +223,7 @@ async def read_querys():
   return QueryUtils.read_querys(engine=engine)
 
 @Logger.catch
-@router.get("/datastore/queries/cms") 
+@router.get("/datastore/queries/cms")
 async def query_list():
   return {
     "columns":[
@@ -288,7 +298,7 @@ async def read_themes():
   return ThemeUtils.read_themes(engine=engine)
 
 @Logger.catch
-@router.get("/datastore/themes/cms") 
+@router.get("/datastore/themes/cms")
 async def theme_list():
   return {
     "columns":[
@@ -328,7 +338,7 @@ async def theme_list():
          "field":"data",
          "title":"Data"
       }
-      
+
    ],
    "data": ThemeUtils.read_themes(engine=engine)
 

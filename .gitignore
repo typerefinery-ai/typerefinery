@@ -41,3 +41,6 @@ lerna-debug.log*
 
 #Intellij
 *.iml
+
+# ignore electon status file.
+installed.txt

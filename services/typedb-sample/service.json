@@ -5,7 +5,8 @@
   "enabled": true,
   "status": "-1",
   "icon": "pi pi-cog",
-  "servicetype": 10,
+  "servicetype": 50,
+  "servicelocation": 10,
   "execconfig": {
     "execservice": { "id": "python" },
     "setup": {
@@ -28,6 +29,9 @@
     },
     "commandline": {
       "default": ""
+    },
+    "env": {
+      "LOGURU_LEVEL": "INFO"
     },
     "depend_on": [
       "typedb"

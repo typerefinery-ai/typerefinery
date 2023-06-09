@@ -12,7 +12,7 @@ Param(
   [string]$SERVER_HOME = ( Join-Path "${PWD}" "${SERVICE_NAME}"),
   [string]$SERVER_REQUIREMENTS = ( Join-Path "${SERVER_HOME}" "${OS}" "requirements.txt" ),
   [string]$PYTHONPACKAGES = ( Join-Path "${SERVER_HOME}" "${OS}" "__packages__" ),
-  [string]$SCRIPS_PATH = ( Join-Path "${SERVER_HOME}" "scripts" ),
+  [string]$SCRIPS_PATH = ( Join-Path "${SERVER_HOME}" "${OS}" "Scripts" ),
   [string]$TYPEDB_HOST = "localhost",
   [string]$TYPEDB_DB = "typerefinery",
   [string]$TYPEDB_PORT = 8129,
@@ -33,10 +33,11 @@ Function PrintInfo
   printSectionLine "PYTHON: ${PYTHON}"
   printSectionLine "PYTHON_HOME: ${PYTHON_HOME}"
   printSectionLine "SERVER_HOME: ${SERVER_HOME}"
-  printSectionLine "PATH: ${PATH}"
+  printSectionLine "PATH: ${env:PATH}"
   printSectionLine "PYTHONPACKAGES: ${PYTHONPACKAGES}"
   printSectionLine "PYTHONPATH: ${PYTHONPATH}"
   printSectionLine "SERVER_REQUIREMENTS: ${SERVER_REQUIREMENTS}"
+  printSectionLine "SCRIPS_PATH: ${SCRIPS_PATH}"
 
   printSectionLine "PYTHONHOME: ${env:PYTHONHOME}"
   printSectionLine "PYTHONPATH: ${env:PYTHONPATH}"
@@ -50,18 +51,20 @@ Function StartSetup
 {
   Set-Location -Path "${PYTHON_HOME}"
   try {
-    which python
+    # which python
     if ( $IsWindows ) {
       Invoke-Expression -Command "${PYTHON} get-pip.py"
+      Invoke-Expression -Command "${PYTHON} -m pip install --use-pep517 ""parse (==1.19.0)"" --ignore-installed --no-warn-script-location -r ${SERVER_REQUIREMENTS}"
+    } else {
+      Invoke-Expression -Command "${PYTHON} -m pip install --use-pep517 ""parse (==1.19.0)"" --ignore-installed --no-warn-script-location -r ${SERVER_REQUIREMENTS}"
     }
-    Invoke-Expression -Command "${PYTHON} -m pip install --ignore-installed --no-warn-script-location -r ${SERVER_REQUIREMENTS}"
   } finally {
     Set-Location -Path "${CURRENT_PATH}"
   }
 }
 
 # SetPath "${PYTHON_HOME}"
-SetEnvPath "PATH" "${PYTHON_PATH}"
+SetEnvPath "PATH" "${PYTHON_PATH}" "${SCRIPS_PATH}"
 
 SetEnvPath "PYTHONPATH" "${PYTHON_HOME}"
 SetEnvPath "PYTHONHOME" "${PYTHON_HOME}"

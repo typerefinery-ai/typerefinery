@@ -19,7 +19,6 @@
   import Project from "@/components/Project"
   import * as electronHelpers from "@/utils/electron"
   import Toast from "primevue/toast"
-  import Loader from "@/components/Loader"
   import Settings from "@/components/Settings/Settings.vue"
   import ServiceInstallation from "@/components/ServiceInstallation/ServiceInstallation.vue"
   import SettingsStore from "@/store/Modules/Settings"
@@ -30,7 +29,7 @@
   const appDataModule = getModule(AppDataStore)
   export default {
     name: "Home",
-    components: { Project, Settings, Loader, Toast, ServiceInstallation },
+    components: { Project, Settings, Toast, ServiceInstallation },
     data() {
       return {
         moveToDashboard: false,
@@ -55,6 +54,10 @@
       // get all the services
       async getServices() {
         return await servicesModule.getServices()
+      },
+      // get all the services
+      async getGlobalEnv() {
+        return await servicesModule.getGlobalEnv()
       },
       updateMoveToDashboard() {
         this.moveToDashboard = true

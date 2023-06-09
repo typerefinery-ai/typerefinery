@@ -1,1 +1,1 @@
-npm run services
+Invoke-Expression -Command "npm run services"

@@ -33,18 +33,19 @@ console.log("api ipc")
 
 contextBridge.exposeInMainWorld("api", {
   request: (channel: string, data: object) => {
-    console.log("request", channel, data)
+    console.log("api request", channel, data)
     ipcRenderer.send(channel, data)
   },
   response: (channel: string, func: (data: object) => void) => {
-    console.log("response", channel)
+    console.log("api response", channel, func)
     // Strip event as it includes `sender` and is a security risk
     ipcRenderer.on(channel, (event, data) => func(data))
+    // ipcRenderer.on(channel, (data) => func(data))
   },
 })
 
 console.log([
-  "a ipc",
+  "ipc exposed",
   Object.fromEntries(
     Object.entries(sharedAppIpc).map(([channel, method]) => {
       return [channel, method.call.bind(method)]

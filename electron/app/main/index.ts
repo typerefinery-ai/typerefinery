@@ -49,6 +49,9 @@ if (getEnvConfigWithDefault("CRASH_REPORTER_SUBMIT_URL")) {
 
 let logsDir = dataPath("logs")
 
+// tarack when the main window is closing
+let mainWindowClosing = false
+
 // create a new logs sub directory with date timestamp everytime the app starts
 const date = new Date()
 const dateStr = date
@@ -172,8 +175,16 @@ const serviceManager = new ServiceManager(
   },
   {
     sendServiceList,
+    sendGlobalEnv,
   }
 )
+
+function sendGlobalEnv(globalenv: { [key: string]: string }) {
+  if (mainWindow && mainWindow.webContents) {
+    mainWindow.webContents.send("sendGlobalEnv", globalenv)
+    logger.log("sendGlobalEnv", globalenv)
+  }
+}
 
 function sendServiceList(serviceConfigList: Service[]) {
   logger.log(
@@ -182,9 +193,24 @@ function sendServiceList(serviceConfigList: Service[]) {
 }
 
 function sendServiceStatus(id: string, output: string) {
-  if (mainWindow && mainWindow.webContents) {
-    mainWindow.webContents.send("sendServiceStatus", { id, output })
-    logger.log("sendServiceStatus", id, output)
+  // dont run this if the app is closing
+  logger.log("sendServiceStatus index", id, output)
+  if (
+    !mainWindowClosing &&
+    mainWindow &&
+    !mainWindow.isDestroyed() &&
+    mainWindow.webContents &&
+    !mainWindow.webContents.isDestroyed()
+  ) {
+    try {
+      mainWindow.webContents.send("sendServiceStatus", { id, output })
+      logger.log("sendServiceStatus", id, output)
+    } catch (e) {
+      logger.log(
+        "sendServiceStatus could not send event to mainWindow.webContents, error",
+        e
+      )
+    }
   }
 }
 
@@ -222,6 +248,21 @@ async function createWindow() {
   addIpcEvents(mainWindow)
 
   logger.log(`app.isPackaged: ${app.isPackaged}`)
+
+  //disable X-Frame-Options when frame name is disable-x-frame-options
+  mainWindow.webContents.session.webRequest.onHeadersReceived(
+    { urls: ["*://*/*"] },
+    (details, callback) => {
+      if (details && details.responseHeaders) {
+        if (details.responseHeaders["X-Frame-Options"]) {
+          delete details.responseHeaders["X-Frame-Options"]
+        } else if (details.responseHeaders["x-frame-options"]) {
+          delete details.responseHeaders["x-frame-options"]
+        }
+      }
+      callback({ cancel: false, responseHeaders: details.responseHeaders })
+    }
+  )
 
   // logger.log(`isDev: ${isDev}`)
   // // Open the DevTools.
@@ -296,6 +337,7 @@ app.whenReady().then(() => {
   })
 
   mainWindow.on("close", function (e) {
+    mainWindowClosing = true
     logger.log("mainWindow.on close")
     const choice = dialog.showMessageBoxSync(mainWindow, {
       type: "question",
@@ -484,6 +526,10 @@ function addIpcEvents(window: BrowserWindow) {
     stopAll(): any {
       logger.log(`ipc stopAll`)
       serviceManager.stopAll()
+    },
+    getGlobalEnv(): any {
+      logger.log(`ipc getGlobalEnv`)
+      return serviceManager.getGlobalEnv()
     },
   }
 

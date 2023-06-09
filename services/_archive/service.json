@@ -6,7 +6,8 @@
   "status": "30",
   "logoutput": "",
   "icon": "pi pi-globe",
-  "servicetype": 10,
+  "servicetype": 50,
+  "servicelocation": 10,
   "execconfig": {
     "serviceorder": 1,
     "executable": {

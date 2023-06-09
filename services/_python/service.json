@@ -6,7 +6,8 @@
   "status": "-1",
   "logoutput": "",
   "icon": "pi pi-cog",
-  "servicetype": 10,
+  "servicetype": 50,
+  "servicelocation": 10,
   "execconfig": {
     "serviceorder": 1,
     "executable": {
@@ -18,21 +19,26 @@
     "setup": {
       "win32": [
         "get-pip.py --no-warn-script-location",
-        "-m pip install --ignore-installed --no-warn-script-location -r ${SERVICE_PATH}\\requirements.txt"
+        "-m pip install --ignore-installed --no-warn-script-location --use-pep517 \"parse (==1.19.0)\"  -r ${SERVICE_HOME}\\win32\\requirements.txt"
       ],
       "darwin": [
-        "-m pip install --ignore-installed --no-warn-script-location -r ${SERVICE_PATH}/requirements.txt"
+        "-m pip install --ignore-installed --no-warn-script-location --use-pep517 \"parse (==1.19.0)\" -r ${SERVICE_HOME}/darwin/requirements.txt"
       ],
       "linux": [
-        "-m pip install --ignore-installed --no-warn-script-location -r ${SERVICE_PATH}/requirements.txt"
+        "-m pip install --ignore-installed --no-warn-script-location --use-pep517 \"parse (==1.19.0)\" -r ${SERVICE_HOME}/linux/requirements.txt"
       ],
       "default": [
         "get-pip.py --no-warn-script-location",
-        "-m pip install --ignore-installed --no-warn-script-location -r ${SERVICE_PATH}\\requirements.txt"
+        "-m pip install --ignore-installed --no-warn-script-location --use-pep517 \"parse (==1.19.0)\" -r ${SERVICE_HOME}\\win32\\requirements.txt"
       ]
     },
+    "env": {
+      "PATH": "${SERVICE_EXECUTABLE_HOME}",
+      "PYTHON_HOME": "${SERVICE_EXECUTABLE_HOME}"
+    },
     "globalenv": {
-      "PYTHON": "${SERVICE_EXECUTABLE}"
+      "PYTHON": "${SERVICE_EXECUTABLE}",
+      "PYTHON_HOME": "${SERVICE_EXECUTABLE_HOME}"
     }
   }
 }
