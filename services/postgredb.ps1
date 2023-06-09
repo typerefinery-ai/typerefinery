@@ -14,7 +14,7 @@ Param(
   [string]$SERVICE_DBINIT = "-D ${SERVICE_DATA_PATH} -U ${SERVICE_AUTH_USERNAME} --pwfile=${SERVICE_HOME}/config/default.password.txt",
   [string]$SERVICE_PLATFORM_ARCHIVE = "${OS}.zip",
   [string]$SERVICE_PLATFORM_HOME = "${OS}",
-  [string]$SERVICE_PORT = "8500",
+  [string]$SERVICE_PORT = 8500,
   [string]$SERVICE_HOST = "localhost",
   [string]$ARCHIVE_HOME = ( Join-Path "${PWD}" "_archive"),
   [string]$ARCHIVE_PROGRAM = ( $IsWindows ? "7za.exe" : "7zz" ),
