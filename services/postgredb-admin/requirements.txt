@@ -1,0 +1,7 @@
+pgadmin4
+loguru
+python-multipart
+uvicorn[standard]
+argparse
+pydantic
+Flask

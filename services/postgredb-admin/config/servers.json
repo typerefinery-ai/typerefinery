@@ -1,0 +1,14 @@
+{
+  "Servers": {
+      "1": {
+          "Name": "Typerefinery",
+          "Group": "Typerefinery",
+          "Port": 8500,
+          "Username": "postgres",
+          "Host": "localhost",
+          "SSLMode": "prefer",
+          "MaintenanceDB": "postgres",
+          "Service": "typerefinery-postgresql"
+      }
+    }
+}

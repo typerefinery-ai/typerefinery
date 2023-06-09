@@ -1,0 +1,6 @@
+
+# service specific folders
+__pycache__
+__packages__
+data/*
+!data/.gitkeep
