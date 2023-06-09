@@ -1,0 +1,8 @@
+
+database/*
+!database/.gitkeep
+**/bin/
+**/doc/
+**/include/
+**/lib/
+**/share/

@@ -1,0 +1,77 @@
+{
+  "id": "postgredb",
+  "name": "PostgreDB",
+  "description": "PostgreDB instance for data storage.",
+  "enabled": true,
+  "status": "-1",
+  "logoutput": "",
+  "icon": "pi pi-cog",
+  "servicetype": 10,
+  "execconfig": {
+    "serviceorder": 10,
+    "serviceport": 8500,
+    "authentication": {
+      "username": "pgadmin",
+      "password": "pgadmin"
+    },
+    "setuparchive": {
+      "win32": {
+        "name": "win32.zip",
+        "output": "win32"
+      },
+      "darwin": {
+        "name": "darwin.zip",
+        "output": "darwin"
+      },
+      "linux": {
+        "name": "linux.zip",
+        "output": "linux"
+      }
+    },
+    "setup": {
+      "win32": [
+        "; echo ${SERVICE_AUTH_PASSWORD}>${SERVICE_HOME}\\config\\default.password.txt",
+        "; ${SERVICE_EXECUTABLE_HOME}\\initdb -D ${SERVICE_DATA_PATH} -U ${SERVICE_AUTH_USERNAME} --pwfile=${SERVICE_HOME}\\config\\default.password.txt"
+      ],
+      "darwin": [
+        "; echo ${SERVICE_AUTH_PASSWORD}>${SERVICE_HOME}/config/default.password.txt",
+        "; ${SERVICE_EXECUTABLE_HOME}/initdb -D ${SERVICE_DATA_PATH} -U ${SERVICE_AUTH_USERNAME} --pwfile=${SERVICE_HOME}/config/default.password.txt"
+      ],
+      "linux": [
+        "; echo ${SERVICE_AUTH_PASSWORD}>${SERVICE_HOME}/config/default.password.txt",
+        "; ${SERVICE_EXECUTABLE_HOME}/initdb -D ${SERVICE_DATA_PATH} -U ${SERVICE_AUTH_USERNAME} --pwfile=${SERVICE_HOME}/config/default.password.txt"
+      ],
+      "default": [
+        "; echo ${SERVICE_AUTH_PASSWORD}>${SERVICE_HOME}\\config\\default.password.txt",
+        "; ${SERVICE_EXECUTABLE_HOME}\\initdb -D ${SERVICE_DATA_PATH} -U ${SERVICE_AUTH_USERNAME} --pwfile=${SERVICE_HOME}\\config\\default.password.txt"
+      ]
+    },
+    "executable": {
+      "win32": "bin\\postgres.exe",
+      "darwin": "bin/postgres",
+      "linux": "bin/postgres",
+      "default": "bin\\postgres.exe"
+    },
+    "executablecli": {
+      "win32": "win32\\bin\\psql.exe",
+      "darwin": "darwin/bin/psql",
+      "linux": "linux/bin/psql",
+      "default": "win32\\bin\\psql.exe"
+    },
+    "datapath": "database/db",
+    "commandline": {
+      "win32": "-D ${SERVICE_DATA_PATH} -h ${SERVICE_HOST} -p ${SERVICE_PORT}",
+      "darwin": "-D ${SERVICE_DATA_PATH} -h ${SERVICE_HOST} -p ${SERVICE_PORT}",
+      "linux": "-D ${SERVICE_DATA_PATH} -h ${SERVICE_HOST} -p ${SERVICE_PORT}",
+      "default": "-D ${SERVICE_DATA_PATH} -h ${SERVICE_HOST} -p ${SERVICE_PORT}"
+    },
+    "globalenv": {
+      "POSTGREDB_HOST": "${SERVICE_HOST}",
+      "POSTGREDB_PORT": "${SERVICE_PORT}"
+    },
+    "healthcheck": {
+      "type": "tcp",
+      "retries": 30
+    }
+  }
+}
