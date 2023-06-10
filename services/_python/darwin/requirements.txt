@@ -5,3 +5,4 @@ argparse
 loguru
 websocket-client
 grpcio==1.44.0
+flask
