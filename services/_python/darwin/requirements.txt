@@ -4,4 +4,4 @@ typedb-client
 argparse
 loguru
 websocket-client
-grpcio
+grpcio==1.44.0
