@@ -487,6 +487,12 @@ export class Service extends EventEmitter<ServiceEvent> {
     // for each environment variable in environmentVariables
     // replace ${ENV_VAR} with the value of the environment variable
     // if this.#serviceManager.globalEnv is not empty
+
+    // if command a null or undefined return empty string or its a number or it does not contain ${ return empty string
+    if (!this.isStringHasVariables(command)) {
+      return command
+    }
+
     for (const [key, value] of Object.entries(this.#serviceManager.globalEnv)) {
       command = command.replaceAll(`\${${key}}`, value)
     }
@@ -540,6 +546,10 @@ export class Service extends EventEmitter<ServiceEvent> {
     return this.#processEnv || {}
   }
 
+  isStringHasVariables(str: any): boolean {
+    return str && typeof str === "string" && str.indexOf("${") > -1
+  }
+
   compileEnvironmentVariables(args: { [key: string]: string } = {}): any {
     const envVar = {}
     // add this.environmentVariables into envVar
@@ -555,7 +565,7 @@ export class Service extends EventEmitter<ServiceEvent> {
 
     // update vars if they contain ${}
     for (const [key, value] of Object.entries(this.#processEnv)) {
-      if (value.includes("${")) {
+      if (this.isStringHasVariables(value)) {
         // replace possible variables in value
         this.#processEnv[key] = this.#getServiceCommand(value, this)
       }
