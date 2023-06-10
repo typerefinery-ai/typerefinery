@@ -27,14 +27,17 @@
       ]
     },
     "env": {
+      "PYTHONPATH": "${SERVICE_PATH}/__packages__",
       "DATA_DIR": "${SERVICE_DATA_PATH}",
-      "PYTHONPATH": "${PYTHON_HOME}",
-      "PATH": "${SERVICE_PATH}/__packages__"
+      "PGADMIN_SERVER_MODE": "OFF",
+      "PGADMIN_INT_PORT": "${SERVICE_PORT}",
+      "CONSOLE_LOG_LEVEL": "INFO",
+      "FILE_LOG_LEVEL": "INFO"
     },
     "datapath": "data",
     "globalenv": {
-      "API_URL": "http://localhost:${SERVICE_PORT}",
-      "API_PORT": "${SERVICE_PORT}"
+      "PGADMIN_URL": "http://localhost:${SERVICE_PORT}",
+      "PGADMIN_PORT": "${SERVICE_PORT}"
     },
     "commandline": {
       "win32": "${SERVICE_PATH}\\__packages__\\pgadmin4\\pgadmin4.py",

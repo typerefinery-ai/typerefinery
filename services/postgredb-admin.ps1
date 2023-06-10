@@ -15,12 +15,18 @@ Param(
   [string]$SERVICE_DATA_PATH = ( Join-Path "${PWD}" "${SERVICE_NAME}" "data"),
   [string]$PYTHONPACKAGES = ( Join-Path "${SERVER_HOME}" "__packages__" ),
   [string]$SCRIPS_PATH = ( Join-Path "${SERVER_HOME}" "scripts" ),
+  [string]$SERVICE_HOST = "localhost",
+  [string]$SERVICE_PORT = 8510,
   [string]$SERVICE_AUTH_USERNAME = "pgadmin@typerefinery.ai",
   [string]$SERVICE_AUTH_PASSWORD = "pgadmin",
   [string]$POSTGRE_AUTH_USERNAME = "pgadmin",
   [string]$POSTGRE_AUTH_PASSWORD = "pgadmin",
   [string]$POSTGRE_HOST = "localhost",
   [string]$POSTGRE_PORT = 8500,
+  [string]$GUNICORN_LIMIT_REQUEST_LINE = 8190,
+  [string]$GUNICORN_TIMEOUT = 300,
+  [string]$GUNICORN_ACCESS_LOGFILE = "-",
+  [string]$GUNICORN_THREADS = 25,
   [switch]$RUNSCRIPTBASIC = $false,
   [switch]$RUNSCRIPTGROUP = $false,
   [switch]$SAMPLE = $false,
@@ -61,7 +67,6 @@ Function StartServer
   Set-Location -Path "${SERVER_HOME}"
   printSectionLine "Starting ${SERVICE_NAME} service in ${PWD}"
   try {
-    # & Invoke-Expression -Command "${PYTHON} -m uvicorn --app-dir ""${SERVER_HOME}"" main:app"
     & Invoke-Expression -Command "${PYTHON} ${SERVICE_BIN}"
   } finally {
     Set-Location -Path "${CURRENT_PATH}"
@@ -88,19 +93,10 @@ SetEnvPath "PATH" "${PYTHON_PATH}" "${PYTHON_PATH_SCRIPTS}"
 
 SetEnvPath "PYTHONPATH" "${SERVER_HOME}" "${PYTHONPACKAGES}"
 SetEnvPath "PYTHONHOME" "${PYTHON_HOME}"
-SetEnvPath "PYTHONUSERBASE" "${PYTHONPACKAGES}"
-SetEnvPath "PYTHONEXECUTABLE" "${PYTHON}"
 
 SetEnvPath "DATA_DIR" "${SERVICE_DATA_PATH}"
-SetEnvPath "LOG_FILE" "${SERVICE_DATA_PATH}"
-SetEnvPath "SERVER_MODE" "True"
-SetEnvPath "DESKTOP_USER" "${SERVICE_AUTH_USERNAME}"
-SetEnvPath "PGADMIN_SETUP_EMAIL" "${SERVICE_AUTH_USERNAME}"
-SetEnvPath "PGADMIN_SETUP_PASSWORD" "${SERVICE_AUTH_PASSWORD}"
+SetEnvPath "PGADMIN_SERVER_MODE" "OFF"
 SetEnvPath "DEFAULT_SERVER_PORT" "${POSTGRE_PORT}"
-
-# import servers from json file
-SetEnvPath "PGADMIN_SERVER_JSON_FILE" "${PGADMIN_SERVER_JSON_FILE}"
 
 
 
