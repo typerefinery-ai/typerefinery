@@ -11,7 +11,7 @@
     "setup": {
       "win32": [
         "-m pip install --ignore-installed --use-pep517 \"parse (==1.19.0)\" --target=${SERVICE_PATH}\\__packages__ -r ${SERVICE_PATH}\\requirements.txt",
-        "; copy -r ${SERVICE_PATH}\\config\\config_local.py ${SERVICE_PATH}\\__packages__\\pgadmin4\\config_local.py"
+        "; copy ${SERVICE_PATH}\\config\\config_local.py ${SERVICE_PATH}\\__packages__\\pgadmin4\\config_local.py"
       ],
       "darwin": [
         "-m pip install --ignore-installed --use-pep517 \"parse (==1.19.0)\" --target=${SERVICE_PATH}/__packages__ -r ${SERVICE_PATH}/requirements.txt",
@@ -19,11 +19,11 @@
       ],
       "linux": [
         "-m pip install --ignore-installed --use-pep517 \"parse (==1.19.0)\" --target=${SERVICE_PATH}/__packages__ -r ${SERVICE_PATH}/requirements.txt",
-        "; cp -r ${SERVICE_PATH}/config/config_local.py ${SERVICE_PATH}/__packages__/pgadmin4/config_local.py"
+        "; /bin/cp -r ${SERVICE_PATH}/config/config_local.py ${SERVICE_PATH}/__packages__/pgadmin4/config_local.py"
       ],
       "default": [
         "-m pip install --ignore-installed --use-pep517 \"parse (==1.19.0)\" --target=${SERVICE_PATH}\\__packages__ -r ${SERVICE_PATH}\\requirements.txt",
-        "; copy -r ${SERVICE_PATH}\\config\\config_local.py ${SERVICE_PATH}\\__packages__\\pgadmin4\\config_local.py"
+        "; copy ${SERVICE_PATH}\\config\\config_local.py ${SERVICE_PATH}\\__packages__\\pgadmin4\\config_local.py"
       ]
     },
     "env": {
