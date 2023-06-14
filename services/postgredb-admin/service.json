@@ -40,10 +40,10 @@
       "PGADMIN_PORT": "${SERVICE_PORT}"
     },
     "commandline": {
-      "win32": "${SERVICE_PATH}\\__packages__\\pgadmin4\\pgadmin4.py",
-      "darwin": "${SERVICE_PATH}/__packages__/pgadmin4/pgadmin4.py",
-      "linux": "${SERVICE_PATH}/__packages__/pgadmin4/pgadmin4.py",
-      "default": "${SERVICE_PATH}\\__packages__\\pgadmin4\\pgadmin4.py"
+      "win32": "${SERVICE_PATH}\\main.py",
+      "darwin": "${SERVICE_PATH}/main.py",
+      "linux": "${SERVICE_PATH}/main.py",
+      "default": "${SERVICE_PATH}\\main.py"
     },
     "serviceport": 8510,
     "healthcheck": {

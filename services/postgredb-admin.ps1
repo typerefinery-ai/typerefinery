@@ -11,7 +11,10 @@ Param(
   [string]$PYTHON = ( Join-Path "${PWD}" "_python" "${OS}" "${PYTHON_BIN}" "python"),
   [string]$SERVER_HOME = ( Join-Path "${PWD}" "${SERVICE_NAME}"),
   [string]$SERVER_REQUIREMENTS = ( Join-Path "${SERVER_HOME}" "requirements.txt" ),
+  [string]$SERVICE_BIN_PROXY = ( Join-Path "${SERVER_HOME}" "main.py" ),
   [string]$SERVICE_BIN = ( Join-Path "${SERVER_HOME}" "__packages__" "pgadmin4" "pgAdmin4.py" ),
+  [string]$SERVICE_BIN_RELATIVE = ( Join-Path "." "__packages__" "pgadmin4" "pgAdmin4.py" ),
+  [string]$SERVICE_BIN_HOME = ( Join-Path "${SERVER_HOME}" "__packages__" "pgadmin4" ),
   [string]$SERVICE_DATA_PATH = ( Join-Path "${PWD}" "${SERVICE_NAME}" "data"),
   [string]$PYTHONPACKAGES = ( Join-Path "${SERVER_HOME}" "__packages__" ),
   [string]$SCRIPS_PATH = ( Join-Path "${SERVER_HOME}" "scripts" ),
@@ -40,11 +43,11 @@ Function PrintInfo
 {
   printSectionBanner "Service ${SERVICE_NAME} config"
 
-  printSectionLine "PYTHON_HOME: ${PYTHON_HOME}"
+  printSectionLine "PYTHON_HOME: ${env:PYTHON_HOME}"
   printSectionLine "SERVER_HOME: ${SERVER_HOME}"
-  printSectionLine "PATH: ${PATH}"
+  printSectionLine "PATH: ${env:PATH}"
   printSectionLine "PYTHONPACKAGES: ${PYTHONPACKAGES}"
-  printSectionLine "PYTHONPATH: ${PYTHONPATH}"
+  printSectionLine "PYTHONPATH: ${env:PYTHONPATH}"
   printSectionLine "PYTHON: ${PYTHON}"
   printSectionLine "PYTHON_PATH_SCRIPTS: ${PYTHON_PATH_SCRIPTS}"
 
@@ -67,7 +70,7 @@ Function StartServer
   Set-Location -Path "${SERVER_HOME}"
   printSectionLine "Starting ${SERVICE_NAME} service in ${PWD}"
   try {
-    & Invoke-Expression -Command "${PYTHON} ${SERVICE_BIN}"
+    & Invoke-Expression -Command "${PYTHON} ${SERVICE_BIN_PROXY}"
   } finally {
     Set-Location -Path "${CURRENT_PATH}"
   }
@@ -91,10 +94,12 @@ Function StartSetup
 # SetPath "${PYTHON_HOME}"
 SetEnvPath "PATH" "${PYTHON_PATH}" "${PYTHON_PATH_SCRIPTS}"
 
-SetEnvPath "PYTHONPATH" "${SERVER_HOME}" "${PYTHONPACKAGES}"
+SetEnvPath "PYTHONPATH" "${PYTHONPACKAGES}"
 SetEnvPath "PYTHONHOME" "${PYTHON_HOME}"
 
 SetEnvPath "DATA_DIR" "${SERVICE_DATA_PATH}"
+SetEnvPath "SERVICE_HOST" "${SERVICE_HOST}"
+SetEnvPath "SERVICE_PORT" "${SERVICE_PORT}"
 SetEnvPath "PGADMIN_SERVER_MODE" "OFF"
 SetEnvPath "DEFAULT_SERVER_PORT" "${POSTGRE_PORT}"
 
