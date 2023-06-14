@@ -59,7 +59,13 @@ class ServiceManager {
     this.#logger.log("service manager log", this.#logWritablePath)
     this.#serviceConfigList = []
     this.#globalenv = globalenv
+    const startReload = new Date()
+    this.#logger.log("service manager reload start", startReload)
     this.reload()
+    this.#logger.log(
+      "service manager reload end",
+      this.elapsedTime(startReload)
+    )
   }
 
   get log(): Writable {
@@ -81,29 +87,71 @@ class ServiceManager {
     return this.#globalenv
   }
 
+  elapsedTime(start: Date): number {
+    return (new Date().getTime() - start.getTime()) / 1000
+  }
+
   async reload(restart = false) {
+    const startReload = new Date()
     if (restart) {
+      this.#logger.log(
+        "service manager stop all",
+        this.elapsedTime(startReload)
+      )
       await this.stopAll()
     }
-    this.#clearServices()
 
+    this.#logger.log("service manager clear", this.elapsedTime(startReload))
+    this.#clearServices()
+    this.#logger.log(
+      "service manager load configs",
+      this.elapsedTime(startReload)
+    )
     this.#loadServiceConfigs()
+    this.#logger.log(
+      "service manager load services",
+      this.elapsedTime(startReload)
+    )
     this.#loadServices()
+    this.#logger.log(
+      "service manager update global env",
+      this.elapsedTime(startReload)
+    )
     this.#updateGlobalEnv()
+    this.#logger.log(
+      "service manager sort services",
+      this.elapsedTime(startReload)
+    )
     this.#sortServices()
 
     // send list of services to app
     if (this.#serviceManagerEvents.sendServiceList) {
+      this.#logger.log(
+        "service manager send list of services to app",
+        this.elapsedTime(startReload)
+      )
       this.#serviceManagerEvents.sendServiceList(this.#services)
     }
 
     // send globalenv to app
     if (this.#serviceManagerEvents.sendGlobalEnv) {
+      this.#logger.log(
+        "service manager send globalenv to app",
+        this.elapsedTime(startReload)
+      )
       this.#serviceManagerEvents.sendGlobalEnv(this.#globalenv)
     }
 
     if (restart) {
+      this.#logger.log(
+        "service manager send startAll start",
+        this.elapsedTime(startReload)
+      )
       await this.startAll()
+      this.#logger.log(
+        "service manager send startAll end",
+        this.elapsedTime(startReload)
+      )
     }
   }
 
@@ -181,8 +229,8 @@ class ServiceManager {
       dot: true,
       realpath: true,
     }
-    glob
-      .sync(`**/${this.#serviceConfigFile}`, globOptions)
+    glob //this loads all service.json files from services folder and its direct subfolders.
+      .sync(`*/${this.#serviceConfigFile}`, globOptions)
       .forEach((file: string) => {
         const stat = fs.statSync(file)
         if (stat.isFile()) {
