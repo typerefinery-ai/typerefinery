@@ -1,0 +1,8 @@
+pgadmin4
+loguru
+python-multipart
+gunicorn
+argparse
+pydantic
+flask
+simple-websocket

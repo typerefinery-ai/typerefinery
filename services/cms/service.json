@@ -16,7 +16,7 @@
     },
     "datapath": "./server/data",
     "serviceport": 8113,
-    "servicedebugport": 5005,
+    "servicedebugport": 8115,
     "healthcheck": {
       "type": "http",
       "url": "http://localhost:${SERVICE_PORT}/system/health",

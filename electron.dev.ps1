@@ -1,2 +1,2 @@
-Invoke-Expression -Command "npm run electron:dev"
+Invoke-Expression -Command "npm run electron:start"
 
