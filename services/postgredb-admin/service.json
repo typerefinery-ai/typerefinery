@@ -11,7 +11,7 @@
     "setup": {
       "win32": [
         "-m pip install --ignore-installed --use-pep517 \"parse (==1.19.0)\" --target=${SERVICE_PATH}\\__packages__ -r ${SERVICE_PATH}\\requirements.txt",
-        "; copy -r ${SERVICE_PATH}\\config\\config_local.py ${SERVICE_PATH}\\__packages__\\pgadmin4\\config_local.py"
+        "; copy ${SERVICE_PATH}\\config\\config_local.py ${SERVICE_PATH}\\__packages__\\pgadmin4\\config_local.py"
       ],
       "darwin": [
         "-m pip install --ignore-installed --use-pep517 \"parse (==1.19.0)\" --target=${SERVICE_PATH}/__packages__ -r ${SERVICE_PATH}/requirements.txt",
@@ -19,28 +19,31 @@
       ],
       "linux": [
         "-m pip install --ignore-installed --use-pep517 \"parse (==1.19.0)\" --target=${SERVICE_PATH}/__packages__ -r ${SERVICE_PATH}/requirements.txt",
-        "; cp -r ${SERVICE_PATH}/config/config_local.py ${SERVICE_PATH}/__packages__/pgadmin4/config_local.py"
+        "; /bin/cp -r ${SERVICE_PATH}/config/config_local.py ${SERVICE_PATH}/__packages__/pgadmin4/config_local.py"
       ],
       "default": [
         "-m pip install --ignore-installed --use-pep517 \"parse (==1.19.0)\" --target=${SERVICE_PATH}\\__packages__ -r ${SERVICE_PATH}\\requirements.txt",
-        "; copy -r ${SERVICE_PATH}\\config\\config_local.py ${SERVICE_PATH}\\__packages__\\pgadmin4\\config_local.py"
+        "; copy ${SERVICE_PATH}\\config\\config_local.py ${SERVICE_PATH}\\__packages__\\pgadmin4\\config_local.py"
       ]
     },
     "env": {
+      "PYTHONPATH": "${SERVICE_PATH}/__packages__",
       "DATA_DIR": "${SERVICE_DATA_PATH}",
-      "PYTHONPATH": "${PYTHON_HOME}",
-      "PATH": "${SERVICE_PATH}/__packages__"
+      "PGADMIN_SERVER_MODE": "OFF",
+      "PGADMIN_INT_PORT": "${SERVICE_PORT}",
+      "CONSOLE_LOG_LEVEL": "INFO",
+      "FILE_LOG_LEVEL": "INFO"
     },
     "datapath": "data",
     "globalenv": {
-      "API_URL": "http://localhost:${SERVICE_PORT}",
-      "API_PORT": "${SERVICE_PORT}"
+      "PGADMIN_URL": "http://localhost:${SERVICE_PORT}",
+      "PGADMIN_PORT": "${SERVICE_PORT}"
     },
     "commandline": {
-      "win32": "${SERVICE_PATH}\\__packages__\\pgadmin4\\pgadmin4.py",
-      "darwin": "${SERVICE_PATH}/__packages__/pgadmin4/pgadmin4.py",
-      "linux": "${SERVICE_PATH}/__packages__/pgadmin4/pgadmin4.py",
-      "default": "${SERVICE_PATH}\\__packages__\\pgadmin4\\pgadmin4.py"
+      "win32": "${SERVICE_PATH}\\main.py",
+      "darwin": "${SERVICE_PATH}/main.py",
+      "linux": "${SERVICE_PATH}/main.py",
+      "default": "${SERVICE_PATH}\\main.py"
     },
     "serviceport": 8510,
     "healthcheck": {

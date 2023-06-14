@@ -1,7 +1,8 @@
 pgadmin4
 loguru
 python-multipart
-uvicorn[standard]
+gunicorn
 argparse
 pydantic
-Flask
+flask
+simple-websocket

@@ -6,3 +6,5 @@ database/*
 **/include/
 **/lib/
 **/share/
+**/symbols/
+config/default.password.txt

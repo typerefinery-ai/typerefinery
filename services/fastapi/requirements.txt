@@ -11,4 +11,4 @@ requests
 websocket-client
 python-dotenv
 starlette
-grpcio
+grpcio==1.44.0

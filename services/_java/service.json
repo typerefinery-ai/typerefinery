@@ -17,7 +17,8 @@
       "default": "win32\\jre17\\bin\\java"
     },
     "globalenv": {
-      "JAVA": "${SERVICE_EXECUTABLE}"
+      "JAVA": "${SERVICE_EXECUTABLE}",
+      "JAVA_HOME": "${SERVICE_EXECUTABLE_HOME}"
     }
   }
 }

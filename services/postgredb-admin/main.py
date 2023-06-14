@@ -1,53 +1,56 @@
-# allow importing of service local packages
+import sys
 import os
-from config import CONFIG
-CONFIG = CONFIG(os.path.dirname(os.path.abspath(__file__)))
-# end of local package imports
-
 import builtins
-builtins.SERVER_MODE = True
-
-from pgadmin4 import app
-
 from loguru import logger as Logger
 
-import argparse
+if __name__ == "__main__":
+    # Logger.info("Environment variables:")
+    # for k, v in os.environ.items():
+    #   Logger.info(f'{k}={v}')
 
+    # set logger level
+    Logger.remove()
+    Logger.add(sys.stdout, level="INFO")
 
-def getArgs():
+    Logger.info("Resolve PGADMIN variables")
+    PGADMIN_SCRIPT = os.path.realpath('__packages__/pgadmin4/pgAdmin4.py')
+    PGADMIN_ROOT = os.path.dirname(PGADMIN_SCRIPT)
+    Logger.info("PGADMIN exec script: " + PGADMIN_SCRIPT)
+    Logger.info("PGADMIN root directory: " + PGADMIN_ROOT)
+    Logger.info("Updating execution path")
+    os.chdir(PGADMIN_ROOT)
+    Logger.info("Execution path: " + os.getcwd())
+    Logger.info("Python path: " + ";".join(sys.path))
+    packages = os.path.realpath(os.getenv("PYTHONPATH", ""))
+    appdata = os.path.realpath(os.getenv("SERVICE_HOME", ""))
+    os.environ['APPDATA'] = appdata
+    Logger.info("PYTHONPATH ENV: " + packages)
+    os.environ['PYTHONHOME'] = sys.prefix
+    os.environ['SCRIPT_NAME'] = '/pgAdmin4'
 
-  parser = argparse.ArgumentParser(description="Script params",
-                                formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-  parser.add_argument("--user-dir", nargs='?', dest="userdir", default="", help="user data (default: %(default)s)")
-  parser.add_argument("--log-dir", nargs='?', dest="logdir", default="", help="user data (default: %(default)s)")
-  parser.add_argument("host", nargs='?', default="localhost", help="server hots (default: %(default)s)")
-  parser.add_argument("port", nargs='?', default="8500", help="server port (default: %(default)s)")
-  parser.add_argument("username", nargs='?', default="pgadmin", help="server user (default: %(default)s)")
-  parser.add_argument("password", nargs='?', default="pgadmin", help="server password (default: %(default)s)")
-  parser.add_argument("--app-dir", nargs='?', dest="appdir", default="./services", help="service path (default: %(default)s)")
-  return parser.parse_known_args()
+    Logger.info("PYTHONHOME SET: " + os.getenv("PYTHONHOME", ""))
+    Logger.info("SCRIPT_NAME SET: " + os.getenv("SCRIPT_NAME", ""))
 
-args, unknown = getArgs()
+    Logger.info("Updating PYTHONPATH")
+    if sys.path[0] != PGADMIN_ROOT:
+        sys.path.insert(0, PGADMIN_ROOT)
 
+    sys.path.insert(0, os.getenv("PYTHONPATH", ""))
 
-CONFIG.APP_SERVICE_LOCATION = CONFIG.APP_SCRIPT_PATH
-CONFIG.APP_USER_DATA_LOCATION = os.getenv("SERVICE_DATA_PATH", args.userdir)
-if CONFIG.APP_USER_DATA_LOCATION == "":
-  CONFIG.APP_USER_DATA_LOCATION = CONFIG.APP_SCRIPT_PATH
+    Logger.info("PYTHONPATH:")
+    Logger.info(sys.path)
 
-CONFIG.APP_LOG_LOCATION = os.getenv("SERVICE_LOG_PATH", args.logdir)
-if CONFIG.APP_LOG_LOCATION == "":
-  CONFIG.APP_LOG_LOCATION = CONFIG.APP_SCRIPT_PATH
+    # yeah... why not use env vars for this...
+    if sys.platform.startswith('win32'):
+        Logger.info("WIN32 - Set CommonProgramFiles to " + packages)
+        os.environ['CommonProgramFiles'] = packages
 
-# load environment variables from .env file
-from dotenv import load_dotenv
+    Logger.info("Setting SERVER_MODE to True")
+    builtins.SERVER_MODE = True
 
-load_dotenv()
+    Logger.info("Importing PGAdmin4 Application")
+    from pgAdmin4 import app as application
 
-CONFIG.APP_SERVICE_POSTGRE_HOST = os.getenv("POSTGRE_HOST", "localhost")
-CONFIG.APP_SERVICE_POSTGRE_PORT = os.getenv("POSTGRE_PORT", "8500")
-CONFIG.APP_SERVICE_POSTGRE_AUTH_USERNAME = os.getenv("POSTGRE_AUTH_USERNAME", "pgadmin")
-CONFIG.APP_SERVICE_POSTGRE_AUTH_PASSWORD = os.getenv("POSTGRE_AUTH_PASSWORD", "pgadmin")
+    Logger.info("Starting PGAdmin4 service")
+    application.run(host=os.getenv("SERVICE_HOST", "localhost"), port=os.getenv("SERVICE_PORT", "8510"))
 
-
-Logger.info(CONFIG.toString())

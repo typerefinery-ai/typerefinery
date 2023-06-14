@@ -271,7 +271,7 @@ function getServicePage(service: Service) {
           pathSeparator,
           "/"
         )}')">${service.errorLogFile}</a></p>
-        <p>Console Log: <a href="#" onclick="loadLog('${service.errorLogFile.replaceAll(
+        <p>Console Log: <a href="#" onclick="loadLog('${service.consoleLogFile.replaceAll(
           pathSeparator,
           "/"
         )}')">${service.consoleLogFile}</a></p>

@@ -318,16 +318,16 @@ export class Service extends EventEmitter<ServiceEvent> {
 
     this.#servicesroot = path.resolve(path.dirname(servicepath))
 
-    // set service setup check, leave state file in the service root so that its removed on app update
+    // set service setup check, leave state file in the service home so that its removed on app update
     this.#setupstatefile = path.join(
-      this.#servicepath,
+      this.#servicehome,
       path.basename(this.#servicehome) + ".setup"
     )
     this.#ensurePathToFile(this.#setupstatefile)
 
-    // set service pid and check if its not running, leave pid file in the service root so that its removed on app update
+    // set service pid and check if its not running, leave pid file in the service home so that its removed on app update
     this.#servicepidfile = path.join(
-      this.#servicepath,
+      this.#servicehome,
       path.basename(this.#servicehome) + ".pid"
     )
     this.#ensurePathToFile(this.#servicepidfile)
@@ -487,6 +487,12 @@ export class Service extends EventEmitter<ServiceEvent> {
     // for each environment variable in environmentVariables
     // replace ${ENV_VAR} with the value of the environment variable
     // if this.#serviceManager.globalEnv is not empty
+
+    // if command a null or undefined return empty string or its a number or it does not contain ${ return empty string
+    if (!this.isStringHasVariables(command)) {
+      return command
+    }
+
     for (const [key, value] of Object.entries(this.#serviceManager.globalEnv)) {
       command = command.replaceAll(`\${${key}}`, value)
     }
@@ -540,6 +546,10 @@ export class Service extends EventEmitter<ServiceEvent> {
     return this.#processEnv || {}
   }
 
+  isStringHasVariables(str: any): boolean {
+    return str && typeof str === "string" && str.indexOf("${") > -1
+  }
+
   compileEnvironmentVariables(args: { [key: string]: string } = {}): any {
     const envVar = {}
     // add this.environmentVariables into envVar
@@ -555,7 +565,7 @@ export class Service extends EventEmitter<ServiceEvent> {
 
     // update vars if they contain ${}
     for (const [key, value] of Object.entries(this.#processEnv)) {
-      if (value.includes("${")) {
+      if (this.isStringHasVariables(value)) {
         // replace possible variables in value
         this.#processEnv[key] = this.#getServiceCommand(value, this)
       }
