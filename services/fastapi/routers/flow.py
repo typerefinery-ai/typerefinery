@@ -127,12 +127,19 @@ async def flow_export(flowid: str, request: Request, response: Response):
     service_url_proxy = f"{CONFIG.FLOW_HOST}{CONFIG.FLOW_API}/streams_read/{flowid}"
     Logger.info(f"proxy flow: {service_url_proxy}")
     failed = False
+    service_reponse_json = {}
+    service_reponse_code = 0
     try:
       service_reponse = requests.get(service_url_proxy, timeout=0.01)
+      service_reponse_json = service_reponse.json()
+      service_reponse_code = service_reponse.status_code
     except requests.exceptions.RequestException:
       failed = True
+      Logger.info(f"proxy flow could not read flow: {service_url_proxy}")
+      service_reponse_code = 404
+      service_reponse_json = { "error": "flow not found" }
 
-    return Response(content=json.dumps(service_reponse.json()), media_type="application/json", status_code=service_reponse.status_code)
+    return Response(content=json.dumps(service_reponse_json), media_type="application/json", status_code=service_reponse_code)
 
 ## update flow meta into flowstream
 @Logger.catch
