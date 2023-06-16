@@ -20,17 +20,17 @@
       "default": "win32\\localcert"
     },
     "commandline": {
-      "win32": " -dataDir ${SERVICE_HOME}\\data -acceptTerms -localCert ${SERVICE_HOME}\\data\\cert.pem -localKey ${SERVICE_HOME}\\data\\key.pem -forceRenew",
-      "darwin": " -dataDir ${SERVICE_HOME}/data -acceptTerms -localCert ${SERVICE_HOME}/data/cert.pem -localKey ${SERVICE_HOME}/data/key.pem -forceRenew",
-      "linux": " -dataDir ${SERVICE_HOME}/data -acceptTerms -localCert ${SERVICE_HOME}/data/cert.pem -localKey ${SERVICE_HOME}/data/key.pem -forceRenew",
-      "default": " -dataDir ${SERVICE_HOME}\\data -acceptTerms -localCert ${SERVICE_HOME}\\data\\cert.pem -localKey ${SERVICE_HOME}\\data\\key.pem -forceRenew"
+      "win32": " -dataDir ${SERVICE_DATA_PATH} -acceptTerms -localCert ${SERVICE_DATA_PATH}\\cert.pem -localKey ${SERVICE_DATA_PATH}\\key.pem -forceRenew",
+      "darwin": " -dataDir ${SERVICE_DATA_PATH} -acceptTerms -localCert ${SERVICE_DATA_PATH}/cert.pem -localKey ${SERVICE_DATA_PATH}/key.pem -forceRenew",
+      "linux": " -dataDir ${SERVICE_DATA_PATH} -acceptTerms -localCert ${SERVICE_DATA_PATH}/cert.pem -localKey ${SERVICE_DATA_PATH}/key.pem -forceRenew",
+      "default": " -dataDir ${SERVICE_DATA_PATH} -acceptTerms -localCert ${SERVICE_DATA_PATH}\\cert.pem -localKey ${SERVICE_DATA_PATH}\\key.pem -forceRenew"
     },
     "outputvarregex": {
       "CERT_DOMAIN": ".*domain \"[*][.](.*)\".*"
     },
     "globalenv": {
-      "CERT_FILE": "${SERVICE_HOME}\\data\\cert.pem",
-      "CERT_KEY": "${SERVICE_HOME}\\data\\key.pem"
+      "CERT_FILE": "${SERVICE_DATA_PATH}\\cert.pem",
+      "CERT_KEY": "${SERVICE_DATA_PATH}\\key.pem"
     }
   }
 }
