@@ -430,6 +430,12 @@
           )
           const url = "/flow/import"
           const { data } = await restapi.post(url, payload)
+          console.log([
+            "importing sample payload",
+            this.defaultFlowData,
+            payload,
+            data,
+          ])
           flowid = data.value
           this.createInitialData(projectid, flowid)
         } catch (error) {
