@@ -32,8 +32,8 @@ class CodeRequestModel(BaseModel):
     code: str | None = Field(
         default="", title="code"
     )
-    dependecies: list | None = Field(
-        default=[], title="dependecies"
+    dependencies: list | None = Field(
+        default=[], title="dependencies"
     )
     returnoutput: str | None = Field(
         default="output", title="what to return (output, log, status)"
@@ -60,12 +60,12 @@ async def execute_createsvg(request: Request, response: Response, body: CodeRequ
     request_logger = Logger.bind(requestid=requestid)
 
     # encode multiline string to json string
-    requirements_json = json.dumps(body.dependecies)
+    requirements_json = json.dumps(body.dependencies)
     request_logger.info(f'request - {requirements_json}')
 
     # for each entry in requirements_array, substitute ${URL} in CREATESVG_HEADER_INCLUDE_STRING and add to new string
     requirements_string = ""
-    for entry in body.dependecies:
+    for entry in body.dependencies:
       requirements_string += CREATESVG_HEADER_INCLUDE_STRING.replace("${URL}", entry)
       request_logger.info(f'request - {requirements_string}')
 

@@ -50,7 +50,7 @@ class AlgoritmRequestModel(BaseModel):
         default="", title="algorithm code"
     )
     algorithmrequirements: str | None = Field(
-        default="", title="install dependecies"
+        default="", title="install dependencies"
     )
     returnoutput: str | None = Field(
         default="output", title="what to return (output, log, status)"

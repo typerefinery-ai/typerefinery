@@ -239,7 +239,7 @@ function getServicePage(service: Service) {
       </div>
 
       <div class="my-3 p-3 bg-body rounded shadow-sm">
-        <h6 class="border-bottom pb-2 mb-3">Service Dependecies</h6>
+        <h6 class="border-bottom pb-2 mb-3">Service Dependencies</h6>
         <div class="border border-1 bg-secondary-subtle p-3 fs-6">
         <div id="dependencytree"></div>
         </div>
@@ -563,7 +563,7 @@ function getServicesPage(services: Service[]) {
       </div>
 
       <div class="my-3 p-3 bg-body rounded shadow-sm">
-        <h6 class="border-bottom pb-2 mb-3">Service Dependecies</h6>
+        <h6 class="border-bottom pb-2 mb-3">Service Dependencies</h6>
         <div class="border border-1 bg-secondary-subtle p-3 fs-6">
         <div id="dependencytree"></div>
         </div>

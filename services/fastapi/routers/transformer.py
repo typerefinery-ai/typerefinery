@@ -37,8 +37,8 @@ class TransformerRequestModel(BaseModel):
     code: str | None = Field(
         default="", title="transformer code"
     )
-    dependecies: list | None = Field(
-        default=[], title="install dependecies"
+    dependencies: list | None = Field(
+        default=[], title="install dependencies"
     )
     returnoutput: str | None = Field(
         default="output", title="what to return (output, log, status)"
@@ -67,7 +67,7 @@ async def execute_transformer(request: Request, response: Response, body: Transf
     request_logger = Logger.bind(requestid=requestid)
 
     # encode multiline string to json string
-    requirements_json = json.dumps(body.dependecies)
+    requirements_json = json.dumps(body.dependencies)
     request_logger.info(f'request - {requirements_json}')
 
     scripterror = "false"
@@ -85,7 +85,7 @@ async def execute_transformer(request: Request, response: Response, body: Transf
       request_logger.info(f'created file - {new_script}')
 
       # for each transformerrequirements install package
-      for package in body.dependecies:
+      for package in body.dependencies:
           request_logger.info(f'check dependency - {package}')
           UTILS.importOrInstallPackageNode(package, os.path.join(CONFIG.APP_USER_DATA_LOCATION, "generated", "transformer"), request_logger)
 
