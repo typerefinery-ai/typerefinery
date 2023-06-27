@@ -94,7 +94,7 @@ http:
         - web
         - websecure
       service: cms
-      # tls: true
+      tls: true
       middlewares:
         # - stripprefix-cms
         # - replacepath-cms

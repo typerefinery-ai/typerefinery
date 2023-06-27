@@ -540,7 +540,7 @@
     "TRAEFIK_INTERNAL_PORT": "8102",
     "TRAEFIK_NGINX_URL": "http://nginx.typerefinery.localhost:8100/",
     "TRAEFIK_FLOW_URL": "http://flow.typerefinery.localhost:8100/",
-    "TRAEFIK_CMS_URL": "http://cms.typerefinery.localhost:8100/",
+    "TRAEFIK_CMS_URL": "https://cms.typerefinery.localhost:8100/",
     "TRAEFIK_TMS_URL": "http://tms.typerefinery.localhost:8100/",
     "TRAEFIK_FASTAPI_URL": "http://api.typerefinery.localhost:8100/",
     "TRAEFIK_PGADMIN_URL": "http://pgadmin.typerefinery.localhost:8100/",

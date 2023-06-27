@@ -34,7 +34,7 @@
     "globalenv": {
       "TRAEFIK_NGINX_URL": "http://nginx.typerefinery.localhost:${SERVICE_PORT}/",
       "TRAEFIK_FLOW_URL": "http://flow.typerefinery.localhost:${SERVICE_PORT}/",
-      "TRAEFIK_CMS_URL": "http://cms.typerefinery.localhost:${SERVICE_PORT}/",
+      "TRAEFIK_CMS_URL": "https://cms.typerefinery.localhost:${SERVICE_PORT}/",
       "TRAEFIK_TMS_URL": "http://tms.typerefinery.localhost:${SERVICE_PORT}/",
       "TRAEFIK_FASTAPI_URL": "http://api.typerefinery.localhost:${SERVICE_PORT}/",
       "TRAEFIK_PGADMIN_URL": "http://pgadmin.typerefinery.localhost:${SERVICE_PORT}/",
