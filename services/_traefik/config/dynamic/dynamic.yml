@@ -1,15 +1,22 @@
 
 http:
   routers:
+    fastapi:
+      rule: Host(`api.typerefinery.localhost`)
+      # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/api`) ) || Host(`api.localhost`)
+      service: fastapi
+      entrypoints:
+        - web
+        - websecure
     nginx:
-      rule: Host(`nginx.localhost`)
+      rule: Host(`nginx.typerefinery.localhost`)
       # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/nginx`) ) || Host(`nginx.localhost`)
       service: nginx
       entrypoints:
         - web
         - websecure
     flow:
-      rule: Host(`flow.localhost`)
+      rule: Host(`flow.typerefinery.localhost`)
       # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/flow`) ) || Host(`flow.localhost`)
       service: flow
       entrypoints:
@@ -17,7 +24,7 @@ http:
         - websecure
 
     traefikdashboard:
-      rule: Host(`traefik.localhost`)
+      rule: Host(`traefik.typerefinery.localhost`)
       service: api@internal
       entrypoints: web
       middlewares:
@@ -40,14 +47,14 @@ http:
     #   service: noop@internal
 
     cms:
-      rule: Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`)
+      rule: Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) || Host(`cms.typerefinery.localhost`)
       # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/cms`) ) || Host(`cms.localhost`)
       # rule: "Host(`cms.user.typerefinery.ai`)"
       entryPoints:
         - web
         - websecure
       service: cms
-      tls: true
+      # tls: true
       middlewares:
         - stripprefix-cms
         # - replacepath-cms
