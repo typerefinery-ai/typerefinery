@@ -49,8 +49,6 @@
       "CERT_DOMAIN": ".*domain \"[*][.](.*)\".*"
     },
     "env": {
-      "PATH": "${JAVA_HOME}",
-      "JAVA_HOME": "${JAVA_HOME}",
       "CAROOT": "${SERVICE_DATA_PATH}",
       "TRUST_STORES": "system,java,nss",
       "HOME": "${SERVICE_DATA_PATH}",
