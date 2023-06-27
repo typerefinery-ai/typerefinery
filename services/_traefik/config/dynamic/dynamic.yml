@@ -7,7 +7,15 @@ http:
       service: fastapi
       entrypoints:
         - web
+      middlewares:
+        - serviceheaders
+    fastapihttps:
+      rule: Host(`api.typerefinery.localhost`)
+      # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/api`) ) || Host(`api.localhost`)
+      service: fastapi
+      entrypoints:
         - websecure
+      tls: true
       middlewares:
         - serviceheaders
 
@@ -17,7 +25,15 @@ http:
       service: files
       entrypoints:
         - web
+      middlewares:
+        - serviceheaders
+    fileshttps:
+      rule: Host(`files.typerefinery.localhost`)
+      # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/files`) ) || Host(`files.localhost`)
+      service: files
+      entrypoints:
         - websecure
+      tls: true
       middlewares:
         - serviceheaders
 
@@ -27,7 +43,15 @@ http:
       service: postgreadmin
       entrypoints:
         - web
+      middlewares:
+        - serviceheaders
+    postgreadminhttps:
+      rule: Host(`pgadmin.typerefinery.localhost`)
+      # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/pgadmin`) ) || Host(`pgadmin.localhost`)
+      service: postgreadmin
+      entrypoints:
         - websecure
+      tls: true
       middlewares:
         - serviceheaders
 
@@ -37,7 +61,15 @@ http:
       service: bpmn
       entrypoints:
         - web
+      middlewares:
+        - serviceheaders
+    bpmnhttps:
+      rule: Host(`bpmn.typerefinery.localhost`)
+      # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/bpmn`) ) || Host(`bpmn.localhost`)
+      service: bpmn
+      entrypoints:
         - websecure
+      tls: true
       middlewares:
         - serviceheaders
 
@@ -47,21 +79,41 @@ http:
       service: nginx
       entrypoints:
         - web
+    nginxhttps:
+      rule: Host(`nginx.typerefinery.localhost`)
+      # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/nginx`) ) || Host(`nginx.localhost`)
+      service: nginx
+      entrypoints:
         - websecure
+      tls: true
+
     flow:
       rule: Host(`flow.typerefinery.localhost`)
       # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/flow`) ) || Host(`flow.localhost`)
       service: flow
       entrypoints:
         - web
+    flowhttps:
+      rule: Host(`flow.typerefinery.localhost`)
+      # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/flow`) ) || Host(`flow.localhost`)
+      service: flow
+      entrypoints:
         - websecure
+      tls: true
+
     tms:
       rule: Host(`tms.typerefinery.localhost`)
       # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/tms`) ) || Host(`tms.localhost`)
       service: tms
       entrypoints:
         - web
+    tmshttps:
+      rule: Host(`tms.typerefinery.localhost`)
+      # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/tms`) ) || Host(`tms.localhost`)
+      service: tms
+      entrypoints:
         - websecure
+      tls: true
 
     traefikdashboard:
       rule: Host(`traefik.typerefinery.localhost`)
@@ -92,6 +144,17 @@ http:
       # rule: "Host(`cms.user.typerefinery.ai`)"
       entryPoints:
         - web
+      service: cms
+      middlewares:
+        # - stripprefix-cms
+        # - replacepath-cms
+        - error-pages
+        - serviceheaders
+    cmshttps:
+      rule: Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) || Host(`cms.typerefinery.localhost`)
+      # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/cms`) ) || Host(`cms.localhost`)
+      # rule: "Host(`cms.user.typerefinery.ai`)"
+      entryPoints:
         - websecure
       service: cms
       tls: true
