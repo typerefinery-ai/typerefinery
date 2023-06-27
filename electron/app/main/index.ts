@@ -301,6 +301,29 @@ async function createWindow() {
   })
 }
 
+//add override for certificate errors
+app.on(
+  "certificate-error",
+  (event, webContents, url, error, certificate, callback) => {
+    logger.log("certificate-error", url)
+    let isValidDomain = false
+    const checkUrl = new URL(url)
+    if (checkUrl.hostname === "localhost") {
+      isValidDomain = true
+    } else if (checkUrl.hostname.endsWith(".localhost")) {
+      isValidDomain = true
+    }
+
+    if (isValidDomain) {
+      // Verification logic.
+      event.preventDefault()
+      callback(true)
+    } else {
+      callback(false)
+    }
+  }
+)
+
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
