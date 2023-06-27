@@ -9,7 +9,7 @@ http:
         - web
       middlewares:
         - serviceheaders
-    fastapihttps:
+    fastapi-https:
       rule: Host(`api.typerefinery.localhost`)
       # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/api`) ) || Host(`api.localhost`)
       service: fastapi
@@ -27,7 +27,7 @@ http:
         - web
       middlewares:
         - serviceheaders
-    fileshttps:
+    files-https:
       rule: Host(`files.typerefinery.localhost`)
       # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/files`) ) || Host(`files.localhost`)
       service: files
@@ -45,7 +45,7 @@ http:
         - web
       middlewares:
         - serviceheaders
-    postgreadminhttps:
+    postgreadmin-https:
       rule: Host(`pgadmin.typerefinery.localhost`)
       # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/pgadmin`) ) || Host(`pgadmin.localhost`)
       service: postgreadmin
@@ -63,7 +63,7 @@ http:
         - web
       middlewares:
         - serviceheaders
-    bpmnhttps:
+    bpmn-https:
       rule: Host(`bpmn.typerefinery.localhost`)
       # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/bpmn`) ) || Host(`bpmn.localhost`)
       service: bpmn
@@ -79,7 +79,7 @@ http:
       service: nginx
       entrypoints:
         - web
-    nginxhttps:
+    nginx-https:
       rule: Host(`nginx.typerefinery.localhost`)
       # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/nginx`) ) || Host(`nginx.localhost`)
       service: nginx
@@ -93,7 +93,7 @@ http:
       service: flow
       entrypoints:
         - web
-    flowhttps:
+    flow-https:
       rule: Host(`flow.typerefinery.localhost`)
       # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/flow`) ) || Host(`flow.localhost`)
       service: flow
@@ -127,10 +127,19 @@ http:
       priority: 1
       entryPoints:
         - web
+      service: noop@internal
+      middlewares:
+        - error-pages
+
+    error-router-https:
+      rule: HostRegexp(`{host:.+}`)
+      priority: 1
+      entryPoints:
         - websecure
       service: noop@internal
       middlewares:
         - error-pages
+      tls: true
 
     # http-catchall:
     #   rule: "HostRegexp(`{host:.+}`)"
@@ -150,7 +159,7 @@ http:
         # - replacepath-cms
         - error-pages
         - serviceheaders
-    cmshttps:
+    cms-https:
       rule: Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) || Host(`cms.typerefinery.localhost`)
       # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/cms`) ) || Host(`cms.localhost`)
       # rule: "Host(`cms.user.typerefinery.ai`)"
@@ -247,6 +256,8 @@ http:
         passHostHeader: true
         servers:
           - url: '{{ env "MESSAGESERVICE_URL" }}'
+        sticky:
+          cookie: true
 
     nginx:
       loadBalancer:
