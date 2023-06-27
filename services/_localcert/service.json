@@ -13,6 +13,24 @@
     "serviceorder": 2,
     "ignoreexiterror": true,
     "datapath": "/data",
+    "setup": {
+      "win32": [
+        "; ${SERVICE_EXECUTABLE_HOME}\\mkcert.exe -pkcs12 -p12-file ${SERVICE_DATA_FILE_PFX} -client ${CERTS_DOMAINS}",
+        "; ${SERVICE_EXECUTABLE_HOME}\\mkcert.exe -key-file ${SERVICE_DATA_FILE_KEY} -cert-file ${SERVICE_DATA_FILE_CERT} -client ${CERTS_DOMAINS}"
+      ],
+      "darwin": [
+        "; ${SERVICE_EXECUTABLE_HOME}/mkcert.exe -pkcs12 -p12-file ${SERVICE_DATA_FILE_PFX} -client ${CERTS_DOMAINS}",
+        "; ${SERVICE_EXECUTABLE_HOME}/mkcert.exe -key-file ${SERVICE_DATA_FILE_KEY} -cert-file ${SERVICE_DATA_FILE_CERT} -client ${CERTS_DOMAINS}"
+      ],
+      "linux": [
+        "; ${SERVICE_EXECUTABLE_HOME}/mkcert.exe -pkcs12 -p12-file ${SERVICE_DATA_FILE_PFX} -client ${CERTS_DOMAINS}",
+        "; ${SERVICE_EXECUTABLE_HOME}/mkcert.exe -key-file ${SERVICE_DATA_FILE_KEY} -cert-file ${SERVICE_DATA_FILE_CERT} -client ${CERTS_DOMAINS}"
+      ],
+      "default": [
+        "; ${SERVICE_EXECUTABLE_HOME}\\mkcert.exe -pkcs12 -p12-file ${SERVICE_DATA_FILE_PFX} -client ${CERTS_DOMAINS}",
+        "; ${SERVICE_EXECUTABLE_HOME}\\mkcert.exe -key-file ${SERVICE_DATA_FILE_KEY} -cert-file ${SERVICE_DATA_FILE_CERT} -client ${CERTS_DOMAINS}"
+      ]
+    },
     "executable": {
       "win32": "win32\\localcert.exe",
       "darwin": "darwin/localcert",
@@ -29,11 +47,16 @@
       "CERT_DOMAIN": ".*domain \"[*][.](.*)\".*"
     },
     "env": {
-      "HOME": "${SERVICE_HOME}\\data"
+      "CAROOT": "${SERVICE_DATA_PATH}",
+      "HOME": "${SERVICE_DATA_PATH}",
+      "CERTS_DOMAINS": "*.typerefinery.localhost *.localhost",
+      "SERVICE_DATA_FILE_PFX": "${SERVICE_DATA_PATH}\\mkcert.pfx",
+      "SERVICE_DATA_FILE_KEY": "${SERVICE_DATA_PATH}\\mkcert.key",
+      "SERVICE_DATA_FILE_CERT": "${SERVICE_DATA_PATH}\\mkcert.pem"
     },
     "globalenv": {
-      "CERT_FILE": "${SERVICE_DATA_PATH}\\cert.pem",
-      "CERT_KEY": "${SERVICE_DATA_PATH}\\key.pem"
+      "CERT_FILE": "${SERVICE_DATA_PATH}\\mkcert.pem",
+      "CERT_KEY": "${SERVICE_DATA_PATH}\\mkcert.key"
     }
   }
 }
