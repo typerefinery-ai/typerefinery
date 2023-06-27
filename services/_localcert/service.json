@@ -15,6 +15,7 @@
     "datapath": "/data",
     "setup": {
       "win32": [
+        "; keytool -h",
         "; ${SERVICE_EXECUTABLE_HOME}\\mkcert.exe -install",
         "; ${SERVICE_EXECUTABLE_HOME}\\mkcert.exe -pkcs12 -p12-file ${SERVICE_DATA_FILE_PFX} -client ${CERTS_DOMAINS}",
         "; ${SERVICE_EXECUTABLE_HOME}\\mkcert.exe -key-file ${SERVICE_DATA_FILE_KEY} -cert-file ${SERVICE_DATA_FILE_CERT} -client ${CERTS_DOMAINS}"
@@ -48,6 +49,8 @@
       "CERT_DOMAIN": ".*domain \"[*][.](.*)\".*"
     },
     "env": {
+      "PATH": "${JAVA_HOME}",
+      "JAVA_HOME": "${JAVA_HOME}",
       "CAROOT": "${SERVICE_DATA_PATH}",
       "TRUST_STORES": "system,java,nss",
       "HOME": "${SERVICE_DATA_PATH}",
@@ -59,6 +62,9 @@
     "globalenv": {
       "CERT_FILE": "${SERVICE_DATA_PATH}\\mkcert.pem",
       "CERT_KEY": "${SERVICE_DATA_PATH}\\mkcert.key"
-    }
+    },
+    "depend_on": [
+      "java"
+    ]
   }
 }
