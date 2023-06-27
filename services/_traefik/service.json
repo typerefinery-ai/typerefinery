@@ -32,6 +32,14 @@
       "default": "bin\\traefik"
     },
     "globalenv": {
+      "TRAEFIK_NGINX_URL": "http://nginx.typerefinery.localhost:${SERVICE_PORT}/",
+      "TRAEFIK_FLOW_URL": "http://flow.typerefinery.localhost:${SERVICE_PORT}/",
+      "TRAEFIK_CMS_URL": "http://cms.typerefinery.localhost:${SERVICE_PORT}/",
+      "TRAEFIK_TMS_URL": "http://tms.typerefinery.localhost:${SERVICE_PORT}/",
+      "TRAEFIK_FASTAPI_URL": "http://api.typerefinery.localhost:${SERVICE_PORT}/",
+      "TRAEFIK_PGADMIN_URL": "http://pgadmin.typerefinery.localhost:${SERVICE_PORT}/",
+      "TRAEFIK_FILES_URL": "http://files.typerefinery.localhost:${SERVICE_PORT}/",
+      "TRAEFIK_BPMN_URL": "http://bpmn.typerefinery.localhost:${SERVICE_PORT}/",
       "TRAEFIK_HTTP_PORT": "${SERVICE_PORT}",
       "TRAEFIK_HTTPS_PORT": "8101",
       "TRAEFIK_MONGO_PORT": "8108",
