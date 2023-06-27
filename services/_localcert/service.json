@@ -15,6 +15,7 @@
     "datapath": "/data",
     "setup": {
       "win32": [
+        "; ${SERVICE_EXECUTABLE_HOME}\\mkcert.exe -install",
         "; ${SERVICE_EXECUTABLE_HOME}\\mkcert.exe -pkcs12 -p12-file ${SERVICE_DATA_FILE_PFX} -client ${CERTS_DOMAINS}",
         "; ${SERVICE_EXECUTABLE_HOME}\\mkcert.exe -key-file ${SERVICE_DATA_FILE_KEY} -cert-file ${SERVICE_DATA_FILE_CERT} -client ${CERTS_DOMAINS}"
       ],
