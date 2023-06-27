@@ -33,7 +33,7 @@
         const flowId = this.tab.id
         const theme = settingsModule.data.theme
         const themeMode = theme == "light" ? 0 : 1
-        return `http://flow.typerefinery.localhost:8100/designer/?darkmode=${themeMode}&socket=ws%3A%2F%2Flocalhost%3A${this.port}%2Fflows%2F${flowId}%2F&components=`
+        return `http://flow.typerefinery.localhost:8100/designer/?darkmode=${themeMode}&socket=ws%3A%2F%2Fflow.typerefinery.localhost%3A8100%2Fflows%2F${flowId}%2F&components=`
       },
     },
   }
