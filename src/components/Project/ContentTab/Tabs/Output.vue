@@ -58,7 +58,7 @@
         )
         if (project && project.flowoutputlist.length) {
           const file_name = project.flowoutputlist[0].path
-          let path = `http://localhost:8000${file_name}`
+          let path = `http://api.typerefinery.localhost:8100${file_name}`
           return path
         } else {
           return ""
