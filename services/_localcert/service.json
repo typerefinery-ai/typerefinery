@@ -48,6 +48,7 @@
     },
     "env": {
       "CAROOT": "${SERVICE_DATA_PATH}",
+      "TRUST_STORES": "system,java,nss",
       "HOME": "${SERVICE_DATA_PATH}",
       "CERTS_DOMAINS": "*.typerefinery.localhost *.localhost",
       "SERVICE_DATA_FILE_PFX": "${SERVICE_DATA_PATH}\\mkcert.pfx",
