@@ -28,7 +28,7 @@ Param(
   [string]$CERTS_PASSWORD = "typerefinery",
   [string]$SERVICE_OPENSSL_COMMAND ="openssl pkcs12 -export -out mkcert.pfx -in mkcert.pem -inkey mkcert.key -certfile rootCA.pem -passout pass:${CERTS_PASSWORD}",
   [string]$SERVICE_TEST_COMMAND ="test -f ${SERVICE_DATA_FILE_KEY} && exit 0; ",
-  #[string]$SERVICE_MKCERT_INSTALL_COMMAND ="${SERVICE_MKCERT_PATH} -install",
+  [string]$SERVICE_MKCERT_INSTALL_COMMAND ="${SERVICE_MKCERT_PATH} -install",
   [string]$SERVICE_MKCERT_PFX_COMMAND ="${SERVICE_MKCERT_PATH} -pkcs12 -p12-file ${SERVICE_DATA_FILE_PFX} -client ${CERTS_DOMAINS}",
   [string]$SERVICE_MKCERT_ALL_COMMAND ="${SERVICE_MKCERT_PATH} -key-file ${SERVICE_DATA_FILE_KEY} -cert-file ${SERVICE_DATA_FILE_CERT} -client ${CERTS_DOMAINS}"
 )
@@ -54,16 +54,8 @@ Function StartServer
 {
 
   Set-Location -Path "${SERVER_HOME}"
-  SetEnvVar "SERVICE_PORT" "${SERVICE_PORT}"
-  SetEnvVar "CAROOT" "${SERVICE_CONFIG_PATH}"
-  SetEnvVar "CMS_PORT" "${SERVICE_PORT_CMS}"
-  SetEnvVar "SERVICE_PORT_DASHBOARD" "${SERVICE_PORT_DASHBOARD}"
-  SetEnvVar "TRAEFIK_PROVIDERS_FILE_FILENAME" "${SERVICE_HOME}\\config\\dynamic\\dynamic.yml"
-  SetEnvVar "CERT_FILE" "${SERVICE_HOME}\\config\\certs\\cert.pem"
-  SetEnvVar "CERT_KEY" "${SERVICE_HOME}\\config\\certs\\privkey.pem"
   try {
     echo ${SERVICE_MKCERT_COMMAND}
-    Invoke-Expression -Command "${SERVICE_MKCERT_INSTALL_COMMAND}"
     Invoke-Expression -Command "${SERVICE_MKCERT_PFX_COMMAND}"
     Invoke-Expression -Command "${SERVICE_MKCERT_ALL_COMMAND}"
     # Invoke-Expression -Command "${SERVICE_PROGRAM_PATH} -dataDir ${SERVICE_HOME}/data -acceptTerms -localCert ${SERVICE_HOME}/data/cert.pem -localKey ${SERVICE_HOME}/data/key.pem -forceRenew"
@@ -76,41 +68,29 @@ Function StartServer
 
 
 
-Function StopServer
-{
-
-  Set-Location -Path "${SERVER_HOME}"
-
-  try {
-    Invoke-Expression -Command "${SERVICE_PROGRAM_PATH}"
-  } catch {
-    printSectionLine "Error: ${_}"
-  } finally {
-    Set-Location -Path "${CURRENT_PATH}"
-  }
-
-}
 
 
 Function StartSetup
 {
   Set-Location -Path ${SERVICE_HOME}
-  if ($IsWindows) {
-    Invoke-Expression -Command "${SERVICE_PROGRAM_PATH} --configFile=${SERVICE_HOME}\\traefik.yml"
-  } else {
-    Invoke-Expression -Command "${SERVICE_PROGRAM_PATH} --configFile=${SERVICE_HOME}/traefik.yml"
+  try {
+    Invoke-Expression -Command "${SERVICE_MKCERT_INSTALL_COMMAND}"
+  } catch {
+    printSectionLine "Error: ${_}"
+  } finally {
+    Set-Location -Path "${CURRENT_PATH}"
   }
-  Set-Location -Path "${CURRENT_PATH}"
 }
 
 PrintInfo
 
 printSectionBanner "Starting ${SERVICE_NAME} service"
 
+SetEnvVar "TRUST_STORES" "system,java,nss"
+SetEnvVar "CAROOT" "${SERVICE_CONFIG_PATH}"
+
 if ( $SETUP ) {
   StartSetup
-} elseif ( $STOP ) {
-  StopServer
 } else {
   StartServer
 }
