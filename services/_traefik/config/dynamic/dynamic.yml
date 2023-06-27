@@ -8,6 +8,39 @@ http:
       entrypoints:
         - web
         - websecure
+      middlewares:
+        - serviceheaders
+
+    files:
+      rule: Host(`files.typerefinery.localhost`)
+      # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/files`) ) || Host(`files.localhost`)
+      service: files
+      entrypoints:
+        - web
+        - websecure
+      middlewares:
+        - serviceheaders
+
+    postgreadmin:
+      rule: Host(`pgadmin.typerefinery.localhost`)
+      # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/pgadmin`) ) || Host(`pgadmin.localhost`)
+      service: postgreadmin
+      entrypoints:
+        - web
+        - websecure
+      middlewares:
+        - serviceheaders
+
+    bpmn:
+      rule: Host(`bpmn.typerefinery.localhost`)
+      # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/bpmn`) ) || Host(`bpmn.localhost`)
+      service: bpmn
+      entrypoints:
+        - web
+        - websecure
+      middlewares:
+        - serviceheaders
+
     nginx:
       rule: Host(`nginx.typerefinery.localhost`)
       # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/nginx`) ) || Host(`nginx.localhost`)
@@ -24,7 +57,7 @@ http:
         - websecure
     tms:
       rule: Host(`tms.typerefinery.localhost`)
-      # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/flow`) ) || Host(`flow.localhost`)
+      # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/tms`) ) || Host(`tms.localhost`)
       service: tms
       entrypoints:
         - web
@@ -63,9 +96,10 @@ http:
       service: cms
       # tls: true
       middlewares:
-        - stripprefix-cms
+        # - stripprefix-cms
         # - replacepath-cms
         - error-pages
+        - serviceheaders
 
   middlewares:
     default:
@@ -83,6 +117,11 @@ http:
           # - "403-404"
           # - "500"
           # - "503"
+
+    # cors
+    serviceheaders:
+      headers:
+        accesscontrolalloworiginlist: "*"
 
     # Redirect to https
     redirect-to-https:
@@ -151,6 +190,24 @@ http:
         passHostHeader: true
         servers:
           - url: '{{ env "NGINX_URL" }}'
+
+    postgreadmin:
+      loadBalancer:
+        passHostHeader: true
+        servers:
+          - url: '{{ env "PGADMIN_URL" }}'
+
+    files:
+      loadBalancer:
+        passHostHeader: true
+        servers:
+          - url: '{{ env "FILES_URL" }}'
+
+    bpmn:
+      loadBalancer:
+        passHostHeader: true
+        servers:
+          - url: '{{ env "BPMN_URL" }}'
 
 tcp:
   services:
