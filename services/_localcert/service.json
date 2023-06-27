@@ -28,6 +28,9 @@
     "outputvarregex": {
       "CERT_DOMAIN": ".*domain \"[*][.](.*)\".*"
     },
+    "env": {
+      "HOME": "${SERVICE_HOME}\\data"
+    },
     "globalenv": {
       "CERT_FILE": "${SERVICE_DATA_PATH}\\cert.pem",
       "CERT_KEY": "${SERVICE_DATA_PATH}\\key.pem"
