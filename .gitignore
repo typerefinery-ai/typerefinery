@@ -44,3 +44,6 @@ lerna-debug.log*
 
 # ignore electon status file.
 installed.txt
+
+# ignore cacerts file for java service
+services/_java/**/jre17/lib/security/cacerts
