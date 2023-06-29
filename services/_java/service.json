@@ -18,7 +18,7 @@
     },
     "globalenv": {
       "JAVA": "${SERVICE_EXECUTABLE}",
-      "JAVA_HOME": "${SERVICE_PATH}"
+      "JAVA_HOME": "${SERVICE_PATH}\\jre17"
     }
   }
 }
