@@ -46,4 +46,4 @@ lerna-debug.log*
 installed.txt
 
 # ignore cacerts file for java service
-services/_java/**/jre17/lib/security/cacerts
+services/_java/win32/jre17/lib/security/cacerts
