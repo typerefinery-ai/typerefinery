@@ -401,6 +401,24 @@ app.whenReady().then(() => {
       logger.log(`next run will be first run?: ${isFirstInstall()}`)
     }
   })
+
+  mainWindow.webContents.session.setCertificateVerifyProc(
+    (request, callback) => {
+      const { hostname } = request
+      logger.log(
+        `mainWindow.webContents.session.setCertificateVerifyPro ${hostname}`
+      )
+      // Verification logic.
+      // 0 - Indicates success and disables Certificate Transparency verification.
+      // -2 - Indicates failure.
+      // -3 - Uses the verification result from chromium.
+      if (hostname === "localhost" || hostname.endsWith(".localhost")) {
+        callback(0)
+      } else {
+        callback(-2)
+      }
+    }
+  )
 })
 
 // Quit when all windows are closed, except on macOS. There, it's common
