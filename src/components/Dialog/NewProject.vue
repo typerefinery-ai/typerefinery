@@ -400,7 +400,7 @@
         try {
           const payload = {
             icon: "fa fa-satellite",
-            url: "http://flow.typerefinery.localhost:8100",
+            url: "https://flow.typerefinery.localhost:8101",
             name: "Workflow",
             group: "typerefinery",
             reference: projectId,
