@@ -9,6 +9,7 @@ import {
   // nativeImage,
   crashReporter,
   shell,
+  type BrowserWindowConstructorOptions,
 } from "electron"
 import * as path from "path"
 import i18n from "./i18n"
@@ -218,6 +219,27 @@ function sendServiceLog(id: string, output: string) {
   logger.log("sendServiceLog", id, output)
 }
 
+const defaultMainWindowOptions: BrowserWindowConstructorOptions = {
+  minWidth: 680,
+  minHeight: 400,
+  show: false,
+  frame: false,
+  icon: path.join(__dirname, "assets/icon.ico"),
+  webPreferences: {
+    preload: SCRIPT_PRELOAD,
+    nodeIntegration: true,
+    contextIsolation: true,
+    spellcheck: true,
+  },
+}
+
+const defaultChildWindowOptions: BrowserWindowConstructorOptions = {
+  minWidth: 680,
+  minHeight: 400,
+  icon: path.join(__dirname, "assets/icon.ico"),
+  autoHideMenuBar: true,
+}
+
 // electron config
 async function createWindow() {
   logger.log(`createWindow`)
@@ -231,17 +253,7 @@ async function createWindow() {
   // Create the browser window.
   mainWindow = new BrowserWindow({
     ...mainWindowState,
-    minWidth: 680,
-    minHeight: 400,
-    show: false,
-    frame: false,
-    icon: path.join(__dirname, "assets/icon.ico"),
-    webPreferences: {
-      preload: SCRIPT_PRELOAD,
-      nodeIntegration: true,
-      contextIsolation: true,
-      spellcheck: true,
-    },
+    ...defaultMainWindowOptions,
   })
   // mainWindowState.manage(mainWindow)
 
@@ -419,6 +431,21 @@ app.whenReady().then(() => {
       }
     }
   )
+
+  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+    // Dynamically give position to opened window
+    logger.log(`mainWindow.webContents.setWindowOpenHandler ${url}`)
+
+    if (url !== "") {
+      return {
+        action: "allow",
+        overrideBrowserWindowOptions: {
+          ...defaultChildWindowOptions,
+        },
+      }
+    }
+    return { action: "deny" }
+  })
 })
 
 // Quit when all windows are closed, except on macOS. There, it's common
@@ -436,6 +463,7 @@ app.on("window-all-closed", () => {
 ipcMain.handle("open-win", (event, arg) => {
   logger.log("ipc open-win")
   const childWindow = new BrowserWindow({
+    ...defaultChildWindowOptions,
     webPreferences: {
       preload: SCRIPT_PRELOAD,
     },
