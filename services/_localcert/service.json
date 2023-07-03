@@ -58,7 +58,10 @@
     },
     "globalenv": {
       "CERT_FILE": "${SERVICE_DATA_PATH}\\mkcert.pem",
-      "CERT_KEY": "${SERVICE_DATA_PATH}\\mkcert.key"
+      "CERT_KEY": "${SERVICE_DATA_PATH}\\mkcert.key",
+      "CERT_PFX": "${SERVICE_DATA_PATH}\\mkcert.pfx",
+      "CAROOT_KEY": "${SERVICE_DATA_PATH}\\rootCA-key.pem",
+      "CAROOT_CERT": "${SERVICE_DATA_PATH}\\rootCA.pem"
     },
     "depend_on": [
       "java"
