@@ -1,7 +1,7 @@
 # ignore cacert updates
-win32/
+win32/**
 !win32/win32.zip
-darwin/
+darwin/**
 !darwin/darwin.zip
-linux/
+linux/**
 !linux/linux.zip
