@@ -476,17 +476,8 @@
         "type": "experimental",
         "service": "cms",
         "disabled": false,
-        "url": "https://${TRAEFIK_HOST_DOMAIN}:${TRAEFIK_HTTPS_PORT}/",
+        "url": "https://cms.typerefinery.localhost:8101/",
         "urlfomatted": "",
-        "iframeconfig": {
-          "name": "disable-x-frame-options",
-          "referrerpolicy": "strict-origin-when-cross-origin",
-          "sandbox": "allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation",
-          "allow": "encrypted-media; fullscreen; oversized-images; picture-in-picture; sync-xhr; geolocation;",
-          "allowfullscreen": "allowfullscreen",
-          "allowpaymentrequest": "",
-          "allowpopups": "allowpopups"
-        },
         "enabled": false,
         "subMenu": [
           {
@@ -498,14 +489,14 @@
         ]
       },
       {
-        "label": "Totaljs flow",
-        "icon": "pi pi-sitemap",
+        "label": "Flow",
+        "icon": "pi pi-th-large",
         "id": "totaljs",
         "to": "/experience/totaljs",
         "type": "experimental",
         "service": "totaljs-flow",
         "disabled": false,
-        "url": "http://localhost:8111/",
+        "url": "https://flow.typerefinery.localhost:8101/",
         "urlfomatted": "",
         "enabled": false,
         "subMenu": [
