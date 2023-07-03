@@ -320,9 +320,16 @@ app.on(
     logger.log("certificate-error", url)
     let isValidDomain = false
     const checkUrl = new URL(url)
-    if (checkUrl.hostname === "localhost") {
-      isValidDomain = true
-    } else if (checkUrl.hostname.endsWith(".localhost")) {
+
+    if (
+      checkUrl.hostname === "localhost" ||
+      checkUrl.hostname === "127.0.0.1" ||
+      checkUrl.hostname === "0.0.0.0" ||
+      checkUrl.hostname.startsWith("10.") ||
+      checkUrl.hostname.startsWith("172.16.") ||
+      checkUrl.hostname.startsWith("192.168.") ||
+      checkUrl.hostname.endsWith(".localhost")
+    ) {
       isValidDomain = true
     }
 
@@ -424,7 +431,15 @@ app.whenReady().then(() => {
       // 0 - Indicates success and disables Certificate Transparency verification.
       // -2 - Indicates failure.
       // -3 - Uses the verification result from chromium.
-      if (hostname === "localhost" || hostname.endsWith(".localhost")) {
+      if (
+        hostname === "localhost" ||
+        hostname === "127.0.0.1" ||
+        hostname === "0.0.0.0" ||
+        hostname.startsWith("10.") ||
+        hostname.startsWith("172.16.") ||
+        hostname.startsWith("192.168.") ||
+        hostname.endsWith(".localhost")
+      ) {
         callback(0)
       } else {
         callback(-2)
