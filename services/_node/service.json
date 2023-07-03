@@ -9,7 +9,7 @@
   "servicetype": 50,
   "servicelocation": 10,
   "execconfig": {
-    "debugLog": true,
+    "debuglog": true,
     "serviceorder": 1,
     "setuparchive": {
       "win32": {

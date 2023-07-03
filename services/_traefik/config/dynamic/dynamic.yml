@@ -1,23 +1,122 @@
 
 http:
   routers:
+    fastapi:
+      rule: Host(`api.typerefinery.localhost`)
+      # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/api`) ) || Host(`api.localhost`)
+      service: fastapi
+      entrypoints:
+        - web
+      middlewares:
+        - serviceheaders
+    fastapi-https:
+      rule: Host(`api.typerefinery.localhost`)
+      # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/api`) ) || Host(`api.localhost`)
+      service: fastapi
+      entrypoints:
+        - websecure
+      tls: true
+      middlewares:
+        - serviceheaders
+
+    files:
+      rule: Host(`files.typerefinery.localhost`)
+      # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/files`) ) || Host(`files.localhost`)
+      service: files
+      entrypoints:
+        - web
+      middlewares:
+        - serviceheaders
+    files-https:
+      rule: Host(`files.typerefinery.localhost`)
+      # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/files`) ) || Host(`files.localhost`)
+      service: files
+      entrypoints:
+        - websecure
+      tls: true
+      middlewares:
+        - serviceheaders
+
+    postgreadmin:
+      rule: Host(`pgadmin.typerefinery.localhost`)
+      # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/pgadmin`) ) || Host(`pgadmin.localhost`)
+      service: postgreadmin
+      entrypoints:
+        - web
+      middlewares:
+        - serviceheaders
+    postgreadmin-https:
+      rule: Host(`pgadmin.typerefinery.localhost`)
+      # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/pgadmin`) ) || Host(`pgadmin.localhost`)
+      service: postgreadmin
+      entrypoints:
+        - websecure
+      tls: true
+      middlewares:
+        - serviceheaders
+
+    bpmn:
+      rule: Host(`bpmn.typerefinery.localhost`)
+      # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/bpmn`) ) || Host(`bpmn.localhost`)
+      service: bpmn
+      entrypoints:
+        - web
+      middlewares:
+        - serviceheaders
+    bpmn-https:
+      rule: Host(`bpmn.typerefinery.localhost`)
+      # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/bpmn`) ) || Host(`bpmn.localhost`)
+      service: bpmn
+      entrypoints:
+        - websecure
+      tls: true
+      middlewares:
+        - serviceheaders
+
     nginx:
-      rule: Host(`nginx.localhost`)
+      rule: Host(`nginx.typerefinery.localhost`)
       # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/nginx`) ) || Host(`nginx.localhost`)
       service: nginx
       entrypoints:
         - web
+    nginx-https:
+      rule: Host(`nginx.typerefinery.localhost`)
+      # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/nginx`) ) || Host(`nginx.localhost`)
+      service: nginx
+      entrypoints:
         - websecure
+      tls: true
+
     flow:
-      rule: Host(`flow.localhost`)
+      rule: Host(`flow.typerefinery.localhost`)
       # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/flow`) ) || Host(`flow.localhost`)
       service: flow
       entrypoints:
         - web
+    flow-https:
+      rule: Host(`flow.typerefinery.localhost`)
+      # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/flow`) ) || Host(`flow.localhost`)
+      service: flow
+      entrypoints:
         - websecure
+      tls: true
+
+    tms:
+      rule: Host(`tms.typerefinery.localhost`)
+      # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/tms`) ) || Host(`tms.localhost`)
+      service: tms
+      entrypoints:
+        - web
+    tmshttps:
+      rule: Host(`tms.typerefinery.localhost`)
+      # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/tms`) ) || Host(`tms.localhost`)
+      service: tms
+      entrypoints:
+        - websecure
+      tls: true
 
     traefikdashboard:
-      rule: Host(`traefik.localhost`)
+      rule: Host(`traefik.typerefinery.localhost`)
       service: api@internal
       entrypoints: web
       middlewares:
@@ -28,10 +127,19 @@ http:
       priority: 1
       entryPoints:
         - web
+      service: noop@internal
+      middlewares:
+        - error-pages
+
+    error-router-https:
+      rule: HostRegexp(`{host:.+}`)
+      priority: 1
+      entryPoints:
         - websecure
       service: noop@internal
       middlewares:
         - error-pages
+      tls: true
 
     # http-catchall:
     #   rule: "HostRegexp(`{host:.+}`)"
@@ -40,18 +148,30 @@ http:
     #   service: noop@internal
 
     cms:
-      rule: Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`)
+      rule: Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) || Host(`cms.typerefinery.localhost`)
       # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/cms`) ) || Host(`cms.localhost`)
       # rule: "Host(`cms.user.typerefinery.ai`)"
       entryPoints:
         - web
+      service: cms
+      middlewares:
+        # - stripprefix-cms
+        # - replacepath-cms
+        - error-pages
+        - serviceheaders
+    cms-https:
+      rule: Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) || Host(`cms.typerefinery.localhost`)
+      # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/cms`) ) || Host(`cms.localhost`)
+      # rule: "Host(`cms.user.typerefinery.ai`)"
+      entryPoints:
         - websecure
       service: cms
       tls: true
       middlewares:
-        - stripprefix-cms
+        # - stripprefix-cms
         # - replacepath-cms
         - error-pages
+        - serviceheaders
 
   middlewares:
     default:
@@ -69,6 +189,11 @@ http:
           # - "403-404"
           # - "500"
           # - "503"
+
+    # cors
+    serviceheaders:
+      headers:
+        accesscontrolalloworiginlist: "*"
 
     # Redirect to https
     redirect-to-https:
@@ -131,12 +256,32 @@ http:
         passHostHeader: true
         servers:
           - url: '{{ env "MESSAGESERVICE_URL" }}'
+        sticky:
+          cookie: true
 
     nginx:
       loadBalancer:
         passHostHeader: true
         servers:
           - url: '{{ env "NGINX_URL" }}'
+
+    postgreadmin:
+      loadBalancer:
+        passHostHeader: true
+        servers:
+          - url: '{{ env "PGADMIN_URL" }}'
+
+    files:
+      loadBalancer:
+        passHostHeader: true
+        servers:
+          - url: '{{ env "FILES_URL" }}'
+
+    bpmn:
+      loadBalancer:
+        passHostHeader: true
+        servers:
+          - url: '{{ env "BPMN_URL" }}'
 
 tcp:
   services:

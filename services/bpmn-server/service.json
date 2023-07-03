@@ -22,6 +22,10 @@
       "MONGO_DB_URL": "mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@127.0.0.1:${MONGO_PORT}?retryWrites=true&w=majority&directConnection=true",
       "MONGO_DB_NAME": "bpmn"
     },
+    "globalenv": {
+      "BPMN_URL": "http://localhost:${SERVICE_PORT}",
+      "BPMN_PORT": "${SERVICE_PORT}"
+    },
     "datapath": "./processes",
     "commandline": {
       "win32": "app",

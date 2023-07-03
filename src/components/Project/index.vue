@@ -97,7 +97,10 @@
         }
 
         const W3CWebSocket = websocket.w3cwebsocket
-        const client = new W3CWebSocket("ws://127.0.0.1:8112/$tms/")
+        //TODO: get this from env vars
+        const client = new W3CWebSocket(
+          "wss://tms.typerefinery.localhost:8101/$tms/"
+        )
         client.onopen = function () {
           console.log("WebSocket Client Connected")
           console.log(

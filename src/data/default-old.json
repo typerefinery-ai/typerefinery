@@ -125,7 +125,7 @@
               "label": "Query 1",
               "icon": "query",
               "description": "sample query",
-              "endpoint": "http://localhost:8000/algorithm",
+              "endpoint": "https://api.typerefinery.localhost:8101/algorithm",
               "database": "typerefinery",
               "query": "match $a isa log, has logName 'L1';\n$b isa event, has eventName $c;\n$d (owner: $a, item: $b) isa trace,\nhas traceId $e, has index $f;\n offset 0; limit 10;",
               "dataPath": "",
@@ -170,7 +170,7 @@
               "label": "Query 2",
               "icon": "query",
               "description": "sample query",
-              "endpoint": "http://localhost:8000/algorithm",
+              "endpoint": "https://api.typerefinery.localhost:8101/algorithm",
               "query": "match $a isa log, has logName 'L1';\n$b isa event, has eventName $c;\n$d (owner: $a, item: $b) isa trace,\nhas traceId $e, has index $f;\n offset 0; limit 10;",
               "dataPath": "",
               "connection": {

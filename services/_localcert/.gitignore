@@ -1,3 +1,7 @@
 
 data/*
 !**/.gitkeep
+# todo remove once api.localcert.dev/domain is up
+cert.pem
+key.pem
+acme_account.json

@@ -9,6 +9,7 @@ import {
   // nativeImage,
   crashReporter,
   shell,
+  type BrowserWindowConstructorOptions,
 } from "electron"
 import * as path from "path"
 import i18n from "./i18n"
@@ -218,6 +219,27 @@ function sendServiceLog(id: string, output: string) {
   logger.log("sendServiceLog", id, output)
 }
 
+const defaultMainWindowOptions: BrowserWindowConstructorOptions = {
+  minWidth: 680,
+  minHeight: 400,
+  show: false,
+  frame: false,
+  icon: path.join(__dirname, "assets/icon.ico"),
+  webPreferences: {
+    preload: SCRIPT_PRELOAD,
+    nodeIntegration: true,
+    contextIsolation: true,
+    spellcheck: true,
+  },
+}
+
+const defaultChildWindowOptions: BrowserWindowConstructorOptions = {
+  minWidth: 680,
+  minHeight: 400,
+  icon: path.join(__dirname, "assets/icon.ico"),
+  autoHideMenuBar: true,
+}
+
 // electron config
 async function createWindow() {
   logger.log(`createWindow`)
@@ -231,17 +253,7 @@ async function createWindow() {
   // Create the browser window.
   mainWindow = new BrowserWindow({
     ...mainWindowState,
-    minWidth: 680,
-    minHeight: 400,
-    show: false,
-    frame: false,
-    icon: path.join(__dirname, "assets/icon.ico"),
-    webPreferences: {
-      preload: SCRIPT_PRELOAD,
-      nodeIntegration: true,
-      contextIsolation: true,
-      spellcheck: true,
-    },
+    ...defaultMainWindowOptions,
   })
   // mainWindowState.manage(mainWindow)
 
@@ -300,6 +312,36 @@ async function createWindow() {
     mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show()
   })
 }
+
+//add override for certificate errors
+app.on(
+  "certificate-error",
+  (event, webContents, url, error, certificate, callback) => {
+    logger.log("certificate-error", url)
+    let isValidDomain = false
+    const checkUrl = new URL(url)
+
+    if (
+      checkUrl.hostname === "localhost" ||
+      checkUrl.hostname === "127.0.0.1" ||
+      checkUrl.hostname === "0.0.0.0" ||
+      checkUrl.hostname.startsWith("10.") ||
+      checkUrl.hostname.startsWith("172.16.") ||
+      checkUrl.hostname.startsWith("192.168.") ||
+      checkUrl.hostname.endsWith(".localhost")
+    ) {
+      isValidDomain = true
+    }
+
+    if (isValidDomain) {
+      // Verification logic.
+      event.preventDefault()
+      callback(true)
+    } else {
+      callback(false)
+    }
+  }
+)
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
@@ -378,6 +420,47 @@ app.whenReady().then(() => {
       logger.log(`next run will be first run?: ${isFirstInstall()}`)
     }
   })
+
+  mainWindow.webContents.session.setCertificateVerifyProc(
+    (request, callback) => {
+      const { hostname } = request
+      logger.log(
+        `mainWindow.webContents.session.setCertificateVerifyPro ${hostname}`
+      )
+      // Verification logic.
+      // 0 - Indicates success and disables Certificate Transparency verification.
+      // -2 - Indicates failure.
+      // -3 - Uses the verification result from chromium.
+      if (
+        hostname === "localhost" ||
+        hostname === "127.0.0.1" ||
+        hostname === "0.0.0.0" ||
+        hostname.startsWith("10.") ||
+        hostname.startsWith("172.16.") ||
+        hostname.startsWith("192.168.") ||
+        hostname.endsWith(".localhost")
+      ) {
+        callback(0)
+      } else {
+        callback(-2)
+      }
+    }
+  )
+
+  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+    // Dynamically give position to opened window
+    logger.log(`mainWindow.webContents.setWindowOpenHandler ${url}`)
+
+    if (url !== "") {
+      return {
+        action: "allow",
+        overrideBrowserWindowOptions: {
+          ...defaultChildWindowOptions,
+        },
+      }
+    }
+    return { action: "deny" }
+  })
 })
 
 // Quit when all windows are closed, except on macOS. There, it's common
@@ -395,6 +478,7 @@ app.on("window-all-closed", () => {
 ipcMain.handle("open-win", (event, arg) => {
   logger.log("ipc open-win")
   const childWindow = new BrowserWindow({
+    ...defaultChildWindowOptions,
     webPreferences: {
       preload: SCRIPT_PRELOAD,
     },

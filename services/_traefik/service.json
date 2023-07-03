@@ -9,8 +9,8 @@
   "servicelocation": 10,
   "execconfig": {
     "serviceorder": 3,
-    "serviceport": 8100,
-    "serviceconsoleport": 8100,
+    "serviceport": 8102,
+    "serviceconsoleport": 8102,
     "portmapping": {
       "HTTP": "9100",
       "HTTPS": "9200",
@@ -32,7 +32,18 @@
       "default": "bin\\traefik"
     },
     "globalenv": {
-      "TRAEFIK_HTTP_PORT": "${SERVICE_PORT}",
+      "TRAEFIK_NGINX_URL": "https://nginx.typerefinery.localhost:8101/",
+      "TRAEFIK_FLOW_URL": "https://flow.typerefinery.localhost:8101/",
+      "TRAEFIK_FLOW_WSS_URL": "wss://flow.typerefinery.localhost:8101",
+      "TRAEFIK_CMS_URL": "https://cms.typerefinery.localhost:8101/",
+      "TRAEFIK_TMS_URL": "https://tms.typerefinery.localhost:8101/",
+      "TRAEFIK_TMS_WSS_URL": "wss://tms.typerefinery.localhost:8101",
+      "TRAEFIK_FASTAPI_URL": "https://api.typerefinery.localhost:8101/",
+      "TRAEFIK_PGADMIN_URL": "https://pgadmin.typerefinery.localhost:8101/",
+      "TRAEFIK_FILES_URL": "https://files.typerefinery.localhost:8101/",
+      "TRAEFIK_BPMN_URL": "https://bpmn.typerefinery.localhost:8101/",
+      "TRAEFIK_TRAEFIK_URL": "https://traefik.typerefinery.localhost:8101/",
+      "TRAEFIK_HTTP_PORT": "8100",
       "TRAEFIK_HTTPS_PORT": "8101",
       "TRAEFIK_MONGO_PORT": "8108",
       "TRAEFIK_TYPEDB_PORT": "8109",

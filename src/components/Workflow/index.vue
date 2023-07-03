@@ -7,7 +7,7 @@
     >
       <pane ref="flowPane" size="50">
         <div class="flow_wrapper">
-          <iframe src="http://localhost:8111/"></iframe>
+          <iframe src="https://flow.typerefinery.localhost:8101"></iframe>
         </div>
       </pane>
       <pane ref="graphPane" size="50">

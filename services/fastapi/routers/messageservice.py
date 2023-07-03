@@ -36,7 +36,7 @@ class PayloadSchema(BaseModel):
 @Logger.catch
 @router.post("/payload/create/{topic}")
 async def flow_create(topic: str, request: Request, response: Response, body: dict = Body(...)):
-    service_url_create = "ws://localhost:8112/$tms"
+    service_url_create = os.getenv("MESSAGESERVICE_HOST", "ws://localhost:8112")
     print(json.dumps(body))
     data = { "type": 'subscribe', "id": 'payload_insert', "data": { "payload":  json.dumps(body), "topic": topic } }
     subscribers = { "type": "subscribers", "subscribers": [] }

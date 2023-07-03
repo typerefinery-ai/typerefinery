@@ -129,7 +129,7 @@ export interface ExecConfig {
   servicedebugport?: number
   servicehost?: string
   healthcheck?: HealthCheck
-  debugLog?: boolean
+  debuglog?: boolean
   outputvarregex?: { [key: string]: string } // used to check values of console output stdout key is variable, value is regex
   ignoreexiterror?: boolean
 }
@@ -220,7 +220,7 @@ export class Service extends EventEmitter<ServiceEvent> {
   #processEnv: { [key: string]: string } = {} // passed to process
   #globalEnv: { [key: string]: string } = {} // pass when service was created
   #healthCheckTimeout: any
-  #debugLog: boolean
+  #debuglog: boolean
   #exitCode: number | null | undefined
   #exitSignal: NodeJS.Signals | null | undefined
   constructor(
@@ -253,7 +253,7 @@ export class Service extends EventEmitter<ServiceEvent> {
     this.#events = events
     this.#serviceManager = serviceManager
     this.#id = this.#options.id
-    this.#debugLog = this.#options.execconfig?.debugLog || false
+    this.#debuglog = this.#options.execconfig?.debuglog || false
     this.#serviceport = this.#options.execconfig?.serviceport || 0
     this.#servicedebugport = this.#options.execconfig?.servicedebugport || 0
     this.#servicehost = this.#options.execconfig?.servicehost || "localhost"
@@ -1690,7 +1690,7 @@ export class Service extends EventEmitter<ServiceEvent> {
   #log(message: any) {
     this.#logger.log(message)
     this.emit("log", this.#id, message)
-    if (this.#debugLog) {
+    if (this.#debuglog) {
       this.#logWrite("info", message)
     }
   }
@@ -1698,7 +1698,7 @@ export class Service extends EventEmitter<ServiceEvent> {
   #warn(message: any) {
     this.#logger.warn(message)
     this.emit("log", this.#id, message)
-    if (this.#debugLog) {
+    if (this.#debuglog) {
       this.#logWrite("warn", message)
     }
   }
@@ -1706,7 +1706,7 @@ export class Service extends EventEmitter<ServiceEvent> {
   #debug(message: any) {
     this.#logger.debug(message)
     this.emit("log", this.#id, message)
-    if (this.#debugLog) {
+    if (this.#debuglog) {
       this.#logWrite("debug", message)
     }
   }

@@ -1,0 +1,2 @@
+# ignore cacert updates
+**/jre17/lib/security/cacerts
