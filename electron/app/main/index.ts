@@ -37,6 +37,20 @@ import { Service } from "./Service"
 
 import updateElectronApp from "update-electron-app"
 
+// add support for self signed certificates
+app.commandLine.appendSwitch("ignore-certificate-errors", "true")
+
+// // allow insecure hosts config
+// let allowedInsecureHosts: [
+//   "^localhost$",
+//   "^127.0.0.1$",
+//   "^0.0.0.0$",
+//   "^10.",
+//   "^172.16.",
+//   "^192.168.",
+//   ".localhost$"
+// ]
+
 // setup crash reporter first
 if (getEnvConfigWithDefault("CRASH_REPORTER_SUBMIT_URL")) {
   // Start crash reporter before setting up logging
@@ -314,34 +328,24 @@ async function createWindow() {
 }
 
 //add override for certificate errors
-app.on(
-  "certificate-error",
-  (event, webContents, url, error, certificate, callback) => {
-    logger.log("certificate-error", url)
-    let isValidDomain = false
-    const checkUrl = new URL(url)
+// app.on(
+//   "certificate-error",
+//   (event, webContents, url, error, certificate, callback) => {
+//     let isValidDomain = false
+//     const checkUrl = new URL(url)
 
-    if (
-      checkUrl.hostname === "localhost" ||
-      checkUrl.hostname === "127.0.0.1" ||
-      checkUrl.hostname === "0.0.0.0" ||
-      checkUrl.hostname.startsWith("10.") ||
-      checkUrl.hostname.startsWith("172.16.") ||
-      checkUrl.hostname.startsWith("192.168.") ||
-      checkUrl.hostname.endsWith(".localhost")
-    ) {
-      isValidDomain = true
-    }
+//     isValidDomain = isHostAllowedInsecure(checkUrl.hostname)
+//     logger.log("certificate-error", url, checkUrl.hostname, isValidDomain)
 
-    if (isValidDomain) {
-      // Verification logic.
-      event.preventDefault()
-      callback(true)
-    } else {
-      callback(false)
-    }
-  }
-)
+//     if (isValidDomain) {
+//       // Verification logic.
+//       event.preventDefault()
+//       callback(true)
+//     } else {
+//       callback(false)
+//     }
+//   }
+// )
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
@@ -421,31 +425,23 @@ app.whenReady().then(() => {
     }
   })
 
-  mainWindow.webContents.session.setCertificateVerifyProc(
-    (request, callback) => {
-      const { hostname } = request
-      logger.log(
-        `mainWindow.webContents.session.setCertificateVerifyPro ${hostname}`
-      )
-      // Verification logic.
-      // 0 - Indicates success and disables Certificate Transparency verification.
-      // -2 - Indicates failure.
-      // -3 - Uses the verification result from chromium.
-      if (
-        hostname === "localhost" ||
-        hostname === "127.0.0.1" ||
-        hostname === "0.0.0.0" ||
-        hostname.startsWith("10.") ||
-        hostname.startsWith("172.16.") ||
-        hostname.startsWith("192.168.") ||
-        hostname.endsWith(".localhost")
-      ) {
-        callback(0)
-      } else {
-        callback(-2)
-      }
-    }
-  )
+  // mainWindow.webContents.session.setCertificateVerifyProc(
+  //   (request, callback) => {
+  //     const { hostname } = request
+  //     logger.log(
+  //       `mainWindow.webContents.session.setCertificateVerifyPro ${hostname}`
+  //     )
+  //     // Verification logic.
+  //     // 0 - Indicates success and disables Certificate Transparency verification.
+  //     // -2 - Indicates failure.
+  //     // -3 - Uses the verification result from chromium.
+  //     if (isHostAllowedInsecure(hostname)) {
+  //       callback(0)
+  //     } else {
+  //       callback(-2)
+  //     }
+  //   }
+  // )
 
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
     // Dynamically give position to opened window
@@ -623,4 +619,17 @@ function addIpcEvents(window: BrowserWindow) {
       implementation.bind(ipcImplementation) as any
     )
   })
+}
+
+// check if host matches allow insecure hosts config
+function isHostAllowedInsecure(hostname: string): boolean {
+  // check if host matches hosts regex
+  for (const regex of allowedInsecureHosts) {
+    if (hostname.match(regex)) {
+      logger.log(`isHostAllowedInsecure ${hostname} true`)
+      return true
+    }
+  }
+  logger.log(`isHostAllowedInsecure ${hostname} false`)
+  return false
 }
