@@ -1,27 +1,8 @@
 <template>
-  <div class="config-container">
-    <div class="config-container-head">
-      <Button
-        :label="$t(`components.output.viz`)"
-        class="p-button-raised"
-        :class="{
-          'p-button-text p-button-plain': activeView !== 'viz',
-        }"
-        @click="handleView('viz')"
-      />
-      <!-- <Button
-        :label="$t(`components.output.table`)"
-        class="p-button-raised"
-        :class="{
-          'p-button-text p-button-plain': activeView !== 'table',
-        }"
-        @click="handleView('table')"
-      /> -->
-    </div>
-    <div class="config-container-content">
-      <!-- <graph-view v-show="activeView === 'viz'" /> -->
-      <object v-show="activeView === 'viz' && path" :data="path"></object>
-      <!-- <table-view v-show="activeView === 'table'" /> -->
+  <div class="workflow_content">
+    <div class="flow_wrapper">
+      <iframe :src="path"></iframe>
+      <div v-show="resizing" class="flow-overlay"></div>
     </div>
   </div>
 </template>
@@ -92,41 +73,30 @@
 </script>
 
 <style lang="scss" scoped>
-  .config-container {
+  .workflow_content {
     height: 100%;
-    &-head {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 10px;
-      border-bottom: 1px solid var(--surface-border);
-      flex-flow: wrap;
+  }
 
-      button {
-        margin-right: 5px;
-      }
-    }
-    &-content {
-      display: block;
-      margin: 1rem;
+  .flow_wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    position: relative;
+
+    .flow-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
       height: 100%;
+      background-color: transparent;
+      z-index: 2;
+    }
 
-      object {
-        height: 100%;
-        width: 100%;
-      }
-
-      .field {
-        label {
-          display: block;
-        }
-      }
-      .table {
-        display: flex;
-        align-items: center;
-        border: 1px solid var(--surface-border);
-        border-radius: 4px;
-      }
+    iframe {
+      width: 100%;
+      height: 100%;
     }
   }
 </style>
