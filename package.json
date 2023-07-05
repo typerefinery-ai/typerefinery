@@ -235,6 +235,10 @@
       "installerIcon": "dist/main/assets/icon.ico",
       "uninstallerIcon": "dist/main/assets/icon.ico"
     },
+    "squirrelWindows": {
+      "iconUrl": "https://github.com/typerefinery-ai/typerefinery/blob/develop/electron/static/assets/icon.ico?raw=true",
+      "msi": true
+    },
     "nsisWeb": {
       "menuCategory": false,
       "oneClick": false,
