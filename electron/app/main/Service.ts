@@ -1315,10 +1315,9 @@ export class Service extends EventEmitter<ServiceEvent> {
     if (this.isStarted) {
       this.#logWrite(
         "info",
-        `quick fail already started, isStarted:${this.isStarted}.`
-      )
-      this.#log(
-        `service ${this.#id} already started with pid ${this.#process?.pid}`
+        `quick fail already started, isStarted:${this.isStarted}, pid ${
+          this.#process?.pid
+        }.`
       )
       return
     }

@@ -6,7 +6,7 @@
   "electronWindowTitle": "TypeRefinery",
   "companyName": "Innovolve.ai",
   "author": "TypeRefinery.ai",
-  "version": "2023.6.16",
+  "version": "2023.7.6",
   "appWidth": 1366,
   "appHeight": 768,
   "proxy": "http://127.0.0.1:8000",
@@ -234,6 +234,10 @@
       "installerHeaderIcon": "dist/main/assets/icon.ico",
       "installerIcon": "dist/main/assets/icon.ico",
       "uninstallerIcon": "dist/main/assets/icon.ico"
+    },
+    "squirrelWindows": {
+      "iconUrl": "https://github.com/typerefinery-ai/typerefinery/blob/develop/electron/static/assets/icon.ico?raw=true",
+      "msi": true
     },
     "nsisWeb": {
       "menuCategory": false,
