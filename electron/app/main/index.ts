@@ -621,15 +621,15 @@ function addIpcEvents(window: BrowserWindow) {
   })
 }
 
-// check if host matches allow insecure hosts config
-function isHostAllowedInsecure(hostname: string): boolean {
-  // check if host matches hosts regex
-  for (const regex of allowedInsecureHosts) {
-    if (hostname.match(regex)) {
-      logger.log(`isHostAllowedInsecure ${hostname} true`)
-      return true
-    }
-  }
-  logger.log(`isHostAllowedInsecure ${hostname} false`)
-  return false
-}
+// // check if host matches allow insecure hosts config
+// function isHostAllowedInsecure(hostname: string): boolean {
+//   // check if host matches hosts regex
+//   for (const regex of allowedInsecureHosts) {
+//     if (hostname.match(regex)) {
+//       logger.log(`isHostAllowedInsecure ${hostname} true`)
+//       return true
+//     }
+//   }
+//   logger.log(`isHostAllowedInsecure ${hostname} false`)
+//   return false
+// }
