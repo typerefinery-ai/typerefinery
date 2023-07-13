@@ -32,6 +32,7 @@
       "default": "bin\\traefik"
     },
     "globalenv": {
+      "TRAEFIK_JUPYTERLAB_URL": "https://jupyterlab.typerefinery.localhost:8101/",
       "TRAEFIK_NGINX_URL": "https://nginx.typerefinery.localhost:8101/",
       "TRAEFIK_FLOW_URL": "https://flow.typerefinery.localhost:8101/",
       "TRAEFIK_FLOW_WSS_URL": "wss://flow.typerefinery.localhost:8101",

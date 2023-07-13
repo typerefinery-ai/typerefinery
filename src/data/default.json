@@ -476,9 +476,9 @@
         "type": "experimental",
         "service": "cms",
         "disabled": false,
-        "url": "https://cms.typerefinery.localhost:8101/",
+        "url": "${TRAEFIK_CMS_URL}",
         "urlfomatted": "",
-        "enabled": false,
+        "enabled": true,
         "subMenu": [
           {
             "id": "load-data",
@@ -496,9 +496,29 @@
         "type": "experimental",
         "service": "totaljs-flow",
         "disabled": false,
-        "url": "https://flow.typerefinery.localhost:8101/",
+        "url": "${TRAEFIK_FLOW_URL}",
         "urlfomatted": "",
-        "enabled": false,
+        "enabled": true,
+        "subMenu": [
+          {
+            "id": "load-data",
+            "to": "#",
+            "experimental": false,
+            "icon": "pi pi-server"
+          }
+        ]
+      },
+      {
+        "label": "Jupyter Lab",
+        "icon": "pi pi-th-large",
+        "id": "jupyterlab",
+        "to": "/experience/jupyterlab",
+        "type": "experimental",
+        "service": "jupyterlab",
+        "disabled": false,
+        "url": "${TRAEFIK_JUPYTERLAB_URL}",
+        "urlfomatted": "",
+        "enabled": true,
         "subMenu": [
           {
             "id": "load-data",
@@ -543,6 +563,7 @@
     "TRAEFIK_TYPEDB_PORT": "8109",
     "TRAEFIK_INTERNAL_PORT": "8102",
     "TRAEFIK_NGINX_URL": "https://nginx.typerefinery.localhost:8101/",
+    "TRAEFIK_JUPYTERLAB_URL": "https://jupyterlab.typerefinery.localhost:8101/",
     "TRAEFIK_FLOW_URL": "https://flow.typerefinery.localhost:8101/",
     "TRAEFIK_CMS_URL": "https://cms.typerefinery.localhost:8101/",
     "TRAEFIK_TMS_URL": "https://tms.typerefinery.localhost:8101/",

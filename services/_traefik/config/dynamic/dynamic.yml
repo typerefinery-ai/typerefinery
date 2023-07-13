@@ -115,6 +115,20 @@ http:
         - websecure
       tls: true
 
+    jupyterlab:
+      rule: Host(`jupyterlab.typerefinery.localhost`)
+      # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/nginx`) ) || Host(`nginx.localhost`)
+      service: jupyterlab
+      entrypoints:
+        - web
+    jupyterlab-https:
+      rule: Host(`jupyterlab.typerefinery.localhost`)
+      # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/nginx`) ) || Host(`nginx.localhost`)
+      service: jupyterlab
+      entrypoints:
+        - websecure
+      tls: true
+
     traefikdashboard:
       rule: Host(`traefik.typerefinery.localhost`)
       service: api@internal
@@ -282,6 +296,12 @@ http:
         passHostHeader: true
         servers:
           - url: '{{ env "BPMN_URL" }}'
+
+    jupyterlab:
+      loadBalancer:
+        passHostHeader: true
+        servers:
+          - url: '{{ env "JUPYTERLAB_URL" }}'
 
 tcp:
   services:

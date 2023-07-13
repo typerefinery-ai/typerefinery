@@ -32,8 +32,8 @@
     },
     "datapath": "notebooks",
     "globalenv": {
-      "JUPYTER_URL": "http://localhost:${SERVICE_PORT}",
-      "JUPYTER_PORT": "${SERVICE_PORT}"
+      "JUPYTERLAB_URL": "http://localhost:${SERVICE_PORT}",
+      "JUPYTERLAB_PORT": "${SERVICE_PORT}"
     },
     "commandline": {
       "default": " -m jupyter lab --ServerApp.root_dir=${SERVICE_DATA_PATH} --no-browser"
