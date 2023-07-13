@@ -4,5 +4,5 @@ typedb-client
 argparse
 loguru
 websocket-client
-grpcio==1.44.0
+grpcio==1.53.0
 flask
