@@ -633,7 +633,20 @@ export class Service extends EventEmitter<ServiceEvent> {
     for (const key in serviceEnvVar) {
       if (serviceEnvVar[key]) {
         const value = serviceEnvVar[key]
-        envVar[key] = this.#getServiceCommand(value, this)
+        // handle array values
+        if (Array.isArray(value)) {
+          // for each value in array check if it contains ${} and replace it with the value
+          for (let i = 0; i < value.length; i++) {
+            if (this.isStringHasVariables(value[i])) {
+              value[i] = this.#getServiceCommand(value[i], this)
+            }
+          }
+          // if value is an array join with ; for windows and : for linux
+          envVar[key] = value.join(this.isWindows ? ";" : ":")
+        } else {
+          //single value
+          envVar[key] = this.#getServiceCommand(value, this)
+        }
       }
     }
 
@@ -663,7 +676,20 @@ export class Service extends EventEmitter<ServiceEvent> {
     for (const key in serviceEnvVar) {
       if (serviceEnvVar[key]) {
         const value = serviceEnvVar[key]
-        envVar[key] = this.#getServiceCommand(value, this)
+        // handle array values
+        if (Array.isArray(value)) {
+          // for each value in array check if it contains ${} and replace it with the value
+          for (let i = 0; i < value.length; i++) {
+            if (this.isStringHasVariables(value[i])) {
+              value[i] = this.#getServiceCommand(value[i], this)
+            }
+          }
+          // if value is an array join with ; for windows and : for linux
+          envVar[key] = value.join(this.isWindows ? ";" : ":")
+        } else {
+          //single value
+          envVar[key] = this.#getServiceCommand(value, this)
+        }
       }
     }
     return envVar
