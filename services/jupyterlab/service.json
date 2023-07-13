@@ -1,0 +1,52 @@
+{
+  "id": "jupyterlab",
+  "name": "JupyterLab",
+  "description": "JupyterLab",
+  "enabled": true,
+  "status": "-1",
+  "icon": "pi pi-cog",
+  "servicelocation": 10,
+  "execconfig": {
+    "execservice": { "id": "python" },
+    "setup": {
+      "win32": [
+        "-m jupyter lab build"
+      ],
+      "darwin": [
+        "-m jupyter lab build"
+      ],
+      "linux": [
+        "-m jupyter lab build"
+      ],
+      "default": [
+        "-m jupyter lab build"
+      ]
+    },
+    "env": {
+      "PYTHONPATH": "${PYTHON_HOME}",
+      "NODE_HOME": "${NODE_HOME}",
+      "PATH": ["${PYTHON_HOME}","${NODE_HOME}"],
+      "JUPYTERLAB_DIR": "${SERVICE_PATH}/data",
+      "JUPYTERLAB_NOTEBOOKS_DIR": "${SERVICE_PATH}/notebooks",
+      "JUPYTER_CONFIG_DIR": "${SERVICE_PATH}/config"
+    },
+    "datapath": "notebooks",
+    "globalenv": {
+      "API_URL": "http://localhost:${SERVICE_PORT}",
+      "API_PORT": "${SERVICE_PORT}"
+    },
+    "commandline": {
+      "default": " -m jupyter lab --ServerApp.root_dir=${SERVICE_DATA_PATH} --no-browser"
+    },
+    "serviceport": 8888,
+    "healthcheck": {
+      "type": "http",
+      "url": "http://localhost:${SERVICE_PORT}",
+      "expected_status": 200,
+      "retries": 180
+    },
+    "depend_on": [
+      "python"
+    ]
+  }
+}

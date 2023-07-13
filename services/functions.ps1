@@ -252,17 +252,21 @@ Function SetEnvVar
 
 Function SetPath
 {
-  [Cmdletbinding()]
-  param
-  (
-    [Parameter(ValueFromPipeline)]
-    [string]$PATH = $args[0]
-  )
+  # [Cmdletbinding()]
+  # param
+  # (
+  #   [Parameter(ValueFromPipeline)]
+  #   [string]$PATH = $args[0]
+  # )
 
-  printSectionLine "Setting PATH to ${PATH}"
+  $PATHS = $args[0..($args.Length-1)]
+  $PATH_SEPARATOR = ( $IsWindows ? ";" : ":")
+  $PATHS_STRING = $PATHS -join ( $IsWindows ? ";" : ":")
+
+  printSectionLine "Setting PATH to ${PATHS_STRING}"
   printSectionLine "Current PATH to ${env:PATH}"
 
-  $env:PATH = "${PATH}"
+  $env:PATH = "${PATHS_STRING}"
 
   #SetEnvPath "PATH" $PATH
 
@@ -298,7 +302,7 @@ Function SetEnvPath
       }
     }
 
-    echo "PATHS_STRING ${PATHS_STRING}"
+    # echo "PATHS_STRING ${PATHS_STRING}"
 
     # if $PATHS_STRING is empty, then skip
     if ( [string]::IsNullOrEmpty($PATHS_STRING) ) {

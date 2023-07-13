@@ -4,3 +4,5 @@ typedb-client
 argparse
 loguru
 websocket-client
+jupyterlab
+

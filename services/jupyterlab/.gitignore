@@ -1,0 +1,7 @@
+
+config/*
+data/*
+notebooks/*
+user/*
+workspaces/*
+!**/.gitkeep
