@@ -771,6 +771,18 @@ export class Service extends EventEmitter<ServiceEvent> {
     return this.#options.enabled
   }
 
+  get isUtility() {
+    return this.#options.servicetype === ServiceType.UTILITY
+  }
+
+  get isAvailable() {
+    return (
+      this.#status === ServiceStatus.AVAILABLE ||
+      this.#status === ServiceStatus.INSTALLED ||
+      this.#status === ServiceStatus.COMPLETED
+    )
+  }
+
   get isStarted() {
     return (
       this.#status === ServiceStatus.STARTED ||
@@ -876,7 +888,7 @@ export class Service extends EventEmitter<ServiceEvent> {
         this.#options.execconfig?.ignoreexiterror ? "ignoring" : "not ignoring"
       }}`
     )
-    if (this.#options.servicetype === ServiceType.UTILITY) {
+    if (this.isUtility) {
       if (code === 0 || this.#options.execconfig?.ignoreexiterror) {
         this.#setStatus(ServiceStatus.COMPLETED)
       } else {
@@ -1530,7 +1542,7 @@ export class Service extends EventEmitter<ServiceEvent> {
           this.#register(process)
 
           // if service is utility, wait for it to exit
-          if (this.#options.servicetype === ServiceType.UTILITY) {
+          if (this.isUtility) {
             this.#log(`service ${this.id} is utility, waiting for exit.`)
             await this.#waitForProcessExitAsync(process)
             this.#log(`service ${this.id} exited.`)
@@ -1547,7 +1559,7 @@ export class Service extends EventEmitter<ServiceEvent> {
     } else {
       this.#log("service is not runnable, done.")
       // if servicetype is utility, set status to completed
-      if (this.#options.servicetype === ServiceType.UTILITY) {
+      if (this.isUtility) {
         this.#setStatus(ServiceStatus.COMPLETED)
       } else {
         this.#setStatus(ServiceStatus.AVAILABLE)
@@ -2077,12 +2089,11 @@ export class Service extends EventEmitter<ServiceEvent> {
           )
 
           // Make sure all system services are configured.
-          if (
-            (service.status == ServiceStatus.AVAILABLE ||
-              service.status == ServiceStatus.INSTALLED) &&
-            service.isSetup
-          ) {
+          if (service.isAvailable && service.isSetup) {
             this.#log(`service ${service.id} is ready.`)
+            if (service.isUtility) {
+              continue
+            }
           }
 
           if (service.isRunnable && !service.isRunning) {
@@ -2153,9 +2164,21 @@ export class Service extends EventEmitter<ServiceEvent> {
                 //add this service to start chain
                 await service.start(this.#serviceManager.globalEnv, startchain)
 
+                // Make sure all system services are configured.
+                if (service.isAvailable && service.isSetup) {
+                  this.#log(
+                    `service ${service.id} is ready during healthcheck.`
+                  )
+                  if (service.isUtility) {
+                    continue
+                  }
+                }
+
                 //Make sure all the services are started.
                 if (!service.isRunning) {
-                  this.#log(`service ${service.id} did not start.`)
+                  this.#log(
+                    `service ${service.id} did not start during healthcheck.`
+                  )
                   depend_on_services_started = false
                   //service did not start, abort
                   break
