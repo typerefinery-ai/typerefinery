@@ -24,7 +24,8 @@ Param(
   [string]$PYTHONPACKAGES = ( Join-Path "${SERVER_HOME}" "__packages__" ),
   [string]$SCRIPT_NAME = ( Join-Path "${SERVER_HOME}" "__packages__" "jupyter.py"),
   [string]$SCRIPS_PATH = ( Join-Path "${SERVER_HOME}" "scripts" ),
-  [string]$SERVICE_WORKSPACE_PATH = ( Join-Path "${PWD}" "${SERVICE_NAME}" "workspace"),
+  [string]$SERVICE_WORKSPACE_PATH = ( Join-Path "${PWD}" "${SERVICE_NAME}" "workspaces"),
+  [string]$SERVICE_NOTEBOOKS_PATH = ( Join-Path "${PWD}" "${SERVICE_NAME}" "notebooks"),
   [string]$SERVICE_DATA_PATH = ( Join-Path "${PWD}" "${SERVICE_NAME}" "data"),
   [string]$SERVICE_CONFIG_PATH = ( Join-Path "${PWD}" "${SERVICE_NAME}" "config"),
   [string]$SERVICE_BIN_PROXY = ( Join-Path "${SERVER_HOME}" "main.py" ),
@@ -54,6 +55,7 @@ Function PrintInfo
   printSectionLine "env:PYTHONPATH: ${env:PYTHONPATH}"
   printSectionLine "env:PYTHONUSERBASE: ${env:PYTHONUSERBASE}"
   printSectionLine "env:PYTHONEXECUTABLE: ${env:PYTHONEXECUTABLE}"
+  printSectionLine "env:PATH: ${env:PATH}"
 
   printSectionBanner "Starting ${SERVICE_NAME} service"
 }
@@ -74,7 +76,10 @@ Function StartServer
   printSectionLine "${SERVICE_NAME} - SERVICE_PORT=${SERVICE_PORT}"
   try {
     # & Invoke-Expression -Command "${PYTHON} -m jupyter --paths"
-    & Invoke-Expression -Command "${PYTHON} -m jupyter lab"
+    # & Invoke-Expression -Command "python --version"
+    # & Invoke-Expression -Command "node -v"
+    # & Invoke-Expression -Command "npm -v"
+    & Invoke-Expression -Command "${PYTHON} -m jupyter lab --ServerApp.root_dir=${SERVICE_NOTEBOOKS_PATH} --no-browser --ServerApp.port=${SERVICE_PORT} --ServerApp.port_retries=0"
 
   } finally {
     Set-Location -Path "${CURRENT_PATH}"
@@ -94,6 +99,8 @@ Function StartSetup
     # & Invoke-Expression -Command "${PYTHON} -c ""import os; os.system('node -v')"""
     & Invoke-Expression -Command "${PYTHON} -m pip install --target=""${PYTHONPACKAGES}"" -r ""${SERVER_REQUIREMENTS}"""
     & Invoke-Expression -Command "${PYTHON} -m jupyter lab build"
+    & Invoke-Expression -Command "npm install -g ijavascript"
+    & Invoke-Expression -Command "ijsinstall"
   } finally {
     Set-Location -Path "${CURRENT_PATH}"
   }
@@ -108,7 +115,7 @@ SetEnvPath "SCRIPT_NAME" "${SCRIPT_NAME}"
 SetEnvPath "SERVER_HOME" "${SERVER_HOME}"
 SetEnvPath "JUPYTERLAB_DIR" "${SERVICE_DATA_PATH}"
 SetEnvPath "JUPYTER_CONFIG_DIR" "${SERVICE_CONFIG_PATH}"
-
+SetEnvPath "JUPYTERLAB_NOTEBOOKS_DIR" "${SERVICE_NOTEBOOKS_PATH}"
 
 PrintInfo
 
