@@ -4,4 +4,5 @@ data/*
 notebooks/*
 user/*
 workspaces/*
+runtime/*
 !**/.gitkeep
