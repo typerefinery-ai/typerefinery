@@ -32,6 +32,12 @@
         "-m pip install --ignore-installed --no-warn-script-location --use-pep517 \"parse (==1.19.0)\" -r ${SERVICE_HOME}\\win32\\requirements.txt"
       ]
     },
+    "commandline": {
+      "default": " -c \"import os,sysconfig;print('PYTHON_SCRIPTS_PATH:'+sysconfig.get_path('scripts',f'{os.name}_user'))\""
+    },
+    "outputvarregex": {
+      "PYTHON_SCRIPTS_PATH": "PYTHON_SCRIPTS_PATH:(.*)"
+    },
     "env": {
       "PATH": "${SERVICE_EXECUTABLE_HOME}",
       "PYTHON_HOME": "${SERVICE_EXECUTABLE_HOME}"
