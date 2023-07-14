@@ -10,7 +10,9 @@
     "execservice": { "id": "python" },
     "setup": {
       "win32": [
-        "-m jupyter lab build"
+        "-m jupyter lab build",
+        "; npm install -g ijavascript",
+        "; ijsinstall --spec-path=full --working-dir=${JUPYTERLAB_JSWORK_PATH}"
       ],
       "darwin": [
         "-m jupyter lab build"
@@ -25,9 +27,15 @@
     "env": {
       "PYTHONPATH": "${PYTHON_HOME}",
       "NODE_HOME": "${NODE_HOME}",
-      "PATH": ["${PYTHON_HOME}","${NODE_HOME}"],
+      "PATH": [
+          "${PYTHON_HOME}",
+          "${PYTHON_SCRIPTS_PATH}",
+          "${NODE_HOME}"
+        ],
+      "JUPYTERLAB_JSWORK_PATH": "${SERVICE_PATH}/jswork",
       "JUPYTERLAB_DIR": "${SERVICE_PATH}/data",
       "JUPYTERLAB_NOTEBOOKS_DIR": "${SERVICE_PATH}/notebooks",
+      "JUPYTER_RUNTIME_DIR": "${SERVICE_PATH}/runtime",
       "JUPYTER_CONFIG_DIR": "${SERVICE_PATH}/config"
     },
     "datapath": "notebooks",
@@ -36,7 +44,7 @@
       "JUPYTERLAB_PORT": "${SERVICE_PORT}"
     },
     "commandline": {
-      "default": " -m jupyter lab --ServerApp.root_dir=${SERVICE_DATA_PATH} --no-browser --ServerApp.port=${SERVICE_PORT} --ServerApp.port_retries=0"
+      "default": " -m jupyter lab --ServerApp.root_dir=${SERVICE_DATA_PATH} --no-browser --ServerApp.port=${SERVICE_PORT} --ServerApp.port_retries=0 --ServerApp.token='' --ServerApp.disable_check_xsrf=True"
     },
     "serviceport": 8888,
     "healthcheck": {
@@ -48,5 +56,12 @@
     "depend_on": [
       "python"
     ]
+  },
+  "actions": {
+    "stop": {
+      "commandline": {
+        "default": " -m jupyter lab stop"
+      }
+    }
   }
 }

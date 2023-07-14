@@ -9,6 +9,7 @@ Param(
   [string]$PYTHON_BIN = ( $IsWindows ? "" : "bin" ),
   [string]$PYTHON_PATH = ( Join-Path "${PWD}" "_python" "${OS}" "${PYTHON_BIN}"),
   [string]$PYTHON_PATH_SCRIPTS = ( Join-Path "${PYTHON_PATH}" "Scripts"),
+  [string]$PYTHON_PATH_PACKAGES = ( Join-Path "${PYTHON_PATH}" "Lib" "site-packages"),
   [string]$PYTHON = ( Join-Path "${PWD}" "_python" "${OS}" "${PYTHON_BIN}" "python"),
   [string]$NODE_VERSION = "v18.6.0",
   [string]$NODE_SERVICE_NAME = "_node",
@@ -26,6 +27,8 @@ Param(
   [string]$SCRIPS_PATH = ( Join-Path "${SERVER_HOME}" "scripts" ),
   [string]$SERVICE_WORKSPACE_PATH = ( Join-Path "${PWD}" "${SERVICE_NAME}" "workspaces"),
   [string]$SERVICE_NOTEBOOKS_PATH = ( Join-Path "${PWD}" "${SERVICE_NAME}" "notebooks"),
+  [string]$SERVICE_JSWORK_PATH = ( Join-Path "${PWD}" "${SERVICE_NAME}" "jswork"),
+  [string]$SERVICE_RUNTIME_PATH = ( Join-Path "${PWD}" "${SERVICE_NAME}" "runtime"),
   [string]$SERVICE_DATA_PATH = ( Join-Path "${PWD}" "${SERVICE_NAME}" "data"),
   [string]$SERVICE_CONFIG_PATH = ( Join-Path "${PWD}" "${SERVICE_NAME}" "config"),
   [string]$SERVICE_BIN_PROXY = ( Join-Path "${SERVER_HOME}" "main.py" ),
@@ -75,12 +78,19 @@ Function StartServer
   printSectionLine "${SERVICE_NAME} - SERVICE_PATH=${SERVICE_PATH}"
   printSectionLine "${SERVICE_NAME} - SERVICE_PORT=${SERVICE_PORT}"
   try {
+    # & Invoke-Expression -Command "${PYTHON} -m jupyter lab --ServerApp.root_dir=${SERVICE_NOTEBOOKS_PATH} --no-browser --ServerApp.port=${SERVICE_PORT} --ServerApp.port_retries=0 --ServerApp.disable_check_xsrf=True"
+    # & Invoke-Expression -Command "ijsinstall --spec-path=full --working-dir=${SERVICE_JSWORK_PATH}"
+    # & Invoke-Expression -Command "jupyter lab --show-config"
+    # & Invoke-Expression -Command "jupyter kernelspec list"
     # & Invoke-Expression -Command "${PYTHON} -m jupyter --paths"
-    # & Invoke-Expression -Command "python --version"
-    # & Invoke-Expression -Command "node -v"
-    # & Invoke-Expression -Command "npm -v"
-    & Invoke-Expression -Command "${PYTHON} -m jupyter lab --ServerApp.root_dir=${SERVICE_NOTEBOOKS_PATH} --no-browser --ServerApp.port=${SERVICE_PORT} --ServerApp.port_retries=0"
-
+    & Invoke-Expression -Command "jupyter lab list"
+    # & Invoke-Expression -Command "jupyter lab list"
+    # & Invoke-Expression -Command "jupyter lab stop"
+    # & Invoke-Expression -Command "jupyter lab shutdown"
+    & Invoke-Expression -Command "jupyter lab stop 8888"
+    # & Invoke-Expression -Command "jupyter lab stop 8892"
+    # & Invoke-Expression -Command "jupyter notebook list"
+    # & Invoke-Expression -Command "jupyter notebook stop 8888"
   } finally {
     Set-Location -Path "${CURRENT_PATH}"
   }
@@ -97,16 +107,16 @@ Function StartSetup
     }
 
     # & Invoke-Expression -Command "${PYTHON} -c ""import os; os.system('node -v')"""
-    & Invoke-Expression -Command "${PYTHON} -m pip install --target=""${PYTHONPACKAGES}"" -r ""${SERVER_REQUIREMENTS}"""
+    # & Invoke-Expression -Command "${PYTHON} -m pip install --target=""${PYTHONPACKAGES}"" -r ""${SERVER_REQUIREMENTS}"""
     & Invoke-Expression -Command "${PYTHON} -m jupyter lab build"
     & Invoke-Expression -Command "npm install -g ijavascript"
-    & Invoke-Expression -Command "ijsinstall"
+    & Invoke-Expression -Command "ijsinstall --install=local --spec-path=full --working-dir=${SERVICE_JSWORK_PATH}"
   } finally {
     Set-Location -Path "${CURRENT_PATH}"
   }
 }
 
-SetPath "${PYTHON_HOME}" "${NODE_PATH}"
+SetPath "${PYTHON_HOME}" "${PYTHON_PATH_SCRIPTS}" "${NODE_PATH}"
 # SetEnvPath "PATH" "${PYTHON_PATH}" "${PYTHON_PATH_SCRIPTS}" "${NODE_PATH}"
 
 # SetEnvPath "PYTHONPATH" "${PYTHONPACKAGES}"
@@ -116,6 +126,7 @@ SetEnvPath "SERVER_HOME" "${SERVER_HOME}"
 SetEnvPath "JUPYTERLAB_DIR" "${SERVICE_DATA_PATH}"
 SetEnvPath "JUPYTER_CONFIG_DIR" "${SERVICE_CONFIG_PATH}"
 SetEnvPath "JUPYTERLAB_NOTEBOOKS_DIR" "${SERVICE_NOTEBOOKS_PATH}"
+SetEnvPath "JUPYTER_RUNTIME_DIR" "${SERVICE_RUNTIME_PATH}"
 
 PrintInfo
 
