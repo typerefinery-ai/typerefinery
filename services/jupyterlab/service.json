@@ -12,7 +12,8 @@
       "win32": [
         "-m jupyter lab build",
         "; npm install -g ijavascript",
-        "; ijsinstall --spec-path=full --working-dir=${JUPYTERLAB_JSWORK_PATH}"
+        "; ijsinstall --spec-path=full --working-dir=${JUPYTERLAB_JSWORK_PATH}",
+        "-m jupyter kernelspec list"
       ],
       "darwin": [
         "-m jupyter lab build"
@@ -32,6 +33,7 @@
           "${PYTHON_SCRIPTS_PATH}",
           "${NODE_HOME}"
         ],
+      "JUPYTER_DATA_DIR": "${SERVICE_PATH}",
       "JUPYTERLAB_JSWORK_PATH": "${SERVICE_PATH}/jswork",
       "JUPYTERLAB_DIR": "${SERVICE_PATH}/data",
       "JUPYTERLAB_NOTEBOOKS_DIR": "${SERVICE_PATH}/notebooks",
@@ -44,7 +46,7 @@
       "JUPYTERLAB_PORT": "${SERVICE_PORT}"
     },
     "commandline": {
-      "default": " -m jupyter lab --ServerApp.root_dir=${SERVICE_DATA_PATH} --no-browser --ServerApp.port=${SERVICE_PORT} --ServerApp.port_retries=0 --ServerApp.token='' --ServerApp.disable_check_xsrf=True"
+      "default": " -m jupyter lab --ServerApp.allow_remote_access=True --ServerApp.allow_origin=* --ServerApp.root_dir=${SERVICE_DATA_PATH} --no-browser --ServerApp.port=${SERVICE_PORT} --ServerApp.port_retries=0 --ServerApp.token='' --ServerApp.disable_check_xsrf=True --ServerApp.terminals_enabled=False"
     },
     "serviceport": 8888,
     "healthcheck": {

@@ -79,7 +79,7 @@ Function StartServer
   printSectionLine "${SERVICE_NAME} - SERVICE_PATH=${SERVICE_PATH}"
   printSectionLine "${SERVICE_NAME} - SERVICE_PORT=${SERVICE_PORT}"
   try {
-    & Invoke-Expression -Command "${PYTHON} -m jupyter lab --ServerApp.root_dir=${SERVICE_NOTEBOOKS_PATH} --no-browser --ServerApp.port=${SERVICE_PORT} --ServerApp.port_retries=0 --ServerApp.disable_check_xsrf=True"
+    & Invoke-Expression -Command "${PYTHON} -m jupyter lab --ServerApp.allow_remote_access=True --ServerApp.allow_origin=* --ServerApp.root_dir=${SERVICE_DATA_PATH} --no-browser --ServerApp.port=${SERVICE_PORT} --ServerApp.port_retries=0 --ServerApp.token='' --ServerApp.disable_check_xsrf=True --ServerApp.terminals_enabled=False"
     # & Invoke-Expression -Command "ijsinstall --spec-path=full --working-dir=${SERVICE_JSWORK_PATH}"
     # & Invoke-Expression -Command "jupyter lab --show-config"
     # & Invoke-Expression -Command "jupyter kernelspec list"
