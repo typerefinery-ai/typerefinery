@@ -129,29 +129,25 @@
       console.log("iframe this.url", this.url)
       console.log("iframe this.urlformatted", this.urlformatted)
 
-      let globalenv = servicesModule.getGlobalEnv().then((res) => {
+      servicesModule.getGlobalEnv().then((res) => {
         this.globalenv = res
-        console.log("iframe getGlobalEnv", this.globalenv)
-        if (globalenv) {
-          if (this.url.indexOf("${") > 0) {
-            let urlformatted = this.url
-            console.log("iframe getGlobalEnv exp value", this.globalenv)
-            // update variables in url
-            for (const [key, value] of Object.entries(this.globalenv)) {
-              console.log(
-                `experienceConfig find \${${key}} repalce with ${value}"`
-              )
+        let urlformatted = this.url
+        console.log("iframe got getGlobalEnv", res)
+        if (urlformatted.indexOf("${") > -1) {
+          console.log("iframe getGlobalEnv exp value", this.globalenv)
+          // update variables in url
+          for (const [key, value] of Object.entries(this.globalenv)) {
+            console.log(
+              `experienceConfig find \${${key}} repalce with ${value}"`
+            )
 
-              urlformatted = urlformatted.replaceAll(`\${${key}}`, `${value}`)
-            }
-
-            console.log("iframe urlformatted updated", urlformatted)
-            this.url = urlformatted
+            urlformatted = urlformatted.replaceAll(`\${${key}}`, `${value}`)
           }
-          console.log("iframe this.url", this.url)
-        } else {
-          console.log("experienceConfig could not get config")
+
+          console.log("iframe urlformatted updated", urlformatted)
+          this.url = urlformatted
         }
+        console.log("iframe this.url", this.url)
       })
     },
     methods: {
