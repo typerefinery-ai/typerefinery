@@ -510,7 +510,7 @@
       },
       {
         "label": "Jupyter Lab",
-        "icon": "pi pi-th-large",
+        "icon": "pi pi-book",
         "id": "jupyterlab",
         "to": "/experience/jupyterlab",
         "type": "experimental",
