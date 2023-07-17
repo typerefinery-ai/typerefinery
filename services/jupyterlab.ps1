@@ -37,7 +37,8 @@ Param(
   [switch]$RUNSCRIPTGROUP = $false,
   [switch]$SAMPLE = $false,
   [switch]$SETUP = $false,
-  [switch]$DEBUG = $false
+  [switch]$DEBUG = $false,
+  [switch]$STOP = $false
 )
 
 . "${PWD}\functions.ps1"
@@ -78,16 +79,16 @@ Function StartServer
   printSectionLine "${SERVICE_NAME} - SERVICE_PATH=${SERVICE_PATH}"
   printSectionLine "${SERVICE_NAME} - SERVICE_PORT=${SERVICE_PORT}"
   try {
-    # & Invoke-Expression -Command "${PYTHON} -m jupyter lab --ServerApp.root_dir=${SERVICE_NOTEBOOKS_PATH} --no-browser --ServerApp.port=${SERVICE_PORT} --ServerApp.port_retries=0 --ServerApp.disable_check_xsrf=True"
+    & Invoke-Expression -Command "${PYTHON} -m jupyter lab --ServerApp.root_dir=${SERVICE_NOTEBOOKS_PATH} --no-browser --ServerApp.port=${SERVICE_PORT} --ServerApp.port_retries=0 --ServerApp.disable_check_xsrf=True"
     # & Invoke-Expression -Command "ijsinstall --spec-path=full --working-dir=${SERVICE_JSWORK_PATH}"
     # & Invoke-Expression -Command "jupyter lab --show-config"
     # & Invoke-Expression -Command "jupyter kernelspec list"
     # & Invoke-Expression -Command "${PYTHON} -m jupyter --paths"
-    & Invoke-Expression -Command "jupyter lab list"
+    # & Invoke-Expression -Command "jupyter lab list"
     # & Invoke-Expression -Command "jupyter lab list"
     # & Invoke-Expression -Command "jupyter lab stop"
     # & Invoke-Expression -Command "jupyter lab shutdown"
-    & Invoke-Expression -Command "jupyter lab stop 8888"
+    # & Invoke-Expression -Command "jupyter lab stop 8888"
     # & Invoke-Expression -Command "jupyter lab stop 8892"
     # & Invoke-Expression -Command "jupyter notebook list"
     # & Invoke-Expression -Command "jupyter notebook stop 8888"
@@ -96,6 +97,30 @@ Function StartServer
   }
 
 }
+
+
+Function StopServer
+{
+  echo "${SERVICE_NAME} - StartServer"
+
+  if ($DEBUG) {
+    TestPython
+  }
+
+  Set-Location -Path "${SERVICE_WORKSPACE_PATH}"
+  printSectionLine "Starting ${SERVICE_NAME} service in ${PWD}"
+  printSectionLine "${SERVICE_NAME} - SERVICE_DATA_PATH=${SERVICE_DATA_PATH}"
+  printSectionLine "${SERVICE_NAME} - SERVICE_LOG_PATH=${SERVICE_LOG_PATH}"
+  printSectionLine "${SERVICE_NAME} - SERVICE_PATH=${SERVICE_PATH}"
+  printSectionLine "${SERVICE_NAME} - SERVICE_PORT=${SERVICE_PORT}"
+  try {
+    & Invoke-Expression -Command "jupyter lab stop"
+  } finally {
+    Set-Location -Path "${CURRENT_PATH}"
+  }
+
+}
+
 
 Function StartSetup
 {
@@ -111,6 +136,7 @@ Function StartSetup
     & Invoke-Expression -Command "${PYTHON} -m jupyter lab build"
     & Invoke-Expression -Command "npm install -g ijavascript"
     & Invoke-Expression -Command "ijsinstall --install=local --spec-path=full --working-dir=${SERVICE_JSWORK_PATH}"
+    & Invoke-Expression -Command "jupyter kernelspec list"
   } finally {
     Set-Location -Path "${CURRENT_PATH}"
   }
@@ -124,6 +150,7 @@ SetEnvPath "PYTHONHOME" "${PYTHON_HOME}"
 SetEnvPath "SCRIPT_NAME" "${SCRIPT_NAME}"
 SetEnvPath "SERVER_HOME" "${SERVER_HOME}"
 SetEnvPath "JUPYTERLAB_DIR" "${SERVICE_DATA_PATH}"
+SetEnvPath "JUPYTER_DATA_DIR" "${SERVER_HOME}"
 SetEnvPath "JUPYTER_CONFIG_DIR" "${SERVICE_CONFIG_PATH}"
 SetEnvPath "JUPYTERLAB_NOTEBOOKS_DIR" "${SERVICE_NOTEBOOKS_PATH}"
 SetEnvPath "JUPYTER_RUNTIME_DIR" "${SERVICE_RUNTIME_PATH}"
@@ -132,6 +159,8 @@ PrintInfo
 
 if ( $SETUP ) {
   StartSetup
+} elseif ( $STOP ) {
+  StopSetup
 } else {
   StartServer
 }
