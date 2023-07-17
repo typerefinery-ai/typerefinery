@@ -327,26 +327,3 @@ async def flowproxy_put(path: str, request: Request, response: Response, body: d
     print(f"proxy flow put: {service_url_proxy}")
     service_reponse = requests.put(service_url_proxy , data=body, timeout=1)
     return Response(content=json.dumps(service_reponse.json()), media_type="application/json", status_code=service_reponse.status_code)
-
-
-# Proxy any files
-# https://d3js.org/d3.v4.js
-# https://cdn.jsdelivr.net/npm/webcola@3.4.0/WebCola/cola.js
-@Logger.catch
-@router.get("/webproxy/{path:path}")
-async def flowproxy_get(path: str, request: Request, response: Response):
-    # split path variable into array
-    path_array = path.split("/")
-    # get first elemtn of array
-    schema = path_array[0]
-    # get second element of array
-    domain = path_array[1]
-    # get rest of the elements of array as path
-    path = "/".join(path_array[2:])
-
-    proxy_url = f"{schema}://{domain}/{path}"
-    Logger.info(f"proxy flow get: {proxy_url}")
-    print(f"proxy flow get: {proxy_url}")
-    proxy_data = requests.get(proxy_url ,  timeout=1)
-    # return proxy_data as response to client with media type and status code from response
-    return Response(content=proxy_data.content, media_type=proxy_data.headers["content-type"], status_code=proxy_data.status_code)
