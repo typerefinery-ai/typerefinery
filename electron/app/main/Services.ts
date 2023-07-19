@@ -122,6 +122,14 @@ function getServicePage(service: Service) {
     actionSetupLabel = "Re-Install"
   }
 
+  let serviceLink = ""
+  if (service.port) {
+    serviceLink = `<a href="http://localhost:${service.port}" target="_blank">${service.port}</a>`
+  }
+  if (service.port && service.port <= 0) {
+    serviceLink = ""
+  }
+
   return `
   <html>
   <head>
@@ -182,9 +190,21 @@ function getServicePage(service: Service) {
         </div>
         <div class="input-group input-group-sm mb-1">
           <span class="input-group-text" id="inputGroup-sizing-sm">Port</span>
-          <input type="text" value="${
-            service.port
-          }" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+          <span class="form-control">${serviceLink}</span>
+        </div>
+        <div class="input-group input-group-sm mb-1">
+          <span class="input-group-text" id="inputGroup-sizing-sm">PID</span>
+          <span class="form-control">${service.processid}</span>
+        </div>
+        <div class="input-group input-group-sm mb-1">
+          <span class="input-group-text" id="inputGroup-sizing-sm">Mem</span>
+          <span class="form-control">${(service.memorybytes / 1048576).toFixed(
+            0
+          )}MB</span>
+        </div>
+        <div class="input-group input-group-sm mb-1">
+          <span class="input-group-text" id="inputGroup-sizing-sm">Process Tree</span>
+          <span class="form-control">${service.processtree.join(", ")}</span>
         </div>
         <div class="input-group input-group-sm mb-1">
           <span class="input-group-text" id="inputGroup-sizing-sm">Exec Service</span>

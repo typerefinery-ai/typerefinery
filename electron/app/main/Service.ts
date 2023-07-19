@@ -10,6 +10,10 @@ import EventEmitter from "eventemitter3"
 import kill from "tree-kill"
 import { os } from "./Utils"
 import { unpackZip, unpackTarGz } from "@particle/unpack-file"
+import pidusage from "pidusage"
+import pidusageTree from "pidusage-tree"
+import findProcess from "find-process"
+import { strict } from "assert"
 
 export interface ServiceConfig {
   servicehome: string
@@ -189,6 +193,11 @@ export interface SericeConfigFile {
 
 export class Service extends EventEmitter<ServiceEvent> {
   #process?: ChildProcess
+  #processStats: any
+  #processStatsTree: any
+  #processStatsTreeInfo: any
+  #processStatsTimeout: any
+  #processList?: string[]
   #id: string
   #name: string
   #description: string
@@ -380,6 +389,38 @@ export class Service extends EventEmitter<ServiceEvent> {
 
   get description(): string {
     return this.#description
+  }
+
+  get processid(): any {
+    let pid: any = 0
+    if (this.#process) {
+      const processName = Object.getOwnPropertyNames(this.#process)
+      if (processName.length > 0 && processName.indexOf("pid") > -1) {
+        pid = this.#process.pid
+      }
+    }
+    return pid
+  }
+
+  get memorybytes(): number {
+    let memoryUsage = 0
+    const pid = this.#process?.pid || 0
+
+    if (pid > 0) {
+      const processStats = this.#processStats || {}
+
+      if (
+        processStats &&
+        Object.getOwnPropertyNames(processStats).indexOf("memory") > -1
+      ) {
+        memoryUsage = processStats.memory || 0
+      }
+    }
+    return memoryUsage
+  }
+
+  get processtree(): string[] {
+    return this.#processList || []
   }
 
   get setuparchiveOutputPath(): string {
@@ -961,6 +1002,65 @@ export class Service extends EventEmitter<ServiceEvent> {
       this.#setStatus(ServiceStatus.HEALTHCHECKWAIT)
       this.#startHealthCheck(this.#healthCheck.retries || 10)
     }
+
+    // start monitoring service
+    this.monitorService(1000)
+  }
+
+  async processStats() {
+    const pid = this.#process?.pid || 0
+    if (pid > 0) {
+      // get latest process stats
+      this.#processStats = await pidusage(pid)
+
+      // get process stats tree
+      this.#processStatsTree = await pidusageTree(pid)
+
+      if (this.#processStatsTree) {
+        // get main process stats
+        // this.#processStats = this.#processStatsTree[pid]
+
+        this.#processStatsTreeInfo = {}
+
+        // for each named object in this.#processStatsTree find process info and add it as named object to this.#processStatsTreeInfo
+        for (const cpid in this.#processStatsTree) {
+          if (cpid) {
+            const processStats = this.#processStatsTree[cpid]
+            if (processStats) {
+              const list = await findProcess("pid", cpid)
+              this.#processStatsTreeInfo[cpid] = list[0]
+            }
+          }
+        }
+
+        const processList = Array<string>()
+
+        // for each property get the pid and memory
+        Object.getOwnPropertyNames(this.#processStatsTree).forEach((pid) => {
+          const processStats = this.#processStatsTree[pid]
+          let memory = "0"
+          let name = "childprocess"
+          if (processStats) {
+            memory = (processStats.memory / 1048576).toFixed(0) || "0"
+          }
+          if (this.#processStatsTreeInfo[pid]) {
+            const info = this.#processStatsTreeInfo[pid]
+            if (info) {
+              name = info.name
+            }
+          }
+          processList.push(`${pid} ${name} ${memory}MB`)
+        })
+        this.#processList = processList
+      }
+    }
+  }
+
+  monitorService = async (time) => {
+    this.#processStatsTimeout = setTimeout(async () => {
+      await this.processStats()
+      this.monitorService(time)
+    }, time)
   }
 
   // get service executable from options by platform
