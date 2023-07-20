@@ -203,6 +203,12 @@ function getServicePage(service: Service) {
           )}MB</span>
         </div>
         <div class="input-group input-group-sm mb-1">
+          <span class="input-group-text" id="inputGroup-sizing-sm">Mem Total</span>
+          <span class="form-control">${(
+            service.memorybytestotal / 1048576
+          ).toFixed(0)}MB</span>
+        </div>
+        <div class="input-group input-group-sm mb-1">
           <span class="input-group-text" id="inputGroup-sizing-sm">Process Tree</span>
           <span class="form-control">${service.processtree.join(", ")}</span>
         </div>
