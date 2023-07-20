@@ -415,6 +415,7 @@ export class Service extends EventEmitter<ServiceEvent> {
     return pid
   }
 
+  // return memory for main service process
   get memorybytes(): number {
     let memoryUsage = 0
     const pid = this.#process?.pid || 0
@@ -427,6 +428,32 @@ export class Service extends EventEmitter<ServiceEvent> {
         Object.getOwnPropertyNames(processStats).indexOf("memory") > -1
       ) {
         memoryUsage = processStats.memory || 0
+      }
+    }
+    return memoryUsage
+  }
+
+  // return memory for main service process and all its child processes
+  get memorybytestotal(): number {
+    let memoryUsage = 0
+    const pid = this.#process?.pid || 0
+
+    if (pid > 0) {
+      if (
+        this.#processStats &&
+        Object.getOwnPropertyNames(this.#processStats).indexOf("memory") > -1
+      ) {
+        memoryUsage = this.#processStats.memory || 0
+      }
+
+      if (this.#processStatsTree) {
+        let memorytotal = 0
+        Object.getOwnPropertyNames(this.#processStatsTree).forEach((pid) => {
+          if (this.#processStatsTree[pid]) {
+            memorytotal += this.#processStatsTree[pid].memory
+          }
+        })
+        memoryUsage = memorytotal
       }
     }
     return memoryUsage
