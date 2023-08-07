@@ -41,6 +41,7 @@ export enum SignalType {
 }
 
 export enum ServiceStatus {
+  UNKNOWN = "-100",
   INVALIDCONFIG = "-10",
   ERROR = "-1",
   DISABLED = "0",
@@ -377,10 +378,22 @@ export class Service extends EventEmitter<ServiceEvent> {
       this.#log(`service ${this.#id} resolved port ${port}.`)
     })
 
-    this.#log(`service ${this.#id} loaded with status ${this.#status}.`)
+    this.#log(
+      `service ${this.#id} loaded with status ${this.#statusname(
+        this.#status
+      )}.`
+    )
     const isSetup = this.isSetup
     this.#log(`is setup ${isSetup}.`)
     this.#checkRunning()
+  }
+
+  #statusname(statuscode: ServiceStatus): string {
+    const valIndex = Object.values(ServiceStatus).indexOf(statuscode)
+    if (valIndex > -1) {
+      return Object.keys(ServiceStatus)[valIndex]
+    }
+    return ServiceStatus.UNKNOWN
   }
 
   get name(): string {
@@ -956,9 +969,9 @@ export class Service extends EventEmitter<ServiceEvent> {
       this.#log(
         `process ${this.#id} with pid ${
           this.#process?.pid
-        } closed, with exit code ${code} and signal ${signal}, service status is ${
+        } closed, with exit code ${code} and signal ${signal}, service status is ${this.#statusname(
           this.#status
-        }`
+        )}`
       )
       this.#processCompleted("close", code, signal)
       this.#process = void 0
@@ -971,9 +984,9 @@ export class Service extends EventEmitter<ServiceEvent> {
       this.#log(
         `process ${this.#id} with pid ${
           this.#process?.pid
-        } exited, with exit code ${code} and signal ${signal}, service status is ${
+        } exited, with exit code ${code} and signal ${signal}, service status is ${this.#statusname(
           this.#status
-        }`
+        )}`
       )
       this.#processCompleted("exit", code, signal)
       this.#process = void 0
@@ -988,9 +1001,9 @@ export class Service extends EventEmitter<ServiceEvent> {
       this.#log(
         `process ${this.#id} with pid ${
           this.#process?.pid
-        } errored, with exit code ${this.#exitCode}, service status is ${
-          this.#status
-        }`
+        } errored, with exit code ${
+          this.#exitCode
+        }, service status is ${this.#statusname(this.#status)}`
       )
       this.#processCompleted("error", this.#exitCode, this.#exitSignal)
       this.#process = void 0
@@ -1092,7 +1105,9 @@ export class Service extends EventEmitter<ServiceEvent> {
     } else {
       this.#setStatus(ServiceStatus.INVALIDCONFIG)
       this.#log(
-        `service is missing execconfig, service status is ${this.#status}`
+        `service is missing execconfig, service status is ${this.#statusname(
+          this.#status
+        )}`
       )
     }
     return serviceExecutable
@@ -1124,7 +1139,9 @@ export class Service extends EventEmitter<ServiceEvent> {
       this.#setStatus(ServiceStatus.INVALIDCONFIG)
       if (!silent) {
         this.#log(
-          `service is missing execconfig, service status is ${this.#status}`
+          `service is missing execconfig, service status is ${this.#statusname(
+            this.#status
+          )}`
         )
       }
     }
@@ -1155,7 +1172,9 @@ export class Service extends EventEmitter<ServiceEvent> {
       this.#setStatus(ServiceStatus.INVALIDCONFIG)
       if (!silent) {
         this.#log(
-          `service is missing execconfig, service status is ${this.#status}`
+          `service is missing execconfig, service status is ${this.#statusname(
+            this.#status
+          )}`
         )
       }
     }
@@ -1206,7 +1225,9 @@ export class Service extends EventEmitter<ServiceEvent> {
     } else {
       this.#setStatus(ServiceStatus.INVALIDCONFIG)
       this.#log(
-        `service is missing execconfig, service status is ${this.#status}`
+        `service is missing execconfig, service status is ${this.#statusname(
+          this.#status
+        )}`
       )
     }
     if (returnPath) {
@@ -1262,7 +1283,9 @@ export class Service extends EventEmitter<ServiceEvent> {
     } else {
       this.#setStatus(ServiceStatus.INVALIDCONFIG)
       this.#log(
-        `service is missing execconfig, service status is ${this.#status}`
+        `service is missing execconfig, service status is ${this.#statusname(
+          this.#status
+        )}`
       )
     }
     return serviceExecutableCli
@@ -1315,7 +1338,7 @@ export class Service extends EventEmitter<ServiceEvent> {
         this.#log(
           `health check exited after ${
             this.#healthCheck?.retries
-          } retries, service status is ${ServiceStatus[this.#status]}`
+          } retries, service status is ${this.#statusname(this.#status)}`
         )
       }
     }
@@ -1348,30 +1371,32 @@ export class Service extends EventEmitter<ServiceEvent> {
             this.#setStatus(ServiceStatus.STARTED)
             this.#stopHealthCheck()
             this.#log(
-              `http health check success, service status is ${this.#status}`
+              `http health check success, service status is ${this.#statusname(
+                this.#status
+              )}`
             )
           } else {
             this.#log(
               `http health check failed with status code ${
                 res.statusCode
-              }, service status is ${this.#status}`
+              }, service status is ${this.#statusname(this.#status)}`
             )
             return false
           }
         })
         req.on("error", (e) => {
           this.#debug(
-            `http health check request failed with error ${e}, service status is ${
+            `http health check request failed with error ${e}, service status is ${this.#statusname(
               this.#status
-            }`
+            )}`
           )
           return false
         })
       } catch (error) {
         this.#log(
-          `http could not execute health check error is ${error}, service status is ${
+          `http could not execute health check error is ${error}, service status is ${this.#statusname(
             this.#status
-          }`
+          )}`
         )
         return false
       }
@@ -1390,7 +1415,11 @@ export class Service extends EventEmitter<ServiceEvent> {
       const socket = net.createConnection(port, hostname, () => {
         this.#setStatus(ServiceStatus.STARTED)
         this.#stopHealthCheck()
-        this.#log(`tcp health check success, service status ${this.#status}`)
+        this.#log(
+          `tcp health check success, service status ${this.#statusname(
+            this.#status
+          )}.`
+        )
         socket.end()
         return true
       })
@@ -1434,9 +1463,9 @@ export class Service extends EventEmitter<ServiceEvent> {
 
     this.#logWrite(
       "info",
-      `starting ${this.#status}, isStarted:${this.isStarted}, isStopped:${
-        this.isStopped
-      }`
+      `starting ${this.#statusname(this.#status)}, isStarted:${
+        this.isStarted
+      }, isStopped:${this.isStopped}`
     )
 
     //quick fail if already starting
@@ -1462,20 +1491,22 @@ export class Service extends EventEmitter<ServiceEvent> {
 
     this.#logWrite(
       "info",
-      `waiting for dependent services ${waitfordependencies}, ${
+      `dependent services ${waitfordependencies}, ${
         this.#options.execconfig.depend_on
-      }, ${this.#options.execconfig.depend_on?.length}.`
+      }, count: ${this.#options.execconfig.depend_on?.length}.`
     )
     if (
       waitfordependencies &&
       this.#options.execconfig.depend_on &&
       this.#options.execconfig.depend_on.length > 0
     ) {
-      this.#log(`waiting for dependent services.`)
+      this.#log(
+        `waiting for dependent services ${this.#options.execconfig.depend_on}.`
+      )
       this.#setStatus(ServiceStatus.DEPENDENCIESWAIT)
 
       this.#log(
-        `waiting for dependant services ${
+        `waiting for dependant services for service ${
           this.#id
         } with passed variables ${JSON.stringify(globalenv)}`
       )
@@ -1485,27 +1516,39 @@ export class Service extends EventEmitter<ServiceEvent> {
         await this.#waitForDependOnServicesAsync(globalenv, startchain)
 
       this.#log(
-        `waited for dependant services ${
+        `waited for dependant services for service ${
           this.#id
-        } result ${depend_on_services_started}`
+        } with result ${depend_on_services_started}.`
       )
 
-      // for each service id in startchain, check if it is started
+      if (!depend_on_services_started) {
+        this.#log(`dependant services not started during wait, checking again.`)
+      }
+
+      // for each service id in startchain, output progress
       for (const serviceid of startchain) {
-        const service = this.#serviceManager.getService(serviceid)
-        if (service) {
-          if (!service.isStarted) {
-            this.#logWrite(
-              "info",
-              `dependant service ${serviceid} not started, service status is ${service.status}.`
-            )
+        //skip self
+        if (serviceid && serviceid != this.#id) {
+          const service = this.#serviceManager.getService(serviceid)
+          if (service) {
+            if (!service.isStarted) {
+              this.#logWrite(
+                "info",
+                `dependant service ${serviceid} not started, service status is ${this.#statusname(
+                  service.#status
+                )}.`
+              )
+            }
           }
         }
       }
 
+      // for this service its dependencies are ready
       if (!depend_on_services_started) {
         this.#log(
-          `dependant services not started, service status is ${this.#status}.`
+          `dependant services not started, service status is ${this.#statusname(
+            this.#status
+          )}.`
         )
         this.#setStatus(ServiceStatus.DEPENDENCIESNOTREADY)
         return
@@ -1861,32 +1904,42 @@ export class Service extends EventEmitter<ServiceEvent> {
   }
 
   get isSetup() {
-    this.#debug(`setup: ${this.#options.execconfig.setup}`)
-    this.#debug(`setuparchive: ${this.#options.execconfig.setuparchive}`)
+    if (this.#options.execconfig.setup) {
+      this.#debug(`setup: ${JSON.stringify(this.#options.execconfig.setup)}`)
+    }
+    if (this.#options.execconfig.setuparchive) {
+      this.#debug(
+        `setuparchive: ${JSON.stringify(this.#options.execconfig.setuparchive)}`
+      )
+    }
     this.#debug(`setupstatefile: ${this.#setupstatefile}`)
     this.#debug(`setuparchiveOutputPath: ${this.#setuparchiveOutputPath}`)
     let isSetup = false
     if (this.#setupstatefile) {
       isSetup = os.isPathExist(this.#setupstatefile)
     }
-    this.#debug(`isSetup: ${isSetup}`)
+    this.#debug(`setupstatefile exist: ${isSetup}`)
 
     if (
       !this.#options.execconfig.setup &&
       !this.#options.execconfig.setuparchive
     ) {
+      this.#debug(`not setup or setuparchive set, returning true.`)
       return true
-    } else if (this.#options.execconfig.setup) {
-      return isSetup
-    } else if (this.#options.execconfig.setuparchive) {
-      if (!this.#doValidateSetup()) {
-        this.#debug(
-          `isSetup archive setuparchiveOutputPath: ${
-            this.#setuparchiveOutputPath
-          } = ${os.isPathExist(this.#setuparchiveOutputPath)}`
-        )
+    } else {
+      if (this.#options.execconfig.setuparchive) {
+        if (!this.#doValidateSetup()) {
+          this.#debug(
+            `isSetup archive setuparchiveOutputPath: ${
+              this.#setuparchiveOutputPath
+            } = ${os.isPathExist(this.#setuparchiveOutputPath)}`
+          )
+        }
+        return os.isPathExist(this.#setuparchiveOutputPath)
       }
-      return os.isPathExist(this.#setuparchiveOutputPath)
+      if (this.#options.execconfig.setup) {
+        return isSetup
+      }
     }
     this.#log(`can't determine if service is setup`)
     return false
@@ -2196,7 +2249,7 @@ export class Service extends EventEmitter<ServiceEvent> {
             }
           }
 
-          if (service.isRunnable && !service.isRunning) {
+          if ((service.isRunnable && !service.isRunning) || service.isUtility) {
             this.#log(`starting service ${service.id}.`)
             await service.start(globalenv)
 
@@ -2225,19 +2278,47 @@ export class Service extends EventEmitter<ServiceEvent> {
         this.#options.execconfig.depend_on.length > 0
       ) {
         const dependOnServices = this.#options.execconfig.depend_on
-        this.#log(`waiting for depend_on services ${dependOnServices}`)
+        // if execservice is set add it to the startchain
+        if (
+          this.#options.execconfig.execservice &&
+          this.#options.execconfig.execservice.id
+        ) {
+          this.#log(
+            `this service is executed by parent ${
+              this.#options.execconfig.execservice.id
+            } adding to dependency list chain.`
+          )
+          dependOnServices.push(this.#options.execconfig.execservice.id)
+        }
+
+        this.#log(`waiting for depend_on services async ${dependOnServices}.`)
         const interval = setInterval(async () => {
           let depend_on_services_started = true
+          let depend_on_services_isstarting = false
           for (let i = 0; i < dependOnServices.length; i++) {
             const depend_on_service = dependOnServices[i]
+            const service = this.#serviceManager.getService(depend_on_service)
             //skip if service is already in start chain
             if (startchain.includes(depend_on_service)) {
-              continue
+              if (service.isStarting || service.isInstalling) {
+                //if service is starting, wait for it to start to continue along chain
+                this.#log(
+                  `service ${depend_on_service} is starting current status ${service.#statusname(
+                    service.#status
+                  )}.`
+                )
+                // depend_on_services_started = false
+                // break
+                depend_on_services_isstarting = true
+                continue // check other services in chain
+              }
+              continue // check other services in chain
             }
-            const service = this.#serviceManager.getService(depend_on_service)
             if (service) {
               this.#log(
-                `checking services ${service.id} status ${service.status} and setup ${service.isSetup}.`
+                `checking services ${service.id} status ${service.#statusname(
+                  service.#status
+                )} and setup ${service.isSetup}.`
               )
 
               //add this service to start chain, to avoid circular dependency
@@ -2257,12 +2338,19 @@ export class Service extends EventEmitter<ServiceEvent> {
                 !service.isRunning &&
                 !service.isDone
 
-              this.#log(`try to start service ${tryToStart == true}.`)
-
               if (tryToStart == true) {
-                this.#log(`starting service ${service.id}.`)
+                this.#log(`starting service ${service.id} and wait.`)
                 //add this service to start chain
                 await service.start(this.#serviceManager.globalEnv, startchain)
+
+                const aservice =
+                  this.#serviceManager.getService(depend_on_service)
+
+                this.#log(
+                  `started service ${
+                    aservice.id
+                  } result status ${service.#statusname(aservice.#status)}.`
+                )
 
                 // Make sure all system services are configured.
                 if (service.isAvailable && service.isSetup) {
@@ -2270,7 +2358,7 @@ export class Service extends EventEmitter<ServiceEvent> {
                     `service ${service.id} is ready during healthcheck.`
                   )
                   if (service.isUtility) {
-                    continue
+                    continue //next service
                   }
                 }
 
@@ -2281,22 +2369,36 @@ export class Service extends EventEmitter<ServiceEvent> {
                   )
                   depend_on_services_started = false
                   //service did not start, abort
-                  break
+                  break //break dependOnServices loop
                 } else {
                   //stop health check for this if it still running
                   // service.#stopHealthCheck()
+                  this.#log(`service ${service.id} is running.`)
+                  //next service
                 }
               } else {
+                if (service.isUtility && !service.isSetup) {
+                  this.#log(
+                    `service ${service.id} is a utility and needs to be setup.`
+                  )
+                  await service.start(
+                    this.#serviceManager.globalEnv,
+                    startchain
+                  )
+                }
                 //this service is not runnable or already running, continue
-                continue
+                continue //next service
               }
             }
           }
-          if (depend_on_services_started) {
-            this.#log(`all dependent services started`)
+          if (
+            depend_on_services_started &&
+            depend_on_services_isstarting == false
+          ) {
+            this.#log(`all dependent services started.`)
+            clearInterval(interval)
+            resolve(depend_on_services_started)
           }
-          clearInterval(interval)
-          resolve(depend_on_services_started)
         }, 1000)
       } else {
         resolve(true)
