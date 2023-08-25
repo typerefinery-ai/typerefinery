@@ -1017,17 +1017,25 @@ export class Service extends EventEmitter<ServiceEvent> {
     }
 
     // start monitoring service
-    this.monitorService(1000)
+    this.monitorService(5000)
   }
 
   async processStats() {
     const pid = this.#process?.pid || 0
     if (pid > 0) {
-      // get latest process stats
-      this.#processStats = await pidusage(pid)
+      // // get latest process stats
+      // try {
+      //   this.#processStats = await pidusage(pid)
+      // } catch (err) {
+      //   this.#log(`pidusage for process ${pid} errored.`)
+      // }
 
-      // get process stats tree
-      this.#processStatsTree = await pidusageTree(pid)
+      try {
+        // get process stats tree
+        this.#processStatsTree = await pidusageTree(pid)
+      } catch (err) {
+        this.#log(`pidusageTree for process ${pid} errored.`)
+      }
 
       if (this.#processStatsTree) {
         // get main process stats
@@ -1069,6 +1077,7 @@ export class Service extends EventEmitter<ServiceEvent> {
     }
   }
 
+  // monitor individual service
   monitorService = async (time) => {
     this.#processStatsTimeout = setTimeout(async () => {
       await this.processStats()
