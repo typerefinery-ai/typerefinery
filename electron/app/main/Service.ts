@@ -1017,7 +1017,7 @@ export class Service extends EventEmitter<ServiceEvent> {
     }
 
     // start monitoring service
-    this.monitorService(5000)
+    // this.monitorService(5000)
   }
 
   async processStats() {
