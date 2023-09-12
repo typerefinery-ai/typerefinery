@@ -108,8 +108,7 @@
         "header": "Project Details",
         "name": "Name",
         "description": "Description",
-        "icon": "Icon",
-        "projectid": "Project Id"
+        "icon": "Icon"
       }
     },
     "graph": {
