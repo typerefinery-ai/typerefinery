@@ -54,9 +54,9 @@ Function StartSetup
     # which python
     if ( $IsWindows ) {
       Invoke-Expression -Command "${PYTHON} get-pip.py"
-      Invoke-Expression -Command "${PYTHON} -m pip install --use-pep517 ""parse (==1.19.0)"" --ignore-installed --no-warn-script-location -r ${SERVER_REQUIREMENTS}"
+      Invoke-Expression -Command "${PYTHON} -m pip install --use-pep517 --user --ignore-installed --no-warn-script-location -r ${SERVER_REQUIREMENTS}"
     } else {
-      Invoke-Expression -Command "${PYTHON} -m pip install --use-pep517 ""parse (==1.19.0)"" --ignore-installed --no-warn-script-location -r ${SERVER_REQUIREMENTS}"
+      Invoke-Expression -Command "${PYTHON} -m pip install --use-pep517 --user --ignore-installed --no-warn-script-location -r ${SERVER_REQUIREMENTS}"
     }
   } finally {
     Set-Location -Path "${CURRENT_PATH}"

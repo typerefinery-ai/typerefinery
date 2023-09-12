@@ -55,6 +55,12 @@
         >
         <InputText id="icon" v-model="icon" />
       </div>
+      <div class="field">
+        <label for="projectid">
+          {{ $t("components.dialog.projects.info.id") }}</label
+        >
+        <InputText id="projectid" v-model="projectId" />
+      </div>
       <!-- <div class="field">
         <label
           for="flowName"

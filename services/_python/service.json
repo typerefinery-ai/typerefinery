@@ -19,17 +19,17 @@
     "setup": {
       "win32": [
         "get-pip.py --no-warn-script-location",
-        "-m pip install --ignore-installed --no-warn-script-location --use-pep517 \"parse (==1.19.0)\"  -r ${SERVICE_HOME}\\win32\\requirements.txt"
+        "-m pip install --ignore-installed --no-warn-script-location --use-pep517 --user -r ${SERVICE_HOME}\\win32\\requirements.txt"
       ],
       "darwin": [
-        "-m pip install --ignore-installed --no-warn-script-location --use-pep517 \"parse (==1.19.0)\" -r ${SERVICE_HOME}/darwin/requirements.txt"
+        "-m pip install --ignore-installed --no-warn-script-location --use-pep517 --user -r ${SERVICE_HOME}/darwin/requirements.txt"
       ],
       "linux": [
-        "-m pip install --ignore-installed --no-warn-script-location --use-pep517 \"parse (==1.19.0)\" -r ${SERVICE_HOME}/linux/requirements.txt"
+        "-m pip install --ignore-installed --no-warn-script-location --use-pep517 --user -r ${SERVICE_HOME}/linux/requirements.txt"
       ],
       "default": [
         "get-pip.py --no-warn-script-location",
-        "-m pip install --ignore-installed --no-warn-script-location --use-pep517 \"parse (==1.19.0)\" -r ${SERVICE_HOME}\\win32\\requirements.txt"
+        "-m pip install --ignore-installed --no-warn-script-location --use-pep517 --user -r ${SERVICE_HOME}\\win32\\requirements.txt"
       ]
     },
     "commandline": {
