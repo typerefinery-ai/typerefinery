@@ -95,11 +95,7 @@ Function StartSetup
     if ( $IsWindows ) {
       python get-pip.py
     }
-<<<<<<< HEAD
     Invoke-Expression -Command "${PYTHON} -m pip install --use-pep517 --user --target=""${PYTHONPACKAGES}"" -r ""${SERVER_REQUIREMENTS}"""
-=======
-    Invoke-Expression -Command "${PYTHON} -m pip install --use-pep517  --user --target=""${PYTHONPACKAGES}"" -r ""${SERVER_REQUIREMENTS}"""
->>>>>>> c4140e57 (add stixorm to default python libs.)
   } finally {
     Set-Location -Path "${CURRENT_PATH}"
   }
