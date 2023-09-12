@@ -1,0 +1,16 @@
+[
+  {
+    "name": "contents",
+    "typeql": "feed-content",
+    "owner": "feed-owner",
+    "pointed_to": "content",
+    "object": "threat-sub-object"
+  },
+  {
+    "name": "changed_objects",
+    "typeql": "objects-changed",
+    "owner": "change-driver",
+    "pointed_to": "object-list",
+    "object": "state-change"
+  }
+]

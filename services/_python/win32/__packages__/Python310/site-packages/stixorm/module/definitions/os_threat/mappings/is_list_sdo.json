@@ -1,0 +1,25 @@
+{
+  "feed": [
+    "contents"
+  ],
+  "feeds": [
+    "contained"
+  ],
+  "event": [
+    "changed_objects",
+    "detection_methods",
+    "event_types",
+    "sighting_refs",
+    "subevents"
+  ],
+  "evidence": [
+    "object_refs"
+  ],
+  "impact": [
+    "impacted_refs"
+  ],
+  "task": [
+    "changed_objects",
+    "next_steps"
+  ]
+}
