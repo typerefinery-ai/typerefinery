@@ -11,7 +11,7 @@ def getArgs():
   parser.add_argument("dbhost", nargs='?', default="localhost", help="server host (default: %(default)s)")
   parser.add_argument("dbport", nargs='?', default="8729", help="server port (default: %(default)s)")
   parser.add_argument("dbdatabase", nargs='?', default="typerefinery", help="server database (default: %(default)s)")
-  parser.add_argument("dbquery", nargs='?', default=gquery, help="query to use (default: %(default)s)")
+  parser.add_argument("dbquery", nargs='?', default="", help="query to use (default: %(default)s)")
   parser.add_argument("outputfile", nargs='?', default=f"{basename(__file__)}.output", help="output file (default: %(default)s)")
   return parser.parse_args()
 
