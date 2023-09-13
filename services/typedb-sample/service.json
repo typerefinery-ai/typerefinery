@@ -34,7 +34,8 @@
       "LOGURU_LEVEL": "INFO"
     },
     "depend_on": [
-      "typedb"
+      "typedb",
+      "typedb-init"
     ]
   }
 }
