@@ -3,25 +3,43 @@ from loguru import logger as Logger
 from posixpath import basename
 import json
 from datetime import datetime
+import os
+import array
 
+def getJsonValue(json, key, defaultValue = None):
+  if key in json:
+    return json[key]
+  else:
+    return defaultValue
 
 @Logger.catch
-def main(argconfig, logger: Logger):
-  config = {
-      "dbhost": argconfig.dbhost,
-      "port": argconfig.dbport,
-      "database": argconfig.dbdatabase,
-      "dbquery": argconfig.dbquery,
-      "outputfile": argconfig.outputfile
-  }
-  logger.info(f"dbhost: {config.dbhost}")
-  outputjson = {}
-  typeDBConnect = f'{config.dbhost}:{config.dbport}'
-  with TypeDB.core_client(typeDBConnect) as client:
-      with client.session(config.dbdatabase, SessionType.DATA) as session:
-          with session.transaction(TransactionType.READ) as read_transaction:
-              answer_iterator = read_transaction.query().match(config.dbquery)
-              # TODO: process answer_iterator and fill outputjson wit yout data
+def main(inputfile, outputfile):
+  print(f'test text {inputfile}')
+  if os.path.exists(inputfile):
+      with open(inputfile, "r") as script_input:
+          config = json.load(script_input)
 
-  with open(config.outputfile, "w") as outfile:
+  print(f'config {config}')
+
+  connection = getJsonValue(config,'connection', {})
+  query = getJsonValue(config,'query', {})
+  topic = getJsonValue(config,'topic', {})
+
+  print(f'connection {connection}')
+  print(f'query {query}')
+  print(f'topic {topic}')
+
+  outputjson = {}
+  typeDBConnect = f"{connection['dbhost']}:{connection['dbport']}"
+  with TypeDB.core_client(typeDBConnect) as client:
+      with client.session(connection['dbdatabase'], SessionType.DATA) as session:
+          with session.transaction(TransactionType.READ) as read_transaction:
+              answer_iterator = read_transaction.query().match(query['dbquery'])
+              for answer in answer_iterator:
+                dict_answer = answer.map()
+                for key, thing in dict_answer.items():
+                   if thing.is_entity():
+                      outputjson[thing.get_iid()] = thing.get_type().get_label().name()
+
+  with open(outputfile, "w") as outfile:
       json.dump(outputjson, outfile)
