@@ -32,9 +32,9 @@ def load_footprint_types(session):
 
 def load_classic_logs(session, log, name):
     # setup the log entity
-    graql_insert = 'insert $a isa log, has logName "'+name+'";'
+    typeql_insert = 'insert $a isa log, has logName "'+name+'";'
     with session.transaction(TransactionType.WRITE) as write_transaction:
-        insert_iterator = write_transaction.query().insert(graql_insert)
+        insert_iterator = write_transaction.query().insert(typeql_insert)
         for concept_map in insert_iterator:
             concepts = concept_map.concepts()
             #logger.debug("Inserted an event with name: {0}".format(concepts[0].id))
@@ -50,20 +50,20 @@ def load_classic_logs(session, log, name):
             logger.debug('----------------------per trace ---------------------------------------------')
             trace_len = len(trace)
             #insert the event and trace on the log
-            graql_insert = 'match $a isa log, has logName "'+name+'";'
-            graql_insert += ' insert $b isa event, has eventName "'+event_name+'";'
-            graql_insert += '  $c (owner: $a, item: $b) isa trace, '
-            graql_insert += 'has traceId "'+name+str(i)+'", has index '+str(j)+';'
-            logger.debug('graql insert {graql_insert}')
+            typeql_insert = 'match $a isa log, has logName "'+name+'";'
+            typeql_insert += ' insert $b isa event, has eventName "'+event_name+'";'
+            typeql_insert += '  $c (owner: $a, item: $b) isa trace, '
+            typeql_insert += 'has traceId "'+name+str(i)+'", has index '+str(j)+';'
+            logger.debug('typeql insert {typeql_insert}')
             with session.transaction(TransactionType.WRITE) as write_transaction:
-                insert_iterator = write_transaction.query().insert(graql_insert)
+                insert_iterator = write_transaction.query().insert(typeql_insert)
                 for concept_map in insert_iterator:
                     concepts = concept_map.concepts()
                     #logger.debug("Inserted an event with name: {0}".format(concepts[0].id))
                     #logger.debug("Inserted an event with name: {0}".format(concepts[0].id))
                     ## to persist changes, write transaction must always be committed (closed)
                     logger.debug("------ Insert Trace Statement")
-                    logger.debug(f"Graql --> {graql_insert}")
+                    logger.debug(f"typeql --> {typeql_insert}")
                     logger.debug("------ Response")
                     for c in concepts:
                         if(c.is_attribute()):
@@ -78,23 +78,23 @@ def load_classic_logs(session, log, name):
                 write_transaction.commit()
 
             if prev_name:
-                graql_insert = 'match $a isa log, has logName "'+name+'";'
-                graql_insert += '  $b isa event, has eventName "'+prev_name+'";'
-                graql_insert += '  $c (owner: $a, item: $b) isa trace, '
-                graql_insert += 'has traceId "'+name+str(i)+'", has index '+str(j-1)+';'
-                graql_insert += '  $d isa event, has eventName "'+event_name+'";'
-                graql_insert += '  $e (owner: $a, item: $d) isa trace, '
-                graql_insert += 'has traceId "'+name+str(i)+'", has index '+str(j)+';'
-                graql_insert += 'insert  $f (owner: $a, input: $b, output: $d) isa follows; '
+                typeql_insert = 'match $a isa log, has logName "'+name+'";'
+                typeql_insert += '  $b isa event, has eventName "'+prev_name+'";'
+                typeql_insert += '  $c (owner: $a, item: $b) isa trace, '
+                typeql_insert += 'has traceId "'+name+str(i)+'", has index '+str(j-1)+';'
+                typeql_insert += '  $d isa event, has eventName "'+event_name+'";'
+                typeql_insert += '  $e (owner: $a, item: $d) isa trace, '
+                typeql_insert += 'has traceId "'+name+str(i)+'", has index '+str(j)+';'
+                typeql_insert += 'insert  $f (owner: $a, input: $b, output: $d) isa follows; '
                 with session.transaction(TransactionType.WRITE) as write_transaction:
-                    insert_iterator = write_transaction.query().insert(graql_insert)
+                    insert_iterator = write_transaction.query().insert(typeql_insert)
                     for concept_map in insert_iterator:
                         concepts = concept_map.concepts()
                         #logger.debug("Inserted an event with name: {0}".format(concepts[0].id))
                         #logger.debug("Inserted an event with name: {0}".format(concepts[0].id))
                         ## to persist changes, write transaction must always be committed (closed)
                         logger.debug("------ Insert follows Relation Statement")
-                        logger.debug(f"Graql --> {graql_insert}")
+                        logger.debug(f"typeql --> {typeql_insert}")
                         logger.debug("------ Response")
                         for c in concepts:
                             if(c.is_attribute()):
@@ -111,14 +111,14 @@ def load_classic_logs(session, log, name):
             prev_name = event_name
             if j == trace_len - 1:
                 # insert the dummy end of trace event
-                graql_insert = 'match $a isa log, has logName "'+name+'";'
-                graql_insert += '  $b isa event, has eventName "'+event_name+'";'
-                graql_insert += '  $c (owner: $a, item: $b) isa trace, '
-                graql_insert += 'has traceId "'+name+str(i)+'", has index '+str(j)+';'
-                graql_insert += '  $d isa event, has eventName "TraceStop";'
-                graql_insert += 'insert  $f (owner: $a, input: $b, output: $d) isa follows; '
+                typeql_insert = 'match $a isa log, has logName "'+name+'";'
+                typeql_insert += '  $b isa event, has eventName "'+event_name+'";'
+                typeql_insert += '  $c (owner: $a, item: $b) isa trace, '
+                typeql_insert += 'has traceId "'+name+str(i)+'", has index '+str(j)+';'
+                typeql_insert += '  $d isa event, has eventName "TraceStop";'
+                typeql_insert += 'insert  $f (owner: $a, input: $b, output: $d) isa follows; '
                 with session.transaction(TransactionType.WRITE) as write_transaction:
-                    insert_iterator = write_transaction.query().insert(graql_insert)
+                    insert_iterator = write_transaction.query().insert(typeql_insert)
                     for concept_map in insert_iterator:
                         concept_map_list = concept_map.concepts()
                         for c_m in concept_map_list:
@@ -126,7 +126,7 @@ def load_classic_logs(session, log, name):
                             #logger.debug("Inserted an event with name: {0}".format(concepts[0].id))
                             ## to persist changes, write transaction must always be committed (closed)
                             logger.debug("------ Insert follows Relation Statement")
-                            logger.debug(f"Graql --> {graql_insert}")
+                            logger.debug(f"typeql --> {typeql_insert}")
                             logger.debug("------ Response")
                             if(c_m.is_attribute()):
                                 logger.debug(c.get_value())
@@ -149,9 +149,9 @@ def initialiselogs(server):
         with client.session(server["database"], SessionType.DATA) as session:
             # insert null event
             logger.info(" - insert null event")
-            graql_insert = 'insert  $a isa event, has eventName "TraceStop";'
+            typeql_insert = 'insert  $a isa event, has eventName "TraceStop";'
             with session.transaction(TransactionType.WRITE) as write_transaction:
-                    insert_iterator = write_transaction.query().insert(graql_insert)
+                    insert_iterator = write_transaction.query().insert(typeql_insert)
                     for concept_map in insert_iterator:
                         concept_map_list = concept_map.concepts()
                         for c_m in concept_map_list:
@@ -166,10 +166,10 @@ def initialiselogs(server):
             load_classic_logs(session, classic.L2,'L2')
             logger.info(" - insert the raw activity names L3")
             load_classic_logs(session, classic.L3,'L3')
-            logger.info(" - insert the raw activity names L4")
-            load_classic_logs(session, classic.L4,'L4')
-            logger.info(" - insert the raw activity names L5")
-            load_classic_logs(session, classic.L5,'L5')
+            # logger.info(" - insert the raw activity names L4")
+            # load_classic_logs(session, classic.L4,'L4')
+            # logger.info(" - insert the raw activity names L5")
+            # load_classic_logs(session, classic.L5,'L5')
 
 
 def main():
