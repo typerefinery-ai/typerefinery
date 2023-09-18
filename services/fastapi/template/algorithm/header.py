@@ -4,6 +4,7 @@
 # allow importing og service local packages
 import os
 import sys
+import os.path
 
 where_am_i = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.environ["APP_SERVICE_PACKAGES_PATH"])
