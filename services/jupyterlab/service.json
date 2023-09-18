@@ -46,7 +46,7 @@
       "JUPYTERLAB_PORT": "${SERVICE_PORT}"
     },
     "commandline": {
-      "default": " -m jupyter lab --ServerApp.allow_remote_access=True --ServerApp.allow_origin=* --ServerApp.root_dir=${SERVICE_DATA_PATH} --no-browser --ServerApp.port=${SERVICE_PORT} --ServerApp.port_retries=0 --ServerApp.token='' --ServerApp.disable_check_xsrf=True --ServerApp.terminals_enabled=False"
+      "default": " -m jupyter lab --ServerApp.allow_remote_access=True --ServerApp.allow_origin='*' --ServerApp.root_dir=${SERVICE_DATA_PATH} --no-browser --ServerApp.port=${SERVICE_PORT} --ServerApp.port_retries=0 --ServerApp.token='' --ServerApp.disable_check_xsrf=True --ServerApp.terminals_enabled=False"
     },
     "serviceport": 8888,
     "healthcheck": {
