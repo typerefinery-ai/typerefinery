@@ -71,3 +71,9 @@ class UTILS(object):
       logger.info(popenargs)
       process = subprocess.run(popenargs, capture_output=True, **kwargs)
       return process.stdout.decode()
+
+  def getJsonValue(json, key, defaultValue = None):
+    if key in json:
+      return json[key]
+    else:
+      return None
