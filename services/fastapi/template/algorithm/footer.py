@@ -25,8 +25,8 @@ if __name__ == '__main__':
   log.info(args)
   config = {
       "dbhost": args.dbhost,
-      "port": args.dbport,
-      "database": args.dbdatabase,
+      "dbport": args.dbport,
+      "dbdatabase": args.dbdatabase,
       "dbquery": args.dbquery,
       "outputfile": args.outputfile
   }
