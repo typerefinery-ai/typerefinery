@@ -2,6 +2,7 @@
 ## footer start                                                               ##
 ################################################################################
 import argparse
+import os
 
 @Logger.catch
 def getArgs():
@@ -12,7 +13,7 @@ def getArgs():
   parser.add_argument("dbport", nargs='?', default="8729", help="server port (default: %(default)s)")
   parser.add_argument("dbdatabase", nargs='?', default="typerefinery", help="server database (default: %(default)s)")
   parser.add_argument("dbquery", nargs='?', default="", help="query to use (default: %(default)s)")
-  parser.add_argument("outputfile", nargs='?', default=f"{basename(__file__)}.output", help="output file (default: %(default)s)")
+  parser.add_argument("outputfile", nargs='?', default=f"{os.path.basename(__file__)}.output", help="output file (default: %(default)s)")
   return parser.parse_args()
 
 if __name__ == '__main__':
@@ -20,9 +21,16 @@ if __name__ == '__main__':
   # setup logger for init
   log = Logger
   log.remove()
-  log.add(f'{basename(__file__)}.log', level="INFO")
+  log.add(f'{os.path.basename(__file__)}.log', level="INFO")
   log.info(args)
-  main(args.dbhost, args.dbport, args.dbdatabase, args.dbquery, args.outputfile, log)
+  config = {
+      "dbhost": args.dbhost,
+      "port": args.dbport,
+      "database": args.dbdatabase,
+      "dbquery": args.dbquery,
+      "outputfile": args.outputfile
+  }
+  main(config, log)
 
 
 ################################################################################
