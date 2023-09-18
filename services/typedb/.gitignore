@@ -1,3 +1,8 @@
 
 # type db data
 **/server/data/**/*
+**/server/*
+**/console/*
+**/typedb.bat
+**/typedb
+!**/.gitkeep
