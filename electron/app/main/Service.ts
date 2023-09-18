@@ -2006,9 +2006,36 @@ export class Service extends EventEmitter<ServiceEvent> {
         await unpackZip(archive, destination)
       } else if (archive.endsWith(".tar.gz")) {
         await unpackTarGz(archive, destination)
+      } else {
+        // await Seven.extract(archive, destination)
+        await this.unpack7Zip(archive, destination)
       }
     } catch (err) {
       this.#log(`unable to extracted setup archive ${err}`)
+    }
+  }
+
+  async unpack7Zip(archive, destination) {
+    const archiveService = this.#serviceManager.getService("archive")
+    if (archiveService) {
+      const serviceExec = archiveService.getServiceExecutable()
+      const commandArgs = ["x", "-aoa", this.#setuparchiveFile]
+
+      await os
+        .runProcess(serviceExec, commandArgs, {
+          signal: this.#abortController.signal,
+          cwd: this.#servicepath,
+          stdio: ["ignore", this.#stdout, this.#stderr],
+          env: this.environmentVariables,
+          windowsHide: true,
+        })
+        .then((result) => {
+          this.#log(`shell command ${serviceExec} result ${result}`)
+        })
+        .catch((err) => {
+          this.#log(`shell command ${serviceExec} error ${err}`)
+          this.#setStatus(ServiceStatus.ERROR)
+        })
     }
   }
 
