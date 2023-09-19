@@ -506,10 +506,14 @@ function getServicesPage(services: Service[]) {
       if (service.status === ServiceStatus.DISABLED) {
         statusBackground = "bg-secondary"
       }
-
+      const actionSetupEnabled = service.isInstallable ? "" : "disabled"
       let actionSetupLabel = "Install"
       if (service.isSetup) {
         actionSetupLabel = "Re-Install"
+      } else {
+        if (!service.isInstallable) {
+          actionSetupLabel = "N/A"
+        }
       }
 
       return `<tr class="align-middle">
@@ -525,9 +529,9 @@ function getServicesPage(services: Service[]) {
         <button type="button" class="btn btn-danger ${
           !service.isRunnable ? "disabled" : ""
         }" onclick="triggerServiceAPI('${service.id}','stop')">Stop</button>
-        <button type="button" class="btn btn-danger" onclick="triggerServiceAPI('${
-          service.id
-        }','setup')">${actionSetupLabel}</button>
+        <button type="button" class="btn btn-danger" ${actionSetupEnabled} onclick="triggerServiceAPI('${
+        service.id
+      }','setup')">${actionSetupLabel}</button>
       </td>
       </tr>`
     })
