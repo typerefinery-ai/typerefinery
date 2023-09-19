@@ -79,6 +79,8 @@ http:
       service: nginx
       entrypoints:
         - web
+      middlewares:
+        - serviceheaders
     nginx-https:
       rule: Host(`nginx.typerefinery.localhost`)
       # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/nginx`) ) || Host(`nginx.localhost`)
@@ -86,6 +88,8 @@ http:
       entrypoints:
         - websecure
       tls: true
+      middlewares:
+        - serviceheaders
 
     flow:
       rule: Host(`flow.typerefinery.localhost`)
@@ -121,6 +125,8 @@ http:
       service: jupyterlab
       entrypoints:
         - web
+      middlewares:
+        - serviceheaders
     jupyterlab-https:
       rule: Host(`jupyterlab.typerefinery.localhost`)
       # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/nginx`) ) || Host(`nginx.localhost`)
@@ -128,6 +134,8 @@ http:
       entrypoints:
         - websecure
       tls: true
+      middlewares:
+        - serviceheaders
 
     traefikdashboard:
       rule: Host(`traefik.typerefinery.localhost`)
@@ -208,6 +216,8 @@ http:
     serviceheaders:
       headers:
         accesscontrolalloworiginlist: "*"
+        accesscontrolallowmethods: "GET, POST, PUT, DELETE, OPTIONS"
+        accesscontrolallowheaders: "*"
 
     # Redirect to https
     redirect-to-https:
