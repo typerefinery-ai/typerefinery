@@ -1939,6 +1939,16 @@ export class Service extends EventEmitter<ServiceEvent> {
     return this.getServiceCommand().trim().length > 0 ? true : false
   }
 
+  get isInstallable() {
+    if (
+      this.#options.execconfig.setup ||
+      this.#options.execconfig.setuparchive
+    ) {
+      return true
+    }
+    return false
+  }
+
   get isSetup() {
     if (this.#options.execconfig.setup) {
       this.#debug(`setup: ${JSON.stringify(this.#options.execconfig.setup)}`)
@@ -1953,8 +1963,9 @@ export class Service extends EventEmitter<ServiceEvent> {
     let isSetup = false
     if (this.#setupstatefile) {
       isSetup = os.isPathExist(this.#setupstatefile)
+      this.#debug(`setupstatefile exist: ${isSetup}`)
+      return isSetup
     }
-    this.#debug(`setupstatefile exist: ${isSetup}`)
 
     if (
       !this.#options.execconfig.setup &&
@@ -2016,27 +2027,30 @@ export class Service extends EventEmitter<ServiceEvent> {
   }
 
   async unpack7Zip(archive, destination) {
-    const archiveService = this.#serviceManager.getService("archive")
-    if (archiveService) {
-      const serviceExec = archiveService.getServiceExecutable()
-      const commandArgs = ["x", "-aoa", this.#setuparchiveFile]
+    return new Promise<void>((resolve, reject) => {
+      const archiveService = this.#serviceManager.getService("archive")
+      if (archiveService) {
+        const serviceExec = archiveService.getServiceExecutable()
+        const commandArgs = ["x", "-aoa", archive]
 
-      await os
-        .runProcess(serviceExec, commandArgs, {
+        os.runProcess(serviceExec, commandArgs, {
           signal: this.#abortController.signal,
-          cwd: this.#servicepath,
+          cwd: destination,
           stdio: ["ignore", this.#stdout, this.#stderr],
           env: this.environmentVariables,
           windowsHide: true,
         })
-        .then((result) => {
-          this.#log(`shell command ${serviceExec} result ${result}`)
-        })
-        .catch((err) => {
-          this.#log(`shell command ${serviceExec} error ${err}`)
-          this.#setStatus(ServiceStatus.ERROR)
-        })
-    }
+          .then((result) => {
+            this.#log(`shell command ${serviceExec} result ${result}`)
+            resolve()
+          })
+          .catch((err) => {
+            this.#log(`shell command ${serviceExec} error ${err}`)
+            this.#setStatus(ServiceStatus.ERROR)
+            reject()
+          })
+      }
+    })
   }
 
   async install() {
@@ -2068,11 +2082,9 @@ export class Service extends EventEmitter<ServiceEvent> {
             }.`
           )
 
-          if (isSetupStateFile) {
-            // as we have just extracted the archive, we need to force the setup
-            force = true
-            fs.writeFileSync(this.#setupstatefile, "archive extracted")
-          }
+          // as we have just extracted the archive, we need to force the setup
+          force = true
+          fs.writeFileSync(this.#setupstatefile, "archive extracted")
         })
         this.#setStatus(ServiceStatus.EXTRACTED)
       } else {
