@@ -357,6 +357,8 @@ export class Service extends EventEmitter<ServiceEvent> {
           this.platform,
           setupArchive.output
         )
+        // set service path to archive output path
+        this.#servicepath = this.#setuparchiveOutputPath
         this.#log(
           `service ${this.#id} archive file ${
             this.#setuparchiveFile
