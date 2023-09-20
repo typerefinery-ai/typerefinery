@@ -204,6 +204,7 @@ export class Service extends EventEmitter<ServiceEvent> {
   #description: string
   #servicehome: string
   #servicepath: string
+  #servicebinpath: string
   #execservicepath = ""
   #servicedatapath: string
   #servicepidfile: string
@@ -249,6 +250,7 @@ export class Service extends EventEmitter<ServiceEvent> {
     this.#name = this.#options.name || this.#options.id
     this.#description = this.#options.description || ""
     this.#servicepath = servicepath
+    this.#servicebinpath = servicepath
     this.#servicehome = servicehome
     this.#servicedatapath = servicedatapath
     // if server has datapath set ensure the sub path exist in the server data path
@@ -357,8 +359,7 @@ export class Service extends EventEmitter<ServiceEvent> {
           this.platform,
           setupArchive.output
         )
-        // set service path to archive output path
-        this.#servicepath = this.#setuparchiveOutputPath
+        this.#servicebinpath = this.#setuparchiveOutputPath
         this.#log(
           `service ${this.#id} archive file ${
             this.#setuparchiveFile
@@ -603,6 +604,7 @@ export class Service extends EventEmitter<ServiceEvent> {
         service.getServiceExecutableCli()
       )
       .replaceAll("${SERVICE_PATH}", service.#servicepath)
+      .replaceAll("${SERVICE_BIN_PATH}", service.#servicebinpath)
       .replaceAll("${EXEC_SERVICE_PATH}", service.#execservicepath)
       .replaceAll("${SERVICE_DATA_PATH}", service.#servicedatapath)
       .replaceAll(
@@ -2075,6 +2077,12 @@ export class Service extends EventEmitter<ServiceEvent> {
       if (!os.isPathExist(this.#setuparchiveOutputPath) || force) {
         this.#setStatus(ServiceStatus.EXTRACTING)
         this.#log(
+          `extracting setup archive ${this.#setuparchiveFile} into ${
+            this.#servicepath
+          }.`
+        )
+        this.#logWrite(
+          "info",
           `extracting setup archive ${this.#setuparchiveFile} into ${
             this.#servicepath
           }.`
