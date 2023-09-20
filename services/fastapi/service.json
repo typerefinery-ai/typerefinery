@@ -9,13 +9,14 @@
   "execconfig": {
     "execservice": { "id": "python" },
     "setup": {
-      "win32": ["-m pip install --ignore-installed --use-pep517 --user --target=${SERVICE_PATH}\\__packages__ -r ${SERVICE_PATH}\\requirements.txt"],
-      "darwin": ["-m pip install --ignore-installed --use-pep517 --user --target=${SERVICE_PATH}/__packages__ -r ${SERVICE_PATH}/requirements.txt"],
-      "linux": ["-m pip install --ignore-installed --use-pep517 --user --target=${SERVICE_PATH}/__packages__ -r ${SERVICE_PATH}/requirements.txt"],
-      "default": ["-m pip install --ignore-installed --use-pep517 --user --target=${SERVICE_PATH}\\__packages__ -r ${SERVICE_PATH}\\requirements.txt"]
+      "win32": ["-m pip install --ignore-installed --use-pep517 --no-warn-script-location --user -r ${SERVICE_PATH}\\requirements.txt"],
+      "darwin": ["-m pip install --ignore-installed --use-pep517 --no-warn-script-location --user -r ${SERVICE_PATH}/requirements.txt"],
+      "linux": ["-m pip install --ignore-installed --use-pep517 --no-warn-script-location --user -r ${SERVICE_PATH}/requirements.txt"],
+      "default": ["-m pip install --ignore-installed --use-pep517 --no-warn-script-location --user -r ${SERVICE_PATH}\\requirements.txt"]
     },
     "env": {
       "PYTHONPATH": "${PYTHON_HOME}",
+      "PYTHONUSERBASE": "${PYTHON_HOME}",
       "PATH": "${PYTHON_HOME}"
     },
     "globalenv": {

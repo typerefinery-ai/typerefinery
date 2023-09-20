@@ -1,5 +1,6 @@
 
 # service specific folders
+__user__
 __pycache__
 __packages__
 generated/algorithm/req-*
