@@ -2014,6 +2014,7 @@ export class Service extends EventEmitter<ServiceEvent> {
   // extract service archive
   async #doExtract(archive: string, destination: string) {
     try {
+      this.#ensurePath(destination)
       if (archive.endsWith(".zip")) {
         this.#log(`unpackZip(${archive}, ${destination})`)
         await unpackZip(archive, destination)
