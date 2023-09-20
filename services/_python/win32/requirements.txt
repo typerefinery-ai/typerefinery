@@ -1,9 +1,9 @@
 python-dotenv
-uvicorn[standard]
+# uvicorn[standard]
 parse
 typedb-client
 argparse
 loguru
 websocket-client
 jupyterlab
-stixorm
+# stixorm

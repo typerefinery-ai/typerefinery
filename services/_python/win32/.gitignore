@@ -1,7 +1,9 @@
 
 # python cache files
-Lib/
-Scripts/
-etc/
-share/
+**/Lib/
+**/Scripts/
+**/etc/
+**/share/
 **/__packages__/
+# python/
+!**/.gitkeep
