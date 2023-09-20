@@ -1,7 +1,7 @@
 {
   "id": "python",
-  "name": "Python 3.10",
-  "description": "Embeded Python 3.10",
+  "name": "Python 3",
+  "description": "Embeded Python 3.11.5",
   "enabled": true,
   "status": "-1",
   "logoutput": "",
@@ -11,36 +11,50 @@
   "execconfig": {
     "serviceorder": 1,
     "executable": {
-      "win32": "win32\\python.exe",
-      "darwin": "darwin/bin/python",
-      "linux": "linux/bin/python",
-      "default": "win32\\python.exe"
+      "win32": "python\\python.exe",
+      "darwin": "python/bin/python",
+      "linux": "python/bin/python",
+      "default": "python\\python.exe"
+    },
+    "setuparchive": {
+      "win32": {
+        "name": "python-3.11.5-embed-amd64.zip",
+        "output": "python"
+      }
     },
     "setup": {
       "win32": [
+        "; copy ${SERVICE_PATH}\\get-pip.py ${SERVICE_EXECUTABLE_HOME}\\get-pip.py",
+        "; copy ${SERVICE_PATH}\\requirements.txt ${SERVICE_EXECUTABLE_HOME}\\requirements.txt",
+        "; echo Lib/site-packages >> ${SERVICE_EXECUTABLE_HOME}\\python311._pth",
+        "; echo import site >> ${SERVICE_EXECUTABLE_HOME}\\python311._pth",
+        "-m sysconfig",
+        "-m site --user-base --user-site",
+        "-c \"import site; print(site.getsitepackages())\"",
         "get-pip.py --no-warn-script-location",
-        "-m pip install --ignore-installed --no-warn-script-location --use-pep517 --user -r ${SERVICE_HOME}\\win32\\requirements.txt"
+        "-m pip install --ignore-installed --no-warn-script-location --use-pep517 --user -r ${SERVICE_EXECUTABLE_HOME}\\requirements.txt"
       ],
       "darwin": [
-        "-m pip install --ignore-installed --no-warn-script-location --use-pep517 --user -r ${SERVICE_HOME}/darwin/requirements.txt"
+        "-m pip install --ignore-installed --no-warn-script-location --use-pep517 --user -r ${SERVICE_EXECUTABLE_HOME}/requirements.txt"
       ],
       "linux": [
-        "-m pip install --ignore-installed --no-warn-script-location --use-pep517 --user -r ${SERVICE_HOME}/linux/requirements.txt"
+        "-m pip install --ignore-installed --no-warn-script-location --use-pep517 --user -r ${SERVICE_EXECUTABLE_HOME}/requirements.txt"
       ],
       "default": [
         "get-pip.py --no-warn-script-location",
-        "-m pip install --ignore-installed --no-warn-script-location --use-pep517 --user -r ${SERVICE_HOME}\\win32\\requirements.txt"
+        "-m pip install --ignore-installed --no-warn-script-location --use-pep517 --user -r ${SERVICE_EXECUTABLE_HOME}\\requirements.txt"
       ]
     },
     "commandline": {
       "default": " -c \"import os,sysconfig;print('PYTHON_SCRIPTS_PATH:'+sysconfig.get_path('scripts',f'{os.name}_user'))\""
     },
     "outputvarregex": {
-      "PYTHON_SCRIPTS_PATH": "PYTHON_SCRIPTS_PATH:(.*)"
+      "PYTHON_SCRIPTS_PATHA": "PYTHON_SCRIPTS_PATH:(.*)"
     },
     "env": {
       "PATH": "${SERVICE_EXECUTABLE_HOME}",
-      "PYTHON_HOME": "${SERVICE_EXECUTABLE_HOME}"
+      "PYTHONHOME": "${SERVICE_EXECUTABLE_HOME}",
+      "PYTHONUSERBASE": "${SERVICE_EXECUTABLE_HOME}"
     },
     "globalenv": {
       "PYTHON": "${SERVICE_EXECUTABLE}",
