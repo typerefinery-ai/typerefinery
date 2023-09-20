@@ -17,15 +17,15 @@
     "setuparchive": {
       "win32": {
         "name": "win32.zip",
-        "output": "win32"
+        "output": "mongo"
       },
       "darwin": {
         "name": "darwin.zip",
-        "output": "darwin"
+        "output": "mongo"
       },
       "linux": {
         "name": "linux.zip",
-        "output": "linux"
+        "output": "mongo"
       }
     },
     "setup": {
@@ -59,16 +59,16 @@
       ]
     },
     "executable": {
-      "win32": "win32\\bin\\mongod.exe",
-      "darwin": "darwin/bin/mongod",
-      "linux": "linux/bin/mongod",
-      "default": "win32\\bin\\mongod.exe"
+      "win32": "mongo\\bin\\mongod.exe",
+      "darwin": "mongo/bin/mongod",
+      "linux": "mongo/bin/mongod",
+      "default": "mongo\\bin\\mongod.exe"
     },
     "executablecli": {
-      "win32": "win32\\bin\\mongosh.exe",
-      "darwin": "darwin/bin/mongosh",
-      "linux": "linux/bin/mongosh",
-      "default": "win32\\bin\\mongosh.exe"
+      "win32": "mongo\\bin\\mongosh.exe",
+      "darwin": "mongo/bin/mongosh",
+      "linux": "mongo/bin/mongosh",
+      "default": "mongo\\bin\\mongosh.exe"
     },
     "datapath": "database",
     "commandline": {

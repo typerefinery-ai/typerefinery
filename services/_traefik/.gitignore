@@ -3,3 +3,4 @@
 config/certs/*
 !**/.gitkeep
 **/bin/
+**/traefik

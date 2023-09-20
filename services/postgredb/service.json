@@ -17,15 +17,15 @@
     "setuparchive": {
       "win32": {
         "name": "win32.zip",
-        "output": "win32"
+        "output": "postgredb"
       },
       "darwin": {
         "name": "darwin.zip",
-        "output": "darwin"
+        "output": "postgredb"
       },
       "linux": {
         "name": "linux.zip",
-        "output": "linux"
+        "output": "postgredb"
       }
     },
     "setup": {
@@ -47,16 +47,16 @@
       ]
     },
     "executable": {
-      "win32": "bin\\postgres.exe",
-      "darwin": "bin/postgres",
-      "linux": "bin/postgres",
-      "default": "bin\\postgres.exe"
+      "win32": "postgredb\\bin\\postgres.exe",
+      "darwin": "postgredb/bin/postgres",
+      "linux": "postgredb/bin/postgres",
+      "default": "postgredb/bin\\postgres.exe"
     },
     "executablecli": {
-      "win32": "win32\\bin\\psql.exe",
-      "darwin": "darwin/bin/psql",
-      "linux": "linux/bin/psql",
-      "default": "win32\\bin\\psql.exe"
+      "win32": "postgredb\\bin\\psql.exe",
+      "darwin": "postgredb/bin/psql",
+      "linux": "postgredb/bin/psql",
+      "default": "postgredb\\bin\\psql.exe"
     },
     "datapath": "database/db",
     "commandline": {

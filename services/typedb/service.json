@@ -11,15 +11,15 @@
     "setuparchive": {
       "win32": {
         "name": "typedb-all-windows-2.22.0.7z.001",
-        "output": "win32"
+        "output": "typedb"
       },
       "darwin": {
         "name": "typedb-all-darwin-2.22.0.7z.001",
-        "output": "darwin"
+        "output": "typedb"
       },
       "linux": {
         "name": "typedb-all-linux-2.22.0.7z.001",
-        "output": "linux"
+        "output": "typedb"
       }
     },
     "commandline": {

@@ -13,22 +13,22 @@
     "setuparchive": {
       "win32": {
         "name": "win32.zip",
-        "output": "win32"
+        "output": "java"
       },
       "darwin": {
         "name": "darwin.zip",
-        "output": "darwin"
+        "output": "java"
       },
       "linux": {
         "name": "linux.zip",
-        "output": "linux"
+        "output": "java"
       }
     },
     "executable": {
-      "win32": "bin\\java.exe",
-      "darwin": "bin/java",
-      "linux": "bin/java",
-      "default": "bin\\java"
+      "win32": "java\\bin\\java.exe",
+      "darwin": "java/bin/java",
+      "linux": "java/bin/java",
+      "default": "java\\bin\\java"
     },
     "globalenv": {
       "JAVA": "${SERVICE_EXECUTABLE}",

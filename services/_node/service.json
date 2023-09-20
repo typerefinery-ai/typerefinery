@@ -14,15 +14,15 @@
     "setuparchive": {
       "win32": {
         "name": "node-v18.6.0-win-x64.zip",
-        "output": "node-v18.6.0-win-x64"
+        "output": ""
       },
       "darwin": {
         "name": "node-v18.6.0-darwin-x64.tar.gz",
-        "output": "node-v18.6.0-darwin-x64"
+        "output": ""
       },
       "linux": {
         "name": "node-v18.6.0-linux-x64.tar.gz",
-        "output": "node-v18.6.0-linux-x64"
+        "output": ""
       }
     },
     "executable": {

@@ -26,10 +26,10 @@
       "TCP_TYPEDB": "8320"
     },
     "executable": {
-      "win32": "bin\\traefik.exe",
-      "darwin": "bin/traefik",
-      "linux": "bin/traefik",
-      "default": "bin\\traefik"
+      "win32": "traefik\\bin\\traefik.exe",
+      "darwin": "traefik/bin/traefik",
+      "linux": "traefik/bin/traefik",
+      "default": "traefik\\bin\\traefik"
     },
     "globalenv": {
       "TRAEFIK_JUPYTERLAB_URL": "https://jupyterlab.typerefinery.localhost:8101/",
@@ -70,15 +70,15 @@
     "setuparchive": {
       "win32": {
         "name": "win32.zip",
-        "output": "win32"
+        "output": "traefik"
       },
       "darwin": {
         "name": "darwin.zip",
-        "output": "darwin"
+        "output": "traefik"
       },
       "linux": {
         "name": "linux.zip",
-        "output": "linux"
+        "output": "traefik"
       }
     }
   }
