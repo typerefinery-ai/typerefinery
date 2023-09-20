@@ -583,6 +583,7 @@ export class Service extends EventEmitter<ServiceEvent> {
     }
 
     return command
+      .replaceAll("${PS}", this.isWindows ? ";" : ":") //path separator
       .replaceAll("${SERVICE_HOME}", service.#servicehome)
       .replaceAll(
         "${SERVICE_HOME_ESC}",
@@ -2014,10 +2015,13 @@ export class Service extends EventEmitter<ServiceEvent> {
   async #doExtract(archive: string, destination: string) {
     try {
       if (archive.endsWith(".zip")) {
+        this.#log(`unpackZip(${archive}, ${destination})`)
         await unpackZip(archive, destination)
       } else if (archive.endsWith(".tar.gz")) {
+        this.#log(`unpackTarGz(${archive}, ${destination})`)
         await unpackTarGz(archive, destination)
       } else {
+        this.#log(`unpack7Zip(${archive}, ${destination})`)
         // await Seven.extract(archive, destination)
         await this.unpack7Zip(archive, destination)
       }
@@ -2074,7 +2078,7 @@ export class Service extends EventEmitter<ServiceEvent> {
         )
         await this.#doExtract(
           this.#setuparchiveFile,
-          this.#servicepath
+          this.#setuparchiveOutputPath
         ).finally(() => {
           this.#log(
             `extracted setup archive ${this.#setuparchiveFile} in ${
@@ -2142,6 +2146,7 @@ export class Service extends EventEmitter<ServiceEvent> {
 
         // list of setup processess running in backgroud to kill after setup
         const backgroundProcesses: Promise<any>[] = []
+        const execPath = this.getServiceExecutable(true)
 
         //for each setup command in #setup, execute it
         for (let i = 0; i < this.#setup.length; i++) {
@@ -2154,21 +2159,29 @@ export class Service extends EventEmitter<ServiceEvent> {
             this.#log(`skipping setup step ${step}`)
             continue
           }
+
           // if setup command starts with ;, execute it as shell command
           if (setupCommand.startsWith(";")) {
             let shellCommand = setupCommand.substring(1).trim()
+
             // does shell command ends with &?
             if (shellCommand.endsWith("&")) {
               // remove & from shell command
               shellCommand = shellCommand
                 .substring(0, shellCommand.length - 1)
                 .trim()
-              this.#log(`run command in backgroud ${shellCommand}`)
+              this.#log(
+                `run command in backgroud ${shellCommand} in ${execPath}`
+              )
+              this.#logWrite(
+                "info",
+                `run command in backgroud: ${shellCommand} in ${execPath}`
+              )
               // run shell command in background and add it to backgroundProcesses
               const backgroundProcess = os
                 .runProcess(shellCommand, [], {
                   signal: this.#abortController.signal,
-                  cwd: this.#servicepath,
+                  cwd: execPath,
                   stdio: ["ignore", this.#stdout, this.#stderr],
                   env: this.environmentVariables,
                   windowsHide: true,
@@ -2188,6 +2201,10 @@ export class Service extends EventEmitter<ServiceEvent> {
                 this.#servicepath
               } with env ${JSON.stringify(this.environmentVariables)}.`
             )
+            this.#logWrite(
+              "info",
+              `executing shell command: ${shellCommand} in ${this.#servicepath}`
+            )
             await os
               .runProcess(shellCommand, [], {
                 signal: this.#abortController.signal,
@@ -2201,6 +2218,10 @@ export class Service extends EventEmitter<ServiceEvent> {
               })
               .catch((err) => {
                 this.#log(`shell command ${shellCommand} error ${err}`)
+                this.#errorWrite(
+                  "info",
+                  `error with setup command ${execCommand} error ${err}`
+                )
                 this.#setStatus(ServiceStatus.ERROR)
               })
             continue
@@ -2208,11 +2229,12 @@ export class Service extends EventEmitter<ServiceEvent> {
           // execute setup command using service executable
           this.#log(`executing setup command: ${setupCommand}`)
           const execCommand = `${serviceExecutable} ${setupCommand}`
-          this.#log(`execCommand: ${execCommand} in ${this.#servicepath}`)
+          this.#log(`execCommand: ${execCommand} in ${execPath}`)
+          this.#logWrite("info", `execCommand: ${execCommand} in ${execPath}`)
           await os
             .runProcess(execCommand, [], {
               signal: this.#abortController.signal,
-              cwd: this.#servicepath,
+              cwd: execPath,
               stdio: ["ignore", this.#stdout, this.#stderr],
               env: this.environmentVariables,
               windowsHide: true,
@@ -2225,6 +2247,10 @@ export class Service extends EventEmitter<ServiceEvent> {
             })
             .catch((err) => {
               this.#log(`setup command ${setupCommand} error ${err}`)
+              this.#errorWrite(
+                "info",
+                `error with setup command ${execCommand} error ${err}`
+              )
               this.#setStatus(ServiceStatus.ERROR)
             })
             .finally(() => {
