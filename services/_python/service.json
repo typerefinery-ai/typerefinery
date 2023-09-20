@@ -24,8 +24,8 @@
     },
     "setup": {
       "win32": [
-        "; copy ${SERVICE_PATH}\\..\\get-pip.py ${SERVICE_EXECUTABLE_HOME}\\get-pip.py",
-        "; copy ${SERVICE_PATH}\\..\\requirements.txt ${SERVICE_EXECUTABLE_HOME}\\requirements.txt",
+        "; copy ${SERVICE_PATH}\\get-pip.py ${SERVICE_EXECUTABLE_HOME}\\get-pip.py",
+        "; copy ${SERVICE_PATH}\\requirements.txt ${SERVICE_EXECUTABLE_HOME}\\requirements.txt",
         "; echo Lib/site-packages >> ${SERVICE_EXECUTABLE_HOME}\\python311._pth",
         "; echo import site >> ${SERVICE_EXECUTABLE_HOME}\\python311._pth",
         "-m sysconfig",
@@ -49,7 +49,7 @@
       "default": " -c \"import os,sysconfig;print('PYTHON_SCRIPTS_PATH:'+sysconfig.get_path('scripts',f'{os.name}_user'))\""
     },
     "outputvarregex": {
-      "PYTHON_SCRIPTS_PATHA": "PYTHON_SCRIPTS_PATH:(.*)"
+      "PYTHON_SCRIPTS_PATH": "PYTHON_SCRIPTS_PATH:(.*)"
     },
     "env": {
       "PATH": "${SERVICE_EXECUTABLE_HOME}",
