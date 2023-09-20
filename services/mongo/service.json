@@ -59,16 +59,16 @@
       ]
     },
     "executable": {
-      "win32": "mongo\\bin\\mongod.exe",
-      "darwin": "mongo/bin/mongod",
-      "linux": "mongo/bin/mongod",
-      "default": "mongo\\bin\\mongod.exe"
+      "win32": "mongo\\win32\\bin\\mongod.exe",
+      "darwin": "mongo/darwin/bin/mongod",
+      "linux": "mongo/linux/bin/mongod",
+      "default": "mongo\\win32\\bin\\mongod.exe"
     },
     "executablecli": {
-      "win32": "mongo\\bin\\mongosh.exe",
-      "darwin": "mongo/bin/mongosh",
-      "linux": "mongo/bin/mongosh",
-      "default": "mongo\\bin\\mongosh.exe"
+      "win32": "mongo\\win32\\bin\\mongosh.exe",
+      "darwin": "mongo/darwin/bin/mongosh",
+      "linux": "mongo/linux/bin/mongosh",
+      "default": "mongo\\win32\\bin\\mongosh.exe"
     },
     "datapath": "database",
     "commandline": {
