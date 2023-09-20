@@ -2220,7 +2220,7 @@ export class Service extends EventEmitter<ServiceEvent> {
                 this.#log(`shell command ${shellCommand} error ${err}`)
                 this.#errorWrite(
                   "info",
-                  `error with setup command ${execCommand} error ${err}`
+                  `error with setup command ${shellCommand} error ${err}`
                 )
                 this.#setStatus(ServiceStatus.ERROR)
               })
