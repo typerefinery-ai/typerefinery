@@ -1,0 +1,1271 @@
+{
+	"paused": false,
+	"id": "f14nu7001xm51d",
+	"reference": "",
+	"author": "",
+	"group": "",
+	"icon": "fa fa-chart-pie",
+	"color": "#041EF5",
+	"version": "",
+	"readme": "",
+	"url": "https://localhost:8111/Typerefinery_Wiring",
+	"name": "test stixorm",
+	"components": {
+		"c5aria8f8f": "<script total>\r\n\r\n\texports.id = 'typerefinery_printjson';\r\n\texports.name = 'Print JSON';\r\n\texports.icon = 'fa fa-print';\r\n\texports.group = '@TypeRefinery';\r\n\texports.author = 'TypeRefinery.io';\r\n\texports.version = '2';\r\n\r\n\texports.config = { title: exports.name, version: exports.version, repo: false, data: true };\r\n\texports.inputs = [{ id: 'input', name: 'Input' }];\r\n\r\n\texports.make = function(instance, config) {\r\n\t\tinstance.message = function($) {\r\n\r\n\t\t\tvar data = $.data;\r\n\r\n\t\t\tif (config.data !== false) {\r\n\t\t\t\tif (data instanceof Buffer)\r\n\t\t\t\t\tdata = data.toString('hex').substring(0, 200);\r\n\t\t\t}\r\n\r\n\t\t\tvar count = 0;\r\n\r\n\t\t\tfor (var key in config) {\r\n\t\t\t\tif (key == \"repo\" || key == \"data\" ) {\r\n\t\t\t\t\tif (config[key]) {\r\n\t\t\t\t\t\tcount++;\r\n\t\t\t\t\t}\r\n\t\t\t\t}\r\n\t\t\t}\r\n\r\n\t\t\tvar output = count > 1 ? {} : null;\r\n\r\n\t\t\tif (config.repo) {\r\n\t\t\t\tif (output)\r\n\t\t\t\t\toutput.repo = $.repo;\r\n\t\t\t\telse\r\n\t\t\t\t\toutput = $.repository;\r\n\t\t\t}\r\n\r\n\t\t\tif (config.data) {\r\n\t\t\t\tif (output)\r\n\t\t\t\t\toutput.data = $.data;\r\n\t\t\t\telse\r\n\t\t\t\t\toutput = $.data;\r\n\t\t\t}\r\n\r\n\t\t\toutput && instance.status(output);\r\n\t\t\t$.destroy();\r\n\t\t};\r\n\r\n\t\tinstance.trigger = function() {\r\n\t\t\tinstance.status('');\r\n\t\t};\r\n\r\n\t\tinstance.configure = function() {\r\n\t\t\tif (config.title === \"\") {\r\n\t\t\t\tconfig.title = exports.name;\r\n\t\t\t}\r\n\t\t\tconfig.version = exports.version;\r\n\t\t};\r\n\r\n\t\tinstance.configure();\r\n\r\n\t};\r\n\r\n</script>\r\n\r\n<style>\r\n\t.CLASS footer > div { margin: 10px; }\r\n\t.CLASS pre { font-size: 10px; margin: 0; padding: 5px; background-color: #F0F0F0; border-radius: var(--radius); }\r\n\t.CLASS button { float: right; height: 20px; font-size: 11px; border: 1px solid #E0E0E0; border-radius: var(--radius); color: #000; background-color: transparent; margin: 0; padding: 0 5px; }\r\n\t.CLASS button:hover { background-color: #F8F8F8; }\r\n\t.CLASS button:active { background-color: #E0E0E0; }\r\n\t.CLASS .ui-objecttree { background-color: #f0f0f0; padding: 4px; }\r\n\r\n\t.ui-dark .CLASS pre { background-color: #404040; tab-size: 2; }\r\n\t.ui-dark .CLASS button { border-color: #404040; color: #FFF; }\r\n\t.ui-dark .CLASS button:hover { background-color: #303030; }\r\n\t.ui-dark .CLASS button:active { background-color: #404040; }\r\n</style>\r\n\r\n<readme>\r\n\tThe component prints incoming data in a JSON format.\r\n</readme>\r\n\r\n<settings>\r\n\t<div class=\"padding\">\r\n\t\t<div data---=\"input__?.title__text\"><b>Title</b></div>\r\n\t\t<div data---=\"input__?.repo__type:checkbox\">Shows repository</div>\r\n\t\t<div data---=\"input__?.data__type:checkbox\">Shows data</div>\r\n\t</div>\r\n</settings>\r\n\r\n<script>\r\n\tFUNC.printjson_click = function(type, data) { // type = path/data\r\n\t\tnavigator.clipboard.writeText(type === 'path' ? data : STRINGIFY(data)).catch(e => console.error(e));\r\n\t};\r\n\r\n\t$('body').on('click', '.ui-objecttree .fa-copy, .ui-objecttree .fa-link', function(){\r\n\t\tvar el = $(this);\r\n\t\tvar iscopy = el.hclass('fa-copy');\r\n\t\tel.tclass(iscopy ? 'fa-copy' : 'fa-link').tclass('fa-check');\r\n\t\tsetTimeout(function(){\r\n\t\t\tel.tclass('fa-check').tclass(iscopy ? 'fa-copy' : 'fa-link');\r\n\t\t}, 2000);\r\n\t});\r\n</script>\r\n\r\n<body>\r\n\t<header>\r\n\t\t<button class=\"exec\" data-exec=\"FUNC.trigger\">Clear</button>\r\n\t\t<i class=\"ICON\"></i><b class=\"monospace\" data-bind=\"CONFIG.title__text__empty\"></b>\r\n\t\t<div><small><i>NAME v<span data-bind=\"CONFIG.version__text__empty\"></span></i></small></div>\r\n\t</header>\r\n\t<footer>\r\n\t\t<div data---=\"objecttree__!STATUS__exec:FUNC.printjson_click\" class=\"selectable\"></div>\r\n\t</footer>\r\n</body>",
+		"pubsrcfyn2ecf44Xsvg_insert": "<script total>\n\n\texports.name = 'TMS Message Service';\n\texports.icon = 'fas fa-broadcast-tower';\n\texports.config = {};\n\texports.outputs = [{ id: 'publish', name: 'Output' }];\n\texports.group = 'Publishers';\n\texports.type = 'pub';\n\texports.schemaid = ['srcfyn2ecf44', 'svg_insert'];\n\n\texports.make = function(instance) {\n\t\tinstance.process = function(msg, client) {\n\t\t\tinstance.send('publish', msg, client);\n\t\t};\n\t};\n\n</script>\n\n<style>\n\t.f-pubsrcfyn2ecf44Xsvg_insert .url { font-size: 11px; }\n</style>\n\n<readme>\n# svg_insert\n- URL address: <http://127.0.0.1:8112>\n- Channel: __publish__\n- JSON schema `svg_insert.json`\n- Version: 24\n\n```json\n{\n  \"$id\": \"https://schemas.totaljs.com/Svg.json\",\n  \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"stepId\": {\n      \"type\": \"string\"\n    },\n    \"flowId\": {\n      \"type\": \"string\"\n    },\n    \"stepName\": {\n      \"type\": \"string\"\n    },\n    \"path\": {\n      \"type\": \"string\"\n    },\n    \"projectId\": {\n      \"type\": \"string\"\n    },\n    \"id\": {\n      \"type\": \"string\"\n    },\n    \"dtcreated\": {\n      \"type\": \"date\"\n    },\n    \"dtupdated\": {\n      \"type\": \"date\"\n    }\n  }\n}\n```\n</readme>\n\n<body>\n\t<header>\n\t\t<div><i class=\"fas fa-broadcast-tower mr5\"></i><span>TMS Message ... / <b>svg_insert</b></span></div>\n\t\t<div class=\"url\"></div>\n\t</header>\n</body>",
+		"subsrcfyn2ecf44Xsvg_insert": "<script total>\n\n\texports.name = 'TMS Message Service';\n\texports.icon = 'fas fa-satellite-dish';\n\texports.group = 'Subscribers';\n\texports.config = {};\n\texports.inputs = [{ id: 'subscribe', name: 'Input' }];\n\texports.type = 'sub';\n\texports.schemaid = ['srcfyn2ecf44', 'svg_insert'];\n\n\texports.make = function(instance) {\n\t\tinstance.message = function($) {\n\t\t\tvar socket = instance.main.sockets['srcfyn2ecf44'];\n\t\t\tif (socket && socket.subscribers && socket.subscribers['svg_insert']) {\n\n\t\t\t\tvar data = $.data;\n\n\t\t\t\t/*\n\t\t\t\t\tvar err = new ErrorBuilder();\n\t\t\t\t\tdata = framework_jsonschema.transform(schema, err, data, true);\n\n\t\t\t\t\tif (err.is) {\n\t\t\t\t\t\t$.destroy();\n\t\t\t\t\t\treturn;\n\t\t\t\t\t}\n\n\t\t\t\t*/\n\n\t\t\t\tsocket.send({ type: 'subscribe', id: 'svg_insert', data: data });\n\t\t\t}\n\t\t\t$.destroy();\n\t\t};\n\t};\n\n</script>\n\n<style>\n\t.f-subsrcfyn2ecf44Xsvg_insert .url { font-size: 11px; }\n</style>\n\n<readme>\n# svg_insert\n- URL address: <http://127.0.0.1:8112>\n- Channel: __subscribe__\n- JSON schema `svg_insert.json`\n- Version: 24\n\n```json\n{\n  \"id\": \"svg_insert\",\n  \"schema\": {\n    \"$id\": \"https://schemas.totaljs.com/Svg.json\",\n    \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n    \"type\": \"object\",\n    \"properties\": {\n      \"stepId\": {\n        \"type\": \"string\"\n      },\n      \"flowId\": {\n        \"type\": \"string\"\n      },\n      \"stepName\": {\n        \"type\": \"string\"\n      },\n      \"path\": {\n        \"type\": \"string\"\n      },\n      \"projectId\": {\n        \"type\": \"string\"\n      },\n      \"id\": {\n        \"type\": \"string\"\n      },\n      \"dtcreated\": {\n        \"type\": \"date\"\n      },\n      \"dtupdated\": {\n        \"type\": \"date\"\n      }\n    }\n  }\n}\n```\n</readme>\n\n<body>\n\t<header>\n\t\t<div><i class=\"fas fa-satellite-dish mr5\"></i><span>TMS Message ... / <b>svg_insert</b></span></div>\n\t\t<div class=\"url\"></div>\n\t</header>\n</body>",
+		"calsrcfyn2ecf44Xsvg_query": "<script total>\n\n\texports.name = 'TMS Message Service';\n\texports.icon = 'fa fa-plug';\n\texports.config = { timeout: 60000 };\n\texports.inputs = [{ id: 'input', name: 'Input' }];\n\texports.outputs = [{ id: 'output', name: 'Output' }, { id: 'error', name: 'Error' }];\n\texports.group = 'Calls';\n\texports.type = 'call';\n\texports.schemaid = ['srcfyn2ecf44', 'svg_query'];\n\n\texports.make = function(instance, config) {\n\n\t\tinstance.message = function($, client) {\n\t\t\tvar socket = instance.main.sockets['srcfyn2ecf44'];\n\t\t\tif (socket && socket.calls && socket.calls['svg_query']) {\n\n\t\t\t\tvar data = $.data;\n\n\t\t\t\t/*\n\t\t\t\t\tvar err = new ErrorBuilder();\n\t\t\t\t\tdata = framework_jsonschema.transform(schema, err, data, true);\n\n\t\t\t\t\tif (err.is) {\n\t\t\t\t\t\t$.send('error', err.toString());\n\t\t\t\t\t\treturn;\n\t\t\t\t\t}\n\n\t\t\t\t*/\n\n\t\t\t\tvar callback = function(err, response) {\n\t\t\t\t\tif (err)\n\t\t\t\t\t\t$.send('error', err);\n\t\t\t\t\telse\n\t\t\t\t\t\t$.send('output', response);\n\t\t\t\t};\n\n\t\t\t\tvar callbackid = (socket.callbackindexer++) + '';\n\n\t\t\t\tif (socket.callbackindexer > 999999999)\n\t\t\t\t\tsocket.callbackindexer = 0;\n\n\t\t\t\tsocket.callbacks[callbackid] = { callback: callback, id: setTimeout(socket.callbacktimeout, config.timeout, callbackid) };\n\t\t\t\tsocket.send({ type: 'call', id: 'svg_query', data: data, callbackid: callbackid });\n\n\t\t\t} else\n\t\t\t\t$.destroy();\n\t\t};\n\t};\n\n</script>\n\n<style>\n\t.f-calsrcfyn2ecf44Xsvg_query .url { font-size: 11px; }\n</style>\n\n<readme>\n# svg_query\n- URL address: <http://127.0.0.1:8112>\n- Channel: __call__\n- JSON schema `svg_query.json`\n- Version: 24\n\n```json\n{\n  \"$id\": \"https://schemas.totaljs.com/Svg.json\",\n  \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"stepId\": {\n      \"type\": \"string\"\n    },\n    \"flowId\": {\n      \"type\": \"string\"\n    },\n    \"stepName\": {\n      \"type\": \"string\"\n    },\n    \"path\": {\n      \"type\": \"string\"\n    },\n    \"projectId\": {\n      \"type\": \"string\"\n    },\n    \"id\": {\n      \"type\": \"string\"\n    },\n    \"dtcreated\": {\n      \"type\": \"date\"\n    },\n    \"dtupdated\": {\n      \"type\": \"date\"\n    }\n  }\n}\n```\n</readme>\n\n<body>\n\t<header>\n\t\t<div><i class=\"fa fa-plug mr5\"></i><span>TMS Message ... / <b>svg_query</b></span></div>\n\t\t<div class=\"url\"></div>\n\t</header>\n</body>",
+		"pubsrcfyn2ecf44Xpayload_insert": "<script total>\n\n\texports.name = 'TMS Message Service';\n\texports.icon = 'fas fa-broadcast-tower';\n\texports.config = {};\n\texports.outputs = [{ id: 'publish', name: 'Output' }];\n\texports.group = 'Publishers';\n\texports.type = 'pub';\n\texports.schemaid = ['srcfyn2ecf44', 'payload_insert'];\n\n\texports.make = function(instance) {\n\t\tinstance.process = function(msg, client) {\n\t\t\tinstance.send('publish', msg, client);\n\t\t};\n\t};\n\n</script>\n\n<style>\n\t.f-pubsrcfyn2ecf44Xpayload_insert .url { font-size: 11px; }\n</style>\n\n<readme>\n# payload_insert\n- URL address: <http://127.0.0.1:8112>\n- Channel: __publish__\n- JSON schema `payload_insert.json`\n- Version: 24\n\n```json\n{\n  \"$id\": \"https://schemas.totaljs.com/Payload.json\",\n  \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"payload\": {\n      \"type\": \"string\"\n    },\n    \"topic\": {\n      \"type\": \"string\"\n    },\n    \"id\": {\n      \"type\": \"string\"\n    },\n    \"dtcreated\": {\n      \"type\": \"date\"\n    },\n    \"dtupdated\": {\n      \"type\": \"date\"\n    }\n  }\n}\n```\n</readme>\n\n<body>\n\t<header>\n\t\t<div><i class=\"fas fa-broadcast-tower mr5\"></i><span>TMS Message ... / <b>payload_insert</b></span></div>\n\t\t<div class=\"url\"></div>\n\t</header>\n</body>",
+		"subsrcfyn2ecf44Xpayload_insert": "<script total>\n\n\texports.name = 'TMS Message Service';\n\texports.icon = 'fas fa-satellite-dish';\n\texports.group = 'Subscribers';\n\texports.config = {};\n\texports.inputs = [{ id: 'subscribe', name: 'Input' }];\n\texports.type = 'sub';\n\texports.schemaid = ['srcfyn2ecf44', 'payload_insert'];\n\n\texports.make = function(instance) {\n\t\tinstance.message = function($) {\n\t\t\tvar socket = instance.main.sockets['srcfyn2ecf44'];\n\t\t\tif (socket && socket.subscribers && socket.subscribers['payload_insert']) {\n\n\t\t\t\tvar data = $.data;\n\n\t\t\t\t/*\n\t\t\t\t\tvar err = new ErrorBuilder();\n\t\t\t\t\tdata = framework_jsonschema.transform(schema, err, data, true);\n\n\t\t\t\t\tif (err.is) {\n\t\t\t\t\t\t$.destroy();\n\t\t\t\t\t\treturn;\n\t\t\t\t\t}\n\n\t\t\t\t*/\n\n\t\t\t\tsocket.send({ type: 'subscribe', id: 'payload_insert', data: data });\n\t\t\t}\n\t\t\t$.destroy();\n\t\t};\n\t};\n\n</script>\n\n<style>\n\t.f-subsrcfyn2ecf44Xpayload_insert .url { font-size: 11px; }\n</style>\n\n<readme>\n# payload_insert\n- URL address: <http://127.0.0.1:8112>\n- Channel: __subscribe__\n- JSON schema `payload_insert.json`\n- Version: 24\n\n```json\n{\n  \"id\": \"payload_insert\",\n  \"schema\": {\n    \"$id\": \"https://schemas.totaljs.com/Payload.json\",\n    \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n    \"type\": \"object\",\n    \"properties\": {\n      \"payload\": {\n        \"type\": \"string\"\n      },\n      \"topic\": {\n        \"type\": \"string\"\n      },\n      \"id\": {\n        \"type\": \"string\"\n      },\n      \"dtcreated\": {\n        \"type\": \"date\"\n      },\n      \"dtupdated\": {\n        \"type\": \"date\"\n      }\n    }\n  }\n}\n```\n</readme>\n\n<body>\n\t<header>\n\t\t<div><i class=\"fas fa-satellite-dish mr5\"></i><span>TMS Message ... / <b>payload_insert</b></span></div>\n\t\t<div class=\"url\"></div>\n\t</header>\n</body>",
+		"subsrcfyn2ecf44Xpayload_update": "<script total>\n\n\texports.name = 'TMS Message Service';\n\texports.icon = 'fas fa-satellite-dish';\n\texports.group = 'Subscribers';\n\texports.config = {};\n\texports.inputs = [{ id: 'subscribe', name: 'Input' }];\n\texports.type = 'sub';\n\texports.schemaid = ['srcfyn2ecf44', 'payload_update'];\n\n\texports.make = function(instance) {\n\t\tinstance.message = function($) {\n\t\t\tvar socket = instance.main.sockets['srcfyn2ecf44'];\n\t\t\tif (socket && socket.subscribers && socket.subscribers['payload_update']) {\n\n\t\t\t\tvar data = $.data;\n\n\t\t\t\t/*\n\t\t\t\t\tvar err = new ErrorBuilder();\n\t\t\t\t\tdata = framework_jsonschema.transform(schema, err, data, true);\n\n\t\t\t\t\tif (err.is) {\n\t\t\t\t\t\t$.destroy();\n\t\t\t\t\t\treturn;\n\t\t\t\t\t}\n\n\t\t\t\t*/\n\n\t\t\t\tsocket.send({ type: 'subscribe', id: 'payload_update', data: data });\n\t\t\t}\n\t\t\t$.destroy();\n\t\t};\n\t};\n\n</script>\n\n<style>\n\t.f-subsrcfyn2ecf44Xpayload_update .url { font-size: 11px; }\n</style>\n\n<readme>\n# payload_update\n- URL address: <http://127.0.0.1:8112>\n- Channel: __subscribe__\n- JSON schema `payload_update.json`\n- Version: 24\n\n```json\n{\n  \"id\": \"payload_update\",\n  \"schema\": {\n    \"$id\": \"https://schemas.totaljs.com/Payload.json\",\n    \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n    \"type\": \"object\",\n    \"properties\": {\n      \"payload\": {\n        \"type\": \"string\"\n      },\n      \"topic\": {\n        \"type\": \"string\"\n      },\n      \"id\": {\n        \"type\": \"string\"\n      },\n      \"dtcreated\": {\n        \"type\": \"date\"\n      },\n      \"dtupdated\": {\n        \"type\": \"date\"\n      }\n    }\n  }\n}\n```\n</readme>\n\n<body>\n\t<header>\n\t\t<div><i class=\"fas fa-satellite-dish mr5\"></i><span>TMS Message ... / <b>payload_update</b></span></div>\n\t\t<div class=\"url\"></div>\n\t</header>\n</body>",
+		"subsrcfyn2ecf44Xpayload_remove": "<script total>\n\n\texports.name = 'TMS Message Service';\n\texports.icon = 'fas fa-satellite-dish';\n\texports.group = 'Subscribers';\n\texports.config = {};\n\texports.inputs = [{ id: 'subscribe', name: 'Input' }];\n\texports.type = 'sub';\n\texports.schemaid = ['srcfyn2ecf44', 'payload_remove'];\n\n\texports.make = function(instance) {\n\t\tinstance.message = function($) {\n\t\t\tvar socket = instance.main.sockets['srcfyn2ecf44'];\n\t\t\tif (socket && socket.subscribers && socket.subscribers['payload_remove']) {\n\n\t\t\t\tvar data = $.data;\n\n\t\t\t\t/*\n\t\t\t\t\tvar err = new ErrorBuilder();\n\t\t\t\t\tdata = framework_jsonschema.transform(schema, err, data, true);\n\n\t\t\t\t\tif (err.is) {\n\t\t\t\t\t\t$.destroy();\n\t\t\t\t\t\treturn;\n\t\t\t\t\t}\n\n\t\t\t\t*/\n\n\t\t\t\tsocket.send({ type: 'subscribe', id: 'payload_remove', data: data });\n\t\t\t}\n\t\t\t$.destroy();\n\t\t};\n\t};\n\n</script>\n\n<style>\n\t.f-subsrcfyn2ecf44Xpayload_remove .url { font-size: 11px; }\n</style>\n\n<readme>\n# payload_remove\n- URL address: <http://127.0.0.1:8112>\n- Channel: __subscribe__\n- JSON schema `payload_remove.json`\n- Version: 24\n\n```json\n{\n  \"id\": \"payload_remove\",\n  \"schema\": {\n    \"$id\": \"https://schemas.totaljs.com/Payload.json\",\n    \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n    \"type\": \"object\",\n    \"properties\": {\n      \"payload\": {\n        \"type\": \"string\"\n      },\n      \"topic\": {\n        \"type\": \"string\"\n      },\n      \"id\": {\n        \"type\": \"string\"\n      },\n      \"dtcreated\": {\n        \"type\": \"date\"\n      },\n      \"dtupdated\": {\n        \"type\": \"date\"\n      }\n    }\n  }\n}\n```\n</readme>\n\n<body>\n\t<header>\n\t\t<div><i class=\"fas fa-satellite-dish mr5\"></i><span>TMS Message ... / <b>payload_remove</b></span></div>\n\t\t<div class=\"url\"></div>\n\t</header>\n</body>",
+		"calsrcfyn2ecf44Xpayload_query": "<script total>\n\n\texports.name = 'TMS Message Service';\n\texports.icon = 'fa fa-plug';\n\texports.config = { timeout: 60000 };\n\texports.inputs = [{ id: 'input', name: 'Input' }];\n\texports.outputs = [{ id: 'output', name: 'Output' }, { id: 'error', name: 'Error' }];\n\texports.group = 'Calls';\n\texports.type = 'call';\n\texports.schemaid = ['srcfyn2ecf44', 'payload_query'];\n\n\texports.make = function(instance, config) {\n\n\t\tinstance.message = function($, client) {\n\t\t\tvar socket = instance.main.sockets['srcfyn2ecf44'];\n\t\t\tif (socket && socket.calls && socket.calls['payload_query']) {\n\n\t\t\t\tvar data = $.data;\n\n\t\t\t\t/*\n\t\t\t\t\tvar err = new ErrorBuilder();\n\t\t\t\t\tdata = framework_jsonschema.transform(schema, err, data, true);\n\n\t\t\t\t\tif (err.is) {\n\t\t\t\t\t\t$.send('error', err.toString());\n\t\t\t\t\t\treturn;\n\t\t\t\t\t}\n\n\t\t\t\t*/\n\n\t\t\t\tvar callback = function(err, response) {\n\t\t\t\t\tif (err)\n\t\t\t\t\t\t$.send('error', err);\n\t\t\t\t\telse\n\t\t\t\t\t\t$.send('output', response);\n\t\t\t\t};\n\n\t\t\t\tvar callbackid = (socket.callbackindexer++) + '';\n\n\t\t\t\tif (socket.callbackindexer > 999999999)\n\t\t\t\t\tsocket.callbackindexer = 0;\n\n\t\t\t\tsocket.callbacks[callbackid] = { callback: callback, id: setTimeout(socket.callbacktimeout, config.timeout, callbackid) };\n\t\t\t\tsocket.send({ type: 'call', id: 'payload_query', data: data, callbackid: callbackid });\n\n\t\t\t} else\n\t\t\t\t$.destroy();\n\t\t};\n\t};\n\n</script>\n\n<style>\n\t.f-calsrcfyn2ecf44Xpayload_query .url { font-size: 11px; }\n</style>\n\n<readme>\n# payload_query\n- URL address: <http://127.0.0.1:8112>\n- Channel: __call__\n- JSON schema `payload_query.json`\n- Version: 24\n\n```json\n{\n  \"$id\": \"https://schemas.totaljs.com/Payload.json\",\n  \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"payload\": {\n      \"type\": \"string\"\n    },\n    \"topic\": {\n      \"type\": \"string\"\n    },\n    \"id\": {\n      \"type\": \"string\"\n    },\n    \"dtcreated\": {\n      \"type\": \"date\"\n    },\n    \"dtupdated\": {\n      \"type\": \"date\"\n    }\n  }\n}\n```\n</readme>\n\n<body>\n\t<header>\n\t\t<div><i class=\"fa fa-plug mr5\"></i><span>TMS Message ... / <b>payload_query</b></span></div>\n\t\t<div class=\"url\"></div>\n\t</header>\n</body>",
+		"typerefinery_runnodeedges": "<script total>\n\n\texports.id = 'typerefinery_runnodeedges';\n\texports.name = 'Run (node & edges)';\n\texports.icon = 'fa fa-code';\n\texports.group = '@TypeRefinery';\n\texports.author = 'TypeRefinery.io';\n\texports.version = '1';\n\n\texports.config = { title: exports.name, version: exports.version, algorithm: '', algorithmrequirements: 'argparse\\nloguru', endpoint: 'http://127.0.0.1:8000/algorithm' };\n\texports.inputs = [{ id: 'connection', name: 'Connection' }, { id: 'query', name: 'TQL Query' }];\n\texports.outputs = [{ id: 'output', name: 'Output' }];\n\n\texports.meta = { settingswidth: 1200 };\n\n\texports.make = function(instance, config) {\n\t\tvar fn;\n\t\tvar values = {};\n\t\tinstance.message = function($) {\n\t\t\t// Getting endpoint from the user\n\t\t\tconst endpointData = {\n\t\t\t\t\tendpoint: config.endpoint,\n\t\t\t}\n\n\t\t\t// Inputs to this block will be saved in values Object\n\t\t\tvalues[$.input] = $.data;\n\n\t\t\tif (values.connection && values.query && config.algorithm) {\n\t\t\t\tvar payload = {\n\t\t\t\t\tdbhost: values.connection.dbhost,\n\t\t\t\t\tdbport: values.connection.dbport,\n\t\t\t\t\tdbdatabase: values.connection.dbdatabase,\n\t\t\t\t\tdbquery: values.query.dbquery,\n\t\t\t\t\talgorithm: config.algorithm,\n\t\t\t\t\talgorithmrequirements: config.algorithmrequirements,\n\t\t\t\t\treturnoutput: 'output'\n\t\t\t\t};\n\t\t\t\tlet options = {\n\t\t\t\t\tmethod: 'POST',\n\t\t\t\t\theaders: {\n\t\t\t\t\t\t'Content-Type':\n\t\t\t\t\t\t'application/json;charset=utf-8'\n\t\t\t\t\t},\n\t\t\t\t\tbody: JSON.stringify(payload)\n\t\t\t\t}\n\n\t\t\t\t// Sending request to get Data\n\t\t\t\tlet fetchRes = fetch(endpointData.endpoint,options);\n\t\t\t\tfetchRes.then(res =>res.json())\n\t\t\t\t\t.then(d => { $.send('output', d) })\n\t\t\t\t\t.catch(err => { $.send('output', err) })\n\n\t\t\t\t\tvalues.query = null;\n\t\t\t} else {\n\t\t\t\t// IMPORTANT: we must destroy the current message becase we don't need to send it next\n\t\t\t\t$.destroy();\n\t\t\t}\n\t\t};\n\n\t\tinstance.close = function() {\n\t\t\tfn = null;\n\t\t};\n\n\t\tinstance.configure = function() {\n\t\t\tif (config.title === \"\") {\n\t\t\t\tconfig.title = exports.name;\n\t\t\t}\n\t\t\tconfig.version = exports.version;\n\t\t};\n\n\t\tinstance.configure();\n\n\t};\n</script>\n<readme>\n\tRun a node and edges algorithm on a TypeRefinery database.\n</readme>\n<settings>\n\t<div class=\"padding\">\n\t\t<div data---=\"input__?.title__text\"><b>Title</b></div>\n\t\t<div data---=\"input__?.endpoint__required:1\" class=\"m\">Endpont</div>\n\t\t<div data---=\"input__?.algorithmrequirements__text:1\" class=\"m\">Requirements</div>\n\t\t<div class=\"ui-input-label\">Algorithm:</div>\n\t\t<div data---=\"codemirror__?.algorithm__type:python;minheight:300;parent:auto;margin:60;tabs:true;trim:true\" class=\"m\"></div>\n\t</div>\n</settings>\n<body>\n\t<header>\n\t\t<i class=\"ICON\"></i><b class=\"monospace\" data-bind=\"CONFIG.title__text__empty\"></b>\n\t\t<div><small><i>NAME v<span data-bind=\"CONFIG.version__text__empty\"></span></i></small></div>\n\t</header>\n</body>\n",
+		"typerefinery_api_payload": "<script total>\n\n\texports.id = 'typerefinery_api_payload';\n\texports.name = 'API Payload';\n\texports.icon = 'fa fa-code';\n\texports.group = '@TypeRefinery';\n\texports.author = 'TypeRefinery.io';\n\texports.version = '2';\n\n\texports.config = { title: exports.name, version: exports.version, topic: \"topic\", type: \"wrap\" };\n\texports.inputs = [{ id: 'input', name: 'Input' }];\n\texports.outputs = [{ id: 'output', name: 'Output' }];\n\n\texports.meta = { settingswidth: 1200 };\n\n\texports.make = function(instance, config) {\n\n\t\tvar fn;\n\n\t\tinstance.message = function($) {\n\t\t\tvar data = $.data;\n\t\t\tswitch (config.type) {\n\t\t\t\tcase 'wrap':\n\t\t\t\t\tconsole.log({ payload: JSON.stringify(data), topic: config.topic });\n\t\t\t\t\t$.send('output', { payload: JSON.stringify(data), topic: config.topic });\n\t\t\t\t\tbreak;\n\t\t\t\tdefault:\n\t\t\t\t\tvar payloadData = data.payload;\n\t\t\t\t\ttry {\n\t\t\t\t\t\tpayloadData = JSON.parse(data.payload);\n\t\t\t\t\t} catch {\n\t\t\t\t\t\tconsole.log(\"Error: Payload is not a valid JSON, using as is.\");\n\t\t\t\t\t}\n\t\t\t\t\tvar payloadTopic = data.topic || \"no topic\";\n\t\t\t\t\tconsole.log(payloadTopic);\n\t\t\t\t\tif (payloadData && payloadTopic) {\n\t\t\t\t\t\t//skip if topic is not the same\n\t\t\t\t\t\tif (config.topic === payloadTopic) {\n\t\t\t\t\t\t\t$.send('output', payloadData);\n\t\t\t\t\t\t}\n\t\t\t\t\t}\n\t\t\t\t\tbreak;\n\t\t\t}\n\n\t\t\t$.destroy();\n\t\t};\n\n\t\tinstance.configure = function() {\n\t\t\tif (config.topic === \"\") {\n\t\t\t\tconfig.topic = \"topic\";\n\t\t\t}\n\t\t\tif (config.type === \"\") {\n\t\t\t\tconfig.type = \"wrap\";\n\t\t\t}\n\t\t\tif (config.title === \"\") {\n\t\t\t\tconfig.title = exports.name;\n\t\t\t}\n\t\t\tconfig.version = exports.version;\n\t\t};\n\n\t\tinstance.close = function() {\n\t\t\tfn = null;\n\t\t};\n\n\t\tinstance.configure();\n\n\t};\n\n</script>\n\n<readme>\n\tWrap input data into Payload schema.\n</readme>\n\n<style>\n\t.CLASS .output { text-align: right }\n</style>\n\n<settings>\n\t<div class=\"padding\">\n\t\t<div data---=\"input__?.title__text\"><b>Title</b></div>\n\t\t<div data---=\"input__?.topic__text\"><b>Topic</b></div>\n\t\t<div data---=\"input__?.type__dirsource:wrap|Wrap,unwrap|Unwrap;required:1\">Type</div>\n\t</div>\n</settings>\n\n<body>\n\t<header>\n\t\t<i class=\"ICON\"></i><b class=\"monospace\" data-bind=\"CONFIG.title__text__empty\"></b>\n\t\t<div><small><i>NAME v<span data-bind=\"CONFIG.version__text__empty\"></span></i></small></div>\n\t\t<div>Topic: <b class=\"monospace\" data-bind=\"CONFIG.topic__text__empty\"></b></div>\n\t\t<div>Type: <b class=\"monospace\" data-bind=\"CONFIG.type__text__empty\"></b></div>\n\t</header>\n</body>",
+		"typerefinery_api_datastore_query": "<script total>\n\t\n\texports.id = 'typerefinery_api_datastore_query';\n\texports.name = 'API Datastore Query';\n\texports.icon = 'fa fa-code';\n\texports.group = '@TypeRefinery';\n\texports.author = 'TypeRefinery.io';\n\texports.version = '1';\n\n\texports.config = { title: exports.name, version: exports.version, endpoint: 'http://127.0.0.1:8000/datastore/query', queryid: 'pdqSm6ar1-pf45_query' };\n\texports.inputs = [{ id: 'input', name: 'Input' }];\n\texports.outputs = [{ id: 'output', name: 'Output' }];\n\n\texports.meta = { settingswidth: 1200 };\n\n\texports.make = function(instance, config) {\n\t\tinstance.message = async function($) {\n\t\t\tvar queryList;\n\n\t\t\t// Getting all the queries from the store\n\t\t\tconst endpoint = config.endpoint;\n\t\t\tconst res = await fetch(endpoint);\n\t\t\tconst res_data = await res.json();\n\n\t\t\t// Getting query details to display the dropdown list of all queries\n\t\t\tqueryList = res_data.map(el => ({id: el.queryid, name: `${el.label} (${el.queryid},${el.query.substr(12)})`}));\n\n\t\t\t// Find the selected query\n\t\t\tconst selectedQuery = res_data.find(el => el.queryid === config.queryid)\n\n\t\t\tif(selectedQuery) {\n\t\t\t\tconst queryDetails = { dbquery: selectedQuery.query };\n\t\t\t\t// send the query details as the output of this block\n\t\t\t\t$.send('output', queryDetails);\n\t\t\t\t$.destroy();\n\t\t\t}\n\t\t\t// Set the queries dropdown in the UI\n\t\t\tinstance.call = async function(data, answer) {\n\t\t\t\tanswer(queryList);\n\t\t\t};\n\t\t};\n\n\t\tinstance.configure = function() {\n\t\t\tif (config.title === \"\") {\n\t\t\t\tconfig.title = exports.name;\n\t\t\t}\n\t\t\tconfig.version = exports.version;\n\t\t};\n\n\t\tinstance.configure();\n\n\t};\n\n</script>\n<readme>\n\tGet list of queries from datastore endpoint.\n</readme>\n<script>\n\t// datastorequery is the name of your component in lower-case\n\tON('configure_datastorequery', function(data) {\n\t\tdata.call(function(response) {\n\t\t\tconsole.log('on', response);\n\t\t\tSET('%queryidList', response);\n\t\t});\n\t});\n</script>\n<settings>\n\t<div class=\"padding\">\n\t\t<div data---=\"input__?.title__text\"><b>Title</b></div>\n\t\t<div data---=\"input__?.endpoint__required:1\"><b>Endpoint</b></div>\n\t\t<div data---=\"input__?.queryid__dirsource:%queryidList;dirraw:1;placeholder:Choose a query;dirempty:No query\" class=\"m\"><b>Query</b></div>\n\t</div>\n</settings>\n<body>\n\t<header>\n\t\t<i class=\"ICON\"></i><b class=\"monospace\" data-bind=\"CONFIG.title__text__empty\"></b>\n\t\t<div><small><i>NAME v<span data-bind=\"CONFIG.version__text__empty\"></span></i></small></div>\n\t</header>\n</body>",
+		"typerefinery_api_createsvg_webcolaviz": "<script total>\n\n\texports.id = 'typerefinery_api_createsvg_webcolaviz';\n\texports.name = 'API WebCola Viz';\n\texports.icon = 'fa fa-code';\n\texports.group = '@TypeRefinery';\n\texports.author = 'TypeRefinery.io';\n\texports.version = '2';\n\n\texports.config = { title: exports.name, version: exports.version, endpointcreatesvg: \"http://127.0.0.1:8000/createSvg\", endpointproject: 'http://127.0.0.1:8000/datastore/project', dependenciesjs: 'https://d3js.org/d3.v4.js https://cdn.jsdelivr.net/npm/webcola@3.4.0/WebCola/cola.js', code: '' };\n\texports.inputs = [{ id: 'graph_data', name: 'DATA' },{ id: 'theme', name: 'Theme' }];\n\texports.outputs = [{ id: 'output', name: 'Output' }];\n\texports.meta = { settingswidth: 1200 };\n\texports.make = function(instance, config) {\n\t\tvar fn;\n\t\tvar values = {};\n\n\t\tinstance.message = function($) {\n\n\t\t\t// Inputs to this block will be saved in values Object\n\t\t\tvalues[$.input] = $.data\n\n\t\t\tif (values.graph_data && values.theme) {\n\t\t\t\tvar project;\n\t\t\t\tvar input_data = {\n\t\t\t\t\ttheme: values.theme,\n\t\t\t\t\tgraph_data: values.graph_data\n\t\t\t\t};\n\n\t\t\t\t// Replacing GRAPH_DATA variable with actual DATA\n\t\t\t\tconst codeWithData = config.code.replace('GRAPH_DATA', JSON.stringify(input_data.graph_data))\n\t\t\t\t// Replacing THEME variable with actual THEME\n\t\t\t\tconst code = codeWithData.replace('THEME', JSON.stringify(input_data.theme))\n\n\t\t\t\tconst payload = {\n\t\t\t\t\t\"code\": code,\n\t\t\t\t\t\"dependencies\": config.dependenciesjs.split(' '),\n\t\t\t\t\t\"returnoutput\": \"script\"\n\t\t\t\t};\n\n\t\t\t\tlet options = {\n\t\t\t\t\tmethod: 'POST',\n\t\t\t\t\theaders: {\n\t\t\t\t\t'Content-Type':\n\t\t\t\t\t\t'application/json;charset=utf-8'\n\t\t\t\t\t},\n\t\t\t\t\tbody: JSON.stringify(payload)\n\t\t\t\t}\n\n\t\t\t\t// Sending request to generate SVG\n\t\t\t\tPromise.all([\n\t\t\t\t\t\tfetch(config.endpointproject).then(value => value.json()),\n\t\t\t\t\t\tfetch(config.endpointcreatesvg, options).then(value => value.json()),\n\t\t\t\t]).then(([projects, output]) => {\n\t\t\t\t\t// Getting current project\n\t\t\t\t\tproject = projects.find(el => el.flowid == instance.main.id)\n\t\t\t\t\t// response output\n\t\t\t\t\tconst res = {\n\t\t\t\t\t\tpath: output[\"output.url\"],\n\t\t\t\t\t\tstepId: instance.id,\n\t\t\t\t\t\tstepName: instance.module.name,\n\t\t\t\t\t\tflowId: instance.main.id,\n\t\t\t\t\t\tprojectId: project.projectid\n\t\t\t\t\t}\n\t\t\t\t\t// Sending the response\n\t\t\t\t\t$.send('output', res)\n\t\t\t\t}).catch((err) => {\n\t\t\t\t\t// Sending the error\n\t\t\t\t\t$.send('output', err)\n\t\t\t\t});\n\n\t\t\t\tvalues.theme = null\n\t\t\t}\n\t\t};\n\n\t\tinstance.close = function() {\n\t\t\tfn = null;\n\t\t};\n\n\t\tinstance.configure = function() {\n\t\t\tif (config.title === \"\") {\n\t\t\t\tconfig.title = exports.name;\n\t\t\t}\n\t\t\tconfig.version = exports.version;\n\t\t};\n\n\t\tinstance.configure();\n\n\t};\n</script>\n<readme>\n\tRun WebCola Viz to your flow.\n</readme>\n<settings>\n\t<div class=\"padding\">\n\t\t<div data---=\"input__?.title__text\"><b>Title</b></div>\n\t\t<div data---=\"input__?.endpointproject__required:1\" class=\"m\">Endpont Projects</div>\n\t\t<div data---=\"input__?.endpointcreatesvg__required:1\" class=\"m\">Endpont CreateSvg</div>\n\t\t<div data---=\"input__?.dependenciesjs__text:1\" class=\"m\">Dependencies JS (space separated)</div>\n\t\t<div class=\"ui-input-label\">Code:</div>\n\t\t<div data---=\"codemirror__?.code__type:javascript;minheight:300;parent:auto;margin:60;tabs:true;trim:true\" class=\"m\"></div>\n\t</div>\n</settings>\n<body>\n\t<header>\n\t\t<i class=\"ICON\"></i><b class=\"monospace\" data-bind=\"CONFIG.title__text__empty\"></b>\n\t\t<div><small><i>NAME v<span data-bind=\"CONFIG.version__text__empty\"></span></i></small></div>\n\t</header>\n</body>",
+		"typerefinery_api_datastore_theme": "<script total>\n\t\n\texports.id = 'typerefinery_api_datastore_theme';\n\texports.name = 'API Datastore Theme';\n\texports.icon = 'fa fa-code';\n\texports.group = '@TypeRefinery';\n\texports.author = 'TypeRefinery.io';\n\texports.version = '1';\n\n\texports.config = { title: exports.name, version: exports.version, endpoint: 'http://127.0.0.1:8000/datastore/theme', themeid: 'pdqSm6ar1-pf45_theme' };\n\texports.inputs = [{ id: 'input', name: 'Input' }];\n\texports.outputs = [{ id: 'output', name: 'Output' }];\n\n\texports.meta = { settingswidth: 1200 };\n\t\n\texports.make = function(instance, config) {\n\t\tinstance.message = async function($) {\n\t\t\tvar themesList;\n\n\t\t\t// Getting all the themes from the store\n\t\t\tconst endpoint = config.endpoint;\n\t\t\tconst res = await fetch(endpoint);\n\t\t\tconst res_data = await res.json();\n\n\t\t\t// Getting theme details to display the dropdown list of all themes\n\t\t\tthemesList = res_data.map(el => ({id: el.themeid, name: `${el.label} (${el.themeid},${el.theme.substr(12)})`}));\n\n\t\t\t// Find the selected theme\n\t\t\tconst selectedTheme = res_data.find(el => el.themeid === config.themeid)\n\n\t\t\tif(selectedTheme) {\n\t\t\t\tconst themeDetails = JSON.parse(selectedTheme.theme);\n\t\t\t\t// send the theme details as the output of this block\n\t\t\t\t$.send('output', themeDetails);\n\t\t\t\t$.destroy();\n\t\t\t}\n\n\t\t\t// Set the themes dropdown in the UI\n\t\t\tinstance.call = async function(data, answer) {\n\t\t\t\t\tanswer(themesList);\n\t\t\t};\n\n\t\t};\n\n\t\tinstance.configure = function() {\n\t\t\tif (config.title === \"\") {\n\t\t\t\tconfig.title = exports.name;\n\t\t\t}\n\t\t\tconfig.version = exports.version;\n\t\t};\n\n\t\tinstance.configure();\n\n\t};\n</script>\n\n<readme>\n\tGet list of themes from datastore endpoint.\n</readme>\n\n<settings>\n\t<div class=\"padding\">\n\t\t<div data---=\"input__?.title__text\"><b>Title</b></div>\n\t\t<div data---=\"input__?.endpoint__required:1\"><b>Endpoint</b></div>\n\t\t<div data---=\"input__?.themeid__dirsource:%themeidList;dirraw:1;placeholder:Choose a theme;dirempty:No theme\" class=\"m\"><b>Theme</b></div>\n\t</div>\n</settings>\n\n<script>\n\t// datastoretheme is the name of your component in lower-case\n\tON('configure_datastoretheme', function(data) {\n\t\tdata.call(function(response) {\n\t\t\tSET('%themeidList', response);\n\t\t});\n\t});\n</script>\n\n<body>\n\t<header>\n\t\t<i class=\"ICON\"></i><b class=\"monospace\" data-bind=\"CONFIG.title__text__empty\"></b>\n\t\t<div><small><i>NAME v<span data-bind=\"CONFIG.version__text__empty\"></span></i></small></div>\n\t</header>\n</body>",
+		"typerefinery_code": "<script total>\n\n\texports.id = 'code';\n\texports.name = 'Code';\n\texports.group = 'Common';\n\texports.version = '3';\n\texports.icon = 'fa fa-code';\n\texports.author = 'Total.js';\n\texports.config = { outputs: 1, code: '// instance {FlowStreamInstance};\\n// $ {FlowStreamMessage};\\n// vars {Object};\\n// repo {Object};\\n// data {String/Number/Boolean/Date/Buffer/Object};\\n// $.send(\\'output\\', data); // or simply send(data); which uses the first output\\n// $.destroy();\\n// $.throw(err);\\n\\n// IMPORTANT: If you do not perform re-send, you need to destroy this message via $.destroy() method\\n// IMPORTANT: methods $.send(), $.destroy() and $.throw() can be executed only once\\n\\n// $.send(\\'output\\', data);\\n$.destroy();' };\n\texports.inputs = [{ id: 'input', name: 'Input' }];\n\texports.outputs = [{ id: 'output', name: 'Output' }];\n\texports.meta = { settingswidth: 1200 };\n\n\texports.make = function(instance, config) {\n\n\t\tvar fn;\n\n\t\tinstance.message = function($) {\n\t\t\tif (fn) {\n\t\t\t\ttry {\n\t\t\t\t\tvar send = data => $.send('output', data);\n\t\t\t\t\tfn($.data, instance, $, $, F.require, send, $.repo, $.vars, $.data);\n\t\t\t\t} catch (e) {\n\t\t\t\t\t$.throw(e);\n\t\t\t\t\t$.destroy();\n\t\t\t\t}\n\t\t\t}\n\t\t};\n\n\t\tinstance.configure = function() {\n\t\t\tinstance.outputs = [];\n\t\t\tfor (let i = 1; i <= config.outputs; i++)\n\t\t\t\tinstance.outputs.push({ id: 'output' + (i === 1 ? '' : i), name: 'Output #' + i });\n\t\t\tinstance.save();\n\n\t\t\ttry {\n\t\t\t\tif (config.code) {\n\t\t\t\t\tinstance.status(1);\n\t\t\t\t\tfn = new Function('value', 'instance', '$', 'message', 'require', 'send', 'repo', 'vars', 'data', config.code);\n\t\t\t\t} else {\n\t\t\t\t\tinstance.status(0);\n\t\t\t\t\tfn = null;\n\t\t\t\t}\n\t\t\t} catch (e) {\n\t\t\t\tfn = null;\n\t\t\t\tinstance.throw('Code: ' + e.message);\n\t\t\t}\n\t\t};\n\n\t\tinstance.close = function() {\n\t\t\tfn = null;\n\t\t};\n\n\t\tinstance.configure();\n\n\t};\n\n</script>\n\n<readme>\n\tThis component executes a custom JavaScript code as it is.\n\n\tTo send data to the default output use `send(somedata);`\n\tTo send data to specific output when number of outputs > 1 use `$.send('outputX', somedata)` where `X` is output index, see example bellow:\n\t- first output--> `send(somedata)` or `$.send('output', somedata)`\n\t- second output --> `$.send('output2', somedata)`\n\t- ...\n\t- 5th output --> `$.send('output5', somedata)`\n\t- etc.\n</readme>\n\n<settings>\n\t<div class=\"padding\">\n\t\t<div data---=\"input__?.outputs__type:number\" class=\"m\">Number of outputs</div>\n\t\t<div class=\"ui-input-label\">Code:</div>\n\t\t<div data---=\"codemirror__?.code__type:javascript;minheight:300;parent:auto;margin:60;tabs:true;trim:true\" class=\"m\"></div>\n\t</div>\n</settings>\n\n<body>\n\t<header>\n\t\t<i class=\"ICON\"></i>NAME\n\t</header>\n</body>",
+		"typerefinery_senddata": "<script total>\n\n\texports.id = 'typerefinery_senddata';\n\texports.name = 'Send Data';\n\texports.icon = 'fa fa-bullhorn';\n\texports.group = '@TypeRefinery';\n\texports.author = 'Team_Typerefinery';\n\texports.version = '3';\n\n\texports.config = { title: exports.name, version: exports.version, random: true, type: 'object', data: '', restart: false };\n\texports.inputs = [{ id: 'input', name: 'Input' }];\n\texports.outputs = [{ id: 'output', name: 'Trigger' }];\n\n\texports.make = function(instance, config) {\n\n\t\tinstance.message = function($) {\n\t\t\t$.send('output', instance.getData());\n\t\t\t$.destroy();\n\t\t};\n\n\t\tinstance.getData = function() {\n\t\t\tvar val;\n\n\t\t\tswitch (config.type) {\n\t\t\t\tcase 'number':\n\t\t\t\t\tval = config.random ? U.random() : config.data.parseFloat();\n\t\t\t\t\tbreak;\n\t\t\t\tcase 'buffer':\n\t\t\t\t\ttry {\n\t\t\t\t\t\tval = config.random ? Buffer.from(U.random_string()) : Buffer.from(config.data, 'base64');\n\t\t\t\t\t} catch (e) {\n\t\t\t\t\t\tinstance.throw(e);\n\t\t\t\t\t}\n\t\t\t\t\tbreak;\n\t\t\t\tcase 'date':\n\t\t\t\t\tval = config.random ? NOW.add('-' + U.random(500, 10) + ' seconds') : config.data.parseDate();\n\t\t\t\t\tbreak;\n\t\t\t\tcase 'json':\n\t\t\t\t\ttry {\n\t\t\t\t\t\tval = config.random ? {} : JSON.parse(config.data);\n\t\t\t\t\t} catch (e) {\n\t\t\t\t\t\tinstance.throw(e);\n\t\t\t\t\t}\n\t\t\t\t\tbreak;\n\t\t\t\tcase 'object':\n\t\t\t\t\ttry {\n\t\t\t\t\t\tval = config.random ? {} : (new Function('return ' + config.data))();\n\t\t\t\t\t} catch (e) {\n\t\t\t\t\t\tinstance.throw(e);\n\t\t\t\t\t}\n\t\t\t\t\tbreak;\n\t\t\t\tcase 'boolean':\n\t\t\t\t\tval = config.random ? U.random() % 2 === 0 : config.data === 'true' || config.data === 'on' || config.data === '1';\n\t\t\t\t\tbreak;\n\t\t\t\tdefault:\n\t\t\t\t\tval = config.random ? U.random_string(20) : config.data;\n\t\t\t\t\tbreak;\n\t\t\t}\n\n\t\t\treturn val;\n\t\t};\n\n\t\tinstance.trigger = function() {\n\t\t\tinstance.send('output', instance.getData());\n\t\t};\n\n\t\tinstance.configure = function() {\n\t\t\tif (config.title === \"\") {\n\t\t\t\tconfig.title = exports.name;\n\t\t\t}\n\t\t\tconfig.version = exports.version;\n\t\t};\n\n\t\tinstance.configure();\n\n\t\tconfig.restart && setTimeout(() => instance.trigger(), 5000);\n\t};\n\n</script>\n\n<style>\n\t.CLASS .padding { padding: 0 10px 10px; }\n\t.CLASS footer > div { margin: 10px; }\n\t.CLASS pre { font-size: 10px; margin: 0; padding: 5px; background-color: #F0F0F0; border-radius: var(--radius); }\n\t.CLASS button { width: 100%; height: 24px; border: 1px solid #E0E0E0; border-radius: var(--radius); color: #000; background-color: #F0F0F0; margin: 0; }\n\t.CLASS button:hover { background-color: #F8F8F8; }\n\t.CLASS button:active { background-color: #E0E0E0; }\n\t.CLASS .ui-objecttree { background-color: #f0f0f0; padding: 4px; }\n\t.CLASS .largetext { max-height: 100px; overflow-y: auto; }\n\n\t.ui-dark .CLASS button { border-color: #404040; color: #FFF; background-color: #222; }\n\t.ui-dark .CLASS button:hover { background-color: #303030; }\n\t.ui-dark .CLASS button:active { background-color: #404040; }\n\n\t.CLASS .output { text-align: right }\n</style>\n\n<settings>\n\t<div class=\"padding\">\n\t\t<div data---=\"input__?.title__text\"><b>Title</b></div>\n\t\t<div data---=\"input__?.type__dirsource:string|String,number|Number,boolean|Boolean,date|Date,json|Json,object|Object,buffer|Buffer as Base64;required:1\">Type</div>\n\t\t<div class=\"mt10 m\">\n\t\t\t<div data---=\"input__?.restart__type:checkbox\">Trigger 5s after initialization.</div>\n\t\t\t<div data---=\"input__?.random__type:checkbox\">Random data</div>\n\t\t</div>\n\t\t<div data-bind=\"?.random__hide\" class=\"hidden\">\n\t\t\t<hr />\n\t\t\t<div data---=\"input__?.data__required:1;height:250;type:multiline;maxlength:100000;monospace:1\">Data</div>\n\t\t</div>\n\t</div>\n</settings>\n\n<readme>\nThe component triggers data into the Flow. It can be used for testing purposes or for sending data to other components on input.\n</readme>\n\n<body>\n\t<header>\n\t\t<i class=\"ICON\"></i><b class=\"monospace\" data-bind=\"CONFIG.title__text__empty\"></b>\n\t\t<div><small><i>NAME v<span data-bind=\"CONFIG.version__text__empty\"></span></i> - <b class=\"monospace\" data-bind=\"CONFIG.type__text__empty\"></b></small></div>\n\t</header>\n\t<div class=\"padding\">\n\t\t<button class=\"exec\" data-exec=\"FUNC.trigger\">Run</button>\n\t</div>\n\t<footer>\n\t\t<div class=\"monospace selectable largetext\" data---=\"objecttree__!CONFIG.data__text__empty\"></div>\n\t</footer>\n</body>",
+		"typerefinery_pythonapi1": "<script total>\n\n\texports.id = 'typerefinery_pythonapi1';\n\texports.name = 'Python API Block1';\n\texports.icon = 'fa fa-code';\n\texports.group = '@TypeRefinery';\n\texports.author = 'TypeRefinery.io';\n\texports.version = '1';\n\n\texports.config = { title: exports.name, version: exports.version, algorithm: '', algorithmrequirements: 'argparse loguru stixorm', endpoint: 'http://127.0.0.1:8000/algorithm' };\n\texports.inputs = [{ id: 'connection', name: 'Connection' }];\n\texports.outputs = [{ id: 'output', name: 'Output' }];\n\n\texports.meta = { settingswidth: 1200 };\n\n\texports.make = function(instance, config) {\n\t\tvar fn;\n\t\tvar values = {};\n\t\tinstance.message = function($) {\n\t\t\t// Getting endpoint from the user\n\t\t\tconst endpointData = {\n\t\t\t\t\tendpoint: config.endpoint,\n\t\t\t}\n\n\t\t\t// Inputs to this block will be saved in values Object\n\t\t\tvalues[$.input] = $.data;\n\n\t\t\tif (values.connection && config.algorithm) {\n\t\t\t\tvar payload = {\n\t\t\t\t\tdbhost: values.connection.dbhost,\n\t\t\t\t\tdbport: values.connection.dbport,\n\t\t\t\t\tdbdatabase: values.connection.dbdatabase,\n\t\t\t\t\tdbquery: \"\",\n\t\t\t\t\talgorithm: config.algorithm,\n\t\t\t\t\talgorithmrequirements: config.algorithmrequirements,\n\t\t\t\t\treturnoutput: 'output'\n\t\t\t\t};\n\t\t\t\tlet options = {\n\t\t\t\t\tmethod: 'POST',\n\t\t\t\t\theaders: {\n\t\t\t\t\t\t'Content-Type':\n\t\t\t\t\t\t'application/json;charset=utf-8'\n\t\t\t\t\t},\n\t\t\t\t\tbody: JSON.stringify(payload)\n\t\t\t\t}\n\n\t\t\t\t// Sending request to get Data\n\t\t\t\tlet fetchRes = fetch(endpointData.endpoint,options);\n\t\t\t\tfetchRes.then(res =>res.json())\n\t\t\t\t\t.then(d => { $.send('output', d) })\n\t\t\t\t\t.catch(err => { $.send('output', err) })\n\n\t\t\t\t\tvalues.query = null;\n\t\t\t} else {\n\t\t\t\t// IMPORTANT: we must destroy the current message becase we don't need to send it next\n\t\t\t\t$.destroy();\n\t\t\t}\n\t\t};\n\n\t\tinstance.close = function() {\n\t\t\tfn = null;\n\t\t};\n\n\t\tinstance.configure = function() {\n\t\t\tif (config.title === \"\") {\n\t\t\t\tconfig.title = exports.name;\n\t\t\t}\n\t\t\tconfig.version = exports.version;\n\t\t};\n\n\t\tinstance.configure();\n\n\t};\n</script>\n<readme>\n\tRun a node and edges algorithm on a TypeRefinery database.\n</readme>\n<settings>\n\t<div class=\"padding\">\n\t\t<div data---=\"input__?.title__text\"><b>Title</b></div>\n\t\t<div data---=\"input__?.endpoint__required:1\" class=\"m\">Endpont</div>\n\t\t<div data---=\"input__?.algorithmrequirements__text:1\" class=\"m\">Requirements</div>\n\t\t<div class=\"ui-input-label\">Algorithm:</div>\n\t\t<div data---=\"codemirror__?.algorithm__type:python;minheight:300;parent:auto;margin:60;tabs:true;trim:true\" class=\"m\"></div>\n\t</div>\n</settings>\n<body>\n\t<header>\n\t\t<i class=\"ICON\"></i><b class=\"monospace\" data-bind=\"CONFIG.title__text__empty\"></b>\n\t\t<div><small><i>NAME v<span data-bind=\"CONFIG.version__text__empty\"></span></i></small></div>\n\t</header>\n</body>\n",
+		"typerefinery_print": "<script total>\n\n\texports.name = 'Print';\n\texports.group = 'Common';\n\texports.version = '4';\n\texports.icon = 'fa fa-print';\n\texports.author = 'Total.js';\n\texports.config = { repo: false, data: true };\n\texports.inputs = [{ id: 'input', name: 'Input' }];\n\n\texports.make = function(instance, config) {\n\t\tinstance.message = function($) {\n\n\t\t\tvar data = $.data;\n\n\t\t\tif (config.data !== false) {\n\t\t\t\tif (data instanceof Buffer)\n\t\t\t\t\tdata = data.toString('hex').substring(0, 200);\n\t\t\t}\n\n\t\t\tvar count = 0;\n\n\t\t\tfor (var key in config) {\n\t\t\t\tif (config[key])\n\t\t\t\t\tcount++;\n\t\t\t}\n\n\t\t\tvar output = count > 1 ? {} : null;\n\n\t\t\tif (config.repo) {\n\t\t\t\tif (output)\n\t\t\t\t\toutput.repo = $.repo;\n\t\t\t\telse\n\t\t\t\t\toutput = $.repository;\n\t\t\t}\n\n\t\t\tif (config.data) {\n\t\t\t\tif (output)\n\t\t\t\t\toutput.data = $.data;\n\t\t\t\telse\n\t\t\t\t\toutput = $.data;\n\t\t\t}\n\n\t\t\toutput && instance.status(output, 200);\n\t\t\t$.destroy();\n\t\t};\n\n\t\tinstance.trigger = function() {\n\t\t\tinstance.status('');\n\t\t};\n\n\t};\n\n</script>\n\n<style>\n\t.CLASS footer > div { margin: 10px; }\n\t.CLASS pre { font-size: 10px; margin: 0; padding: 5px; background-color: #F0F0F0; border-radius: var(--radius); }\n\t.CLASS .noscrollbar { max-height: 250px; }\n\t.CLASS .readme { position: absolute; position: absolute; font-size: 11px; right: 5px; margin-top: -5px; cursor: pointer; }\n\t.ui-dark .CLASS pre { background-color: #404040; tab-size: 2; }\n</style>\n\n<readme>\nThe component prints incoming data in a JSON format.\n</readme>\n\n<settings>\n\t<div class=\"padding\">\n\t\t<div data---=\"input__?.repo__type:checkbox\">Shows repository</div>\n\t\t<div data---=\"input__?.data__type:checkbox\">Shows data</div>\n\t</div>\n</settings>\n\n<body>\n\t<header>\n\t\t<button class=\"exec button\" data-exec=\"FUNC.trigger\">Clear</button>\n\t\t<i class=\"ICON\"></i>NAME\n\t</header>\n\t<footer>\n\t\t<div data-bind=\"!STATUS__html pre:Thelpers.jsonformat(JSON.stringify(value, null, '\\t'))__show\" class=\"hidden selectable\">\n\t\t\t<span class=\"readme\" title=\"Open in new window\"><i class=\"far fa-window-restore\"></i></span>\n\t\t\t<div class=\"noscrollbar mt5\">\n\t\t\t\t<pre class=\"json\"></pre>\n\t\t\t</div>\n\t\t</div>\n\t</footer>\n</body>\n\n<script>\n\tTOUCH(function(exports, reinit) {\n\n\t\tif (reinit)\n\t\t\treturn;\n\n\t\tvar laststatus;\n\n\t\texports.status = function(status, isinit) {\n\t\t\tlaststatus = status;\n\t\t};\n\n\t\texports.element.on('click', '.readme', function() {\n\t\t\tFUNC.readme('Debug', '```json\\n' + JSON.stringify(laststatus, null, '  ') + '\\n```');\n\t\t});\n\n\t});\n</script>",
+		"stixorm_import_bundle": "<script total>\n\n\texports.id = 'stixorm_import_bundle';\n\texports.name = 'Stix-ORM Import Bundle';\n\texports.icon = 'fa fa-code';\n\texports.group = '@TypeRefinery';\n\texports.author = 'TypeRefinery.io';\n\texports.version = '1';\n\n\texports.config = { title: exports.name, version: exports.version, algorithm: '', algorithmrequirements: 'argparse loguru stixorm', endpoint: 'http://127.0.0.1:8000/algorithm' };\n\texports.inputs = [{ id: 'connection', name: 'Connection' }, { id: 'url', name: 'URL_String' }];\n\texports.outputs = [{ id: 'output', name: 'Output' }];\n\n\texports.meta = { settingswidth: 1200 };\n\n\texports.make = function(instance, config) {\n\t\tvar fn;\n\t\tvar values = {};\n\t\tinstance.message = function($) {\n\t\t\t// Getting endpoint from the user\n\t\t\tconst endpointData = {\n\t\t\t\t\tendpoint: config.endpoint,\n\t\t\t}\n\n\t\t\t// Inputs to this block will be saved in values Object\n\t\t\tvalues[$.input] = $.data;\n\n\t\t\tif (values.connection && config.algorithm) {\n\t\t\t\tvar payload = {\n\t\t\t\t\tdbhost: values.connection.dbhost,\n\t\t\t\t\tdbport: values.connection.dbport,\n\t\t\t\t\tdbdatabase: values.connection.dbdatabase,\n\t\t\t\t\tdbquery: values.url,\n\t\t\t\t\talgorithm: config.algorithm,\n\t\t\t\t\talgorithmrequirements: config.algorithmrequirements,\n\t\t\t\t\treturnoutput: 'output'\n\t\t\t\t};\n\t\t\t\tlet options = {\n\t\t\t\t\tmethod: 'POST',\n\t\t\t\t\theaders: {\n\t\t\t\t\t\t'Content-Type':\n\t\t\t\t\t\t'application/json;charset=utf-8'\n\t\t\t\t\t},\n\t\t\t\t\tbody: JSON.stringify(payload)\n\t\t\t\t}\n\n\t\t\t\t// Sending request to get Data\n\t\t\t\tlet fetchRes = fetch(endpointData.endpoint,options);\n\t\t\t\tfetchRes.then(res =>res.json())\n\t\t\t\t\t.then(d => { $.send('output', d) })\n\t\t\t\t\t.catch(err => { $.send('output', err) })\n\n\t\t\t\t\tvalues.query = null;\n\t\t\t} else {\n\t\t\t\t// IMPORTANT: we must destroy the current message becase we don't need to send it next\n\t\t\t\t$.destroy();\n\t\t\t}\n\t\t};\n\n\t\tinstance.close = function() {\n\t\t\tfn = null;\n\t\t};\n\n\t\tinstance.configure = function() {\n\t\t\tif (config.title === \"\") {\n\t\t\t\tconfig.title = exports.name;\n\t\t\t}\n\t\t\tconfig.version = exports.version;\n\t\t};\n\n\t\tinstance.configure();\n\n\t};\n</script>\n<readme>\n\tRun a node and edges algorithm on a TypeRefinery database.\n</readme>\n<settings>\n\t<div class=\"padding\">\n\t\t<div data---=\"input__?.title__text\"><b>Title</b></div>\n\t\t<div data---=\"input__?.endpoint__required:1\" class=\"m\">Endpont</div>\n\t\t<div data---=\"input__?.algorithmrequirements__text:1\" class=\"m\">Requirements</div>\n\t\t<div class=\"ui-input-label\">Algorithm:</div>\n\t\t<div data---=\"codemirror__?.algorithm__type:python;minheight:300;parent:auto;margin:60;tabs:true;trim:true\" class=\"m\"></div>\n\t</div>\n</settings>\n<body>\n\t<header>\n\t\t<i class=\"ICON\"></i><b class=\"monospace\" data-bind=\"CONFIG.title__text__empty\"></b>\n\t\t<div><small><i>NAME v<span data-bind=\"CONFIG.version__text__empty\"></span></i></small></div>\n\t</header>\n</body>\n",
+		"stixorm_url": "##############################################################################\n# Title: Load Example Bundle Directory\n# Author: OS-Threat\n# Organisation Repo: https://github.com/typerefinery-ai/brett_blocks\n# Contact Email: denis@cloudaccelerator.co\n# Date: 07/08/2023\n#\n# Description: This script is designed to take in a Connection, and a Path string\n#       that points to the sub-directory in the tests/data to read in, and then\n#       load the bundle files in the directory (note files contain bundles not lists)\n#\n# This code is licensed under the terms of the BSD.\n##############################################################################\n<script total>\n\n\texports.id = 'stixorm_url';\n\texports.name = 'URL';\n\texports.icon = 'fa fa-code';\n\texports.group = '@TypeRefinery';\n\texports.author = 'TypeRefinery.io';\n\texports.version = '2';\n\n\texports.config = { title: exports.name, version: exports.version, outputs: 1, code: '// instance {FlowStreamInstance};\\n// $ {FlowStreamMessage};\\n// vars {Object};\\n// repo {Object};\\n// data {String/Number/Boolean/Date/Buffer/Object};\\n// $.send(\\'output\\', data); // or simply send(data); which uses the first output\\n// $.destroy();\\n// $.throw(err);\\n\\n// IMPORTANT: If you do not perform re-send, you need to destroy this message via $.destroy() method\\n// IMPORTANT: methods $.send(), $.destroy() and $.throw() can be executed only once\\n\\n// $.send(\\'output\\', data);\\n$.destroy();' };\n\texports.inputs = [{ id: 'input', name: 'Input' }];\n\texports.outputs = [{ id: 'output', name: 'URL_String' }];\n\texports.meta = { settingswidth: 1200 };\n\n\texports.make = function(instance, config) {\n\n\t\tvar fn;\n\n\t\tinstance.message = function($) {\n\t\t\tif (fn) {\n\t\t\t\ttry {\n\t\t\t\t\tvar send = data => $.send('output', data);\n\t\t\t\t\tfn($.data, instance, $, $, F.require, send, $.repo, $.vars, $.data);\n\t\t\t\t} catch (e) {\n\t\t\t\t\t$.throw(e);\n\t\t\t\t\t$.destroy();\n\t\t\t\t}\n\t\t\t}\n\t\t};\n\n\t\tinstance.configure = function() {\n\t\t\tinstance.outputs = [];\n\t\t\tfor (let i = 1; i <= config.outputs; i++)\n\t\t\t\tinstance.outputs.push({ id: 'output' + (i === 1 ? '' : i), name: 'Output #' + i });\n\t\t\tinstance.save();\n\n\t\t\ttry {\n\t\t\t\tif (config.code) {\n\t\t\t\t\tinstance.status(1);\n\t\t\t\t\tfn = new Function('value', 'instance', '$', 'message', 'require', 'send', 'repo', 'vars', 'data', config.code);\n\t\t\t\t} else {\n\t\t\t\t\tinstance.status(0);\n\t\t\t\t\tfn = null;\n\t\t\t\t}\n\t\t\t} catch (e) {\n\t\t\t\tfn = null;\n\t\t\t\tinstance.throw('Code: ' + e.message);\n\t\t\t}\n\t\t\tif (config.title === \"\") {\n\t\t\t\tconfig.title = exports.name;\n\t\t\t}\n\t\t\tconfig.version = exports.version;\n\t\t};\n\n\t\tinstance.close = function() {\n\t\t\tfn = null;\n\t\t};\n\n\t\tinstance.configure();\n\n\t};\n\n</script>\n\n<readme>\n\tThis component executes a custom JavaScript code as it is.\n\n\tTo send data to the default output use `send(somedata);`\n\tTo send data to specific output when number of outputs > 1 use `$.send('outputX', somedata)` where `X` is output index, see example bellow:\n\t- first output--> `send(somedata)` or `$.send('output', somedata)`\n\t- second output --> `$.send('output2', somedata)`\n\t- ...\n\t- 5th output --> `$.send('output5', somedata)`\n\t- etc.\n</readme>\n\n<settings>\n\t<div class=\"padding\">\n\t\t<div data---=\"input__?.title__text\"><b>Title</b></div>\n\t\t<div data---=\"input__?.outputs__type:number\" class=\"m\">Number of outputs</div>\n\t\t<div class=\"ui-input-label\">Code:</div>\n\t\t<div data---=\"codemirror__?.code__type:javascript;minheight:300;parent:auto;margin:60;tabs:true;trim:true\" class=\"m\"></div>\n\t</div>\n</settings>\n\n<body>\n\t<header>\n\t\t<i class=\"ICON\"></i><b class=\"monospace\" data-bind=\"CONFIG.title__text__empty\"></b>\n\t\t<div><small><i>NAME v<span data-bind=\"CONFIG.version__text__empty\"></span></i></small></div>\n\t</header>\n</body>",
+		"stixorm_get_report": "<script total>\n\n\texports.id = 'stixorm_get_report';\n\texports.name = 'Stix-ORM Get Report';\n\texports.icon = 'fa fa-code';\n\texports.group = '@TypeRefinery';\n\texports.author = 'TypeRefinery.io';\n\texports.version = '1';\n\n\texports.config = { title: exports.name, version: exports.version, algorithm: '', algorithmrequirements: 'argparse loguru stixorm', endpoint: 'http://127.0.0.1:8000/algorithm' };\n\texports.inputs = [{ id: 'connection', name: 'Connection' }, { id: 'url', name: 'URL_String' }];\n\texports.outputs = [{ id: 'output', name: 'Output' }];\n\n\texports.meta = { settingswidth: 1200 };\n\n\texports.make = function(instance, config) {\n\t\tvar fn;\n\t\tvar values = {};\n\t\tinstance.message = function($) {\n\t\t\t// Getting endpoint from the user\n\t\t\tconst endpointData = {\n\t\t\t\t\tendpoint: config.endpoint,\n\t\t\t}\n\n\t\t\t// Inputs to this block will be saved in values Object\n\t\t\tvalues[$.input] = $.data;\n\n\t\t\tif (values.connection && config.algorithm) {\n\t\t\t\tvar payload = {\n\t\t\t\t\tdbhost: values.connection.dbhost,\n\t\t\t\t\tdbport: values.connection.dbport,\n\t\t\t\t\tdbdatabase: values.connection.dbdatabase,\n\t\t\t\t\tdbquery: values.url,\n\t\t\t\t\talgorithm: config.algorithm,\n\t\t\t\t\talgorithmrequirements: config.algorithmrequirements,\n\t\t\t\t\treturnoutput: 'output'\n\t\t\t\t};\n\t\t\t\tlet options = {\n\t\t\t\t\tmethod: 'POST',\n\t\t\t\t\theaders: {\n\t\t\t\t\t\t'Content-Type':\n\t\t\t\t\t\t'application/json;charset=utf-8'\n\t\t\t\t\t},\n\t\t\t\t\tbody: JSON.stringify(payload)\n\t\t\t\t}\n\n\t\t\t\t// Sending request to get Data\n\t\t\t\tlet fetchRes = fetch(endpointData.endpoint,options);\n\t\t\t\tfetchRes.then(res =>res.json())\n\t\t\t\t\t.then(d => { $.send('output', d) })\n\t\t\t\t\t.catch(err => { $.send('output', err) })\n\n\t\t\t\t\tvalues.query = null;\n\t\t\t} else {\n\t\t\t\t// IMPORTANT: we must destroy the current message becase we don't need to send it next\n\t\t\t\t$.destroy();\n\t\t\t}\n\t\t};\n\n\t\tinstance.close = function() {\n\t\t\tfn = null;\n\t\t};\n\n\t\tinstance.configure = function() {\n\t\t\tif (config.title === \"\") {\n\t\t\t\tconfig.title = exports.name;\n\t\t\t}\n\t\t\tconfig.version = exports.version;\n\t\t};\n\n\t\tinstance.configure();\n\n\t};\n</script>\n<readme>\n\tRun a node and edges algorithm on a TypeRefinery database.\n</readme>\n<settings>\n\t<div class=\"padding\">\n\t\t<div data---=\"input__?.title__text\"><b>Title</b></div>\n\t\t<div data---=\"input__?.endpoint__required:1\" class=\"m\">Endpont</div>\n\t\t<div data---=\"input__?.algorithmrequirements__text:1\" class=\"m\">Requirements</div>\n\t\t<div class=\"ui-input-label\">Algorithm:</div>\n\t\t<div data---=\"codemirror__?.algorithm__type:python;minheight:300;parent:auto;margin:60;tabs:true;trim:true\" class=\"m\"></div>\n\t</div>\n</settings>\n<body>\n\t<header>\n\t\t<i class=\"ICON\"></i><b class=\"monospace\" data-bind=\"CONFIG.title__text__empty\"></b>\n\t\t<div><small><i>NAME v<span data-bind=\"CONFIG.version__text__empty\"></span></i></small></div>\n\t</header>\n</body>\n",
+		"stixorm_get_report_head": "<script total>\n\n\texports.id = 'stixorm_get_report_head';\n\texports.name = 'Stix-ORM Get Report Head';\n\texports.icon = 'fa fa-code';\n\texports.group = '@TypeRefinery';\n\texports.author = 'TypeRefinery.io';\n\texports.version = '1';\n\n\texports.config = { title: exports.name, version: exports.version, algorithm: '', algorithmrequirements: 'argparse loguru stixorm', endpoint: 'http://127.0.0.1:8000/algorithm' };\n\texports.inputs = [{ id: 'connection', name: 'Connection' }, { id: 'url', name: 'URL_String' }];\n\texports.outputs = [{ id: 'output', name: 'Output' }];\n\n\texports.meta = { settingswidth: 1200 };\n\n\texports.make = function(instance, config) {\n\t\tvar fn;\n\t\tvar values = {};\n\t\tinstance.message = function($) {\n\t\t\t// Getting endpoint from the user\n\t\t\tconst endpointData = {\n\t\t\t\t\tendpoint: config.endpoint,\n\t\t\t}\n\n\t\t\t// Inputs to this block will be saved in values Object\n\t\t\tvalues[$.input] = $.data;\n\n\t\t\tif (values.connection && config.algorithm) {\n\t\t\t\tvar payload = {\n\t\t\t\t\tdbhost: values.connection.dbhost,\n\t\t\t\t\tdbport: values.connection.dbport,\n\t\t\t\t\tdbdatabase: values.connection.dbdatabase,\n\t\t\t\t\tdbquery: values.url,\n\t\t\t\t\talgorithm: config.algorithm,\n\t\t\t\t\talgorithmrequirements: config.algorithmrequirements,\n\t\t\t\t\treturnoutput: 'output'\n\t\t\t\t};\n\t\t\t\tlet options = {\n\t\t\t\t\tmethod: 'POST',\n\t\t\t\t\theaders: {\n\t\t\t\t\t\t'Content-Type':\n\t\t\t\t\t\t'application/json;charset=utf-8'\n\t\t\t\t\t},\n\t\t\t\t\tbody: JSON.stringify(payload)\n\t\t\t\t}\n\n\t\t\t\t// Sending request to get Data\n\t\t\t\tlet fetchRes = fetch(endpointData.endpoint,options);\n\t\t\t\tfetchRes.then(res =>res.json())\n\t\t\t\t\t.then(d => { $.send('output', d) })\n\t\t\t\t\t.catch(err => { $.send('output', err) })\n\n\t\t\t\t\tvalues.query = null;\n\t\t\t} else {\n\t\t\t\t// IMPORTANT: we must destroy the current message becase we don't need to send it next\n\t\t\t\t$.destroy();\n\t\t\t}\n\t\t};\n\n\t\tinstance.close = function() {\n\t\t\tfn = null;\n\t\t};\n\n\t\tinstance.configure = function() {\n\t\t\tif (config.title === \"\") {\n\t\t\t\tconfig.title = exports.name;\n\t\t\t}\n\t\t\tconfig.version = exports.version;\n\t\t};\n\n\t\tinstance.configure();\n\n\t};\n</script>\n<readme>\n\tRun a node and edges algorithm on a TypeRefinery database.\n</readme>\n<settings>\n\t<div class=\"padding\">\n\t\t<div data---=\"input__?.title__text\"><b>Title</b></div>\n\t\t<div data---=\"input__?.endpoint__required:1\" class=\"m\">Endpont</div>\n\t\t<div data---=\"input__?.algorithmrequirements__text:1\" class=\"m\">Requirements</div>\n\t\t<div class=\"ui-input-label\">Algorithm:</div>\n\t\t<div data---=\"codemirror__?.algorithm__type:python;minheight:300;parent:auto;margin:60;tabs:true;trim:true\" class=\"m\"></div>\n\t</div>\n</settings>\n<body>\n\t<header>\n\t\t<i class=\"ICON\"></i><b class=\"monospace\" data-bind=\"CONFIG.title__text__empty\"></b>\n\t\t<div><small><i>NAME v<span data-bind=\"CONFIG.version__text__empty\"></span></i></small></div>\n\t</header>\n</body>\n",
+		"stixorm_nodes_edges": "<script total>\n\n\texports.id = 'stixorm_nodes_edges';\n\texports.name = 'Stix-ORM Nodeas and Edges';\n\texports.icon = 'fa fa-code';\n\texports.group = '@TypeRefinery';\n\texports.author = 'TypeRefinery.io';\n\texports.version = '1';\n\n\texports.config = { title: exports.name, version: exports.version, algorithm: '', algorithmrequirements: 'argparse loguru stixorm', endpoint: 'http://127.0.0.1:8000/algorithm' };\n\texports.inputs = [{ id: 'connection', name: 'StixList' }, { id: 'url', name: 'URL_String' }];\n\texports.outputs = [{ id: 'output', name: 'Output' }];\n\n\texports.meta = { settingswidth: 1200 };\n\n\texports.make = function(instance, config) {\n\t\tvar fn;\n\t\tvar values = {};\n\t\tinstance.message = function($) {\n\t\t\t// Getting endpoint from the user\n\t\t\tconst endpointData = {\n\t\t\t\t\tendpoint: config.endpoint,\n\t\t\t}\n\n\t\t\t// Inputs to this block will be saved in values Object\n\t\t\tvalues[$.input] = $.data;\n\n\t\t\tif (values.connection && config.algorithm) {\n\t\t\t\tvar payload = {\n\t\t\t\t\tdbhost: values.connection.dbhost,\n\t\t\t\t\tdbport: values.connection.dbport,\n\t\t\t\t\tdbdatabase: values.connection.dbdatabase,\n\t\t\t\t\tdbquery: values.url,\n\t\t\t\t\talgorithm: config.algorithm,\n\t\t\t\t\talgorithmrequirements: config.algorithmrequirements,\n\t\t\t\t\treturnoutput: 'output'\n\t\t\t\t};\n\t\t\t\tlet options = {\n\t\t\t\t\tmethod: 'POST',\n\t\t\t\t\theaders: {\n\t\t\t\t\t\t'Content-Type':\n\t\t\t\t\t\t'application/json;charset=utf-8'\n\t\t\t\t\t},\n\t\t\t\t\tbody: JSON.stringify(payload)\n\t\t\t\t}\n\n\t\t\t\t// Sending request to get Data\n\t\t\t\tlet fetchRes = fetch(endpointData.endpoint,options);\n\t\t\t\tfetchRes.then(res =>res.json())\n\t\t\t\t\t.then(d => { $.send('output', d) })\n\t\t\t\t\t.catch(err => { $.send('output', err) })\n\n\t\t\t\t\tvalues.query = null;\n\t\t\t} else {\n\t\t\t\t// IMPORTANT: we must destroy the current message becase we don't need to send it next\n\t\t\t\t$.destroy();\n\t\t\t}\n\t\t};\n\n\t\tinstance.close = function() {\n\t\t\tfn = null;\n\t\t};\n\n\t\tinstance.configure = function() {\n\t\t\tif (config.title === \"\") {\n\t\t\t\tconfig.title = exports.name;\n\t\t\t}\n\t\t\tconfig.version = exports.version;\n\t\t};\n\n\t\tinstance.configure();\n\n\t};\n</script>\n<readme>\n\tRun a node and edges algorithm on a TypeRefinery database.\n</readme>\n<settings>\n\t<div class=\"padding\">\n\t\t<div data---=\"input__?.title__text\"><b>Title</b></div>\n\t\t<div data---=\"input__?.endpoint__required:1\" class=\"m\">Endpont</div>\n\t\t<div data---=\"input__?.algorithmrequirements__text:1\" class=\"m\">Requirements</div>\n\t\t<div class=\"ui-input-label\">Algorithm:</div>\n\t\t<div data---=\"codemirror__?.algorithm__type:python;minheight:300;parent:auto;margin:60;tabs:true;trim:true\" class=\"m\"></div>\n\t</div>\n</settings>\n<body>\n\t<header>\n\t\t<i class=\"ICON\"></i><b class=\"monospace\" data-bind=\"CONFIG.title__text__empty\"></b>\n\t\t<div><small><i>NAME v<span data-bind=\"CONFIG.version__text__empty\"></span></i></small></div>\n\t</header>\n</body>\n",
+		"stixorm_get_object": "<script total>\n\n\texports.id = 'stixorm_get_object';\n\texports.name = 'Stix-ORM Get Object';\n\texports.icon = 'fa fa-code';\n\texports.group = '@TypeRefinery';\n\texports.author = 'TypeRefinery.io';\n\texports.version = '1';\n\n\texports.config = { title: exports.name, version: exports.version, algorithm: '', algorithmrequirements: 'argparse loguru typedeb-client stixorm', endpoint: 'http://127.0.0.1:8000/algorithm' };\n\texports.inputs = [{ id: 'connection', name: 'Connection' }, { id: 'stix_id', name: 'Stix_ID' }];\n\texports.outputs = [{ id: 'output', name: 'Stix_Object' }];\n\n\texports.meta = { settingswidth: 1200 };\n\n\texports.make = function(instance, config) {\n\t\tvar fn;\n\t\tvar values = {};\n\t\tinstance.message = function($) {\n\t\t\t// Getting endpoint from the user\n\t\t\tconst endpointData = {\n\t\t\t\t\tendpoint: config.endpoint,\n\t\t\t}\n\n\t\t\t// Inputs to this block will be saved in values Object\n\t\t\tvalues[$.input] = $.data;\n\n\t\t\tif (values.connection && config.algorithm) {\n\t\t\t\tvar payload = {\n\t\t\t\t\tdbhost: values.connection.dbhost,\n\t\t\t\t\tdbport: values.connection.dbport,\n\t\t\t\t\tdbdatabase: values.connection.dbdatabase,\n\t\t\t\t\tdbquery: values.stix_id,\n\t\t\t\t\talgorithm: config.algorithm,\n\t\t\t\t\talgorithmrequirements: config.algorithmrequirements.split(' ').join('\\n'),\n\t\t\t\t\treturnoutput: 'output'\n\t\t\t\t};\n\t\t\t\tlet options = {\n\t\t\t\t\tmethod: 'POST',\n\t\t\t\t\theaders: {\n\t\t\t\t\t\t'Content-Type':\n\t\t\t\t\t\t'application/json;charset=utf-8'\n\t\t\t\t\t},\n\t\t\t\t\tbody: JSON.stringify(payload)\n\t\t\t\t}\n\n\t\t\t\t// Sending request to get Data\n\t\t\t\tlet fetchRes = fetch(endpointData.endpoint,options);\n\t\t\t\tfetchRes.then(res =>res.json())\n\t\t\t\t\t.then(d => { $.send('output', d) })\n\t\t\t\t\t.catch(err => { $.send('output', err) })\n\n\t\t\t\t\tvalues.query = null;\n\t\t\t} else {\n\t\t\t\t// IMPORTANT: we must destroy the current message becase we don't need to send it next\n\t\t\t\t$.destroy();\n\t\t\t}\n\t\t};\n\n\t\tinstance.close = function() {\n\t\t\tfn = null;\n\t\t};\n\n\t\tinstance.configure = function() {\n\t\t\tif (config.title === \"\") {\n\t\t\t\tconfig.title = exports.name;\n\t\t\t}\n\t\t\tconfig.version = exports.version;\n\t\t};\n\n\t\tinstance.configure();\n\n\t};\n</script>\n<readme>\n\tRun a node and edges algorithm on a TypeRefinery database.\n</readme>\n<settings>\n\t<div class=\"padding\">\n\t\t<div data---=\"input__?.title__text\"><b>Title</b></div>\n\t\t<div data---=\"input__?.endpoint__required:1\" class=\"m\">Endpont</div>\n\t\t<div data---=\"input__?.algorithmrequirements__text:1\" class=\"m\">Requirements</div>\n\t\t<div class=\"ui-input-label\">Algorithm:</div>\n\t\t<div data---=\"codemirror__?.algorithm__type:python;minheight:300;parent:auto;margin:60;tabs:true;trim:true\" class=\"m\"></div>\n\t</div>\n</settings>\n<body>\n\t<header>\n\t\t<i class=\"ICON\"></i><b class=\"monospace\" data-bind=\"CONFIG.title__text__empty\"></b>\n\t\t<div><small><i>NAME v<span data-bind=\"CONFIG.version__text__empty\"></span></i></small></div>\n\t</header>\n</body>\n",
+		"stixorm_stix_id": "<script total>\n\n\texports.id = 'stixorm_stix_id';\n\texports.name = 'Stix_ID';\n\texports.icon = 'fa fa-code';\n\texports.group = '@TypeRefinery';\n\texports.author = 'TypeRefinery.io';\n\texports.version = '2';\n\n\texports.config = { title: exports.name, version: exports.version, outputs: 1, code: '// instance {FlowStreamInstance};\\n// $ {FlowStreamMessage};\\n// vars {Object};\\n// repo {Object};\\n// data {String/Number/Boolean/Date/Buffer/Object};\\n// $.send(\\'output\\', data); // or simply send(data); which uses the first output\\n// $.destroy();\\n// $.throw(err);\\n\\n// IMPORTANT: If you do not perform re-send, you need to destroy this message via $.destroy() method\\n// IMPORTANT: methods $.send(), $.destroy() and $.throw() can be executed only once\\n\\n// $.send(\\'output\\', data);\\n$.destroy();' };\n\texports.inputs = [{ id: 'input', name: 'Trigger' }];\n\texports.outputs = [{ id: 'output', name: 'Stix_ID' }];\n\texports.meta = { settingswidth: 1200 };\n\n\texports.make = function(instance, config) {\n\n\t\tvar fn;\n\n\t\tinstance.message = function($) {\n\t\t\tif (fn) {\n\t\t\t\ttry {\n\t\t\t\t\tvar send = data => $.send('output', data);\n\t\t\t\t\tfn($.data, instance, $, $, F.require, send, $.repo, $.vars, $.data);\n\t\t\t\t} catch (e) {\n\t\t\t\t\t$.throw(e);\n\t\t\t\t\t$.destroy();\n\t\t\t\t}\n\t\t\t}\n\t\t};\n\n\t\tinstance.configure = function() {\n\t\t\tinstance.outputs = [];\n\t\t\tfor (let i = 1; i <= config.outputs; i++)\n\t\t\t\tinstance.outputs.push({ id: 'output' + (i === 1 ? '' : i), name: 'Output #' + i });\n\t\t\tinstance.save();\n\n\t\t\ttry {\n\t\t\t\tif (config.code) {\n\t\t\t\t\tinstance.status(1);\n\t\t\t\t\tfn = new Function('value', 'instance', '$', 'message', 'require', 'send', 'repo', 'vars', 'data', config.code);\n\t\t\t\t} else {\n\t\t\t\t\tinstance.status(0);\n\t\t\t\t\tfn = null;\n\t\t\t\t}\n\t\t\t} catch (e) {\n\t\t\t\tfn = null;\n\t\t\t\tinstance.throw('Code: ' + e.message);\n\t\t\t}\n\t\t\tif (config.title === \"\") {\n\t\t\t\tconfig.title = exports.name;\n\t\t\t}\n\t\t\tconfig.version = exports.version;\n\t\t};\n\n\t\tinstance.close = function() {\n\t\t\tfn = null;\n\t\t};\n\n\t\tinstance.configure();\n\n\t};\n\n</script>\n\n<readme>\n\tThis component executes a custom JavaScript code as it is.\n\n\tTo send data to the default output use `send(somedata);`\n\tTo send data to specific output when number of outputs > 1 use `$.send('outputX', somedata)` where `X` is output index, see example bellow:\n\t- first output--> `send(somedata)` or `$.send('output', somedata)`\n\t- second output --> `$.send('output2', somedata)`\n\t- ...\n\t- 5th output --> `$.send('output5', somedata)`\n\t- etc.\n</readme>\n\n<settings>\n\t<div class=\"padding\">\n\t\t<div data---=\"input__?.title__text\"><b>Title</b></div>\n\t\t<div data---=\"input__?.outputs__type:number\" class=\"m\">Number of outputs</div>\n\t\t<div class=\"ui-input-label\">Code:</div>\n\t\t<div data---=\"codemirror__?.code__type:javascript;minheight:300;parent:auto;margin:60;tabs:true;trim:true\" class=\"m\"></div>\n\t</div>\n</settings>\n\n<body>\n\t<header>\n\t\t<i class=\"ICON\"></i><b class=\"monospace\" data-bind=\"CONFIG.title__text__empty\"></b>\n\t\t<div><small><i>NAME v<span data-bind=\"CONFIG.version__text__empty\"></span></i></small></div>\n\t</header>\n</body>",
+		"c72wna30a1": "<script total>\n\n\texports.name = 'Request';\n\texports.group = 'Common';\n\texports.version = '4';\n\texports.icon = 'fas fa-cloud-download';\n\texports.author = 'Total.js';\n\texports.config = { url: '', method: 'GET', dnscache: true, insecure: false, nocookies: true, xhr: false, parse: true, timeout: 10000, limit: 1024 * 500, responsebody: true, headers: {}, cookies: {}, serialize: null, send: 'all' };\n\texports.inputs = [{ id: 'payload', name: 'Payload' }];\n\texports.outputs = [{ id: 'response', name: 'Response' }, { id: 'error', name: 'Error' }];\n\n\texports.make = function(instance, config) {\n\n\t\tinstance.trigger = function() {\n\t\t\tinstance.message(instance.newmessage({}));\n\t\t};\n\n\t\tinstance.message = function($) {\n\n\t\t\tif (!config.url) {\n\t\t\t\t$.end();\n\t\t\t\treturn;\n\t\t\t}\n\n\t\t\tvar opt = {};\n\n\t\t\tfor (var key in config.headers) {\n\t\t\t\tif (!opt.headers)\n\t\t\t\t\topt.headers = {};\n\t\t\t\topt.headers[$.variables(key, true)] = $.variables(config.headers[key], true);\n\t\t\t}\n\n\t\t\tfor (var key in config.cookies) {\n\t\t\t\tif (!opt.cookies)\n\t\t\t\t\topt.cookies = {};\n\t\t\t\topt.cookies[$.variables(key, true)] = $.variables(config.cookies[key], true);\n\t\t\t}\n\n\t\t\topt.method = $.variables(config.method, true);\n\t\t\topt.url = $.variables(config.url, true);\n\t\t\topt.cook = true;\n\n\t\t\tif (config.serialize) {\n\t\t\t\tswitch (config.serialize) {\n\n\t\t\t\t\tcase 'json':\n\t\t\t\t\t\topt.type = 'json';\n\t\t\t\t\t\tif (opt.method !== 'GET')\n\t\t\t\t\t\t\topt.body = JSON.stringify($.data);\n\t\t\t\t\t\tbreak;\n\n\t\t\t\t\tcase 'urlencoded':\n\t\t\t\t\t\topt.type = 'urlencoded';\n\t\t\t\t\t\tif (opt.method === 'GET')\n\t\t\t\t\t\t\topt.query = U.toURLEncode($.data);\n\t\t\t\t\t\telse\n\t\t\t\t\t\t\topt.body = U.toURLEncode($.data);\n\t\t\t\t\t\tbreak;\n\n\t\t\t\t\tcase 'buffer':\n\t\t\t\t\t\topt.type = 'raw';\n\t\t\t\t\t\topt.body = $.data;\n\t\t\t\t\t\tbreak;\n\n\t\t\t\t}\n\t\t\t}\n\n\t\t\tif (config.dnscache)\n\t\t\t\topt.dnscache = true;\n\n\t\t\tif (config.insecure)\n\t\t\t\topt.insecure = true;\n\n\t\t\tif (config.nocookies)\n\t\t\t\topt.nocookies = true;\n\n\t\t\tif (config.xhr)\n\t\t\t\topt.xhr = true;\n\n\t\t\tif (config.timeout)\n\t\t\t\topt.timeout = config.timeout;\n\n\t\t\tif (config.limit)\n\t\t\t\topt.limit = config.limit;\n\n\t\t\tif (config.send === 'chunks')\n\t\t\t\topt.custom = true;\n\n\t\t\topt.callback = function(err, response) {\n\n\t\t\t\tif (err) {\n\t\t\t\t\t$.data = err + '';\n\t\t\t\t\t$.send('error');\n\t\t\t\t\treturn;\n\t\t\t\t}\n\n\t\t\t\tif (opt.custom) {\n\t\t\t\t\tresponse.stream.on('data', data => $.send('response', data));\n\t\t\t\t\treturn;\n\t\t\t\t}\n\n\t\t\t\tif (config.send === 'headers') {\n\t\t\t\t\t$.send('response', response.headers);\n\t\t\t\t\treturn;\n\t\t\t\t}\n\n\t\t\t\tif (config.send === 'status') {\n\t\t\t\t\t$.send('response', response.status);\n\t\t\t\t\treturn;\n\t\t\t\t}\n\n\t\t\t\tbody = response.body;\n\n\t\t\t\tif (config.parse) {\n\t\t\t\t\tvar type = response.headers['content-type'] || '';\n\t\t\t\t\tif (type) {\n\t\t\t\t\t\tvar index = type.lastIndexOf(';');\n\t\t\t\t\t\tif (index !== -1)\n\t\t\t\t\t\t\ttype = type.substring(0, index).trim();\n\t\t\t\t\t}\n\t\t\t\t\tswitch (type.toLowerCase()) {\n\t\t\t\t\t\tcase 'text/xml':\n\t\t\t\t\t\tcase 'application/xml':\n\t\t\t\t\t\t\tbody = body ? body.parseXML(true) : {};\n\t\t\t\t\t\t\tbreak;\n\t\t\t\t\t\tcase 'application/x-www-form-urlencoded':\n\t\t\t\t\t\t\tbody = body ? DEF.parsers.urlencoded(body) : {};\n\t\t\t\t\t\t\tbreak;\n\t\t\t\t\t\tcase 'application/json':\n\t\t\t\t\t\tcase 'text/json':\n\t\t\t\t\t\t\tbody = body ? body.parseJSON(true) : null;\n\t\t\t\t\t\t\tbreak;\n\t\t\t\t\t\tdefault:\n\t\t\t\t\t\t\tbody = body && body.isJSON() ? body.parseJSON(true) : body;\n\t\t\t\t\t\t\tbreak;\n\t\t\t\t\t}\n\t\t\t\t}\n\n\t\t\t\tswitch (config.send) {\n\t\t\t\t\tcase 'all':\n\t\t\t\t\t\t$.data = { headers: response.headers, cookies: response.cookies, status: response.status, host: response.host, body: body };\n\t\t\t\t\t\tbreak;\n\t\t\t\t\tcase 'response':\n\t\t\t\t\t\t$.data = body;\n\t\t\t\t\t\tbreak;\n\t\t\t\t}\n\n\t\t\t\t$.send('response');\n\t\t\t};\n\n\t\t\tREQUEST(opt);\n\t\t};\n\n\t};\n\n</script>\n\n<style>\n\t.CLASS .status { font-size: 12px; margin: 0; padding: 10px; overflow-wrap: break-word; }\n\t.CLASS .status span { padding: 2px 3px; border-radius: var(--radius); color: #FFF; }\n</style>\n\n<readme>\nThe component makes a HTTP request. The response data will be serialized as the payload.\n\n__Response__:\n\n```json\n{\n\tstatus: Number,\n\theaders: { key: value },\n\tcookies: { key: value },\n\thost: String,\n\tbody: String/Object/Buffer\n}\n```\n</readme>\n\n<body>\n\t<header>\n\t\t<i class=\"ICON\"></i>NAME\n\t</header>\n\t<footer class=\"hidden\" data-bind=\"CONFIG.url__show\">\n\t\t<div class=\"status\" data-bind=\"CONFIG__template\">\n\t\t\t<script type=\"text/html\">\n\t\t\t\t<div class=\"monospace\"><span style=\"background:{{ value.method | color }}\">{{ value.method }}</span> {{ value.url }}</div>\n\t\t\t</script>\n\t\t</div>\n\t</footer>\n</body>\n\n<settings>\n\t<div class=\"padding\">\n\t\t<div class=\"message message-alert\">Method, URL address, headers and Cookies support dynamic variables. Variables are read from global Variables <code class=\"b\">{key}</code> and from the message data <code class=\"b\">{data.key}</code></div>\n\t</div>\n\t<div class=\"padding bg-smoke npb\">\n\n\t\t<div class=\"row\">\n\t\t\t<div class=\"col-md-3 m\">\n\t\t\t\t<div data---=\"input__?.method__dirsource:GET|GET,POST|POST,PUT|PUT,DELETE|DELETE,PATCH|PATCH,API|API;required:1\">Method</div>\n\t\t\t</div>\n\t\t\t<div class=\"col-md-9 m\">\n\t\t\t\t<div data---=\"input__?.url__required:1\"><b>URL address</b></div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n\t<div class=\"padding\">\n\t\t<div class=\"row\">\n\t\t\t<div class=\"col-md-3 m\">\n\t\t\t\t<div data---=\"input__?.timeout__type:number\">Timeout</div>\n\t\t\t\t<div class=\"help\"><i class=\"far fa-clock-o\"></i><span data-bind=\"?.timeout__text:((value||0)/1000).floor(2)+' sec.'\"></span><br />Timeout <b>in milliseconds</b></div>\n\t\t\t</div>\n\t\t\t<div class=\"col-md-3 m\">\n\t\t\t\t<div data---=\"input__?.limit__type:number\">Max. size</div>\n\t\t\t\t<div class=\"help\"><i class=\"fas fa-calculator\"></i><span data-bind=\"?.limit__text:(value||0).filesize()\"></span><br />Response max. size <b>in bytes</b></div>\n\t\t\t</div>\n\t\t\t<div class=\"col-md-6 m\">\n\t\t\t\t<div data---=\"input__?.send__required:1;dirsource:all|Everything,response|Response body,chunks|Chunks of buffer,headers|Headers only,status|Status code\">Send to output</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n\t<hr class=\"nmt nmb\" />\n\t<div class=\"padding\">\n\t\t<div data---=\"input__?.serialize__dirsource:json|JSON,urlencoded|URL encode,buffer|Buffer;dirraw:1;placeholder:Choose serialization;dirempty:None\" class=\"m\">Data serialization</div>\n\t\t<div data---=\"keyvalue__?.headers__placeholderkey:Header name;placeholdervalue:Header value and press enter\">Headers</div>\n\t\t<div class=\"help m\">Headers support dynamic variables in the form <code>{key}</code></div>\n\t\t<div data---=\"keyvalue__?.cookies__placeholderkey:Cookie name;placeholdervalue:Cookie value and press enter\">Cookies</div>\n\t\t<div class=\"help m\">Cookies support dynamic variables in the form <code>{key}</code></div>\n\t\t<hr />\n\t\t<div data---=\"input__?.parse__type:checkbox\">Parse Response to Object</div>\n\t\t<div data---=\"input__?.dnscache__type:checkbox\">Enable DNS cache</div>\n\t\t<div data---=\"input__?.insecure__type:checkbox\">Allow insecure connection</div>\n\t\t<div data---=\"input__?.xhr__type:checkbox\">Add XHR header</div>\n\t</div>\n</settings>",
+		"typerefinery_api_python_algorithm": "<script total>\n\n\texports.id = 'typerefinery_api_python_algorithm';\n\texports.name = 'API Python Algorithm';\n\texports.icon = 'fa fa-code';\n\texports.group = '@TypeRefinery';\n\texports.author = 'TypeRefinery.io';\n\texports.version = '3';\n\n\texports.config = { title: exports.name, version: exports.version, algorithm: '', algorithmrequirements: 'argparse loguru', endpoint: 'http://127.0.0.1:8000/algorithm', jyputerid: \"\" };\n\texports.inputs = [{ id: 'config', name: 'Config' }];\n\texports.outputs = [{ id: 'output', name: 'Output' }, { id: 'payload', name: 'Payload' }];\n\n\texports.meta = { settingswidth: 1200 };\n\n\texports.make = function(instance, config) {\n\t\tconfig.jyputerid = instance.id;\n\t\tvar fn;\n\t\tvar values = {};\n\t\tinstance.message = function($) {\n\t\t\t// Getting endpoint from the user\n\t\t\tconst endpointData = {\n\t\t\t\t\tendpoint: config.endpoint,\n\t\t\t}\n\n\t\t\t// Inputs to this block will be saved in values Object\n\t\t\tvar inputData = $.data;\n\n\t\t\tif (inputData.connection && inputData.url) {\n\t\t\t\tvar dbquery = \"\";\n\t\t\t\tif (inputData.query && inputData.query.dbquery) {\n\t\t\t\t\tdbquery = inputData.query.dbquery;\n\t\t\t\t}\n\t\t\t\tvar payload = {\n\t\t\t\t\t\"algorithm\": {\n\t\t\t\t\t\t\"source\": config.algorithm,\n\t\t\t\t\t\t\"requirements\": config.algorithmrequirements.split(' ').join('\\n'),\n\t\t\t\t\t\t\"output\": 'output'\n\t\t\t\t\t},\n\t\t\t\t\t\"config\": inputData\n\t\t\t\t};\n\t\t\t\t$.send('payload', payload);\n\t\t\t\tlet options = {\n\t\t\t\t\tmethod: 'POST',\n\t\t\t\t\theaders: {\n\t\t\t\t\t\t'Content-Type':\n\t\t\t\t\t\t'application/json;charset=utf-8'\n\t\t\t\t\t},\n\t\t\t\t\tbody: JSON.stringify(payload)\n\t\t\t\t}\n\n\t\t\t\t// Sending request to get Data\n\t\t\t\tlet fetchRes = fetch(endpointData.endpoint,options);\n\t\t\t\tfetchRes.then(res =>res.json())\n\t\t\t\t\t.then(d => { $.send('output', d) })\n\t\t\t\t\t.catch(err => { $.send('output', err) })\n\n\t\t\t\t\tvalues.query = null;\n\t\t\t} else {\n\t\t\t\t// IMPORTANT: we must destroy the current message becase we don't need to send it next\n\t\t\t\t$.destroy();\n\t\t\t}\n\t\t};\n\n\t\tinstance.close = function() {\n\t\t\tfn = null;\n\t\t};\n\n\t\tinstance.configure = function() {\n\t\t\tif (config.title === \"\") {\n\t\t\t\tconfig.title = exports.name;\n\t\t\t}\n\t\t\tconfig.version = exports.version;\n\t\t};\n\n\t\tinstance.configure();\n\n\t};\n</script>\n<readme>\n\tRun a node and edges algorithm on a TypeRefinery database.\n</readme>\n\n<settings>\n\t<div class=\"padding\">\n\t\t<div data---=\"input__?.title__text\"><b>Title</b></div>\n\t\t<div data---=\"input__?.endpoint__required:1\" class=\"m\">Endpont</div>\n\t\t<div data---=\"input__?.algorithmrequirements__text:1\" class=\"m\">Requirements (space separated)</div>\n\t\t<div class=\"ui-input-label\">Algorithm:</div>\n\t\t<div data---=\"codemirror__?.algorithm__type:python;minheight:300;parent:auto;margin:60;tabs:true;trim:true\" class=\"m\"></div>\n\t</div>\n</settings>\n\n<style>\n\t.CLASS .padding { padding: 0 10px 10px; }\n\t.CLASS footer > div { margin: 10px; }\n\t.CLASS pre { font-size: 10px; margin: 0; padding: 5px; background-color: #F0F0F0; border-radius: var(--radius); }\n\t.CLASS button { width: 100%; height: 24px; border: 1px solid #E0E0E0; border-radius: var(--radius); color: #000; background-color: #F0F0F0; margin: 0; }\n\t.CLASS button:hover { background-color: #F8F8F8; }\n\t.CLASS button:active { background-color: #E0E0E0; }\n\t.CLASS .ui-objecttree { background-color: #f0f0f0; padding: 4px; }\n\t.CLASS .largetext { max-height: 100px; overflow-y: auto; }\n\n\t.ui-dark .CLASS button { border-color: #404040; color: #FFF; background-color: #222; }\n\t.ui-dark .CLASS button:hover { background-color: #303030; }\n\t.ui-dark .CLASS button:active { background-color: #404040; }\n\n\t.CLASS .output { text-align: right }\n</style>\n\n\n<body>\n\t<header>\n\t\t<i class=\"ICON\"></i><b class=\"monospace\" data-bind=\"CONFIG.title__text__empty\"></b>\n\t\t<div><small><i>NAME v<span data-bind=\"CONFIG.version__text__empty\"></span></i></small></div>\n\t</header>\n\t<!--div class=\"padding\">\n\t\t<button class=\"exec\">Edit</button>\n\t</div-->\n</body>\n\n\n<script>\n\n\tvar newNotebook = {\n\t\t\"name\": \"aaaa1.ipynb\",\n\t\t\"path\": \"aaaa1.ipynb\",\n\t\t\"content\": {\n\t\t\t\"cells\": [\n\t\t\t\t{\n\t\t\t\t\t\"cell_type\": \"code\",\n\t\t\t\t\t\"metadata\": {\n\t\t\t\t\t\t\"trusted\": true\n\t\t\t\t\t},\n\t\t\t\t\t\"outputs\": [],\n\t\t\t\t\t\"source\": \"\"\n\t\t\t\t}\n\t\t\t],\n\t\t\t\"metadata\": {\n\t\t\t\t\"kernelspec\": {\n\t\t\t\t\t\"display_name\": \"Python 3 (ipykernel)\",\n\t\t\t\t\t\"language\": \"python\",\n\t\t\t\t\t\"name\": \"python3\"\n\t\t\t\t},\n\t\t\t\t\"language_info\": {\n\t\t\t\t\t\"codemirror_mode\": {\n\t\t\t\t\t\t\"name\": \"ipython\",\n\t\t\t\t\t\t\"version\": 3\n\t\t\t\t\t},\n\t\t\t\t\t\"file_extension\": \".py\",\n\t\t\t\t\t\"mimetype\": \"text/x-python\",\n\t\t\t\t\t\"name\": \"python\",\n\t\t\t\t\t\"nbconvert_exporter\": \"python\",\n\t\t\t\t\t\"pygments_lexer\": \"ipython3\",\n\t\t\t\t\t\"version\": \"3.10.0\"\n\t\t\t\t}\n\t\t\t},\n\t\t\t\"nbformat\": 4,\n\t\t\t\"nbformat_minor\": 5\n\t\t},\n\t\t\"type\": \"notebook\"\n\t};\n\n\tTOUCH(function(exports, reinit) {\n\t\tif (!reinit) {\n\t\t\texports.element.on('click', 'button', function() {\n\t\t\t\tvar id = exports.config.jyputerid || '_blank';\n\t\t\t\tvar name = `${id}.ipynb`;\n\t\t\t\tvar host = \"https://jupyterlab.typerefinery.localhost:8101\";\n\t\t\t\t//var host = \"http://localhost:8888\";\n\t\t\t\tvar api_url =  `${host}/api/contents/${name}`;\n\t\t\t\tvar open_url =  `${host}/lab/tree/${name}`;\n\t\t\t\tvar createPayload = Object.assign({}, newNotebook);\n\t\t\t\tcreatePayload.name = name;\n\t\t\t\tcreatePayload.path = name;\n\t\t\t\tcreatePayload.content.cells[0].source = exports.config.algorithm;\n\t\t\t\tconsole.log(createPayload);\n\t\t\t\tconsole.log(JSON.stringify(createPayload));\n\t\t\t\t$.ajax({\n\t\t\t\t\turl: api_url,\n\t\t\t\t\ttype: 'PUT',\n\t\t\t\t\tdataType : \"json\",\n\t\t\t\t\tdata: JSON.stringify(createPayload),\n\t\t\t\t\tcontentType: \"application/json\",\n\t\t\t\t\tsuccess: function(data) {\n\t\t\t\t\t\tconsole.log(\"success\");\n\t\t\t\t\t\t//play with data\n\t\t\t\t\t\tconsole.log(data);\n\t\t\t\t\t\twindow.open(open_url,id);\n\t\t\t\t\t},\n\t\t\t\t\terror: function (xhr, ajaxOptions, thrownError) {\n\t\t\t\t\t\tconsole.log(\"error\");\n\t\t\t\t\t\tconsole.log(xhr.status);\n\t\t\t\t\t\tconsole.log(thrownError);\n\t\t\t\t\t},\n\t\t\t\t\tcomplete: function (xhr, textStatus) {\n\t\t\t\t\t\tconsole.log(\"complete\");\n\t\t\t\t\t\tconsole.log(xhr.status);\n\t\t\t\t\t\tconsole.log(textStatus);\n\t\t\t\t\t},\n\t\t\t\t\tstatusCode: {\n\t\t\t\t\t\t400: function() {\n\t\t\t\t\t\t\tconsole.log(\"statusCode\");\n\t\t\t\t\t\t\tconsole.log(\"bad request\");\n\t\t\t\t\t\t}\n\t\t\t\t\t}\n\t\t\t\t});\n  \t\t\t\tvar headers1 = {'ContentType': 'application/json'};\n\n\n\t\t\t});\n\t\t}\n\t});\n\n</script>",
+		"typerefinery_api_datastore_connection": "<script total>\n\n\texports.id = 'typerefinery_api_datastore_connection';\n\texports.name = 'API Datastore Connection';\n\texports.icon = 'fa fa-code';\n\texports.group = '@TypeRefinery';\n\texports.author = 'TypeRefinery.io';\n\texports.version = '3';\n\n\texports.config = { title: exports.name, version: exports.version, endpoint: 'http://127.0.0.1:8000/datastore/connection', connectionid:'defaultconnection' };\n\texports.inputs = [{ id: 'input', name: 'Input' }];\n\texports.outputs = [{ id: 'output', name: 'Output' }];\n\n\texports.meta = { settingswidth: 1200 };\n\n\texports.make = function(instance, config) {\n\t\tinstance.message = async function($) {\n\t\t\tvar connectionsList;\n\n\t\t\tvar inputData = $.data;\n\t\t\t// Getting all the connections from the store\n\t\t\tconst endpoint = config.endpoint;\n\t\t\tconst res = await fetch(endpoint);\n\t\t\tconst res_data = await res.json();\n\n\t\t\t// Getting connections details to display the dropdown list of all connections\n\t\t\tconnectionsList = res_data.map(el => ({id: el.connectionid, name: el.label + ' - ' + el.connectionid }));\n\n\t\t\t// Find the selected connection\n\t\t\tconst connection = res_data.find(el => el.connectionid === config.connectionid);\n\n\t\t\tif(connection) {\n\t\t\t\tinputData.connection = {\n\t\t\t\t\tdbhost: connection.host,\n\t\t\t\t\tdbport: connection.port,\n\t\t\t\t\tdbdatabase: connection.database,\n\t\t\t\t}\n\n\t\t\t\t// send the connection details as the output of this block\n\t\t\t\t$.send('output', inputData);\n\t\t\t\t$.destroy();\n\t\t\t}\n\t\t\t// Set the connections dropdown in the UI\n\t\t\tinstance.call = async function(data, answer) {\n\t\t\t\tanswer(connectionsList);\n\t\t\t};\n\t\t};\n\n\t\tinstance.configure = function() {\n\t\t\tif (config.title === \"\") {\n\t\t\t\tconfig.title = exports.name;\n\t\t\t}\n\t\t\tconfig.version = exports.version;\n\t\t};\n\n\t\tinstance.configure();\n\n\t};\n</script>\n\n<readme>\n\tGet list of connections from datastore endpoint.\n</readme>\n\n<settings>\n\t<div class=\"padding\">\n\t\t<div data---=\"input__?.title__text\"><b>Title</b></div>\n\t\t<div data---=\"input__?.endpoint__required:1\"><b>Endpoint</b></div>\n\t\t<div data---=\"input__?.connectionid__dirsource:%connectionidList;dirraw:1;placeholder:Choose a connection;dirempty:No connection\" class=\"m\"><b>Connection</b></div>\n\t</div>\n</settings>\n\n<script>\n\t// datastoreconnection is the name of your component in lower-case\n\tON('configure_typerefinery_api_datastore_connection', function(data) {\n\t\tdata.call(function(response) {\n\t\t\tSET('%connectionidList', response);\n\t\t});\n\t});\n</script>\n\n<body>\n\t<header>\n\t\t<i class=\"ICON\"></i><b class=\"monospace\" data-bind=\"CONFIG.title__text__empty\"></b>\n\t\t<div><small><i>NAME v<span data-bind=\"CONFIG.version__text__empty\"></span></i></small></div>\n\t</header>\n</body>",
+		"comment": "<script total>\n\texports.id = 'comment';\n\texports.name = 'Comment';\n\texports.icon = 'fa fa-comment-alt';\n\texports.author = 'Total.js';\n\texports.version = '1';\n\texports.config = { text: 'Comment' };\n\texports.meta = { settingswidth: 1100 };\n\n\texports.make = function(instance, config) {\n\t};\n\n</script>\n\n<settings>\n\t<div class=\"padding\">\n\t\t<div data---=\"codemirror__?.text__type:markdown;parent:auto;minheight:300;margin:65\"></div>\n\t\t<div class=\"help\">Supports Markdown</div>\n\t</div>\n</settings>\n\n<style>\n\t.CLASS { max-width: 500px !important; }\n\t.CLASS header button { margin-left: 10px; }\n\t.CLASS footer .markdown { padding: 10px; font-size: 12px; border-top: 0 !important; color: #000; }\n\t.ui-dark .CLASS footer .markdown { color: #F0F0F0; }\n</style>\n\n<body>\n\t<header>\n\t\t<button class=\"button\">Open in window</button>\n\t\t<i class=\"ICON\"></i>NAME\n\t</header>\n\t<footer data-bind=\"!CONFIG.text__html div:value.markdown(value, { element: el })\" class=\"markdown-small selectable\"><div class=\"markdown\"></div></footer>\n</body>\n\n<script>\n\n\tTOUCH(function(exports, reinit) {\n\t\tif (!reinit) {\n\t\t\texports.element.on('click', 'button', function() {\n\t\t\t\tFUNC.readme('Comment', exports.config.text || '');\n\t\t\t});\n\t\t}\n\t});\n\n</script>",
+		"cen7m07a49": "<script total>\n\n\texports.name = 'Flashback';\n\texports.group = 'Common';\n\texports.version = '3';\n\texports.icon = 'fa fa-history';\n\texports.author = 'Peter Širka & Jakub Urban';\n\texports.inputs = [{ id: 'input', name: 'Input' }];\n\texports.outputs = [{ id: 'output', name: 'Output' }];\n\n\texports.make = function(instance, config) {\n\n\t\tvar empty = true;\n\t\tvar status = { empty: true };\n\t\tvar timeout = null;\n\n\t\tinstance.message = function($) {\n\t\t\tstatus.empty = false;\n\t\t\tstatus.data = CLONE($.data);\n\t\t\tstatus.repo = CLONE($.repo);\n\n\t\t\t$.send('output');\n\n\t\t\tif (timeout) {\n\t\t\t\tclearTimeout(timeout);\n\t\t\t\ttimeout = null;\n\t\t\t}\n\n\t\t\ttimeout = setTimeout(() => {\n\t\t\t\ttimeout = null;\n\t\t\t\tinstance.status(status);\n\t\t\t}, 500);\n\n\t\t};\n\n\t\tinstance.trigger = function(msg) {\n\t\t\tif (msg.type === 'clear') {\n\t\t\t\tstatus.data = null;\n\t\t\t\tstatus.repo = null;\n\t\t\t\tstatus.empty = true;\n\t\t\t\tinstance.status(status);\n\t\t\t} else {\n\t\t\t\tvar message = instance.newmessage(status.data);\n\t\t\t\tmessage.repo = status.repo;\n\t\t\t\tmessage.send('output');\n\t\t\t}\n\t\t};\n\n\t\tinstance.status(status);\n\n\t};\n\n</script>\n\n<readme>\nThe component remembers the data for repeating the action.\n</readme>\n\n<style>\n\t.CLASS { max-width: 250px; min-width: 150px; }\n\t.CLASS .padding { padding: 0 10px 10px; }\n\t.CLASS pre { font-size: 10px; margin: 0; padding: 5px; background-color: #F0F0F0; border-radius: var(--radius); }\n\t.CLASS footer > div { margin: 10px; }\n\t.CLASS .readme { position: absolute; position: absolute; font-size: 11px; right: 5px; margin-top: -5px; cursor: pointer; }\n\t.CLASS .noscrollbar { max-height: 250px; }\n\t.ui-dark .CLASS pre { background-color: #404040; tab-size: 2; }\n</style>\n\n<body>\n\t<header>\n\t\t<i class=\"ICON\"></i>NAME\n\t\t<button class=\"exec button hidden\" data-exec=\"FUNC.fflashback_clear\" data-bind=\"STATUS.empty__hide\">Clear</button>\n\t</header>\n\t<div class=\"padding\">\n\t\t<button class=\"exec button\" data-exec=\"FUNC.trigger\" data-bind=\"STATUS.empty__disabled\" disabled>Repeat</button>\n\t</div>\n\t<footer>\n\t\t<div data-bind=\"!STATUS__html pre:Thelpers.jsonformat(JSON.stringify(value.data, null, '\\t'))__hide:value.empty\" class=\"hidden selectable\">\n\t\t\t<span class=\"readme\" title=\"Open in new window\"><i class=\"far fa-window-restore\"></i></span>\n\t\t\t<div class=\"noscrollbar\">\n\t\t\t\t<pre class=\"json\"></pre>\n\t\t\t</div>\n\t\t</div>\n\t</footer>\n</body>\n\n<script>\n\n\tFUNC.fflashback_clear = function(el) {\n\t\tSETTER('websocket/send', { TYPE: 'trigger', id: el.attrd2('id'), type: 'clear' });\n\t};\n\n\tTOUCH(function(exports, reinit) {\n\n\t\tif (reinit)\n\t\t\treturn;\n\n\t\tvar laststatus;\n\n\t\texports.status = function(status, isinit) {\n\t\t\tlaststatus = status;\n\t\t};\n\n\t\texports.element.on('click', '.readme', function() {\n\t\t\tFUNC.readme('Flashback', '```json\\n' + JSON.stringify(laststatus, null, '  ') + '\\n```');\n\t\t});\n\n\t});\n</script>"
+	},
+	"design": {
+		"il7fy4dli": {
+			"id": "il7fy4dli",
+			"config": {
+				"title": "Print JSON",
+				"version": "2",
+				"repo": false,
+				"data": true
+			},
+			"x": 668.0000305175781,
+			"y": 395.00000762939453,
+			"component": "c5aria8f8f",
+			"connections": {},
+			"template": {
+				"icon": "fa fa-print",
+				"group": "@TypeRefinery",
+				"name": "Print JSON",
+				"inputs": [
+					{
+						"id": "input",
+						"name": "Input"
+					}
+				]
+			}
+		},
+		"il7g116vw": {
+			"id": "il7g116vw",
+			"config": {
+				"title": "Print JSON",
+				"version": "2",
+				"repo": false,
+				"data": true
+			},
+			"x": 1130.0000305175781,
+			"y": 429.00000762939453,
+			"component": "c5aria8f8f",
+			"connections": {},
+			"template": {
+				"icon": "fa fa-print",
+				"group": "@TypeRefinery",
+				"name": "Print JSON",
+				"inputs": [
+					{
+						"id": "input",
+						"name": "Input"
+					}
+				]
+			}
+		},
+		"il7g1v8q2": {
+			"id": "il7g1v8q2",
+			"config": {},
+			"x": 970.0000305175781,
+			"y": 260,
+			"component": "subsrcfyn2ecf44Xsvg_insert",
+			"connections": {},
+			"template": {
+				"type": "sub",
+				"icon": "fas fa-satellite-dish",
+				"group": "Subscribers",
+				"name": "TMS Message Service",
+				"inputs": [
+					{
+						"id": "subscribe",
+						"name": "Input"
+					}
+				]
+			}
+		},
+		"il7g2g5w1": {
+			"id": "il7g2g5w1",
+			"config": {
+				"timeout": 60000
+			},
+			"x": 1236.0000305175781,
+			"y": 151,
+			"component": "calsrcfyn2ecf44Xsvg_query",
+			"connections": {},
+			"template": {
+				"type": "call",
+				"icon": "fa fa-plug",
+				"group": "Calls",
+				"name": "TMS Message Service",
+				"inputs": [
+					{
+						"id": "input",
+						"name": "Input"
+					}
+				],
+				"outputs": [
+					{
+						"id": "output",
+						"name": "Output"
+					},
+					{
+						"id": "error",
+						"name": "Error"
+					}
+				]
+			}
+		},
+		"il7g2g96i": {
+			"id": "il7g2g96i",
+			"config": {},
+			"x": 956,
+			"y": 166,
+			"component": "pubsrcfyn2ecf44Xsvg_insert",
+			"connections": {
+				"publish": [
+					{
+						"id": "il7g2g5w1",
+						"index": "input"
+					}
+				]
+			},
+			"template": {
+				"type": "pub",
+				"icon": "fas fa-broadcast-tower",
+				"group": "Publishers",
+				"name": "TMS Message Service",
+				"outputs": [
+					{
+						"id": "publish",
+						"name": "Output"
+					}
+				]
+			}
+		},
+		"iljdd9wiv": {
+			"id": "iljdd9wiv",
+			"config": {
+				"title": "Run (node & edges)",
+				"version": "1",
+				"algorithm": "from typedb.client import *\nfrom loguru import logger as Logger\nfrom posixpath import basename\nimport json\nimport copy\nimport os\nimport sys\nimport argparse\nfrom datetime import datetime\ngquery = \"match $a isa log, has logName 'L1'; \"\ngquery += \"$b isa event, has eventName $c;\"\ngquery += \" $d (owner: $a, item: $b) isa trace, \"\ngquery += \" has traceId $t, has index $f; offset 0; limit 100;\"#  get; \"\ngroup_raw = [{\n    \"leaves\": [\n                    0\n                ],\n                \"colour_list\": \"Greys\",\n                \"level\": 7,\n                \"label\": \"hidden\"\n}]\n# function to collect all of the data out of the iterator\n# with read transaction object to use asRemote mode\ndef collect_answers(answer_iterator, r_tx, logger: Logger):\n    logger.info(f'into collect answers, iterator -> {answer_iterator}')\n    res = []\n    layers = []\n    layer = []\n    for answer in answer_iterator:\n        dict_answer = answer.map()\n        #logger.info(f'dict answer is {dict_answer}')\n        for key, thing in dict_answer.items():\n            logger.info(f'key, things is {key}, {thing}')\n            # pull entity data\n            if thing.is_entity():\n                ent = {}\n                ent['type'] = 'entity'\n                ent['symbol'] = key\n                ent['G_id'] = thing.get_iid()\n                ent['G_name'] = thing.get_type().get_label().name()\n                logger.info((f'entity name is {ent[\"G_name\"]}'))\n                logger.info((f'thing value is {thing}'))\n                att_obj = thing.as_remote(r_tx).get_has()\n                att = []\n                for a in att_obj:\n                    att.append(a.get_iid())\n                ent['has'] = att\n                res.append(ent)\n                layer.append(ent)\n                logger.info(f'ent -> {ent}')\n            # pull attribute data\n            elif thing.is_attribute():\n                att = {}\n                att['type'] = 'attribute'\n                att['symbol'] = key\n                att['G_id'] = thing.get_iid()\n                att['G_name'] = thing.get_type().get_label().name()\n                att['value'] = thing.get_value()\n                att['datatype'] = thing.get_type().get_value_type().name\n                att_obj = thing.as_remote(r_tx).get_has()\n                attrib = []\n                for a in att_obj:\n                    attrib.append(a.get_iid())\n                att['has'] = attrib\n                res.append(att)\n                layer.append(att)\n                logger.info(f'att -> {att}')\n            # pull relation data\n            elif thing.is_relation():\n                rel = {}\n                rel['type'] = 'relation'\n                rel['symbol'] = key\n                rel['G_id'] = thing.get_iid()\n                rel['G_name'] = thing.get_type().get_label().name()\n                att_obj = thing.as_remote(r_tx).get_has()\n                att = []\n                for a in att_obj:\n                    att.append(a.get_iid())\n                rel['has'] = att\n                links = thing.as_remote(r_tx).get_players_by_role_type()\n                logger.info(f' links are -> {links}')\n                edges = {}\n                for edge_key, edge_thing in links.items():\n                    logger.info(f' edge key is -> {edge_key}')\n                    logger.info(f' edge_thing is -> {list(edge_thing)}')\n                    edges[edge_key.get_label().name()] = [e.get_iid() for e in list(edge_thing)]\n                rel['edges'] = edges\n                res.append(rel)\n                layer.append(rel)\n                logger.info(f'rel -> {rel}')\n            # else log out error condition\n            else:\n                logger.info(f'Error key is {key}, thing is {thing}')\n        layers.append(layer)\n    return res\n# function to filter the links, so that there are none pointing to data not included\ndef filter_links(reduced_at, reduced_en, re):\n    #first build list of all node id's\n    att_list = [e['G_id'] for e in reduced_at]\n    ent_list = [e['G_id'] for e in reduced_en]\n    rel_list = [e['G_id'] for e in re]\n    node_list = att_list + ent_list + rel_list\n    #check each input list to delete those not in node_list\n    for item in reduced_en:\n        for link in item['has']:\n            if link not in node_list:\n                item['has'].remove(link)\n    for item in re:\n        for link in item['has']:\n            if link not in node_list:\n                item['has'].remove(link)\n    return reduced_at, reduced_en, re\n# function to convert the list of results into nodes and edges\ndef convert_res_to_graph(res, logger: Logger):\n    edges = []\n    nodes = []\n    en = [e for e in res if e['type'] == 'entity']\n    at = [e for e in res if e['type'] == 'attribute']\n    re = [e for e in res if e['type'] == 'relation']\n    # remove duplicates from attributes\n    reduced_at = [v for i,v in enumerate(at) if v not in at[i+1:] ]\n    reduced_en = [v for i,v in enumerate(en) if v not in en[i+1:] ]\n    # find number of types\n    G_types = {}\n    G_types['entity'] = list(set([v['G_name'] for v in reduced_en]))\n    G_types['attribute'] = list(set([v['G_name'] for v in reduced_at]))\n    G_types['relation'] = list(set([v['G_name'] for v in re]))\n    #filter out has links due to variables given thing, or attributes not expressed in the original query\n    reduced_at, reduced_en, re = filter_links(reduced_at, reduced_en, re)\n    # build edges list for attributes\n    for e in reduced_en:\n        own = e['has']\n        source = e['G_id']\n        name = 'has'\n        for o in own:\n            edge = {}\n            edge['G_target'] = o\n            edge['role'] = name\n            edge['G_source'] = source\n            edges.append(edge)\n    for a in reduced_at:\n        own = a['has']\n        source = a['G_id']\n        name = 'has'\n        for o in own:\n            edge = {}\n            edge['G_target'] = o\n            edge['role'] = name\n            edge['G_source'] = source\n            edges.append(edge)\n    for r in re:\n        own = r['has']\n        source = r['G_id']\n        name = 'has'\n        for o in own:\n            edge = {}\n            edge['G_target'] = o\n            edge['role'] = name\n            edge['G_source'] = source\n            edges.append(edge)\n    # add edges from relations\n    for r in re:\n        source = r['G_id']\n        edge_dict = r['edges']\n        for k, e in edge_dict.items():\n            edge = {}\n            edge['G_target'] = e[0]\n            edge['role'] = k\n            edge['G_source'] = source\n            edges.append(edge)\n    # add all nodes together\n    nodes = reduced_en + reduced_at + re\n    for node in nodes:\n        node['dtype'] = 'actual'\n    return nodes, edges, G_types\ndef get_node_id(nodes, G_id):\n    for index, element in enumerate(nodes):\n        if element['G_id'] == G_id:\n            return index;\ndef convert_res_to_cola(nodes, edges, G_types, logger: Logger):\n    # convert edges to id\n    for edge in edges:\n        edge['target'] = get_node_id(nodes, edge['G_target'])\n        edge['source'] = get_node_id(nodes, edge['G_source'])\n    for index, element in enumerate(nodes):\n        element['id'] = index\n    # find actual attributes in edges\n    att_list = []\n    for index, node in enumerate(nodes):\n        if node['type'] == 'attribute':\n            att_list.append(index)\n    for edge in edges:\n        edge['is_act_Attr'] = False\n        for att in att_list:\n            if edge['target'] == att or edge['source'] == att:\n                edge['is_act_Attr'] = True\n                break\n    temp_edges = copy.deepcopy(edges)\n    for t_edge in temp_edges:\n        target_node = nodes[t_edge['target']]\n        t_edge['target_name'] = target_node['G_name']\n        source_node = nodes[t_edge['source']]\n        t_edge['source_name'] = source_node['G_name']\n        if t_edge['role'] == 'has' or source_node['type'] == 'relation':\n            t_edge['direction'] = 'down'\n        else:\n            t_edge['direction'] = 'up'\n        t_edge.pop('target')\n        t_edge.pop('source')\n        t_edge.pop('G_target')\n        t_edge.pop('G_source')\n        t_edge.pop('is_act_Attr')\n    myUniqueSet = [dict(s) for s in set(frozenset(myObject.items()) for myObject in temp_edges)]\n    logger.info(f\"myUniqueSet:, {myUniqueSet}\")\n    G_types['schema'] = myUniqueSet\n    logger.info('==========================================================================================')\n    logger.info('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')\n    logger.info(f'g-types is -> {G_types}')\n    logger.info('==========================================================================================')\n    logger.info('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')\n    logger.info(f'nodes is ->  {nodes}')\n    logger.info('==========================================================================================')\n    logger.info('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')\n    logger.info(f'edges is -> {edges}')\n    logger.info('==========================================================================================')\n    logger.info('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')\n    colaGraph = {}\n    basic = {}\n    basic['nodes'] = nodes\n    basic['links'] = edges\n    basic['G_types'] = G_types\n    basic['groups'] = []\n    basic['constraints'] = []\n    colaGraph['basic'] = basic\n    colaGraph['grouped'] = {}\n    return colaGraph\n@Logger.catch\ndef get_data(dbhost, dbport, dbdatabase, dbquery, logger: Logger):\n    typeDBConnect = f'{dbhost}:{dbport}'\n    with TypeDB.core_client(typeDBConnect) as client:\n        with client.session(dbdatabase, SessionType.DATA) as session:\n            with session.transaction(TransactionType.READ) as read_transaction:\n                answer_iterator = read_transaction.query().match(dbquery)\n                res = collect_answers(answer_iterator, read_transaction, logger)\n                nodes, edges, G_types = convert_res_to_graph(res, logger)\n                colaGraph = convert_res_to_cola(nodes, edges, G_types, logger)\n    ## save file for reference\n    # with open(\"g_to_webcola.json\", \"w\") as outfile:\n    #     json.dump(colaGraph, outfile)\n    return colaGraph\n@Logger.catch\ndef main(dbhost, dbport, dbdatabase, dbquery, outputfile, logger: Logger):\n  # setup logger for execution\n  colaGraph = get_data(dbhost, dbport, dbdatabase, dbquery, logger)\n  basic = colaGraph['basic']\n  with open(outputfile, \"w\") as outfile:\n      json.dump(colaGraph, outfile)\n  logger.info('================ Schema ==================')\n  logger.info(f\"{basic['G_types']}\")",
+				"algorithmrequirements": "argparse loguru",
+				"endpoint": "http://127.0.0.1:8000/algorithm"
+			},
+			"x": 440.0000305175781,
+			"y": 278,
+			"component": "typerefinery_runnodeedges",
+			"connections": {
+				"output": [
+					{
+						"id": "il7fy4dli",
+						"index": "input"
+					},
+					{
+						"id": "iljddkxge",
+						"index": "input"
+					},
+					{
+						"id": "iljdfys1h",
+						"index": "graph_data"
+					}
+				]
+			},
+			"template": {
+				"icon": "fa fa-code",
+				"group": "@TypeRefinery",
+				"name": "Run (node & edges)",
+				"inputs": [
+					{
+						"id": "connection",
+						"name": "Connection"
+					},
+					{
+						"id": "query",
+						"name": "TQL Query"
+					}
+				],
+				"outputs": [
+					{
+						"id": "output",
+						"name": "Output"
+					}
+				]
+			}
+		},
+		"iljddjt9d": {
+			"id": "iljddjt9d",
+			"config": {
+				"title": "API Datastore Query",
+				"version": "1",
+				"endpoint": "http://127.0.0.1:8000/datastore/query",
+				"queryid": "pdqSm6ar1-pf45_query"
+			},
+			"x": 218,
+			"y": 255.00000762939453,
+			"component": "typerefinery_api_datastore_query",
+			"connections": {
+				"output": [
+					{
+						"id": "iljdd9wiv",
+						"index": "query"
+					}
+				]
+			},
+			"template": {
+				"icon": "fa fa-code",
+				"group": "@TypeRefinery",
+				"name": "API Datastore Query",
+				"inputs": [
+					{
+						"id": "input",
+						"name": "Input"
+					}
+				],
+				"outputs": [
+					{
+						"id": "output",
+						"name": "Output"
+					}
+				]
+			}
+		},
+		"iljddkxge": {
+			"id": "iljddkxge",
+			"config": {
+				"title": "API Datastore Theme",
+				"version": "1",
+				"endpoint": "http://127.0.0.1:8000/datastore/theme",
+				"themeid": "pdqSm6ar1-pf45_theme"
+			},
+			"x": 629.0000305175781,
+			"y": 66,
+			"component": "typerefinery_api_datastore_theme",
+			"connections": {
+				"output": [
+					{
+						"id": "iljdfys1h",
+						"index": "theme"
+					}
+				]
+			},
+			"template": {
+				"icon": "fa fa-code",
+				"group": "@TypeRefinery",
+				"name": "API Datastore Theme",
+				"inputs": [
+					{
+						"id": "input",
+						"name": "Input"
+					}
+				],
+				"outputs": [
+					{
+						"id": "output",
+						"name": "Output"
+					}
+				]
+			}
+		},
+		"iljdfys1h": {
+			"id": "iljdfys1h",
+			"config": {
+				"title": "API WebCola Viz",
+				"version": "2",
+				"endpointcreatesvg": "http://127.0.0.1:8000/createSvg",
+				"endpointproject": "http://127.0.0.1:8000/datastore/project",
+				"dependenciesjs": "https://d3js.org/d3.v4.js https://cdn.jsdelivr.net/npm/webcola@3.4.0/WebCola/cola.js",
+				"code": "var colors = [\n  {\n    name: \"Greys\",\n    colors: [\n      \"#f0f0f0\",\n      \"#d9d9d9\",\n      \"#bdbdbd\",\n      \"#969696\",\n      \"#737373\",\n      \"#525252\",\n      \"#252525\",\n      \"#000000\",\n    ],\n  },\n  {\n    name: \"Reds\",\n    colors: [\n      \"#fee0d2\",\n      \"#fcbba1\",\n      \"#fc9272\",\n      \"#fb6a4a\",\n      \"#ef3b2c\",\n      \"#cb181d\",\n      \"#a50f15\",\n      \"#67000d\",\n    ],\n  },\n  {\n    name: \"Oranges\",\n    colors: [\n      \"#fee6ce\",\n      \"#fdd0a2\",\n      \"#fdae6b\",\n      \"#fd8d3c\",\n      \"#f16913\",\n      \"#d94801\",\n      \"#a63603\",\n      \"#7f2704\",\n    ],\n  },\n  {\n    name: \"Greens\",\n    colors: [\n      \"#e5f5e0\",\n      \"#c7e9c0\",\n      \"#a1d99b\",\n      \"#74c476\",\n      \"#41ab5d\",\n      \"#238b45\",\n      \"#006d2c\",\n      \"#00441b\",\n    ],\n  },\n  {\n    name: \"Blues\",\n    colors: [\n      \"#deebf7\",\n      \"#c6dbef\",\n      \"#9ecae1\",\n      \"#6baed6\",\n      \"#4292c6\",\n      \"#2171b5\",\n      \"#08519c\",\n      \"#08306b\",\n    ],\n  },\n  {\n    name: \"Purples\",\n    colors: [\n      \"#efedf5\",\n      \"#dadaeb\",\n      \"#bcbddc\",\n      \"#9e9ac8\",\n      \"#807dba\",\n      \"#6a51a3\",\n      \"#54278f\",\n      \"#3f007d\",\n    ],\n  },\n  {\n    name: \"Orange-Red\",\n    colors: [\n      \"#fee8c8\",\n      \"#fdd49e\",\n      \"#fdbb84\",\n      \"#fc8d59\",\n      \"#ef6548\",\n      \"#d7301f\",\n      \"#b30000\",\n      \"#7f0000\",\n    ],\n  },\n  {\n    name: \"Red-Purples\",\n    colors: [\n      \"#fde0dd\",\n      \"#fcc5c0\",\n      \"#fa9fb5\",\n      \"#f768a1\",\n      \"#dd3497\",\n      \"#ae017e\",\n      \"#7a0177\",\n      \"#49006a\",\n    ],\n  },\n  {\n    name: \"Blue-Green\",\n    colors: [\n      \"#e5f5f9\",\n      \"#ccece6\",\n      \"#99d8c9\",\n      \"#66c2a4\",\n      \"#41ae76\",\n      \"#238b45\",\n      \"#006d2c\",\n      \"#00441b\",\n    ],\n  },\n  {\n    name: \"Yellows\",\n    colors: [\n      \"#fffee5\",\n      \"#fffcbd\",\n      \"#fff98b\",\n      \"#fff533\",\n      \"#eedf00\",\n      \"#dad000\",\n      \"#c0b700\",\n      \"#b0a800\",\n    ],\n  },\n];\n\nvar theme = THEME;\n\nvar svg = d3.select(\"svg\")\n  .attr(\"width\", 900)\n  .attr(\"height\", 500)\n  .call(\n    d3.zoom().on(\"zoom\", function () {\n      svg.attr(\"transform\", d3.event.transform);\n    })\n  )\n  .append(\"g\");\n\nconst height = 500;\nconst width = 600;\n\n// setup the theme color\n\nconst textPadding = 8;\nconst corner = 5;\nconst grp_corner = 8;\nconst pad = 5;\nvar ent_colour = \"#03396c\";\nvar ent_t_colour = \"white\";\nvar att_colour = \"#ff4d00\";\nvar att_t_colour = \"white\";\nvar shad_colour = \"#ff4d00\";\nvar shad_t_colour = \"white\";\nvar rel_colour = \"#007777\";\nvar rel_t_colour = \"black\";\n\nlet colours = colors;\n// load the colours from the theme\nent_colour = colors.find((colour) => colour.name == theme.entity.colorlist)[\n  \"colors\"\n][theme.entity.cindex];\nent_t_colour = colors.find((colour) => colour.name == theme.entity.tcolorlist)[\n  \"colors\"\n][theme.entity.tindex];\natt_colour = colors.find((colour) => colour.name == theme.attribute.colorlist)[\n  \"colors\"\n][theme.attribute.cindex];\natt_t_colour = colors.find(\n  (colour) => colour.name == theme.attribute.tcolorlist\n)[\"colors\"][theme.attribute.tindex];\nshad_colour = colors.find((colour) => colour.name == theme.shadow.colorlist)[\n  \"colors\"\n][theme.shadow.cindex];\nshad_t_colour = colors.find((colour) => colour.name == theme.shadow.tcolorlist)[\n  \"colors\"\n][theme.shadow.tindex];\nrel_colour = colors.find((colour) => colour.name == theme.relation.colorlist)[\n  \"colors\"\n][theme.relation.cindex];\nrel_t_colour = colors.find(\n  (colour) => colour.name == theme.relation.tcolorlist\n)[\"colors\"][theme.relation.tindex];\n\nvar cola = cola.d3adaptor(d3).size([width, height]);\n\n// graph.json\nvar Graph_Data = GRAPH_DATA;\n\ndata = Graph_Data.basic;\ncola\n  .nodes(data.nodes)\n  .links(data.links)\n  .groups(data.groups)\n  .linkDistance(100)\n  .avoidOverlaps(true)\n  .handleDisconnected(false)\n  .start(30);\n\nvar group = svg\n  .selectAll(\".group\")\n  .data(data.groups)\n  .enter()\n  .append(\"rect\")\n  .attr(\"rx\", grp_corner)\n  .attr(\"ry\", grp_corner)\n  .attr(\"class\", \"group\")\n  .style(\"fill\", function (d, i) {\n    return colours.find(\n      (colour) => colour.name == d.colour_list\n    )[\"colors\"][d.level];\n  })\n  .attr(\"stroke-width\", 1)\n  .attr(\"stroke\", function (d, i) {\n    return colours.find((colour) => colour.name == d.colour_list)[\"colors\"][7];\n  })\n  .call(cola.drag);\n\ngroup.append(\"title\").text(function (d) {\n  return d.label;\n});\n\nvar link = svg\n  .selectAll(\".link\")\n  .data(data.links)\n  .enter()\n  .append(\"line\")\n  .attr(\"class\", \"link\")\n  .style(\"stroke-width\", \"1px\")\n  .attr(\"stroke\", \"black\");\n\nvar node = svg\n  .selectAll(\".node\")\n  .data(data.nodes)\n  .enter()\n  .append(\"rect\")\n  .attr(\"class\", \"node\")\n  .attr(\"class\", (d) => d.type)\n  .attr(\"class\", (d) => d.G_name)\n  .attr(\"id\", (d) => d.G_id);\n\nvar label = svg\n  .selectAll(\".label\")\n  .data(data.nodes)\n  .enter()\n  .append(\"text\")\n  .attr(\"class\", \"label\")\n  .text((d) =>\n    d.type == \"attribute\" ? d.G_name + \": \" + d.value : d.G_name + \": \" + d.G_id\n  )\n  .attr(\"id\", (d) => \"heading-\" + d.G_id)\n  .style(\"font-size\", 10)\n  .style(\"text-anchor\", \"middle\")\n  .style(\"color\", (d) => text_colour(d))\n  .style(\"fill\", (d) => text_colour(d))\n  .style(\"pointer-events\", \"none\")\n  .call(cola.drag);\n\n// setup heading colours for attribute, entity and relation\nfunction text_colour(d) {\n  let colour = \"black\";\n  switch (d.type) {\n    case \"attribute\":\n      if (d.dtype == \"actual\") {\n        colour = att_t_colour;\n      } else {\n        colour = shad_t_colour;\n      }\n      break;\n    case \"entity\":\n      colour = ent_t_colour;\n      break;\n    case \"relation\":\n      colour = rel_t_colour;\n      break;\n    default:\n      colour = \"black\";\n      break;\n  }\n  return colour;\n}\n\nnode\n  .attr(\"width\", (d) => nodeWidth(d))\n  .attr(\"height\", (d) => d.height)\n  .attr(\"rx\", (d) => d.corner)\n  .attr(\"ry\", (d) => d.corner)\n  .attr(\"x\", (d) => d.x)\n  .attr(\"y\", (d) => d.y)\n  .attr(\"class\", (d) => d.G_name)\n  .style(\"fill\", (d) => d.colour)\n  .on(\"click\", function (d) {\n    d.fixed = true;\n  })\n  .call(cola.drag);\n\n// function to set dimensions and colours for shapes\nfunction nodeWidth(d) {\n  let headingid = \"#heading-\" + d.G_id;\n  let headingbbox = d3.select(headingid).node().getBBox();\n\n  d.width = d3.max([5, headingbbox.width]) + textPadding * 2;\n  d.height = headingbbox.height + textPadding * 2;\n\n  // attributes and entities rounded rectangle, relation is circle\n  switch (d.type) {\n    case \"attribute\":\n      d.corner = corner;\n      d.colour = att_colour;\n      d.x = headingbbox.x - textPadding;\n      d.y = headingbbox.y - textPadding;\n      if (d.dtype === \"shadow\") {\n        d.colour = shad_colour;\n      } else {\n        d.colour = att_colour;\n      }\n      break;\n\n    case \"entity\":\n      d.corner = corner;\n      d.colour = ent_colour;\n      d.x = headingbbox.x - textPadding;\n      d.y = headingbbox.y - textPadding;\n      break;\n\n    case \"relation\":\n      d.width = 16;\n      d.height = 16;\n      d.corner = 8;\n      d.colour = rel_colour;\n      d.x = headingbbox.x + headingbbox.width / 2 - d.width / 2;\n      d.y = headingbbox.y + d.height / 2;\n      break;\n\n    default:\n      break;\n  }\n  return d.width;\n}\n\ncola.on(\"tick\", function () {\n  link\n    .attr(\"x1\", function (d) {\n      return d.source.x;\n    })\n    .attr(\"y1\", function (d) {\n      return d.source.y;\n    })\n    .attr(\"x2\", function (d) {\n      return d.target.x;\n    })\n    .attr(\"y2\", function (d) {\n      return d.target.y;\n    });\n\n  node\n    .attr(\"x\", function (d) {\n      return d.x - d.width / 2;\n    })\n    .attr(\"y\", function (d) {\n      return d.y - d.height / 2;\n    });\n\n  group\n    .attr(\"x\", function (d) {\n      return d.bounds.x - pad;\n    })\n    .attr(\"y\", function (d) {\n      return d.bounds.y - pad;\n    })\n    .attr(\"width\", function (d) {\n      return d.bounds.width() + 2 * pad;\n    })\n    .attr(\"height\", function (d) {\n      return d.bounds.height() + 2 * pad;\n    });\n\n  label\n    .attr(\"x\", function (d) {\n      return d.x;\n    })\n    .attr(\"y\", function (d) {\n      var h = this.getBBox().height;\n      return d.y + h / 4;\n    });\n});"
+			},
+			"x": 743.0000305175781,
+			"y": 250,
+			"component": "typerefinery_api_createsvg_webcolaviz",
+			"connections": {
+				"output": [
+					{
+						"id": "il7g1v8q2",
+						"index": "subscribe"
+					},
+					{
+						"id": "il7g116vw",
+						"index": "input"
+					}
+				]
+			},
+			"template": {
+				"icon": "fa fa-code",
+				"group": "@TypeRefinery",
+				"name": "API WebCola Viz",
+				"inputs": [
+					{
+						"id": "graph_data",
+						"name": "DATA"
+					},
+					{
+						"id": "theme",
+						"name": "Theme"
+					}
+				],
+				"outputs": [
+					{
+						"id": "output",
+						"name": "Output"
+					}
+				]
+			}
+		},
+		"iljdg6eym": {
+			"id": "iljdg6eym",
+			"config": {
+				"title": "Send Data",
+				"version": "3",
+				"random": true,
+				"type": "object",
+				"data": "",
+				"restart": false
+			},
+			"x": 15,
+			"y": 106.00000762939453,
+			"component": "typerefinery_senddata",
+			"connections": {
+				"output": [
+					{
+						"id": "iljddjt9d",
+						"index": "input"
+					}
+				]
+			},
+			"template": {
+				"icon": "fa fa-bullhorn",
+				"group": "@TypeRefinery",
+				"name": "Send Data",
+				"inputs": [
+					{
+						"id": "input",
+						"name": "Input"
+					}
+				],
+				"outputs": [
+					{
+						"id": "output",
+						"name": "Trigger"
+					}
+				]
+			}
+		},
+		"ilk2erogh": {
+			"id": "ilk2erogh",
+			"config": {
+				"title": "Python API Block1",
+				"version": "1",
+				"algorithm": "",
+				"algorithmrequirements": "argparse\nloguru",
+				"endpoint": "http://127.0.0.1:8000/algorithm"
+			},
+			"x": 909.0000305175781,
+			"y": 470,
+			"component": "typerefinery_pythonapi1",
+			"connections": {},
+			"template": {
+				"icon": "fa fa-code",
+				"group": "@TypeRefinery",
+				"name": "Python API Block1",
+				"inputs": [
+					{
+						"id": "connection",
+						"name": "Connection"
+					}
+				],
+				"outputs": [
+					{
+						"id": "output",
+						"name": "Output"
+					}
+				]
+			}
+		},
+		"ill23etsf": {
+			"id": "ill23etsf",
+			"config": {
+				"title": "Send Data",
+				"version": "3",
+				"random": false,
+				"type": "json",
+				"data": "{\n\"url\": \"https://raw.githubusercontent.com/os-threat/Stix-ORM/main/test/data/threat_reports/poisonivy.json\"\n}",
+				"restart": false
+			},
+			"x": 45.965911865234375,
+			"y": 710.9847869873047,
+			"component": "typerefinery_senddata",
+			"connections": {
+				"output": [
+					{
+						"id": "ilmorzm4e",
+						"index": "input"
+					}
+				]
+			},
+			"template": {
+				"icon": "fa fa-bullhorn",
+				"group": "@TypeRefinery",
+				"name": "Send Data",
+				"inputs": [
+					{
+						"id": "input",
+						"name": "Input"
+					}
+				],
+				"outputs": [
+					{
+						"id": "output",
+						"name": "Trigger"
+					}
+				]
+			}
+		},
+		"illg4s0a2": {
+			"id": "illg4s0a2",
+			"config": {
+				"title": "Stix-ORM Get Object",
+				"version": "1",
+				"algorithm": "##############################################################################\n# Title: Get Object\n# Author: OS-Threat\n# Organisation Repo: https://github.com/typerefinery-ai/brett_blocks\n# Contact Email: denis@cloudaccelerator.co\n# Date: 07/08/2023\n#\n# Description: This script is designed to take in a Stix Object ID\n#       and return a Stix object\n#\n# This code is licensed under the terms of the BSD.\n##############################################################################\n\nfrom typedb.client import *\nfrom loguru import logger as Logger\nfrom stixorm.module.typedb import TypeDBSource\nfrom stixorm.module.authorise import import_type_factory\nfrom posixpath import basename\nimport json\nimport copy\nimport os\nimport sys\nimport argparse\nfrom stixorm.module.orm.export_object import convert_ans_to_stix\nfrom stixorm.module.typedb import get_embedded_match\nfrom stixorm.module.typedb_lib.queries import delete_database, match_query\n\nimport logging\nlogging.basicConfig(level=logging.DEBUG, format='[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s')\nlogger = logging.getLogger(__name__)\n\nimport_type = import_type_factory.get_all_imports()\n\nconnection = {\n    \"uri\": \"localhost\",\n    \"port\": \"8729\",\n    \"database\": \"typerefinery\",\n    \"user\": None,\n    \"password\": None\n}\nreport_id = \"report--f2b63e80-b523-4747-a069-35c002c690db\"\n\n\ndef __retrieve_stix_dict(stix_id: str):\n    logger.debug(f'__retrieve_stix_object: {stix_id}')\n    obj_var, type_ql = get_embedded_match(stix_id, import_type)\n    query = 'match ' + type_ql\n    logger.debug(f'query is {query}')\n\n    stix_dict = match_query(uri=connection[\"uri\"],\n                       port=connection[\"port\"],\n                       database=connection[\"database\"],\n                       query=query,\n                       data_query=convert_ans_to_stix,\n                       import_type=import_type)\n\n    logger.debug(f'stix_dict is -> {stix_dict}')\n\n    # result = write_to_file(\"stixorm/module/orm/export_final.json\", stix_obj)\n    # if not is_successful(result):\n    #     logging.exception(\"\\n\".join(traceback.format_exception(result.failure())))\n    #     logger.error(str(result.failure()))\n\n    return stix_dict\n\n\ndef get_object(object_id, connection):\n    object_type = object_id.split('--')[0]\n\n    typedb_source = TypeDBSource(connection, import_type)\n    stix_dict = __retrieve_stix_dict(object_id)\n\n    return stix_dict\n\n\ndef main(dbhost, dbport, dbdatabase, dbquery, outputfile, logger: Logger):\n    instance_connection = {\n        \"uri\": dbhost,\n        \"port\": dbport,\n        \"database\": dbdatabase,\n        \"user\": None,\n        \"password\": None\n    }\n    # setup logger for execution\n    report_id = dbquery\n    stix_dict = get_object(report_id, instance_connection)\n    print(f\"\\n type of stix_dict is {type(stix_dict)}\")\n    print(stix_dict)\n    with open(outputfile, \"w\") as outfile:\n        json.dump(stix_dict, outfile)\n\n\n# if this file is run directly, then start here\n#if __name__ == '__main__':\n#    main(connection[\"uri\"], connection[\"port\"], connection[\"database\"], report_id, \"output2.json\", logger)",
+				"algorithmrequirements": "argparse loguru typedeb-client stixorm",
+				"endpoint": "http://127.0.0.1:8000/algorithm"
+			},
+			"x": 386.9412536621094,
+			"y": 1694.9620361328125,
+			"component": "stixorm_get_object",
+			"connections": {},
+			"template": {
+				"icon": "fa fa-code",
+				"group": "@TypeRefinery",
+				"name": "Stix-ORM Get Object",
+				"inputs": [
+					{
+						"id": "connection",
+						"name": "Connection"
+					},
+					{
+						"id": "stix_id",
+						"name": "Stix_ID"
+					}
+				],
+				"outputs": [
+					{
+						"id": "output",
+						"name": "Stix_Object"
+					}
+				]
+			}
+		},
+		"illg4sf48": {
+			"id": "illg4sf48",
+			"config": {
+				"title": "Send Data",
+				"version": "3",
+				"random": false,
+				"type": "json",
+				"data": "{'id': 'report--f2b63e80-b523-4747-a069-35c002c690db'}",
+				"restart": false
+			},
+			"x": 16.99810791015625,
+			"y": 1523.9866333007812,
+			"component": "typerefinery_senddata",
+			"connections": {
+				"output": [
+					{
+						"id": "ilmoy6i5h",
+						"index": "input"
+					}
+				]
+			},
+			"template": {
+				"icon": "fa fa-bullhorn",
+				"group": "@TypeRefinery",
+				"name": "Send Data",
+				"inputs": [
+					{
+						"id": "input",
+						"name": "Input"
+					}
+				],
+				"outputs": [
+					{
+						"id": "output",
+						"name": "Trigger"
+					}
+				]
+			}
+		},
+		"illhlsdl3": {
+			"id": "illhlsdl3",
+			"config": {
+				"title": "Print JSON",
+				"version": "2",
+				"repo": false,
+				"data": true
+			},
+			"x": 875.9657897949219,
+			"y": 1596.95068359375,
+			"component": "c5aria8f8f",
+			"connections": {},
+			"template": {
+				"icon": "fa fa-print",
+				"group": "@TypeRefinery",
+				"name": "Print JSON",
+				"inputs": [
+					{
+						"id": "input",
+						"name": "Input"
+					}
+				]
+			}
+		},
+		"ilmoruc0w": {
+			"id": "ilmoruc0w",
+			"config": {
+				"title": "Print JSON",
+				"version": "2",
+				"repo": false,
+				"data": true
+			},
+			"x": 1366.9601745605469,
+			"y": 568.9677581787109,
+			"component": "c5aria8f8f",
+			"connections": {},
+			"template": {
+				"icon": "fa fa-print",
+				"group": "@TypeRefinery",
+				"name": "Print JSON",
+				"inputs": [
+					{
+						"id": "input",
+						"name": "Input"
+					}
+				]
+			}
+		},
+		"ilmorzm4e": {
+			"id": "ilmorzm4e",
+			"config": {
+				"title": "API Datastore Connection",
+				"version": "3",
+				"endpoint": "http://127.0.0.1:8000/datastore/connection",
+				"connectionid": "defaultconnection"
+			},
+			"x": 386.9412536621094,
+			"y": 816.9696350097656,
+			"component": "typerefinery_api_datastore_connection",
+			"connections": {
+				"output": [
+					{
+						"id": "ilmoubc4w",
+						"index": "config"
+					}
+				]
+			},
+			"template": {
+				"icon": "fa fa-code",
+				"group": "@TypeRefinery",
+				"name": "API Datastore Connection",
+				"inputs": [
+					{
+						"id": "input",
+						"name": "Input"
+					}
+				],
+				"outputs": [
+					{
+						"id": "output",
+						"name": "Output"
+					}
+				]
+			}
+		},
+		"ilmoubc4w": {
+			"id": "ilmoubc4w",
+			"config": {
+				"title": "Stixorm Import Bundle",
+				"version": "3",
+				"algorithm": "from typedb.client import *\nfrom stixorm.module.typedb import TypeDBSink\nfrom stixorm.module.authorise import import_type_factory\nfrom stixorm.module.typedb_lib.instructions import ResultStatus, Result\nimport json\nimport requests\nimport copy\nimport os\nimport sys\nimport argparse\nfrom loguru import logger as Logger\n\nimport_type = import_type_factory.get_all_imports()\nurl = \"https://raw.githubusercontent.com/os-threat/Stix-ORM/main/test/data/threat_reports/poisonivy.json\"\ndef get_bundle(url):\n    bundle = json.loads(requests.get(url, verify=True).text)\n    print(f\"\\n bundle is {bundle}\")\n    return bundle\n\ndef getJsonValue(json, key, defaultValue = None):\n    if key in json:\n        return json[key]\n    else:\n        return defaultValue\n\ndef main(inputfile, outputfile):\n    if os.path.exists(inputfile):\n        with open(inputfile, \"r\") as script_input:\n            config = json.load(script_input)\n\n    print(f'config {config}')\n    connection = getJsonValue(config,'connection', {})\n    query = getJsonValue(config,'query', {})\n    topic = getJsonValue(config,'topic', {})\n    print(f'connection {connection}')\n    print(f'query {query}')\n    print(f'topic {topic}')\n\n    instance_connection = {\n        \"uri\": connection['dbhost'],\n        \"port\": connection['dbport'],\n        \"database\": connection['dbdatabase'],\n        \"user\": None,\n        \"password\": None\n    }\n    # start the connection, reinitilise is true\n    reinitilise = True\n    typedb = TypeDBSink(connection=instance_connection,\n                        clear=reinitilise,\n                        import_type=import_type)\n    # get the bundle to load\n    bundle = get_bundle(config['url'])\n    bundle_list = bundle[\"objects\"]\n    # add the list to TypeDB\n    results = typedb.add(bundle_list)\n    result_list = []\n    for res in results:\n        r = {}\n        r['id'] = str(res.id)\n        r['status'] = str(res.status.value)\n        r['error'] = str(res.error)\n        r['message'] = str(res.message)\n        result_list.append(r)\n\n    print(f\"\\n result type is {type(result_list)} \\n result is -> {result_list}\")\n    # export the result\n    with open(outputfile, \"w\") as outfile:\n        json.dump(result_list, outfile)",
+				"algorithmrequirements": "",
+				"endpoint": "http://127.0.0.1:8000/algorithm",
+				"jyputerid": "ilmoubc4w"
+			},
+			"x": 709.9000091552734,
+			"y": 726.9500122070312,
+			"component": "typerefinery_api_python_algorithm",
+			"connections": {
+				"output": [
+					{
+						"id": "ilmoruc0w",
+						"index": "input"
+					}
+				],
+				"payload": [
+					{
+						"id": "ilmp4xa62",
+						"index": "input"
+					}
+				]
+			},
+			"template": {
+				"icon": "fa fa-code",
+				"group": "@TypeRefinery",
+				"name": "API Python Algorithm",
+				"inputs": [
+					{
+						"id": "config",
+						"name": "Config"
+					}
+				],
+				"outputs": [
+					{
+						"id": "output",
+						"name": "Output"
+					},
+					{
+						"id": "payload",
+						"name": "Payload"
+					}
+				]
+			}
+		},
+		"ilmoy6i5h": {
+			"id": "ilmoy6i5h",
+			"config": {
+				"title": "API Datastore Connection",
+				"version": "3",
+				"endpoint": "http://127.0.0.1:8000/datastore/connection",
+				"connectionid": "defaultconnection"
+			},
+			"x": 279.9242248535156,
+			"y": 1463.9487915039062,
+			"component": "typerefinery_api_datastore_connection",
+			"connections": {
+				"output": [
+					{
+						"id": "ilmoy6t93",
+						"index": "config"
+					}
+				]
+			},
+			"template": {
+				"icon": "fa fa-code",
+				"group": "@TypeRefinery",
+				"name": "API Datastore Connection",
+				"inputs": [
+					{
+						"id": "input",
+						"name": "Input"
+					}
+				],
+				"outputs": [
+					{
+						"id": "output",
+						"name": "Output"
+					}
+				]
+			}
+		},
+		"ilmoy6t93": {
+			"id": "ilmoy6t93",
+			"config": {
+				"title": "Stixorm Get Object",
+				"version": "3",
+				"algorithm": "from typedb.client import *\nfrom loguru import logger as Logger\nfrom stixorm.module.typedb import TypeDBSource\nfrom stixorm.module.authorise import import_type_factory\nfrom posixpath import basename\nimport json\nimport copy\nimport os\nimport sys\nimport argparse\nfrom stixorm.module.orm.export_object import convert_ans_to_stix\nfrom stixorm.module.typedb import get_embedded_match\nfrom stixorm.module.typedb_lib.queries import delete_database, match_query\n\nimport logging\nlogging.basicConfig(level=logging.DEBUG, format='[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s')\nlogger = logging.getLogger(__name__)\n\nimport_type = import_type_factory.get_all_imports()\n\nconnection = {\n    \"uri\": \"localhost\",\n    \"port\": \"8729\",\n    \"database\": \"typerefinery\",\n    \"user\": None,\n    \"password\": None\n}\nreport_id = \"report--f2b63e80-b523-4747-a069-35c002c690db\"\n\n\ndef __retrieve_stix_dict(stix_id: str):\n    logger.debug(f'__retrieve_stix_object: {stix_id}')\n    obj_var, type_ql = get_embedded_match(stix_id, import_type)\n    query = 'match ' + type_ql\n    logger.debug(f'query is {query}')\n\n    stix_dict = match_query(uri=connection[\"uri\"],\n                       port=connection[\"port\"],\n                       database=connection[\"database\"],\n                       query=query,\n                       data_query=convert_ans_to_stix,\n                       import_type=import_type)\n\n    logger.debug(f'stix_dict is -> {stix_dict}')\n\n    # result = write_to_file(\"stixorm/module/orm/export_final.json\", stix_obj)\n    # if not is_successful(result):\n    #     logging.exception(\"\\n\".join(traceback.format_exception(result.failure())))\n    #     logger.error(str(result.failure()))\n\n    return stix_dict\n\n\ndef get_object(object_id, connection):\n    object_type = object_id.split('--')[0]\n\n    typedb_source = TypeDBSource(connection, import_type)\n    stix_dict = __retrieve_stix_dict(object_id)\n\n    return stix_dict\n\n\ndef main(logger: Logger, **argconfig):\n    instance_connection = {\n        \"uri\": argconfig['dbhost'],\n        \"port\": argconfig['dbport'],\n        \"database\": argconfig['dbdatabase'],\n        \"user\": None,\n        \"password\": None\n    }\n    # setup logger for execution\n    report_id = argconfig['id']\n    stix_dict = get_object(report_id, instance_connection)\n    print(f\"\\n type of stix_dict is {type(stix_dict)}\")\n    print(stix_dict)\n    with open(argconfig['outputfile'], \"w\") as outfile:\n        outfile.write(json.dumps(stix_dict))",
+				"algorithmrequirements": "",
+				"endpoint": "http://127.0.0.1:8000/algorithm",
+				"jyputerid": "ilmoy6t93"
+			},
+			"x": 633.8919982910156,
+			"y": 1659.9052124023438,
+			"component": "typerefinery_api_python_algorithm",
+			"connections": {
+				"output": [
+					{
+						"id": "illhlsdl3",
+						"index": "input"
+					}
+				],
+				"payload": [
+					{
+						"id": "ilmoybdiz",
+						"index": "input"
+					}
+				]
+			},
+			"template": {
+				"icon": "fa fa-code",
+				"group": "@TypeRefinery",
+				"name": "API Python Algorithm",
+				"inputs": [
+					{
+						"id": "config",
+						"name": "Config"
+					}
+				],
+				"outputs": [
+					{
+						"id": "output",
+						"name": "Output"
+					},
+					{
+						"id": "payload",
+						"name": "Payload"
+					}
+				]
+			}
+		},
+		"ilmoybdiz": {
+			"id": "ilmoybdiz",
+			"config": {
+				"title": "Print JSON",
+				"version": "2",
+				"repo": false,
+				"data": true
+			},
+			"x": 884.9904479980469,
+			"y": 1719.98095703125,
+			"component": "c5aria8f8f",
+			"connections": {},
+			"template": {
+				"icon": "fa fa-print",
+				"group": "@TypeRefinery",
+				"name": "Print JSON",
+				"inputs": [
+					{
+						"id": "input",
+						"name": "Input"
+					}
+				]
+			}
+		},
+		"ilmp03jbe": {
+			"id": "ilmp03jbe",
+			"config": {
+				"title": "API Datastore Connection",
+				"version": "3",
+				"endpoint": "http://127.0.0.1:8000/datastore/connection",
+				"connectionid": "defaultconnection"
+			},
+			"x": 484.93333435058594,
+			"y": 1032.9500122070312,
+			"component": "typerefinery_api_datastore_connection",
+			"connections": {
+				"output": [
+					{
+						"id": "ilmp03pfy",
+						"index": "config"
+					},
+					{
+						"id": "ilmp4aq8f",
+						"index": "input"
+					}
+				]
+			},
+			"template": {
+				"icon": "fa fa-code",
+				"group": "@TypeRefinery",
+				"name": "API Datastore Connection",
+				"inputs": [
+					{
+						"id": "input",
+						"name": "Input"
+					}
+				],
+				"outputs": [
+					{
+						"id": "output",
+						"name": "Output"
+					}
+				]
+			}
+		},
+		"ilmp03pfy": {
+			"id": "ilmp03pfy",
+			"config": {
+				"title": "Test",
+				"version": "3",
+				"algorithm": "from typedb.client import *\nfrom loguru import logger as Logger\nfrom posixpath import basename\nimport json\nfrom datetime import datetime\nimport os\nimport array\n\ndef getJsonValue(json, key, defaultValue = None):\n  if key in json:\n    return json[key]\n  else:\n    return defaultValue\n\n@Logger.catch\ndef main(inputfile, outputfile):\n  print(f'test text {inputfile}')\n  if os.path.exists(inputfile):\n      with open(inputfile, \"r\") as script_input:\n          config = json.load(script_input)\n\n  print(f'config {config}')\n\n  connection = getJsonValue(config,'connection', {})\n  query = getJsonValue(config,'query', {})\n  topic = getJsonValue(config,'topic', {})\n\n\n  print(f'connection {connection}')\n  print(f'query {query}')\n  print(f'topic {topic}')\n\n  outputjson = {}\n  typeDBConnect = f\"{connection['dbhost']}:{connection['dbport']}\"\n  with TypeDB.core_client(typeDBConnect) as client:\n      with client.session(connection['dbdatabase'], SessionType.DATA) as session:\n          with session.transaction(TransactionType.READ) as read_transaction:\n              answer_iterator = read_transaction.query().match(query['dbquery'])\n              for answer in answer_iterator:\n                dict_answer = answer.map()\n                for key, thing in dict_answer.items():\n                   if thing.is_entity():\n                      outputjson[thing.get_iid()] = thing.get_type().get_label().name()\n\n  with open(outputfile, \"w\") as outfile:\n      json.dump(outputjson, outfile)",
+				"algorithmrequirements": "argparse loguru",
+				"endpoint": "http://127.0.0.1:8000/algorithm",
+				"jyputerid": "ilmp03pfy"
+			},
+			"x": 787.8166961669922,
+			"y": 990.8999938964844,
+			"component": "typerefinery_api_python_algorithm",
+			"connections": {
+				"output": [
+					{
+						"id": "ilmp049ms",
+						"index": "input"
+					}
+				],
+				"payload": [
+					{
+						"id": "ilmp2p59q",
+						"index": "input"
+					}
+				]
+			},
+			"template": {
+				"icon": "fa fa-code",
+				"group": "@TypeRefinery",
+				"name": "API Python Algorithm",
+				"inputs": [
+					{
+						"id": "config",
+						"name": "Config"
+					}
+				],
+				"outputs": [
+					{
+						"id": "output",
+						"name": "Output"
+					},
+					{
+						"id": "payload",
+						"name": "Payload"
+					}
+				]
+			}
+		},
+		"ilmp042rj": {
+			"id": "ilmp042rj",
+			"config": {
+				"title": "Send Data",
+				"version": "3",
+				"random": false,
+				"type": "json",
+				"data": "{\n\"url\": \"https://raw.githubusercontent.com/os-threat/Stix-ORM/main/test/data/threat_reports/poisonivy.json\",\n\"query\": {\n\"dbquery\": \"match $a isa entity; offset 0; limit 100;\"\n},\n\"topic\": {\n\"name\": \"testa\"\n}\n}",
+				"restart": false
+			},
+			"x": 53.910980224609375,
+			"y": 980.9658508300781,
+			"component": "typerefinery_senddata",
+			"connections": {
+				"output": [
+					{
+						"id": "ilmp03jbe",
+						"index": "input"
+					}
+				]
+			},
+			"template": {
+				"icon": "fa fa-bullhorn",
+				"group": "@TypeRefinery",
+				"name": "Send Data",
+				"inputs": [
+					{
+						"id": "input",
+						"name": "Input"
+					}
+				],
+				"outputs": [
+					{
+						"id": "output",
+						"name": "Trigger"
+					}
+				]
+			}
+		},
+		"ilmp049ms": {
+			"id": "ilmp049ms",
+			"config": {
+				"title": "Print JSON",
+				"version": "2",
+				"repo": false,
+				"data": true
+			},
+			"x": 1090.9657897949219,
+			"y": 1011.9791259765625,
+			"component": "c5aria8f8f",
+			"connections": {},
+			"template": {
+				"icon": "fa fa-print",
+				"group": "@TypeRefinery",
+				"name": "Print JSON",
+				"inputs": [
+					{
+						"id": "input",
+						"name": "Input"
+					}
+				]
+			}
+		},
+		"ilmp2p59q": {
+			"id": "ilmp2p59q",
+			"config": {
+				"title": "Print JSON",
+				"version": "2",
+				"repo": false,
+				"data": true
+			},
+			"x": 1444.9809265136719,
+			"y": 1093.9771728515625,
+			"component": "c5aria8f8f",
+			"connections": {},
+			"template": {
+				"icon": "fa fa-print",
+				"group": "@TypeRefinery",
+				"name": "Print JSON",
+				"inputs": [
+					{
+						"id": "input",
+						"name": "Input"
+					}
+				]
+			}
+		},
+		"ilmp4aq8f": {
+			"id": "ilmp4aq8f",
+			"config": {
+				"title": "Print JSON",
+				"version": "2",
+				"repo": false,
+				"data": true
+			},
+			"x": 827.9828796386719,
+			"y": 1201.9790649414062,
+			"component": "c5aria8f8f",
+			"connections": {},
+			"template": {
+				"icon": "fa fa-print",
+				"group": "@TypeRefinery",
+				"name": "Print JSON",
+				"inputs": [
+					{
+						"id": "input",
+						"name": "Input"
+					}
+				]
+			}
+		},
+		"ilmp4xa62": {
+			"id": "ilmp4xa62",
+			"config": {
+				"title": "Print JSON",
+				"version": "2",
+				"repo": false,
+				"data": true
+			},
+			"x": 1070.9563903808594,
+			"y": 890.9658508300781,
+			"component": "c5aria8f8f",
+			"connections": {},
+			"template": {
+				"icon": "fa fa-print",
+				"group": "@TypeRefinery",
+				"name": "Print JSON",
+				"inputs": [
+					{
+						"id": "input",
+						"name": "Input"
+					}
+				]
+			}
+		},
+		"ilmpqeece": {
+			"id": "ilmpqeece",
+			"config": {
+				"text": "comment text"
+			},
+			"x": 1468.0000457763672,
+			"y": 842,
+			"component": "comment",
+			"connections": {},
+			"template": {
+				"icon": "fa fa-comment-alt",
+				"name": "Comment"
+			}
+		}
+	},
+	"variables": {},
+	"sources": {
+		"srcfyn2ecf44": {
+			"token": "",
+			"url": "http://127.0.0.1:8112/$tms/",
+			"id": "srcfyn2ecf44",
+			"meta": {
+				"type": "meta",
+				"name": "TMS Message Service",
+				"subscribe": [
+					{
+						"id": "svg_insert",
+						"schema": {
+							"$id": "https://schemas.totaljs.com/Svg.json",
+							"$schema": "https://json-schema.org/draft/2020-12/schema",
+							"type": "object",
+							"properties": {
+								"stepId": {
+									"type": "string"
+								},
+								"flowId": {
+									"type": "string"
+								},
+								"stepName": {
+									"type": "string"
+								},
+								"path": {
+									"type": "string"
+								},
+								"projectId": {
+									"type": "string"
+								},
+								"id": {
+									"type": "string"
+								},
+								"dtcreated": {
+									"type": "date"
+								},
+								"dtupdated": {
+									"type": "date"
+								}
+							}
+						}
+					},
+					{
+						"id": "payload_insert",
+						"schema": {
+							"$id": "https://schemas.totaljs.com/Payload.json",
+							"$schema": "https://json-schema.org/draft/2020-12/schema",
+							"type": "object",
+							"properties": {
+								"payload": {
+									"type": "string"
+								},
+								"topic": {
+									"type": "string"
+								},
+								"id": {
+									"type": "string"
+								},
+								"dtcreated": {
+									"type": "date"
+								},
+								"dtupdated": {
+									"type": "date"
+								}
+							}
+						}
+					},
+					{
+						"id": "payload_update",
+						"schema": {
+							"$id": "https://schemas.totaljs.com/Payload.json",
+							"$schema": "https://json-schema.org/draft/2020-12/schema",
+							"type": "object",
+							"properties": {
+								"payload": {
+									"type": "string"
+								},
+								"topic": {
+									"type": "string"
+								},
+								"id": {
+									"type": "string"
+								},
+								"dtcreated": {
+									"type": "date"
+								},
+								"dtupdated": {
+									"type": "date"
+								}
+							}
+						}
+					},
+					{
+						"id": "payload_remove",
+						"schema": {
+							"$id": "https://schemas.totaljs.com/Payload.json",
+							"$schema": "https://json-schema.org/draft/2020-12/schema",
+							"type": "object",
+							"properties": {
+								"payload": {
+									"type": "string"
+								},
+								"topic": {
+									"type": "string"
+								},
+								"id": {
+									"type": "string"
+								},
+								"dtcreated": {
+									"type": "date"
+								},
+								"dtupdated": {
+									"type": "date"
+								}
+							}
+						}
+					}
+				],
+				"publish": [
+					{
+						"id": "svg_insert",
+						"schema": {
+							"$id": "https://schemas.totaljs.com/Svg.json",
+							"$schema": "https://json-schema.org/draft/2020-12/schema",
+							"type": "object",
+							"properties": {
+								"stepId": {
+									"type": "string"
+								},
+								"flowId": {
+									"type": "string"
+								},
+								"stepName": {
+									"type": "string"
+								},
+								"path": {
+									"type": "string"
+								},
+								"projectId": {
+									"type": "string"
+								},
+								"id": {
+									"type": "string"
+								},
+								"dtcreated": {
+									"type": "date"
+								},
+								"dtupdated": {
+									"type": "date"
+								}
+							}
+						}
+					},
+					{
+						"id": "payload_insert",
+						"schema": {
+							"$id": "https://schemas.totaljs.com/Payload.json",
+							"$schema": "https://json-schema.org/draft/2020-12/schema",
+							"type": "object",
+							"properties": {
+								"payload": {
+									"type": "string"
+								},
+								"topic": {
+									"type": "string"
+								},
+								"id": {
+									"type": "string"
+								},
+								"dtcreated": {
+									"type": "date"
+								},
+								"dtupdated": {
+									"type": "date"
+								}
+							}
+						}
+					}
+				],
+				"subscribers": [
+					"svg_insert",
+					"payload_insert",
+					"payload_update",
+					"payload_remove"
+				],
+				"call": [
+					{
+						"id": "svg_query",
+						"schema": {
+							"$id": "https://schemas.totaljs.com/Svg.json",
+							"$schema": "https://json-schema.org/draft/2020-12/schema",
+							"type": "object",
+							"properties": {
+								"stepId": {
+									"type": "string"
+								},
+								"flowId": {
+									"type": "string"
+								},
+								"stepName": {
+									"type": "string"
+								},
+								"path": {
+									"type": "string"
+								},
+								"projectId": {
+									"type": "string"
+								},
+								"id": {
+									"type": "string"
+								},
+								"dtcreated": {
+									"type": "date"
+								},
+								"dtupdated": {
+									"type": "date"
+								}
+							}
+						}
+					},
+					{
+						"id": "payload_query",
+						"schema": {
+							"$id": "https://schemas.totaljs.com/Payload.json",
+							"$schema": "https://json-schema.org/draft/2020-12/schema",
+							"type": "object",
+							"properties": {
+								"payload": {
+									"type": "string"
+								},
+								"topic": {
+									"type": "string"
+								},
+								"id": {
+									"type": "string"
+								},
+								"dtcreated": {
+									"type": "date"
+								},
+								"dtupdated": {
+									"type": "date"
+								}
+							}
+						}
+					}
+				]
+			},
+			"checksum": "38995619161",
+			"restart": false,
+			"error": 0,
+			"init": true,
+			"online": true,
+			"dtupdated": "2022-09-09T05:34:41.628Z"
+		}
+	},
+	"proxypath": "",
+	"dtcreated": "2023-09-10T09:54:35.604Z",
+	"dtupdated": "2023-09-20T00:19:32.436Z"
+}
