@@ -17,7 +17,11 @@
     "env": {
       "PYTHONPATH": "${PYTHON_HOME}",
       "PYTHONUSERBASE": "${PYTHON_HOME}",
-      "PATH": "${PYTHON_HOME}"
+      "PATH": [
+        "${PYTHON_HOME}",
+        "${PYTHON_SCRIPTS_PATH}",
+        "${NODE_HOME}"
+      ]
     },
     "globalenv": {
       "API_URL": "http://localhost:${SERVICE_PORT}",

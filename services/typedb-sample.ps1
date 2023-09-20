@@ -39,7 +39,7 @@ Function StartSetup
     if ( $IsWindows ) {
      python get-pip.py
     }
-    python -m pip install --target="${PYTHONPACKAGES}" -r "${SERVER_REQUIREMENTS}"
+    python -m pip install --user -r "${SERVER_REQUIREMENTS}"
     python "${SCRIPT_PATH}"
 
   }

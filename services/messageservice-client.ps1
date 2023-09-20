@@ -51,7 +51,7 @@ Function StartSetup
      python get-pip.py
     }
     python -m pip install uvicorn
-    python -m pip install --target="${PYTHONPACKAGES}" -r "${SERVER_REQUIREMENTS}"
+    python -m pip install --user -r "${SERVER_REQUIREMENTS}"
   }
   finally {
     Set-Location -Path "${CURRENT_PATH}"

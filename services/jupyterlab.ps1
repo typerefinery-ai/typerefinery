@@ -132,7 +132,7 @@ Function StartSetup
     }
 
     # & Invoke-Expression -Command "${PYTHON} -c ""import os; os.system('node -v')"""
-    # & Invoke-Expression -Command "${PYTHON} -m pip install --target=""${PYTHONPACKAGES}"" -r ""${SERVER_REQUIREMENTS}"""
+    # & Invoke-Expression -Command "${PYTHON} -m pip install --user -r ""${SERVER_REQUIREMENTS}"""
     & Invoke-Expression -Command "${PYTHON} -m jupyter lab build"
     & Invoke-Expression -Command "npm install -g ijavascript"
     & Invoke-Expression -Command "ijsinstall --install=local --spec-path=full --working-dir=${SERVICE_JSWORK_PATH}"

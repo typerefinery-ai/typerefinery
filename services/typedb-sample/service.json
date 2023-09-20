@@ -11,19 +11,19 @@
     "execservice": { "id": "python" },
     "setup": {
       "win32": [
-        "-m pip install --target=${SERVICE_PATH}\\__packages__ -r ${SERVICE_PATH}\\requirements.txt",
+        "-m pip install --user -r ${SERVICE_PATH}\\requirements.txt",
         "${SERVICE_PATH}\\basic_upload.py --port ${TYPEDB_PORT} --db ${TYPEDB_DB} --host ${TYPEDB_HOST}"
       ],
       "darwin": [
-        "-m pip install --target=${SERVICE_PATH}/__packages__ -r ${SERVICE_PATH}/requirements.txt",
+        "-m pip install --user_ -r ${SERVICE_PATH}/requirements.txt",
         "${SERVICE_PATH}/basic_upload.py --port ${TYPEDB_PORT} --db ${TYPEDB_DB} --host ${TYPEDB_HOST}"
       ],
       "linux": [
-        "-m pip install --target=${SERVICE_PATH}/__packages__ -r ${SERVICE_PATH}/requirements.txt",
+        "-m pip install --user -r ${SERVICE_PATH}/requirements.txt",
         "${SERVICE_PATH}/basic_upload.py --port ${TYPEDB_PORT} --db ${TYPEDB_DB} --host ${TYPEDB_HOST}"
       ],
       "default": [
-        "-m pip install --target=${SERVICE_PATH}\\__packages__ -r ${SERVICE_PATH}\\requirements.txt",
+        "-m pip install --user -r ${SERVICE_PATH}\\requirements.txt",
         "${SERVICE_PATH}\\basic_upload.py --port ${TYPEDB_PORT} --db ${TYPEDB_DB} --host ${TYPEDB_HOST}"
       ]
     },
@@ -31,7 +31,13 @@
       "default": ""
     },
     "env": {
-      "LOGURU_LEVEL": "INFO"
+      "LOGURU_LEVEL": "INFO",
+      "PYTHONPATH": "${PYTHON_HOME}",
+      "PYTHONUSERBASE": "${PYTHON_HOME}",
+      "PATH": [
+        "${PYTHON_HOME}",
+        "${PYTHON_SCRIPTS_PATH}"
+      ]
     },
     "depend_on": [
       "typedb",
