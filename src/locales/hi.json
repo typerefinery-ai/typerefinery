@@ -70,6 +70,7 @@
         "iframeconfig": {
           "title": "आईफ्रेम कॉन्फ़िग",
           "name": "एल्गोरिथम का नाम",
+          "csp": "सीएसपी",
           "referrerpolicy": "रेफरर नीति",
           "sandbox": "सैंडबॉक्स",
           "allowfullscreen": "पूर्ण स्क्रीन देखें",

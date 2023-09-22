@@ -77,6 +77,16 @@
             />
           </div>
           <div class="field">
+            <label for="csp">{{
+              $t(`components.setting.experience.iframeconfig.csp`)
+            }}</label>
+            <InputText
+              id="csp"
+              placeholder="frame-src '*'; frame-ancestors '*';"
+              v-model="iframeconfig.csp"
+            />
+          </div>
+          <div class="field">
             <label for="referrerpolicy">{{
               $t(`components.setting.experience.iframeconfig.referrerpolicy`)
             }}</label>
@@ -223,6 +233,7 @@
         urlformatted: "",
         iframeconfig: {
           name: "",
+          csp: "",
           referrerpolicy: "",
           sandbox: "",
           allow: "",
@@ -276,7 +287,16 @@
         this.icon = this.payload.icon
         this.url = this.payload.url
         this.service = this.payload.service
-        this.iframeconfig = this.payload.iframeconfig
+        this.iframeconfig = this.payload.iframeconfig || {
+          name: "",
+          csp: "",
+          referrerpolicy: "",
+          sandbox: "",
+          allow: "",
+          allowfullscreen: "",
+          allowpaymentrequest: "",
+          allowpopups: "",
+        }
         this.editElements = true
       } else if (this.type === "ADD") {
         this.addElements = true
@@ -286,6 +306,7 @@
         this.service = ""
         this.iframeconfig = {
           name: "",
+          csp: "",
           referrerpolicy: "",
           sandbox: "",
           allow: "",
@@ -339,13 +360,14 @@
           url: this.url,
           service: this.service,
           iframeconfig: {
-            name: this.iframeconfig.name,
-            referrerpolicy: this.iframeconfig.referrerpolicy,
-            sandbox: this.iframeconfig.sandbox,
-            allow: this.iframeconfig.allow,
-            allowfullscreen: this.iframeconfig.allowfullscreen,
-            allowpaymentrequest: this.iframeconfig.allowpaymentrequest,
-            allowpopups: this.iframeconfig.allowpopups,
+            name: this.iframeconfig.name || "",
+            csp: this.iframeconfig.csp || "",
+            referrerpolicy: this.iframeconfig.referrerpolicy || "",
+            sandbox: this.iframeconfig.sandbox || "",
+            allow: this.iframeconfig.allow || "",
+            allowfullscreen: this.iframeconfig.allowfullscreen || "",
+            allowpaymentrequest: this.iframeconfig.allowpaymentrequest || "",
+            allowpopups: this.iframeconfig.allowpopups || "",
           },
         }
         console.log("editMenuItem data", data)
@@ -369,6 +391,7 @@
             subMenu: [{ id: "load-data", to: "#" }],
             iframeconfig: {
               name: this.iframeconfig.name,
+              csp: this.iframeconfig.csp,
               referrerpolicy: this.iframeconfig.referrerpolicy,
               sandbox: this.iframeconfig.sandbox,
               allow: this.iframeconfig.allow,

@@ -69,6 +69,7 @@
         "iframeconfig": {
           "title": "Embed Config",
           "name": "Name",
+          "csp": "Content Security Policy",
           "referrerpolicy": "Referrer Policy",
           "sandbox": "Sandbox",
           "allowfullscreen": "Allow Full Screen",

@@ -21,6 +21,7 @@
           v-if="sandbox"
           :src="url"
           :name="name"
+          :csp="csp"
           :referrerpolicy="referrerpolicy"
           :sandbox="sandbox"
           :sandbox2="iframeconfig.sandbox"
@@ -70,6 +71,7 @@
         globalenv: {},
         url: undefined,
         name: undefined,
+        csp: undefined,
         referrerpolicy: undefined,
         sandbox: undefined,
         allow: undefined,
@@ -78,6 +80,7 @@
         allowfullscreen: undefined,
         iframeconfig: {
           name: undefined,
+          csp: undefined,
           referrerpolicy: undefined,
           sandbox: undefined,
           allow: undefined,
@@ -95,6 +98,7 @@
         ? this.experience.iframeconfig
         : {
             name: undefined,
+            csp: undefined,
             referrerpolicy: undefined,
             sandbox: undefined,
             allow: undefined,
@@ -105,6 +109,7 @@
       this.referrerpolicy = iframeconfig.referrerpolicy
         ? iframeconfig.referrerpolicy
         : undefined
+      this.csp = iframeconfig.csp ? iframeconfig.csp : undefined
       this.sandbox = iframeconfig.sandbox
       this.iframeconfig.sandbox = iframeconfig.sandbox
       if (!this.sandbox) {
