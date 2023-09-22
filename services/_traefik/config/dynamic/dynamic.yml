@@ -218,7 +218,7 @@ http:
         accesscontrolalloworiginlist: "*"
         accesscontrolallowmethods: "GET, POST, PUT, DELETE, OPTIONS"
         accesscontrolallowheaders: "*"
-        contentsecuritypolicy: "frame-ancestors *;"
+        contentsecuritypolicy: "frame-ancestors 'sef' '*' 'http://*:*' 'https://*:*' 'https://*.typerefinery.localhost:*';"
 
     # Redirect to https
     redirect-to-https:
