@@ -218,6 +218,7 @@ http:
         accesscontrolalloworiginlist: "*"
         accesscontrolallowmethods: "GET, POST, PUT, DELETE, OPTIONS"
         accesscontrolallowheaders: "*"
+        contentsecuritypolicy: "frame-ancestors *;"
 
     # Redirect to https
     redirect-to-https:
