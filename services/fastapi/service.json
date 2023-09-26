@@ -16,10 +16,11 @@
     },
     "env": {
       "PYTHONPATH": "${PYTHON_HOME}",
-      "PYTHONUSERBASE": "${PYTHON_HOME}",
+      "PYTHONUSERBASE": "${PYTHON_USERBASE_PATH}",
       "PATH": [
         "${PYTHON_HOME}",
         "${PYTHON_SCRIPTS_PATH}",
+        "${PYTHON_USERBASE_PATH_SCRIPTS}",
         "${NODE_HOME}"
       ]
     },

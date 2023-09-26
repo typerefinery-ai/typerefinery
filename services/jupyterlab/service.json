@@ -27,19 +27,20 @@
     },
     "env": {
       "PYTHONPATH": "${PYTHON_HOME}",
-      "PYTHONUSERBASE": "${PYTHON_HOME}",
+      "PYTHONUSERBASE": "${PYTHON_USERBASE_PATH}",
       "NODE_HOME": "${NODE_HOME}",
       "PATH": [
           "${PYTHON_HOME}",
           "${PYTHON_SCRIPTS_PATH}",
+          "${PYTHON_USERBASE_PATH_SCRIPTS}",
           "${NODE_HOME}"
         ],
       "JUPYTER_DATA_DIR": "${SERVICE_PATH}",
-      "JUPYTERLAB_JSWORK_PATH": "${SERVICE_PATH}/jswork",
-      "JUPYTERLAB_DIR": "${SERVICE_PATH}/data",
-      "JUPYTERLAB_NOTEBOOKS_DIR": "${SERVICE_PATH}/notebooks",
-      "JUPYTER_RUNTIME_DIR": "${SERVICE_PATH}/runtime",
-      "JUPYTER_CONFIG_DIR": "${SERVICE_PATH}/config"
+      "JUPYTERLAB_JSWORK_PATH": "${SERVICE_PATH}\\jswork",
+      "JUPYTERLAB_DIR": "${SERVICE_PATH}\\data",
+      "JUPYTERLAB_NOTEBOOKS_DIR": "${SERVICE_PATH}\\notebooks",
+      "JUPYTER_RUNTIME_DIR": "${SERVICE_PATH}\\runtime",
+      "JUPYTER_CONFIG_DIR": "${SERVICE_PATH}\\config"
     },
     "datapath": "notebooks",
     "globalenv": {

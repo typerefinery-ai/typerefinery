@@ -46,15 +46,17 @@
       ]
     },
     "commandline": {
-      "default": " -c \"import os,sysconfig;print('PYTHON_SCRIPTS_PATH:'+sysconfig.get_path('scripts',f'{os.name}_user'))\""
+      "default": " -c \"import os,sysconfig;print('PYTHON_USERBASE_PATH_SCRIPTS='+sysconfig.get_path('scripts',f'{os.name}_user'));print('PYTHON_SCRIPTS_PATH='+sysconfig.get_path('scripts',f'{os.name}'));print('PYTHON_USERBASE_PATH='+sysconfig.get_path('data',f'{os.name}_user'))\""
     },
     "outputvarregex": {
-      "PYTHON_SCRIPTS_PATH": "PYTHON_SCRIPTS_PATH:(.*)"
+      "PYTHON_SCRIPTS_PATH": "PYTHON_SCRIPTS_PATH=(.*)",
+      "PYTHON_USERBASE_PATH_SCRIPTS": "PYTHON_USERBASE_PATH_SCRIPTS=(.*)",
+      "PYTHON_USERBASE_PATH": "PYTHON_USERBASE_PATH=(.*)"
     },
     "env": {
       "PATH": "${SERVICE_EXECUTABLE_HOME}",
       "PYTHONHOME": "${SERVICE_EXECUTABLE_HOME}",
-      "PYTHONUSERBASE": "${SERVICE_EXECUTABLE_HOME}"
+      "PYTHONUSERBASE": "${SERVICE_EXECUTABLE_HOME}/user"
     },
     "globalenv": {
       "PYTHON": "${SERVICE_EXECUTABLE}",

@@ -7,22 +7,27 @@ Param(
   [string]$CPU_ARCH = "x64",
   [string]$PYTHON_HOME = ( Join-Path "${PWD}" "_python" "${OS}"),
   [string]$PYTHON_BIN = ( $IsWindows ? "" : "bin" ),
-  [string]$PYTHON_PATH = ( Join-Path "${PWD}" "_python" "${OS}" "${PYTHON_BIN}"),
+  [string]$PYTHON_EXE = ( $IsWindows ? "python.exe" : "python" ),
+  [string]$PYTHON_PATH = ( Join-Path "${PWD}" "_python" "${OS}" "${PYTHON_BIN}" "python"),
   [string]$PYTHON_PATH_SCRIPTS = ( Join-Path "${PYTHON_PATH}" "Scripts"),
-  [string]$PYTHON_PATH_PACKAGES = ( Join-Path "${PYTHON_PATH}" "Lib" "site-packages"),
-  [string]$PYTHON = ( Join-Path "${PWD}" "_python" "${OS}" "${PYTHON_BIN}" "python"),
+  [string]$PYTHON = ( Join-Path "${PYTHON_PATH}" "${PYTHON_EXE}"),
+  [string]$PYTHON_USERBASE_PATH = ( Join-Path "${PYTHON_PATH}" "user"),
+  [string]$PYTHON_USERBASE_PATH_SCRIPTS = ( Join-Path "${PYTHON_USERBASE_PATH}" "Python311" "Scripts"),
+  # [string]$PYTHON_USERBASE_PACKAGES = ( Join-Path "${PYTHON_PATH}" "Python311" "site-packages" ),
+  # [string]$PYTHON_LIB = ( Join-Path "${PYTHON_PATH}" "lib"),
   [string]$NODE_VERSION = "v18.6.0",
   [string]$NODE_SERVICE_NAME = "_node",
   [string]$NODE_OS = ( $IsWindows ? "win" : ( $IsMacOS ? "darwin" : "linux" ) ),
   [string]$NODE_BIN = ( $IsWindows ? "" : "bin" ),
+  [string]$NODE_EXE = ( $IsWindows ? "node.exe" : "node" ),
+  [string]$NPM_EXE = ( $IsWindows ? "npm.exe" : "npm" ),
   [string]$NODE_PLATFORM_HOME = "node-${NODE_VERSION}-${NODE_OS}-${CPU_ARCH}",
   [string]$NODE_PLATFORM_ARCHIVE = ( $IsWindows ? "${NODE_PLATFORM_HOME}.zip" : "${NODE_PLATFORM_HOME}.tar.gz" ) ,
-  [string]$NODE_PATH = ( Join-Path "${PWD}" "${NODE_SERVICE_NAME}" $OS "node-${NODE_VERSION}-${NODE_OS}-${CPU_ARCH}" "${NODE_BIN}"),
-  [string]$NODE_PROGRAM_PATH = ( Join-Path "${NODE_PATH}" "node"),
-  [string]$NPM_PROGRAM_PATH = ( Join-Path "${NODE_PATH}"  "npm"),
+  [string]$NODE_PATH = ( Join-Path "${PWD}" "${NODE_SERVICE_NAME}" $OS "node" "node-${NODE_VERSION}-${NODE_OS}-${CPU_ARCH}" "${NODE_BIN}"),
+  [string]$NODE_PROGRAM_PATH = ( Join-Path "${NODE_PATH}" "${NODE_EXE}"),
+  [string]$NPM_PROGRAM_PATH = ( Join-Path "${NODE_PATH}"  "${NPM_EXE}"),
   [string]$SERVER_HOME = ( Join-Path "${PWD}" "${SERVICE_NAME}"),
   [string]$SERVER_REQUIREMENTS = ( Join-Path "${SERVER_HOME}" "requirements.txt" ),
-  [string]$PYTHONPACKAGES = ( Join-Path "${SERVER_HOME}" "__packages__" ),
   [string]$SCRIPT_NAME = ( Join-Path "${SERVER_HOME}" "__packages__" "jupyter.py"),
   [string]$SCRIPS_PATH = ( Join-Path "${SERVER_HOME}" "scripts" ),
   [string]$SERVICE_WORKSPACE_PATH = ( Join-Path "${PWD}" "${SERVICE_NAME}" "workspaces"),
@@ -54,6 +59,8 @@ Function PrintInfo
   printSectionLine "PYTHONPATH: ${PYTHONPATH}"
   printSectionLine "PYTHON: ${PYTHON}"
   printSectionLine "PYTHON_PATH_SCRIPTS: ${PYTHON_PATH_SCRIPTS}"
+  printSectionLine "NODE_PROGRAM_PATH: ${NODE_PROGRAM_PATH}"
+  printSectionLine "NPM_PROGRAM_PATH: ${NPM_PROGRAM_PATH}"
 
   printSectionLine "env:PYTHONHOME: ${env:PYTHONHOME}"
   printSectionLine "env:PYTHONPATH: ${env:PYTHONPATH}"
@@ -121,7 +128,6 @@ Function StopServer
 
 }
 
-
 Function StartSetup
 {
   echo "${SERVICE_NAME} - StartSetup"
@@ -130,7 +136,7 @@ Function StartSetup
     if ( $IsWindows ) {
       python get-pip.py
     }
-
+    Invoke-Expression -Command "${PYTHON} -m pip install --use-pep517 --user -r ""${SERVER_REQUIREMENTS}"""
     # & Invoke-Expression -Command "${PYTHON} -c ""import os; os.system('node -v')"""
     # & Invoke-Expression -Command "${PYTHON} -m pip install --user -r ""${SERVER_REQUIREMENTS}"""
     & Invoke-Expression -Command "${PYTHON} -m jupyter lab build"
@@ -142,12 +148,35 @@ Function StartSetup
   }
 }
 
-SetPath "${PYTHON_HOME}" "${PYTHON_PATH_SCRIPTS}" "${NODE_PATH}"
-# SetEnvPath "PATH" "${PYTHON_PATH}" "${PYTHON_PATH_SCRIPTS}" "${NODE_PATH}"
+# Function StartSetup
+# {
+#   echo "${SERVICE_NAME} - StartSetup"
+#   Set-Location -Path "${PYTHON_HOME}"
+#   try {
 
-# SetEnvPath "PYTHONPATH" "${PYTHONPACKAGES}"
+#     # & Invoke-Expression -Command "${PYTHON} -c ""import os; os.system('node -v')"""
+#     # & Invoke-Expression -Command "${PYTHON} -m pip install --user -r ""${SERVER_REQUIREMENTS}"""
+#     & Invoke-Expression -Command "${PYTHON} -m jupyter lab build"
+#     & Invoke-Expression -Command "npm install -g ijavascript"
+#     & Invoke-Expression -Command "ijsinstall --install=local --spec-path=full --working-dir=${SERVICE_JSWORK_PATH}"
+#     & Invoke-Expression -Command "jupyter kernelspec list"
+#   } finally {
+#     Set-Location -Path "${CURRENT_PATH}"
+#   }
+# }
+
+# SetPath "${PYTHON_HOME}" "${PYTHON_PATH_SCRIPTS}" "${NODE_PATH}"
+
+# SetPath "${PYTHON_HOME}"
+SetEnvPath "PATH" "${PYTHON_PATH}" "${PYTHON_PATH_SCRIPTS}" "${PYTHON_USERBASE_PATH_SCRIPTS}" "${NODE_PATH}"
+
+SetEnvPath "PYTHONPATH" "${PYTHON_HOME}"
 SetEnvPath "PYTHONHOME" "${PYTHON_HOME}"
-SetEnvPath "SCRIPT_NAME" "${SCRIPT_NAME}"
+SetEnvPath "PYTHONUSERBASE" "${PYTHON_USERBASE_PATH}"
+
+
+# SetEnvPath "PYTHONHOME" "${PYTHON_HOME}"
+# SetEnvPath "SCRIPT_NAME" "${SCRIPT_NAME}"
 SetEnvPath "SERVER_HOME" "${SERVER_HOME}"
 SetEnvPath "JUPYTERLAB_DIR" "${SERVICE_DATA_PATH}"
 SetEnvPath "JUPYTER_DATA_DIR" "${SERVER_HOME}"

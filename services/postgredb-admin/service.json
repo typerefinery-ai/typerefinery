@@ -32,11 +32,12 @@
       "PGADMIN_INT_PORT": "${SERVICE_PORT}",
       "CONSOLE_LOG_LEVEL": "INFO",
       "FILE_LOG_LEVEL": "INFO",
-      "PYTHONPATH": "${SERVICE_PATH}/__packages__",
-      "PYTHONUSERBASE": "${PYTHON_HOME}",
+      "PYTHONPATH": "${PYTHON_HOME}",
+      "PYTHONUSERBASE": "${PYTHON_USERBASE_PATH}",
       "PATH": [
         "${PYTHON_HOME}",
         "${PYTHON_SCRIPTS_PATH}",
+        "${PYTHON_USERBASE_PATH_SCRIPTS}",
         "${NODE_HOME}"
       ]
     },
