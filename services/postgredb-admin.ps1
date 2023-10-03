@@ -4,6 +4,7 @@ Param(
   [string]$SERVICES_HOME = "services",
   [string]$CURRENT_PATH = "${PWD}",
   [string]$OS = ( $IsWindows ? "win32" : ( $IsMacOS ? "darwin" : "linux" ) ),
+  [string]$SERVER_HOME = ( Join-Path "${PWD}" "${SERVICE_NAME}"),
   [string]$PYTHON_HOME = ( Join-Path "${PWD}" "_python" "${OS}"),
   [string]$PYTHON_BIN = ( $IsWindows ? "" : "bin" ),
   [string]$PYTHON_EXE = ( $IsWindows ? "python.exe" : "python" ),
@@ -13,9 +14,10 @@ Param(
   [string]$PYTHON_USERBASE_PATH = ( Join-Path "${PYTHON_PATH}" "user"),
   [string]$PYTHON_USERBASE_PATH_SCRIPTS = ( Join-Path "${PYTHON_USERBASE_PATH}" "Python311" "Scripts"),
   [string]$PYTHON_USERBASE_PATH_SCRIPTS_PATH = ( Join-Path "${PYTHON_USERBASE_PATH}" "Python311" "site-packages"),
+  [string]$PYTHONPACKAGES = ( Join-Path "${SERVER_HOME}" "__packages__" ),
+
   # [string]$PYTHON_USERBASE_PACKAGES = ( Join-Path "${PYTHON_PATH}" "Python311" "site-packages" ),
   # [string]$PYTHON_LIB = ( Join-Path "${PYTHON_PATH}" "lib"),
-  [string]$SERVER_HOME = ( Join-Path "${PWD}" "${SERVICE_NAME}"),
   [string]$SERVER_REQUIREMENTS = ( Join-Path "${SERVER_HOME}" "requirements.txt" ),
   [string]$SERVICE_BIN_PROXY = ( Join-Path "${SERVER_HOME}" "main.py" ),
   [string]$SERVICE_BIN = ( Join-Path "${PYTHON_USERBASE_PATH_SCRIPTS_PATH}" "pgadmin4" "pgAdmin4.py" ),
@@ -55,6 +57,9 @@ Function PrintInfo
   printSectionLine "PYTHON_PATH_SCRIPTS: ${PYTHON_PATH_SCRIPTS}"
   printSectionLine "PGADMIN_SCRIPT: ${SERVICE_BIN}"
   printSectionLine "PGADMIN_SCRIPT_HOME: ${SERVICE_BIN_HOME}"
+  printSectionLine "PYTHON_USERBASE_PATH: ${PYTHON_USERBASE_PATH}"
+  printSectionLine "PYTHON_USERBASE_PATH_SCRIPTS: ${PYTHON_USERBASE_PATH_SCRIPTS}"
+  printSectionLine "PYTHON_USERBASE_PATH_SCRIPTS_PATH: ${PYTHON_USERBASE_PATH_SCRIPTS_PATH}"
 
   printSectionLine "env:PYTHONHOME: ${env:PYTHONHOME}"
   printSectionLine "env:PYTHONPATH: ${env:PYTHONPATH}"
@@ -92,7 +97,7 @@ Function StartSetup
       python get-pip.py
     }
     # Invoke-Expression -Command "${PYTHON} -m pip install --ignore-installed --use-pep517 --user -r ""${SERVER_REQUIREMENTS}"""
-    Invoke-Expression -Command "${PYTHON} -m pip install --ignore-installed --use-pep517 --user -r ""${SERVER_REQUIREMENTS}"""
+    Invoke-Expression -Command "${PYTHON} -m pip install --ignore-installed --use-pep517 --target=""${PYTHONPACKAGES}"" -r ""${SERVER_REQUIREMENTS}"""
     Invoke-Expression -Command "copy ${SERVER_HOME}\\config\\config_local.py ${SERVICE_BIN_HOME}\\config_local.py"
   } finally {
     Set-Location -Path "${CURRENT_PATH}"
@@ -102,9 +107,11 @@ Function StartSetup
 # SetPath "${PYTHON_HOME}"
 SetEnvPath "PATH" "${PYTHON_PATH}" "${PYTHON_PATH_SCRIPTS}" "${PYTHON_USERBASE_PATH_SCRIPTS}"
 
+# SetEnvPath "PYTHONPATH" "${PYTHONPACKAGES}"
 SetEnvPath "PYTHONPATH" "${PYTHON_HOME}"
 SetEnvPath "PYTHONHOME" "${PYTHON_HOME}"
 SetEnvPath "PYTHONUSERBASE" "${PYTHON_USERBASE_PATH}"
+# SetEnvVar "PYTHONUSERBASE" "${PYTHONPACKAGES}"
 
 SetEnvPath "PGADMIN_SCRIPT" "${SERVICE_BIN}"
 SetEnvPath "PGADMIN_SCRIPT_HOME" "${SERVICE_BIN_HOME}"
