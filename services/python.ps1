@@ -70,9 +70,10 @@ Function StartServer
 {
   Set-Location -Path "${PYTHON_HOME}"
   try {
-      Invoke-Expression -Command "${PYTHON} -c ""import os,sysconfig;print('PYTHON_USERBASE_PATH_SCRIPTS='+sysconfig.get_path('scripts',f'{os.name}_user'));print('PYTHON_SCRIPTS_PATH='+sysconfig.get_path('scripts',f'{os.name}'));print('PYTHON_USERBASE_PATH='+sysconfig.get_path('data',f'{os.name}_user'))"""
+      Invoke-Expression -Command "${PYTHON} -c ""import os,sysconfig,site;print('PYTHON_USERBASE_PATH_SCRIPTS='+sysconfig.get_path('scripts',f'{os.name}_user'));print('PYTHON_SCRIPTS_PATH='+sysconfig.get_path('scripts',f'{os.name}'));print('PYTHON_USERBASE_PATH='+sysconfig.get_path('data',f'{os.name}_user'));print('PYTHON_USERBASE_PATH_SCRIPTS_PATH='+site.getusersitepackages())"""
       # Invoke-Expression -Command "${PYTHON} -c ""import os,sysconfig;print('PYTHON_SCRIPTS_PATH:'+sysconfig.get_path('scripts',f'{os.name}'))"""
       # Invoke-Expression -Command "${PYTHON} -m sysconfig"
+      # Invoke-Expression -Command "${PYTHON} -m site"
       # Invoke-Expression -Command "${PYTHON} -m site --user-base --user-site"
       # Invoke-Expression -Command "${PYTHON} -c ""import site; print(site.getsitepackages())"""
   } finally {
