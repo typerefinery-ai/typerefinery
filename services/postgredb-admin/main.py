@@ -13,14 +13,15 @@ if __name__ == "__main__":
     Logger.add(sys.stdout, level="INFO")
 
     Logger.info("Resolve PGADMIN variables")
-    PGADMIN_SCRIPT = os.path.realpath('__packages__/pgadmin4/pgAdmin4.py')
-    PGADMIN_ROOT = os.path.dirname(PGADMIN_SCRIPT)
+    PGADMIN_SCRIPT = os.getenv("PGADMIN_SCRIPT", "")
+    PGADMIN_ROOT = os.getenv("PGADMIN_SCRIPT_HOME", "")
     Logger.info("PGADMIN exec script: " + PGADMIN_SCRIPT)
     Logger.info("PGADMIN root directory: " + PGADMIN_ROOT)
     Logger.info("Updating execution path")
     os.chdir(PGADMIN_ROOT)
     Logger.info("Execution path: " + os.getcwd())
     Logger.info("Python path: " + ";".join(sys.path))
+
     packages = os.path.realpath(os.getenv("PYTHONPATH", ""))
     appdata = os.path.realpath(os.getenv("SERVICE_HOME", ""))
     os.environ['APPDATA'] = appdata

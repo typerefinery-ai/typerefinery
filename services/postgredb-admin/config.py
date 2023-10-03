@@ -61,7 +61,7 @@ class CONFIG(object):
 
   def update_path(self, script_path):
     self.APP_SCRIPT_PATH = script_path
-    self.APP_SERVICE_PACKAGES_PATH = os.path.join(script_path, "__packages__")
+    self.APP_SERVICE_PACKAGES_PATH = os.path.join(script_path, "site-packages")
     sys.path.insert(0, self.APP_SERVICE_PACKAGES_PATH)
     sys.path.append(self.APP_SCRIPT_PATH)
 
