@@ -87,6 +87,13 @@ if (isAutoStart) {
   serviceManager.startAll()
 }
 
+function escapeHTML(unsafe) {
+  return unsafe.replace(
+    "/[\u0000-\u002F\u003A-\u0040\u005B-\u0060\u007B-\u00FF]/g",
+    (c) => "&#" + ("000" + c.charCodeAt(0)).slice(-4) + ";"
+  )
+}
+
 function getServicePage(service: Service) {
   const serviceDependencies = getServiceDependencies([service.id])
 
@@ -222,9 +229,9 @@ function getServicePage(service: Service) {
         </div>
         <div class="input-group input-group-sm mb-1">
           <span class="input-group-text" id="inputGroup-sizing-sm">Command Line</span>
-          <input type="text" value="${service.getServiceCommand(
-            true
-          )}" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+          <textare type="text" readonly class="form-control overflow-auto" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" rows="3">
+            ${service.getServiceCommand(true)}
+          </textarea>
         </div>
         <div class="input-group input-group-sm mb-1">
           <span class="input-group-text" id="inputGroup-sizing-sm">Command Line Cli</span>
