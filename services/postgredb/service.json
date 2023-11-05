@@ -8,6 +8,8 @@
   "icon": "pi pi-cog",
   "servicetype": 10,
   "execconfig": {
+    "debuglog": true,
+    "execshell": true,
     "serviceorder": 10,
     "serviceport": 8500,
     "authentication": {
@@ -30,20 +32,20 @@
     },
     "setup": {
       "win32": [
-        "; echo ${SERVICE_AUTH_PASSWORD}>${SERVICE_HOME}\\config\\default.password.txt",
-        "; ${SERVICE_EXECUTABLE_HOME}\\initdb -D ${SERVICE_DATA_PATH} -U ${SERVICE_AUTH_USERNAME} --pwfile=${SERVICE_HOME}\\config\\default.password.txt"
+        "; echo ${SERVICE_AUTH_PASSWORD}>\"${SERVICE_HOME}\\config\\default.password.txt\"",
+        "; initdb.exe -D \"${SERVICE_DATA_PATH}\" -U ${SERVICE_AUTH_USERNAME} --pwfile=\"${SERVICE_HOME}\\config\\default.password.txt\""
       ],
       "darwin": [
-        "; echo ${SERVICE_AUTH_PASSWORD}>${SERVICE_HOME}/config/default.password.txt",
-        "; ${SERVICE_EXECUTABLE_HOME}/initdb -D ${SERVICE_DATA_PATH} -U ${SERVICE_AUTH_USERNAME} --pwfile=${SERVICE_HOME}/config/default.password.txt"
+        "; echo ${SERVICE_AUTH_PASSWORD}>\"${SERVICE_HOME}/config/default.password.txt\"",
+        "; initdb -D \"${SERVICE_DATA_PATH}\" -U ${SERVICE_AUTH_USERNAME} --pwfile=\"${SERVICE_HOME}/config/default.password.txt\""
       ],
       "linux": [
-        "; echo ${SERVICE_AUTH_PASSWORD}>${SERVICE_HOME}/config/default.password.txt",
-        "; ${SERVICE_EXECUTABLE_HOME}/initdb -D ${SERVICE_DATA_PATH} -U ${SERVICE_AUTH_USERNAME} --pwfile=${SERVICE_HOME}/config/default.password.txt"
+        "; echo ${SERVICE_AUTH_PASSWORD}>\"${SERVICE_HOME}/config/default.password.txt\"",
+        "; \"${SERVICE_EXECUTABLE_HOME}/initdb\" -D \"${SERVICE_DATA_PATH}\" -U ${SERVICE_AUTH_USERNAME} --pwfile=\"${SERVICE_HOME}/config/default.password.txt\""
       ],
       "default": [
-        "; echo ${SERVICE_AUTH_PASSWORD}>${SERVICE_HOME}\\config\\default.password.txt",
-        "; ${SERVICE_EXECUTABLE_HOME}\\initdb -D ${SERVICE_DATA_PATH} -U ${SERVICE_AUTH_USERNAME} --pwfile=${SERVICE_HOME}\\config\\default.password.txt"
+        "; echo ${SERVICE_AUTH_PASSWORD}>\"${SERVICE_HOME}\\config\\default.password.txt\"",
+        "; \"${SERVICE_EXECUTABLE_HOME}\\initdb\" -D \"${SERVICE_DATA_PATH}\" -U ${SERVICE_AUTH_USERNAME} --pwfile=\"${SERVICE_HOME}\\config\\default.password.txt\""
       ]
     },
     "executable": {
@@ -60,10 +62,13 @@
     },
     "datapath": "database/db",
     "commandline": {
-      "win32": "-D ${SERVICE_DATA_PATH} -h ${SERVICE_HOST} -p ${SERVICE_PORT}",
-      "darwin": "-D ${SERVICE_DATA_PATH} -h ${SERVICE_HOST} -p ${SERVICE_PORT}",
-      "linux": "-D ${SERVICE_DATA_PATH} -h ${SERVICE_HOST} -p ${SERVICE_PORT}",
-      "default": "-D ${SERVICE_DATA_PATH} -h ${SERVICE_HOST} -p ${SERVICE_PORT}"
+      "win32": "-D \"${SERVICE_DATA_PATH}\" -h ${SERVICE_HOST} -p ${SERVICE_PORT}",
+      "darwin": "-D \"${SERVICE_DATA_PATH}\" -h ${SERVICE_HOST} -p ${SERVICE_PORT}",
+      "linux": "-D \"${SERVICE_DATA_PATH}\" -h ${SERVICE_HOST} -p ${SERVICE_PORT}",
+      "default": "-D \"${SERVICE_DATA_PATH}\" -h ${SERVICE_HOST} -p ${SERVICE_PORT}"
+    },
+    "env": {
+      "PATH": "${SERVICE_EXECUTABLE_HOME}"
     },
     "globalenv": {
       "POSTGRE_HOST": "${SERVICE_HOST}",
@@ -74,6 +79,16 @@
     "healthcheck": {
       "type": "tcp",
       "retries": 30
+    }
+  },
+  "actions": {
+    "stop": {
+      "commandline": {
+        "win32": "; pg_ctl.exe -D \"${SERVICE_DATA_PATH}\" stop",
+        "darwin": "; pg_ctl -D \"${SERVICE_DATA_PATH}\" stop",
+        "linux": "; pg_ctl -D \"${SERVICE_DATA_PATH}\" stop",
+        "default": "; pg_ctl.exe -D \"${SERVICE_DATA_PATH}\" stop"
+      }
     }
   }
 }

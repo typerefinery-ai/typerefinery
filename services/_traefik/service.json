@@ -9,8 +9,9 @@
   "servicelocation": 10,
   "execconfig": {
     "serviceorder": 3,
-    "serviceport": 8102,
-    "serviceconsoleport": 8102,
+    "serviceport": 8101,
+    "serviceportsecondary": 8100,
+    "serviceportconsole": 8102,
     "portmapping": {
       "HTTP": "9100",
       "HTTPS": "9200",
@@ -31,32 +32,35 @@
       "linux": "traefik/bin/traefik",
       "default": "traefik\\bin\\traefik"
     },
+    "env": {
+      "PATH": "${SERVICE_EXECUTABLE_HOME}"
+    },
     "globalenv": {
-      "TRAEFIK_JUPYTERLAB_URL": "https://jupyterlab.typerefinery.localhost:8101/",
-      "TRAEFIK_NGINX_URL": "https://nginx.typerefinery.localhost:8101/",
-      "TRAEFIK_FLOW_URL": "https://flow.typerefinery.localhost:8101/",
-      "TRAEFIK_FLOW_WSS_URL": "wss://flow.typerefinery.localhost:8101",
-      "TRAEFIK_CMS_URL": "https://cms.typerefinery.localhost:8101/",
-      "TRAEFIK_TMS_URL": "https://tms.typerefinery.localhost:8101/",
-      "TRAEFIK_TMS_WSS_URL": "wss://tms.typerefinery.localhost:8101",
-      "TRAEFIK_FASTAPI_URL": "https://api.typerefinery.localhost:8101/",
-      "TRAEFIK_PGADMIN_URL": "https://pgadmin.typerefinery.localhost:8101/",
-      "TRAEFIK_FILES_URL": "https://files.typerefinery.localhost:8101/",
-      "TRAEFIK_BPMN_URL": "https://bpmn.typerefinery.localhost:8101/",
-      "TRAEFIK_TRAEFIK_URL": "https://traefik.typerefinery.localhost:8101/",
-      "TRAEFIK_HTTP_PORT": "8100",
-      "TRAEFIK_HTTPS_PORT": "8101",
+      "TRAEFIK_JUPYTERLAB_URL": "https://jupyterlab.typerefinery.localhost:${SERVICE_PORT}/",
+      "TRAEFIK_NGINX_URL": "https://nginx.typerefinery.localhost:${SERVICE_PORT}/",
+      "TRAEFIK_FLOW_URL": "https://flow.typerefinery.localhost:${SERVICE_PORT}/",
+      "TRAEFIK_FLOW_WSS_URL": "wss://flow.typerefinery.localhost:${SERVICE_PORT}",
+      "TRAEFIK_CMS_URL": "https://cms.typerefinery.localhost:${SERVICE_PORT}/",
+      "TRAEFIK_TMS_URL": "https://tms.typerefinery.localhost:${SERVICE_PORT}/",
+      "TRAEFIK_TMS_WSS_URL": "wss://tms.typerefinery.localhost:${SERVICE_PORT}",
+      "TRAEFIK_FASTAPI_URL": "https://api.typerefinery.localhost:${SERVICE_PORT}/",
+      "TRAEFIK_PGADMIN_URL": "https://pgadmin.typerefinery.localhost:${SERVICE_PORT}/",
+      "TRAEFIK_FILES_URL": "https://files.typerefinery.localhost:${SERVICE_PORT}/",
+      "TRAEFIK_BPMN_URL": "https://bpmn.typerefinery.localhost:${SERVICE_PORT}/",
+      "TRAEFIK_TRAEFIK_URL": "https://traefik.typerefinery.localhost:${SERVICE_PORT}/",
+      "TRAEFIK_HTTP_PORT": "${SERVICE_PORT_SECONDARY}",
+      "TRAEFIK_HTTPS_PORT": "${SERVICE_PORT}",
       "TRAEFIK_MONGO_PORT": "8108",
       "TRAEFIK_TYPEDB_PORT": "8109",
-      "TRAEFIK_INTERNAL_PORT": "8102",
+      "TRAEFIK_INTERNAL_PORT": "${SERVICE_PORT_CONSOLE}",
       "TRAEFIK_HOST_DOMAIN": "localhost.${CERT_DOMAIN}",
       "TRAEFIK_HOST_DOMAIN_URL": "localhost.${CERT_DOMAIN}"
     },
     "commandline": {
-      "win32": " --log.level=DEBUG --providers.file.filename=${SERVICE_HOME}\\config\\dynamic\\dynamic.yml --api.insecure=true --api.dashboard=true --entryPoints.web.address=\":${TRAEFIK_HTTP_PORT}\" --entryPoints.websecure.address=\":${TRAEFIK_HTTPS_PORT}\" --entryPoints.traefik.address=\":${TRAEFIK_INTERNAL_PORT}\" --entryPoints.mongo.address=\":${TRAEFIK_MONGO_PORT}\" --entryPoints.typedb.address=\":${TRAEFIK_TYPEDB_PORT}\" --serversTransport.insecureSkipVerify=true",
-      "darwin": " --log.level=DEBUG --providers.file.filename=${SERVICE_HOME}/config/dynamic/dynamic.yml --api.insecure=true --api.dashboard=true --entryPoints.web.address=\":${TRAEFIK_HTTP_PORT}\" --entryPoints.websecure.address=\":${TRAEFIK_HTTPS_PORT}\" --entryPoints.traefik.address=\":${TRAEFIK_INTERNAL_PORT}\" --entryPoints.mongo.address=\":${TRAEFIK_MONGO_PORT}\" --entryPoints.typedb.address=\":${TRAEFIK_TYPEDB_PORT}\" --serversTransport.insecureSkipVerify=true",
-      "linux": " --log.level=DEBUG --providers.file.filename=${SERVICE_HOME}/config/dynamic/dynamic.yml --api.insecure=true --api.dashboard=true --entryPoints.web.address=\":${TRAEFIK_HTTP_PORT}\" --entryPoints.websecure.address=\":${TRAEFIK_HTTPS_PORT}\" --entryPoints.traefik.address=\":${TRAEFIK_INTERNAL_PORT}\" --entryPoints.mongo.address=\":${TRAEFIK_MONGO_PORT}\" --entryPoints.typedb.address=\":${TRAEFIK_TYPEDB_PORT}\" --serversTransport.insecureSkipVerify=true",
-      "default": " --log.level=DEBUG --providers.file.filename=${SERVICE_HOME}\\config\\dynamic\\dynamic.yml --api.insecure=true --api.dashboard=true --entryPoints.web.address=\":${TRAEFIK_HTTP_PORT}\" --entryPoints.websecure.address=\":${TRAEFIK_HTTPS_PORT}\" --entryPoints.traefik.address=\":${TRAEFIK_INTERNAL_PORT}\" --entryPoints.mongo.address=\":${TRAEFIK_MONGO_PORT}\" --entryPoints.typedb.address=\":${TRAEFIK_TYPEDB_PORT}\" --serversTransport.insecureSkipVerify=true"
+      "win32": " --log.level=DEBUG --providers.file.filename=\"${SERVICE_HOME}\\config\\dynamic\\dynamic.yml\" --api.insecure=true --api.dashboard=true --entryPoints.web.address=\":${SERVICE_PORT_SECONDARY}\" --entryPoints.websecure.address=\":${SERVICE_PORT}\" --entryPoints.traefik.address=\":${SERVICE_PORT_CONSOLE}\" --entryPoints.mongo.address=\":${TRAEFIK_MONGO_PORT}\" --entryPoints.typedb.address=\":${TRAEFIK_TYPEDB_PORT}\" --serversTransport.insecureSkipVerify=true",
+      "darwin": " --log.level=DEBUG --providers.file.filename=\"${SERVICE_HOME}/config/dynamic/dynamic.yml\" --api.insecure=true --api.dashboard=true --entryPoints.web.address=\":${SERVICE_PORT_SECONDARY}\" --entryPoints.websecure.address=\":${SERVICE_PORT}\" --entryPoints.traefik.address=\":${SERVICE_PORT_CONSOLE}\" --entryPoints.mongo.address=\":${TRAEFIK_MONGO_PORT}\" --entryPoints.typedb.address=\":${TRAEFIK_TYPEDB_PORT}\" --serversTransport.insecureSkipVerify=true",
+      "linux": " --log.level=DEBUG --providers.file.filename=\"${SERVICE_HOME}/config/dynamic/dynamic.yml\" --api.insecure=true --api.dashboard=true --entryPoints.web.address=\":${SERVICE_PORT_SECONDARY}\" --entryPoints.websecure.address=\":${SERVICE_PORT}\" --entryPoints.traefik.address=\":${SERVICE_PORT_CONSOLE}\" --entryPoints.mongo.address=\":${TRAEFIK_MONGO_PORT}\" --entryPoints.typedb.address=\":${TRAEFIK_TYPEDB_PORT}\" --serversTransport.insecureSkipVerify=true",
+      "default": " --log.level=DEBUG --providers.file.filename=\"${SERVICE_HOME}\\config\\dynamic\\dynamic.yml\" --api.insecure=true --api.dashboard=true --entryPoints.web.address=\":${SERVICE_PORT_SECONDARY}\" --entryPoints.websecure.address=\":${SERVICE_PORT}\" --entryPoints.traefik.address=\":${SERVICE_PORT_CONSOLE}\" --entryPoints.mongo.address=\":${TRAEFIK_MONGO_PORT}\" --entryPoints.typedb.address=\":${TRAEFIK_TYPEDB_PORT}\" --serversTransport.insecureSkipVerify=true"
     },
     "healthcheck": {
       "type": "http",

@@ -16,6 +16,7 @@
       "default": ["; ${NODE} ${NODE_HOME}\\node_modules\\npm\\bin\\npm-cli.js install"]
     },
     "env": {
+      "PATH": "${NODE_HOME}",
       "PORT": "${SERVICE_PORT}",
       "API_KEY": "typerefinery",
       "SESSION_SECRET": "typerefinery",

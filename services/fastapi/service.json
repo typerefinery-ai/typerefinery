@@ -7,16 +7,17 @@
   "icon": "pi pi-cog",
   "servicelocation": 10,
   "execconfig": {
+    "debuglog": true,
     "execservice": { "id": "python" },
     "setup": {
-      "win32": ["-m pip install --ignore-installed --use-pep517 --no-warn-script-location --user -r ${SERVICE_PATH}\\requirements.txt"],
-      "darwin": ["-m pip install --ignore-installed --use-pep517 --no-warn-script-location --user -r ${SERVICE_PATH}/requirements.txt"],
-      "linux": ["-m pip install --ignore-installed --use-pep517 --no-warn-script-location --user -r ${SERVICE_PATH}/requirements.txt"],
-      "default": ["-m pip install --ignore-installed --use-pep517 --no-warn-script-location --user -r ${SERVICE_PATH}\\requirements.txt"]
+      "win32": ["-m pip install --upgrade --use-pep517 --user -r ${SERVICE_PATH}\\requirements.txt"],
+      "darwin": ["-m pip install --upgrade --use-pep517 --user -r ${SERVICE_PATH}/requirements.txt"],
+      "linux": ["-m pip install --upgrade --use-pep517 --user -r ${SERVICE_PATH}/requirements.txt"],
+      "default": ["-m pip install --upgrade --use-pep517 --user -r ${SERVICE_PATH}\\requirements.txt"]
     },
     "env": {
       "PYTHONPATH": "${PYTHON_HOME}",
-      "PYTHONUSERBASE": "${PYTHON_USERBASE_PATH}",
+      "PYTHONUSERBASE": "${SERVICE_PATH}/__packages__",
       "PATH": [
         "${PYTHON_HOME}",
         "${PYTHON_SCRIPTS_PATH}",

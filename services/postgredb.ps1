@@ -4,8 +4,10 @@ Param(
   [string]$CURRENT_PATH = "${PWD}",
   [string]$OS = ( $IsWindows ? "win32" : ( $IsMacOS ? "darwin" : "linux" ) ),
   [string]$CPU_ARCH = "x64",
+  [string]$SERVICE_EXE = ( $IsWindows ? "./postgres.exe" : "./postgres" ),
   [string]$SERVICE_HOME = ( Join-Path "${PWD}" "${SERVICE_NAME}"),
-  [string]$SERVICE_PROGRAM_PATH = ( Join-Path "${PWD}" "${SERVICE_NAME}" "${OS}" "bin" "postgres"),
+  [string]$SERVICE_PROGRAM_PATH = ( Join-Path "${PWD}" "${SERVICE_NAME}" "${OS}" "postgredb" "bin" "${SERVICE_EXE}"),
+  [string]$SERVICE_EXE_PATH = ( Join-Path "${PWD}" "${SERVICE_NAME}" "${OS}" "postgredb" "bin"),
   [string]$SERVICE_SHELL_PATH = ( Join-Path "${PWD}" "${SERVICE_NAME}" "${OS}" "bin" "psql"),
   [string]$SERVICE_INIT_PATH = ( Join-Path "${PWD}" "${SERVICE_NAME}" "${OS}" "bin" "initdb"),
   [string]$SERVICE_DATA_PATH = ( Join-Path "${PWD}" "${SERVICE_NAME}" "database" "db"),
@@ -53,10 +55,12 @@ Function PrintInfo
 Function StartServer
 {
 
-  Set-Location -Path "${SERVER_HOME}"
+  Set-Location -Path "${SERVICE_EXE_PATH}"
   try {
-    # Invoke-Expression -Command "${SERVICE_PROGRAM_PATH} --dbpath ${SERVICE_DB_PATH}"
-    Invoke-Expression -Command "${SERVICE_PROGRAM_PATH} -D ${SERVICE_DATA_PATH} -h ${SERVICE_HOST} -p ${SERVICE_PORT}"
+    echo "SERVER_HOME: ${SERVICE_EXE_PATH}"
+    echo "PWD: ${PWD}"
+    echo "${SERVICE_EXE} -D ""${SERVICE_DATA_PATH}"" -h ${SERVICE_HOST} -p ${SERVICE_PORT}"
+    Invoke-Expression -Command "${SERVICE_EXE} -D ""${SERVICE_DATA_PATH}"" -h ${SERVICE_HOST} -p ${SERVICE_PORT}"
   } catch {
     printSectionLine "Error: ${_}"
   } finally {

@@ -7,6 +7,7 @@ Param(
   [string]$OS = ( $IsWindows ? "win32" : ( $IsMacOS ? "darwin" : "linux" ) ),
   [string]$PYTHON_BIN = ( $IsWindows ? "" : "bin" ),
   [string]$PYTHON_EXE = ( $IsWindows ? "python.exe" : "python" ),
+  [string]$PYTHON_OS_HOME = ( Join-Path "${PWD}" "_python" "${OS}"),
   [string]$PYTHON_HOME = ( Join-Path "${PWD}" "_python" "${OS}" "${PYTHON_BIN}" "python"),
   [string]$PYTHON_HOME_SCRIPTS = ( Join-Path "${PYTHON_HOME}" "Scripts"),
   [string]$PYTHON = ( Join-Path "${PYTHON_HOME}" "${PYTHON_EXE}"),
@@ -65,7 +66,7 @@ Function PrintInfo
 
 Function StartSetup
 {
-  Set-Location -Path "${PYTHON_HOME}"
+  Set-Location -Path "${PYTHON_OS_HOME}"
   try {
     #Invoke-Expression -Command "${ARCHIVE_PROGRAM_PATH} -?"
     Invoke-Expression -Command "${ARCHIVE_PROGRAM_PATH} x -opython -aoa ${SERVICE_PLATFORM_ARCHIVE}"
@@ -78,9 +79,9 @@ Function StartSetup
       Invoke-Expression -Command "copy ${SERVICE_PATH}\\get-pip.py ${SERVICE_EXECUTABLE_HOME}"
       Invoke-Expression -Command "copy ${SERVICE_PATH}\\requirements.txt ${SERVICE_EXECUTABLE_HOME}"
       Invoke-Expression -Command "${PYTHON} get-pip.py"
-      Invoke-Expression -Command "${PYTHON} -m pip install --user --ignore-installed --no-warn-script-location -r ${SERVER_REQUIREMENTS}"
+      Invoke-Expression -Command "${PYTHON} -m pip install --upgrade --use-pep517 --user -r ${SERVER_REQUIREMENTS}"
     } else {
-      Invoke-Expression -Command "${PYTHON} -m pip install --user --ignore-installed --no-warn-script-location -r ${SERVER_REQUIREMENTS}"
+      Invoke-Expression -Command "${PYTHON} -m pip install --upgrade --use-pep517 --user -r ${SERVER_REQUIREMENTS}"
     }
   } finally {
     Set-Location -Path "${CURRENT_PATH}"
@@ -125,7 +126,7 @@ Function StartInfo
 
 
 SetPath "${PYTHON_HOME}"
-SetEnvPath "PATH" "${PYTHON_HOME_SCRIPTS}" "${PYTHON_USERBASE_PATH_SCRIPTS}"
+SetEnvPath "PATH" "${PYTHON_HOME}" "${PYTHON_HOME_SCRIPTS}" "${PYTHON_USERBASE_PATH_SCRIPTS}"
 
 SetEnvPath "PYTHONPATH" "${PYTHON_HOME}"
 SetEnvPath "PYTHONHOME" "${PYTHON_HOME}"

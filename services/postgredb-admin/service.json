@@ -11,25 +11,25 @@
     "setup": {
       "win32": [
         "-m pip install --ignore-installed --use-pep517 --user -r ${SERVICE_PATH}\\requirements.txt",
-        "; copy ${SERVICE_PATH}\\config\\config_local.py ${PYTHON_USERBASE_PATH_SCRIPTS_PATH}\\pgadmin4\\config_local.py"
+        "; copy ${SERVICE_PATH}\\config\\config_local.py ${PYTHON_USERBASE_PATH_PACKAGES}\\pgadmin4\\config_local.py"
       ],
       "darwin": [
         "-m pip install --ignore-installed --use-pep517 --user -r ${SERVICE_PATH}/requirements.txt",
-        "; /bin/cp -r ${SERVICE_PATH}/config/config_local.py ${PYTHON_USERBASE_PATH_SCRIPTS_PATH}/pgadmin4/config_local.py"
+        "; /bin/cp -r ${SERVICE_PATH}/config/config_local.py ${PYTHON_USERBASE_PATH_PACKAGES}/pgadmin4/config_local.py"
       ],
       "linux": [
         "-m pip install --ignore-installed --use-pep517 --user -r ${SERVICE_PATH}/requirements.txt",
-        "; /bin/cp -r ${SERVICE_PATH}/config/config_local.py ${PYTHON_USERBASE_PATH_SCRIPTS_PATH}/pgadmin4/config_local.py"
+        "; /bin/cp -r ${SERVICE_PATH}/config/config_local.py ${PYTHON_USERBASE_PATH_PACKAGES}/pgadmin4/config_local.py"
       ],
       "default": [
         "-m pip install --ignore-installed --use-pep517 --user -r ${SERVICE_PATH}\\requirements.txt",
-        "; copy ${SERVICE_PATH}\\config\\config_local.py ${PYTHON_USERBASE_PATH_SCRIPTS_PATH}\\pgadmin4\\config_local.py"
+        "; copy ${SERVICE_PATH}\\config\\config_local.py ${PYTHON_USERBASE_PATH_PACKAGES}\\pgadmin4\\config_local.py"
       ]
     },
     "env": {
       "DATA_DIR": "${SERVICE_DATA_PATH}",
-      "PGADMIN_SCRIPT": "${PYTHON_USERBASE_PATH_SCRIPTS_PATH}/pgadmin4/pgAdmin4.py",
-      "PGADMIN_SCRIPT_HOME": "${PYTHON_USERBASE_PATH_SCRIPTS_PATH}/pgadmin4",
+      "PGADMIN_SCRIPT": "${PYTHON_USERBASE_PATH_PACKAGES}/pgadmin4/pgAdmin4.py",
+      "PGADMIN_SCRIPT_HOME": "${PYTHON_USERBASE_PATH_PACKAGES}/pgadmin4",
       "PGADMIN_SERVER_MODE": "OFF",
       "PGADMIN_INT_PORT": "${SERVICE_PORT}",
       "CONSOLE_LOG_LEVEL": "INFO",
