@@ -192,12 +192,30 @@ function getServicePage(service: Service) {
           }" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
         </div>
         <div class="input-group input-group-sm mb-1">
+          <span class="input-group-text" id="inputGroup-sizing-sm">Debug Log</span>
+          <input type="text" value="${
+            service.isDebug
+          }" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+        </div>
+        <div class="input-group input-group-sm mb-1">
           <span class="input-group-text" id="inputGroup-sizing-sm">Status</span>
           <input type="text" value="${serviceStatusName}" readonly class="form-control ${statusBackground}" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
         </div>
         <div class="input-group input-group-sm mb-1">
-          <span class="input-group-text" id="inputGroup-sizing-sm">Port</span>
+          <span class="input-group-text" id="inputGroup-sizing-sm">URL</span>
           <span class="form-control">${serviceLink}</span>
+        </div>
+        <div class="input-group input-group-sm mb-1">
+          <span class="input-group-text" id="inputGroup-sizing-sm">Port</span>
+          <span class="form-control">${service.port}</span>
+        </div>
+        <div class="input-group input-group-sm mb-1">
+          <span class="input-group-text" id="inputGroup-sizing-sm">Port Secondary</span>
+          <span class="form-control">${service.portsecondary}</span>
+        </div>
+        <div class="input-group input-group-sm mb-1">
+          <span class="input-group-text" id="inputGroup-sizing-sm">Port Console</span>
+          <span class="form-control">${service.portconsole}</span>
         </div>
         <div class="input-group input-group-sm mb-1">
           <span class="input-group-text" id="inputGroup-sizing-sm">PID</span>
@@ -228,8 +246,14 @@ function getServicePage(service: Service) {
           <input type="text" value="${service.getServiceExecutable()}" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
         </div>
         <div class="input-group input-group-sm mb-1">
+          <span class="input-group-text" id="inputGroup-sizing-sm">Executable Path</span>
+          <input type="text" value="${service.getServiceExecutable(
+            true
+          )}" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+        </div>
+        <div class="input-group input-group-sm mb-1">
           <span class="input-group-text" id="inputGroup-sizing-sm">Command Line</span>
-          <textare type="text" readonly class="form-control overflow-auto" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" rows="3">
+          <textarea type="text" readonly class="form-control overflow-auto" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" rows="3">
             ${service.getServiceCommand(true)}
           </textarea>
         </div>
@@ -238,6 +262,18 @@ function getServicePage(service: Service) {
           <input type="text" value="${service.getServiceCommandCli(
             true
           )}" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+        </div>
+        <div class="input-group input-group-sm mb-1">
+          <span class="input-group-text" id="inputGroup-sizing-sm">Setup Command Line</span>
+          <textarea type="text" readonly class="form-control overflow-auto" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" rows="10">
+            ${service.getSetupForPlatfrom.join("\n")}
+          </textarea>
+        </div>
+        <div class="input-group input-group-sm mb-1">
+          <span class="input-group-text" id="inputGroup-sizing-sm">Setup Command Line Parsed</span>
+          <textarea type="text" readonly class="form-control overflow-auto" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" rows="10">
+            ${service.getSetupForPlatfromParsed.join("\n")}
+          </textarea>
         </div>
         <div class="input-group input-group-sm mb-1">
           <span class="input-group-text" id="inputGroup-sizing-sm">Is Setup</span>
