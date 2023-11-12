@@ -11,6 +11,7 @@
   "execconfig": {
     "debuglog": true,
     "serviceorder": 1,
+    "execcwd": "${SERVICE_HOME}",
     "executable": {
       "win32": "python\\python.exe",
       "darwin": "python/bin/python",
