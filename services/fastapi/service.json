@@ -17,11 +17,12 @@
     },
     "env": {
       "PYTHONPATH": "${PYTHON_HOME}",
-      "PYTHONUSERBASE": "${SERVICE_PATH}/__packages__",
+      "PYTHONUSERBASE": "${SERVICE_PATH}\\__packages__",
       "PATH": [
         "${PYTHON_HOME}",
         "${PYTHON_SCRIPTS_PATH}",
         "${PYTHON_USERBASE_PATH_SCRIPTS}",
+        "${SERVICE_PATH}\\__packages__\\Python311\\Scripts",
         "${NODE_HOME}"
       ]
     },

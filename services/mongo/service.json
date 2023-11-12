@@ -12,6 +12,8 @@
       "username": "mongoadmin",
       "password": "mongoadmin"
     },
+    "execshell": true,
+    "execcwd": "${SERVICE_HOME}",
     "serviceorder": 10,
     "serviceport": 8180,
     "setuparchive": {
@@ -31,7 +33,7 @@
     "setup": {
       "win32": [
         "; ${SERVICE_EXECUTABLE} --dbpath ${SERVICE_DATA_PATH} --port ${SERVICE_PORT} &",
-        "; sleep 5",
+        "; python.exe -c \"import time; time.sleep(5)\" ",
         "; ${SERVICE_EXECUTABLE_CLI} admin --port ${SERVICE_PORT} --quiet --eval \"printjson(db.createUser({user: '${SERVICE_AUTH_USERNAME}',pwd: '${SERVICE_AUTH_PASSWORD}',roles: [{ role: 'root', db: 'admin' },]}))\"",
         "; ${SERVICE_EXECUTABLE_CLI} admin --port ${SERVICE_PORT} --quiet --eval 'db.shutdownServer()'"
       ],
@@ -39,7 +41,7 @@
         "; chmod +x ${SERVICE_EXECUTABLE}",
         "; chmod +x ${SERVICE_EXECUTABLE_CLI}",
         "; ${SERVICE_EXECUTABLE} --dbpath ${SERVICE_DATA_PATH} --port ${SERVICE_PORT} &",
-        "; sleep 5",
+        "; python.exe -c \"import time; time.sleep(5)\"",
         "; ${SERVICE_EXECUTABLE_CLI} admin --port ${SERVICE_PORT} --quiet --eval \"printjson(db.createUser({user: '${SERVICE_AUTH_USERNAME}',pwd: '${SERVICE_AUTH_PASSWORD}',roles: [{ role: 'root', db: 'admin' },]}))\"",
         "; ${SERVICE_EXECUTABLE_CLI} admin --port ${SERVICE_PORT} --quiet --eval 'db.shutdownServer()'"
       ],
@@ -47,13 +49,13 @@
         "; chmod +x ${SERVICE_EXECUTABLE}",
         "; chmod +x ${SERVICE_EXECUTABLE_CLI}",
         "; ${SERVICE_EXECUTABLE} --dbpath ${SERVICE_DATA_PATH} --port ${SERVICE_PORT} &",
-        "; sleep 5",
+        "; python.exe -c \"import time; time.sleep(5)\"",
         "; ${SERVICE_EXECUTABLE_CLI} admin --port ${SERVICE_PORT} --quiet --eval \"printjson(db.createUser({user: '${SERVICE_AUTH_USERNAME}',pwd: '${SERVICE_AUTH_PASSWORD}',roles: [{ role: 'root', db: 'admin' },]}))\"",
         "; ${SERVICE_EXECUTABLE_CLI} admin --port ${SERVICE_PORT} --quiet --eval 'db.shutdownServer()'"
       ],
       "default": [
         "; ${SERVICE_EXECUTABLE} --dbpath ${SERVICE_DATA_PATH} --port ${SERVICE_PORT} &",
-        "; sleep 5",
+        "; python.exe -c \"import time; time.sleep(5)\"",
         "; ${SERVICE_EXECUTABLE_CLI} admin --port ${SERVICE_PORT} --quiet --eval \"printjson(db.createUser({user: '${SERVICE_AUTH_USERNAME}',pwd: '${SERVICE_AUTH_PASSWORD}',roles: [{ role: 'root', db: 'admin' },]}))\"",
         "; ${SERVICE_EXECUTABLE_CLI} admin --port ${SERVICE_PORT} --quiet --eval 'db.shutdownServer()'"
       ]
@@ -80,6 +82,8 @@
     "env": {
       "PATH": [
         "${ARCHIVE_HOME}",
+        "${PYTHON_HOME}",
+        "${PYTHON_SCRIPTS_PATH}",
         "${SERVICE_EXECUTABLE_HOME}"
       ]
     },
@@ -92,7 +96,10 @@
     "healthcheck": {
       "type": "tcp",
       "retries": 30
-    }
+    },
+    "depend_on": [
+      "python"
+    ]
   },
   "actions": {
     "stop": {

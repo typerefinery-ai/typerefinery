@@ -1,5 +1,5 @@
-pgadmin4
 loguru
+pgadmin4
 python-multipart
 gunicorn
 argparse

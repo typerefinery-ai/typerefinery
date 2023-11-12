@@ -8,10 +8,11 @@
   "servicetype": 10,
   "execconfig": {
     "execservice": { "id": "python" },
+    "debuglog": true,
     "setup": {
       "win32": [
-        "; pip.exe install --ignore-installed --use-pep517 --user -r \"${SERVICE_PATH}\\requirements.txt\"",
-        "; copy ${SERVICE_PATH}\\config\\config_local.py ${SERVICE_PATH}\\__packages__\\Python311\\site-packages\\pgadmin4\\config_local.py"
+        "; pip.exe install --ignore-installed --use-pep517 --user -r requirements.txt",
+        "; copy .\\config\\config_local.py .\\__packages__\\Python311\\site-packages\\pgadmin4\\config_local.py"
       ],
       "darwin": [
         "; pip install --ignore-installed --use-pep517 --user -r ${SERVICE_PATH}/requirements.txt",
