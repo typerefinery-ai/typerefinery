@@ -24,7 +24,7 @@
         "; pip.exe install --upgrade --use-pep517 --user -r ${SERVICE_PATH}\\requirements.txt",
         "; pip.exe uninstall -y terminado",
         " lab build",
-        "; npm install ijavascript",
+        "; npm install -g ijavascript",
         "; ijsinstall --spec-path=full --working-dir=${JUPYTERLAB_JSWORK_PATH}",
         " kernelspec list"
       ],
