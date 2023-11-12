@@ -12,17 +12,17 @@
     "setup": {
       "win32": [
         "get-pip.py",
-        "-m pip install --user -r ${SERVICE_PATH}\\requirements.txt"
+        "; pip.exe install --user -r ${SERVICE_PATH}\\requirements.txt"
       ],
       "darwin": [
-        "-m pip install --user -r ${SERVICE_PATH}/requirements.txt"
+        "; pip install --user -r ${SERVICE_PATH}/requirements.txt"
       ],
       "linux": [
-        "-m pip install --user -r ${SERVICE_PATH}/requirements.txt"
+        "; pip install --user -r ${SERVICE_PATH}/requirements.txt"
       ],
       "default": [
         "get-pip.py",
-        "-m pip install --user -r ${SERVICE_PATH}\\requirements.txt"
+        "; pip.exe install --user -r ${SERVICE_PATH}\\requirements.txt"
       ]
     },
     "env": {

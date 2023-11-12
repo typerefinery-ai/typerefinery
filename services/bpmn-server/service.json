@@ -9,6 +9,7 @@
   "servicelocation": 10,
   "execconfig": {
     "execservice": { "id": "node" },
+    "execcwd": "${SERVICE_HOME}",
     "setup": {
       "win32": ["; ${NODE} ${NODE_HOME}\\node_modules\\npm\\bin\\npm-cli.js install"],
       "darwin": ["; ${NODE} ${NODE_HOME}/lib/node_modules/npm/bin/npm-cli.js install"],

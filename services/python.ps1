@@ -79,9 +79,9 @@ Function StartSetup
       Invoke-Expression -Command "copy ${SERVICE_PATH}\\get-pip.py ${SERVICE_EXECUTABLE_HOME}"
       Invoke-Expression -Command "copy ${SERVICE_PATH}\\requirements.txt ${SERVICE_EXECUTABLE_HOME}"
       Invoke-Expression -Command "${PYTHON} get-pip.py"
-      Invoke-Expression -Command "${PYTHON} -m pip install --upgrade --use-pep517 --user -r ${SERVER_REQUIREMENTS}"
+      Invoke-Expression -Command "pip.exe install --upgrade --use-pep517 --user -r ${SERVER_REQUIREMENTS}"
     } else {
-      Invoke-Expression -Command "${PYTHON} -m pip install --upgrade --use-pep517 --user -r ${SERVER_REQUIREMENTS}"
+      Invoke-Expression -Command "pip.exe install --upgrade --use-pep517 --user -r ${SERVER_REQUIREMENTS}"
     }
   } finally {
     Set-Location -Path "${CURRENT_PATH}"

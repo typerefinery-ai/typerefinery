@@ -12,16 +12,16 @@
     "setup": {
       "win32": [
         "get-pip.py",
-        "-m pip install --ignore-installed --user -r ${SERVICE_PATH}\\requirements.txt"
+        "; pip.exe install --ignore-installed --user -r ${SERVICE_PATH}\\requirements.txt"
       ],
       "darwin": [
-        "-m pip install --ignore-installed --user -r ${SERVICE_PATH}/requirements.txt"
+        "; pip install --ignore-installed --user -r ${SERVICE_PATH}/requirements.txt"
       ],
       "linux": [
-        "-m pip install --ignore-installed --user -r ${SERVICE_PATH}/requirements.txt"
+        "; pip install --ignore-installed --user -r ${SERVICE_PATH}/requirements.txt"
       ],
       "default": [
-        "-m pip install --ignore-installed --user -r ${SERVICE_PATH}\\requirements.txt"
+        "; pip.exe install --ignore-installed --user -r ${SERVICE_PATH}\\requirements.txt"
       ]
     },
     "env": {

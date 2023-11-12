@@ -132,7 +132,7 @@ Function StartSetup
   echo "${SERVICE_NAME} - StartSetup"
   Set-Location -Path "${PYTHON_HOME}"
   try {
-    Invoke-Expression -Command "${PYTHON} -m pip install --upgrade --use-pep517 --user -r ""${SERVER_REQUIREMENTS}"""
+    Invoke-Expression -Command "pip.exe install --upgrade --use-pep517 --user -r ""${SERVER_REQUIREMENTS}"""
   } finally {
     Set-Location -Path "${CURRENT_PATH}"
   }

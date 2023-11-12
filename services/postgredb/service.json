@@ -68,7 +68,10 @@
       "default": "-D \"${SERVICE_DATA_PATH}\" -h ${SERVICE_HOST} -p ${SERVICE_PORT}"
     },
     "env": {
-      "PATH": "${SERVICE_EXECUTABLE_HOME}"
+      "PATH": [
+        "${ARCHIVE_HOME}",
+        "${SERVICE_EXECUTABLE_HOME}"
+      ]
     },
     "globalenv": {
       "POSTGRE_HOST": "${SERVICE_HOST}",

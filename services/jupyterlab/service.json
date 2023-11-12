@@ -7,33 +7,47 @@
   "icon": "pi pi-cog",
   "servicelocation": 10,
   "execconfig": {
-    "execservice": { "id": "python" },
+    "debuglog": true,
+    "execshell": true,
+    "execcwd": "${SERVICE_HOME}",
+    "executable": {
+      "win32": "__packages__\\Python311\\Scripts\\jupyter.exe",
+      "darwin": "__packages__\\Python311\\Scripts\\jupyter",
+      "linux": "__packages__\\Python311\\Scripts\\jupyter",
+      "default": "__packages__\\Python311\\Scripts\\jupyter.exe"
+    },
     "setup": {
       "win32": [
-        "-m jupyter lab build",
-        "; npm install -g ijavascript",
+        "; python.exe -m sysconfig",
+        "; python.exe -m site --user-base --user-site",
+        "; python.exe -c \"import site; print(site.getsitepackages())\"",
+        "; pip.exe install --upgrade --use-pep517 --user -r ${SERVICE_PATH}\\requirements.txt",
+        "; pip.exe uninstall -y terminado",
+        " lab build",
+        "; npm install ijavascript",
         "; ijsinstall --spec-path=full --working-dir=${JUPYTERLAB_JSWORK_PATH}",
-        "-m jupyter kernelspec list"
+        " kernelspec list"
       ],
       "darwin": [
-        "-m jupyter lab build"
+        " lab build"
       ],
       "linux": [
-        "-m jupyter lab build"
+        " lab build"
       ],
       "default": [
-        "-m jupyter lab build"
+        " lab build"
       ]
     },
     "env": {
       "PYTHONPATH": "${PYTHON_HOME}",
-      "PYTHONUSERBASE": "${PYTHON_USERBASE_PATH}",
+      "PYTHONUSERBASE": "${SERVICE_PATH}\\__packages__",
       "NODE_HOME": "${NODE_HOME}",
       "PATH": [
+          "${NODE_HOME}",
           "${PYTHON_HOME}",
           "${PYTHON_SCRIPTS_PATH}",
           "${PYTHON_USERBASE_PATH_SCRIPTS}",
-          "${NODE_HOME}"
+          "${SERVICE_PATH}\\__packages__\\Python311\\Scripts"
         ],
       "JUPYTER_DATA_DIR": "${SERVICE_PATH}",
       "JUPYTERLAB_JSWORK_PATH": "${SERVICE_PATH}\\jswork",
@@ -48,7 +62,7 @@
       "JUPYTERLAB_PORT": "${SERVICE_PORT}"
     },
     "commandline": {
-      "default": " -m jupyter lab --ServerApp.allow_remote_access=True --ServerApp.allow_origin=* --ServerApp.root_dir=${SERVICE_DATA_PATH} --no-browser --ServerApp.port=${SERVICE_PORT} --ServerApp.port_retries=0 --ServerApp.token='' --ServerApp.disable_check_xsrf=True --ServerApp.terminals_enabled=False"
+      "default": " lab --ServerApp.allow_remote_access=True --ServerApp.allow_origin=* --ServerApp.root_dir=${SERVICE_DATA_PATH} --no-browser --ServerApp.port=${SERVICE_PORT} --ServerApp.port_retries=0 --ServerApp.token='' --ServerApp.disable_check_xsrf=True --ServerApp.terminals_enabled=False"
     },
     "serviceport": 8888,
     "healthcheck": {
@@ -64,7 +78,7 @@
   "actions": {
     "stop": {
       "commandline": {
-        "default": " -m jupyter lab stop"
+        "default": " lab stop"
       }
     }
   }

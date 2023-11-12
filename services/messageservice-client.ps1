@@ -86,8 +86,8 @@ Function StartSetup
     if ( $IsWindows ) {
      python get-pip.py
     }
-    python -m pip install uvicorn
-    python -m pip install --user -r "${SERVER_REQUIREMENTS}"
+    pip.exe install uvicorn
+    pip.exe install --user -r "${SERVER_REQUIREMENTS}"
   }
   finally {
     Set-Location -Path "${CURRENT_PATH}"

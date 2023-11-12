@@ -30,7 +30,10 @@
       "nginx"
     ],
     "env": {
-      "PATH": "${JAVA_HOME}",
+      "PATH": [
+        "${ARCHIVE_HOME}",
+        "${JAVA_HOME}"
+      ],
       "PUBLISH_DOCROOT": "${SERVICE_DATA_PATH}\\docroot",
       "FLOW_HOST_URL": "http://localhost:${API_PORT}",
       "FLOW_TMS_URL": "ws://localhost:${MESSAGESERVICE_PORT}/$tms",

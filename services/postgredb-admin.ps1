@@ -89,7 +89,7 @@ Function StartSetup
   Set-Location -Path "${PYTHON_HOME}"
   try {
     # Invoke-Expression -Command "${PYTHON} -m pip install --ignore-installed --use-pep517 --user -r ""${SERVER_REQUIREMENTS}"""
-    Invoke-Expression -Command "${PYTHON} -m pip install --upgrade --use-pep517 --user -r ""${SERVER_REQUIREMENTS}"""
+    Invoke-Expression -Command "pip.exe install --upgrade --use-pep517 --user -r ""${SERVER_REQUIREMENTS}"""
     Invoke-Expression -Command "copy ${SERVER_HOME}\\config\\config_local.py ${SERVICE_BIN_HOME}"
   } finally {
     Set-Location -Path "${CURRENT_PATH}"

@@ -155,8 +155,8 @@ Function StartSetup
   echo "${SERVICE_NAME} - StartSetup"
   Set-Location -Path "${PYTHON_HOME}"
   try {
-    Invoke-Expression -Command "${PYTHON} -m pip install --upgrade --use-pep517 --user -r ""${SERVER_REQUIREMENTS}"""
-    Invoke-Expression -Command "${PYTHON} -m pip uninstall -y terminado"
+    Invoke-Expression -Command "pip.exe install --upgrade --use-pep517 --user -r ""${SERVER_REQUIREMENTS}"""
+    Invoke-Expression -Command "pip.exe uninstall -y terminado"
     Invoke-Expression -Command "${PYTHON} -m site"
     # & Invoke-Expression -Command "${PYTHON} -c ""import os; os.system('node -v')"""
     # & Invoke-Expression -Command "${PYTHON} -m pip install --user -r ""${SERVER_REQUIREMENTS}"""
