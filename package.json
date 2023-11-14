@@ -6,7 +6,7 @@
   "electronWindowTitle": "TypeRefinery",
   "companyName": "TypeRefinery.ai",
   "author": "TypeRefinery.ai",
-  "version": "2023.9.27",
+  "version": "2023.11.15",
   "appWidth": 1366,
   "appHeight": 768,
   "proxy": "http://127.0.0.1:8000",
