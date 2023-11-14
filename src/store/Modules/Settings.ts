@@ -86,6 +86,13 @@ export default class Settings extends VuexModule {
     }
     return this.data.listOfMenu
   }
+  //Remove experience from the listOfMenu in store
+  @Mutation
+  removeExprience(id: string) {
+    // console.log("removeExprience", id)
+    const expIdx = this.data.listOfMenu.findIndex((el) => el.id === id)
+    this.data.listOfMenu.splice(expIdx, 1)
+  }
   //update listOfMenu after orderlist save
   @Mutation
   updateList(orderedList: any[]) {
