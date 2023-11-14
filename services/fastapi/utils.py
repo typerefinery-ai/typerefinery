@@ -16,7 +16,8 @@ class UTILS(object):
         logger.info(f'package {package} is installed.')
       except:
         logger.info(f'package {package} is not installed, installing...')
-        self.logging_call([sys.executable, "-m", "pip", "install", f"--target={CONFIG.APP_SERVICE_PACKAGES_PATH}", package], logger)
+        #TODO: install package in to script user dir?
+        self.logging_call([sys.executable, "-m", "pip", "install", "--user", package], logger)
 
 
   def importOrInstallPackageNode(self, package, cwd, logger):

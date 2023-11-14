@@ -87,6 +87,13 @@ if (isAutoStart) {
   serviceManager.startAll()
 }
 
+function escapeHTML(unsafe) {
+  return unsafe.replace(
+    "/[\u0000-\u002F\u003A-\u0040\u005B-\u0060\u007B-\u00FF]/g",
+    (c) => "&#" + ("000" + c.charCodeAt(0)).slice(-4) + ";"
+  )
+}
+
 function getServicePage(service: Service) {
   const serviceDependencies = getServiceDependencies([service.id])
 
@@ -170,27 +177,45 @@ function getServicePage(service: Service) {
           <span class="input-group-text" id="inputGroup-sizing-sm">Id</span>
           <input type="text" value="${
             service.id
-          }" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+          }" readonly class="form-control" aria-describedby="inputGroup-sizing-sm">
         </div>
         <div class="input-group input-group-sm mb-1">
           <span class="input-group-text" id="inputGroup-sizing-sm">Description</span>
           <input type="text" value="${
             service.description
-          }" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+          }" readonly class="form-control" aria-describedby="inputGroup-sizing-sm">
         </div>
         <div class="input-group input-group-sm mb-1">
           <span class="input-group-text" id="inputGroup-sizing-sm">Enabled</span>
           <input type="text" value="${
             service.isEnabled
-          }" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+          }" readonly class="form-control" aria-describedby="inputGroup-sizing-sm">
+        </div>
+        <div class="input-group input-group-sm mb-1">
+          <span class="input-group-text" id="inputGroup-sizing-sm">Debug Log</span>
+          <input type="text" value="${
+            service.isDebug
+          }" readonly class="form-control" aria-describedby="inputGroup-sizing-sm">
         </div>
         <div class="input-group input-group-sm mb-1">
           <span class="input-group-text" id="inputGroup-sizing-sm">Status</span>
-          <input type="text" value="${serviceStatusName}" readonly class="form-control ${statusBackground}" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+          <input type="text" value="${serviceStatusName}" readonly class="form-control ${statusBackground}" aria-describedby="inputGroup-sizing-sm">
+        </div>
+        <div class="input-group input-group-sm mb-1">
+          <span class="input-group-text" id="inputGroup-sizing-sm">URL</span>
+          <span class="form-control">${serviceLink}</span>
         </div>
         <div class="input-group input-group-sm mb-1">
           <span class="input-group-text" id="inputGroup-sizing-sm">Port</span>
-          <span class="form-control">${serviceLink}</span>
+          <span class="form-control">${service.port}</span>
+        </div>
+        <div class="input-group input-group-sm mb-1">
+          <span class="input-group-text" id="inputGroup-sizing-sm">Port Secondary</span>
+          <span class="form-control">${service.portsecondary}</span>
+        </div>
+        <div class="input-group input-group-sm mb-1">
+          <span class="input-group-text" id="inputGroup-sizing-sm">Port Console</span>
+          <span class="form-control">${service.portconsole}</span>
         </div>
         <div class="input-group input-group-sm mb-1">
           <span class="input-group-text" id="inputGroup-sizing-sm">PID</span>
@@ -214,53 +239,83 @@ function getServicePage(service: Service) {
         </div>
         <div class="input-group input-group-sm mb-1">
           <span class="input-group-text" id="inputGroup-sizing-sm">Exec Service</span>
-          <input type="text" value="${execservice}" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+          <input type="text" value="${execservice}" readonly class="form-control" aria-describedby="inputGroup-sizing-sm">
         </div>
         <div class="input-group input-group-sm mb-1">
           <span class="input-group-text" id="inputGroup-sizing-sm">Executable</span>
-          <input type="text" value="${service.getServiceExecutable()}" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+          <input type="text" value="${service.getServiceExecutable()}" readonly class="form-control" aria-describedby="inputGroup-sizing-sm">
+        </div>
+        <div class="input-group input-group-sm mb-1">
+          <span class="input-group-text" id="inputGroup-sizing-sm">Executable Path</span>
+          <input type="text" value="${service.getServiceExecutable(
+            true
+          )}" readonly class="form-control" aria-describedby="inputGroup-sizing-sm">
+        </div>
+        <div class="input-group input-group-sm mb-1">
+          <span class="input-group-text" id="inputGroup-sizing-sm">Exec Shell?</span>
+          <input type="text" value="${
+            service.execshell
+          }" readonly class="form-control" aria-describedby="inputGroup-sizing-sm">
+        </div>
+        <div class="input-group input-group-sm mb-1">
+          <span class="input-group-text" id="inputGroup-sizing-sm">Exec in Directory</span>
+          <input type="text" value="${
+            service.execcwd
+          }" readonly class="form-control" aria-describedby="inputGroup-sizing-sm">
         </div>
         <div class="input-group input-group-sm mb-1">
           <span class="input-group-text" id="inputGroup-sizing-sm">Command Line</span>
-          <input type="text" value="${service.getServiceCommand(
-            true
-          )}" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+          <textarea type="text" readonly class="form-control overflow-auto" aria-describedby="inputGroup-sizing-sm" rows="10">
+            ${service.getServiceCommand(true).trim()}
+          </textarea>
         </div>
         <div class="input-group input-group-sm mb-1">
           <span class="input-group-text" id="inputGroup-sizing-sm">Command Line Cli</span>
-          <input type="text" value="${service.getServiceCommandCli(
-            true
-          )}" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+          <textarea type="text" readonly class="form-control overflow-auto" aria-describedby="inputGroup-sizing-sm" rows="10">
+           ${service.getServiceCommandCli(true).trim()}
+          </textarea>
+        </div>
+        <div class="input-group input-group-sm mb-1">
+          <span class="input-group-text" id="inputGroup-sizing-sm">Setup Command Line</span>
+          <textarea type="text" readonly class="form-control overflow-auto" aria-describedby="inputGroup-sizing-sm" rows="10">
+            ${service.getSetupForPlatfrom.join("\n").trim()}
+          </textarea>
+        </div>
+        <div class="input-group input-group-sm mb-1">
+          <span class="input-group-text" id="inputGroup-sizing-sm">Setup Command Line Parsed</span>
+          <textarea type="text" readonly class="form-control overflow-auto" aria-describedby="inputGroup-sizing-sm" rows="10">
+            ${service.getSetupForPlatfromParsed.join("\n").trim()}
+          </textarea>
         </div>
         <div class="input-group input-group-sm mb-1">
           <span class="input-group-text" id="inputGroup-sizing-sm">Is Setup</span>
           <input type="text" value="${
             service.isSetup
-          }" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+          }" readonly class="form-control" aria-describedby="inputGroup-sizing-sm">
         </div>
         <div class="input-group input-group-sm mb-1">
           <span class="input-group-text" id="inputGroup-sizing-sm">Setup Status File</span>
           <input type="text" value="${
             service.setupstatefile
-          }" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+          }" readonly class="form-control" aria-describedby="inputGroup-sizing-sm">
         </div>
         <div class="input-group input-group-sm mb-1">
           <span class="input-group-text" id="inputGroup-sizing-sm">Archive File</span>
           <input type="text" value="${
             service.getArchiveForPlatform?.name
-          }" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+          }" readonly class="form-control" aria-describedby="inputGroup-sizing-sm">
         </div>
         <div class="input-group input-group-sm mb-1">
           <span class="input-group-text" id="inputGroup-sizing-sm">Archive Output</span>
           <input type="text" value="${
             service.setuparchiveOutputPath
-          }" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+          }" readonly class="form-control" aria-describedby="inputGroup-sizing-sm">
         </div>
         <div class="input-group input-group-sm mb-1">
           <span class="input-group-text" id="inputGroup-sizing-sm">Is Running</span>
           <input type="text" value="${
             service.isRunning
-          }" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+          }" readonly class="form-control" aria-describedby="inputGroup-sizing-sm">
         </div>
       </div>
 
@@ -614,15 +669,15 @@ function getServicesPage(services: Service[]) {
         <h6 class="border-bottom pb-2 mb-3">Config</h6>
         <div class="input-group input-group-sm mb-1">
           <span class="input-group-text" id="inputGroup-sizing-sm">Logs Path</span>
-          <input type="text" value="${logsDir}" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+          <input type="text" value="${logsDir}" readonly class="form-control" aria-describedby="inputGroup-sizing-sm">
         </div>
         <div class="input-group input-group-sm mb-1">
           <span class="input-group-text" id="inputGroup-sizing-sm">Service Path</span>
-          <input type="text" value="${servicesPath}" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+          <input type="text" value="${servicesPath}" readonly class="form-control" aria-describedby="inputGroup-sizing-sm">
         </div>
         <div class="input-group input-group-sm mb-1">
           <span class="input-group-text" id="inputGroup-sizing-sm">Service Data Path</span>
-          <input type="text" value="${servicesUserDataPath}" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+          <input type="text" value="${servicesUserDataPath}" readonly class="form-control" aria-describedby="inputGroup-sizing-sm">
         </div>
       </div>
 

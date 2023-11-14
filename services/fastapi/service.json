@@ -7,16 +7,24 @@
   "icon": "pi pi-cog",
   "servicelocation": 10,
   "execconfig": {
+    "debuglog": true,
     "execservice": { "id": "python" },
     "setup": {
-      "win32": ["-m pip install --ignore-installed --use-pep517 --user --target=${SERVICE_PATH}\\__packages__ -r ${SERVICE_PATH}\\requirements.txt"],
-      "darwin": ["-m pip install --ignore-installed --use-pep517 --user --target=${SERVICE_PATH}/__packages__ -r ${SERVICE_PATH}/requirements.txt"],
-      "linux": ["-m pip install --ignore-installed --use-pep517 --user --target=${SERVICE_PATH}/__packages__ -r ${SERVICE_PATH}/requirements.txt"],
-      "default": ["-m pip install --ignore-installed --use-pep517 --user --target=${SERVICE_PATH}\\__packages__ -r ${SERVICE_PATH}\\requirements.txt"]
+      "win32": ["; pip.exe install --upgrade --use-pep517 --user -r ${SERVICE_PATH}\\requirements.txt"],
+      "darwin": ["; pip install --upgrade --use-pep517 --user -r ${SERVICE_PATH}/requirements.txt"],
+      "linux": ["; pip install --upgrade --use-pep517 --user -r ${SERVICE_PATH}/requirements.txt"],
+      "default": ["; pip.exe install --upgrade --use-pep517 --user -r ${SERVICE_PATH}\\requirements.txt"]
     },
     "env": {
       "PYTHONPATH": "${PYTHON_HOME}",
-      "PATH": "${PYTHON_HOME}"
+      "PYTHONUSERBASE": "${SERVICE_PATH}\\__packages__",
+      "PATH": [
+        "${PYTHON_HOME}",
+        "${PYTHON_SCRIPTS_PATH}",
+        "${PYTHON_USERBASE_PATH_SCRIPTS}",
+        "${SERVICE_PATH}\\__packages__\\Python311\\Scripts",
+        "${NODE_HOME}"
+      ]
     },
     "globalenv": {
       "API_URL": "http://localhost:${SERVICE_PORT}",

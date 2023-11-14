@@ -8,12 +8,13 @@
   "icon": "pi pi-globe",
   "servicelocation": 10,
   "execconfig": {
+    "debuglog": false,
     "execservice": { "id": "node" },
     "setup": {
-      "win32": ["; ${NODE} ${NODE_HOME}\\node_modules\\npm\\bin\\npm-cli.js install"],
-      "darwin": ["; ${NODE} ${NODE_HOME}/lib/node_modules/npm/bin/npm-cli.js install"],
-      "linux": ["; ${NODE} ${NODE_HOME}/lib/node_modules/npm/bin/npm-cli.js install"],
-      "default": ["; ${NODE} ${NODE_HOME}\\node_modules\\npm\\bin\\npm-cli.js install"]
+      "win32": ["; node.exe \"${NODE_HOME}\\node_modules\\npm\\bin\\npm-cli.js\" install"],
+      "darwin": ["; node \"${NODE_HOME}/lib/node_modules/npm/bin/npm-cli.js\" install"],
+      "linux": ["; node \"${NODE_HOME}/lib/node_modules/npm/bin/npm-cli.js\" install"],
+      "default": ["; node.exe \"${NODE_HOME}\\node_modules\\npm\\bin\\npm-cli.js\" install"]
     },
     "datapath": "./database",
     "globalenv": {
@@ -25,10 +26,10 @@
       "PATH": "${NODE_HOME}"
     },
     "commandline": {
-      "win32": "${SERVICE_PATH}\\index.js",
-      "darwin": "${SERVICE_PATH}/index.js",
-      "linux": "${SERVICE_PATH}/index.js",
-      "default": "${SERVICE_PATH}\\index.js"
+      "win32": "index.js",
+      "darwin": "index.js",
+      "linux": "index.js",
+      "default": "index.js"
     },
     "serviceport": 8111,
     "healthcheck": {

@@ -66,6 +66,8 @@ let logsDir = dataPath("logs")
 
 // tarack when the main window is closing
 let mainWindowClosing = false
+// track if we need to exist without prompt
+let mainWindowCloseNoPrompt = false
 
 // create a new logs sub directory with date timestamp everytime the app starts
 const date = new Date()
@@ -275,20 +277,58 @@ async function createWindow() {
 
   logger.log(`app.isPackaged: ${app.isPackaged}`)
 
-  //disable X-Frame-Options when frame name is disable-x-frame-options
+  //{ urls: ["*://*/*"] },
   mainWindow.webContents.session.webRequest.onHeadersReceived(
     { urls: ["*://*/*"] },
     (details, callback) => {
-      if (details && details.responseHeaders) {
-        if (details.responseHeaders["X-Frame-Options"]) {
-          delete details.responseHeaders["X-Frame-Options"]
-        } else if (details.responseHeaders["x-frame-options"]) {
-          delete details.responseHeaders["x-frame-options"]
-        }
-      }
-      callback({ cancel: false, responseHeaders: details.responseHeaders })
+      const { responseHeaders } = details
+      UpsertKeyValue(responseHeaders, "Access-Control-Allow-Origin", ["*"])
+      UpsertKeyValue(responseHeaders, "Access-Control-Allow-Headers", ["*"])
+      DeleteKeyValue(responseHeaders, "X-Frame-Options")
+      DeleteKeyValue(responseHeaders, "Content-Security-Policy")
+      DeleteKeyValue(responseHeaders, "x-frame-option")
+      DeleteKeyValue(responseHeaders, "x-content-type-options")
+      DeleteKeyValue(responseHeaders, "x-xss-protection")
+      callback({
+        responseHeaders,
+      })
     }
   )
+
+  mainWindow.webContents.session.webRequest.onBeforeSendHeaders(
+    { urls: ["*://*/*"] },
+    (details, callback) => {
+      const { requestHeaders } = details
+      UpsertKeyValue(requestHeaders, "Access-Control-Allow-Origin", ["*"])
+      callback({ requestHeaders })
+    }
+  )
+
+  function DeleteKeyValue(obj, keyToDelete) {
+    const keyToDeleteLower = keyToDelete.toLowerCase()
+    for (const key of Object.keys(obj)) {
+      if (key.toLowerCase() === keyToDeleteLower) {
+        // Reassign old key
+        delete obj[key]
+        // Done
+        return
+      }
+    }
+  }
+
+  function UpsertKeyValue(obj, keyToChange, value) {
+    const keyToChangeLower = keyToChange.toLowerCase()
+    for (const key of Object.keys(obj)) {
+      if (key.toLowerCase() === keyToChangeLower) {
+        // Reassign old key
+        obj[key] = value
+        // Done
+        return
+      }
+    }
+    // Insert at end instead
+    obj[keyToChange] = value
+  }
 
   // logger.log(`isDev: ${isDev}`)
   // // Open the DevTools.
@@ -383,45 +423,62 @@ app.whenReady().then(() => {
   })
 
   mainWindow.on("close", function (e) {
-    mainWindowClosing = true
-    logger.log("mainWindow.on close")
-    const choice = dialog.showMessageBoxSync(mainWindow, {
-      type: "question",
-      buttons: [
-        i18n.t("prompt.quit"),
-        i18n.t("prompt.no"),
-        i18n.t("prompt.minimize"),
-      ],
-      title: i18n.t("prompt.confirm"),
-      message: i18n.t("prompt.msg"),
-      defaultId: 1,
-      cancelId: 1,
-    })
-    if (choice === 0) {
-      mainWindow.webContents.send("sendServiceStopped")
-      serviceManager.stopAll()
-    } else if (choice === 1) {
-      e.preventDefault()
-      //Dialog will be closed by clicking "X" button.
-    } else {
-      e.preventDefault()
-      mainWindow.hide()
+    //exit without prompt
+    if (!mainWindowCloseNoPrompt) {
+      logger.log("mainWindow.on close")
+      const choice = dialog.showMessageBoxSync(mainWindow, {
+        type: "question",
+        buttons: [
+          i18n.t("prompt.quit"),
+          i18n.t("prompt.no"),
+          i18n.t("prompt.minimize"),
+        ],
+        title: i18n.t("prompt.confirm"),
+        message: i18n.t("prompt.msg"),
+        defaultId: 1,
+        cancelId: 1,
+      })
+      if (choice === 0) {
+        mainWindowClosing = true
+        // if some service have not stopped, do not quit
+        if (!serviceManager.allServicesStopped()) {
+          loadResource(mainWindow, "loader/exiting.html", "")
+          e.preventDefault()
+          serviceManager.stopAll().then(() => {
+            //mainWindow.webContents.send("sendServiceStopped")
+            //run quit without prompt
+            mainWindowCloseNoPrompt = true
+            app.quit()
+          })
+        }
+      } else if (choice === 1) {
+        e.preventDefault()
+        mainWindowClosing = false
+
+        //Dialog will be closed by clicking "X" button.
+      } else {
+        e.preventDefault()
+        mainWindowClosing = false
+        mainWindow.hide()
+      }
     }
   })
 
   // wait for window to be ready before loading services.
   mainWindow.webContents.on("did-finish-load", function () {
-    logger.log("mainWindow.webContents.on did-finish-load")
-    // check installed.txt file exists
-    const isFirstRun = isFirstInstall()
-    logger.log(`first run: ${isFirstRun}`)
-    logger.log(`mainWindow.webContents.on did-finish-load startAll.`)
-    serviceManager.startAll(isFirstRun)
-    // create file installed.txt
-    if (isFirstRun) {
-      logger.log("create first run file.")
-      createFirstInstallFile()
-      logger.log(`next run will be first run?: ${isFirstInstall()}`)
+    if (!mainWindowClosing) {
+      logger.log("mainWindow.webContents.on did-finish-load")
+      // check installed.txt file exists
+      const isFirstRun = isFirstInstall()
+      logger.log(`first run: ${isFirstRun}`)
+      logger.log(`mainWindow.webContents.on did-finish-load startAll.`)
+      serviceManager.startAll(isFirstRun)
+      // create file installed.txt
+      if (isFirstRun) {
+        logger.log("create first run file.")
+        createFirstInstallFile()
+        logger.log(`next run will be first run?: ${isFirstInstall()}`)
+      }
     }
   })
 

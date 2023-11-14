@@ -4,9 +4,9 @@ daemon off;
 # user  nginx;
 worker_processes  1;
 
-#error_log  logs/error.log;
-error_log  "${SERVICE_LOG_PATH_ESC}/nginx-log-error.log"  notice;
-#error_log  logs/error.log  info;
+pid "${SERVICE_HOME_ESC}/config/logs/nginx.pid";
+
+error_log  "${SERVICE_LOG_PATH_ESC}/nginx-log-error.log"  info;
 
 # pid        logs/nginx.pid;
 
@@ -25,6 +25,11 @@ http {
                       '"$http_user_agent" "$http_x_forwarded_for"';
 
     access_log  "${SERVICE_LOG_PATH_ESC}/nginx-log-access.log"  main;
+    client_body_temp_path      "${SERVICE_HOME_ESC}/config/temp/client_body_temp";
+    proxy_temp_path      "${SERVICE_HOME_ESC}/config/temp/proxy_temp";
+    fastcgi_temp_path       "${SERVICE_HOME_ESC}/config/temp/fastcgi_temp";
+    uwsgi_temp_path       "${SERVICE_HOME_ESC}/config/temp/uwsgi_temp";
+    scgi_temp_path       "${SERVICE_HOME_ESC}/config/temp/scgi_temp";
 
     sendfile        on;
     #tcp_nopush     on;
@@ -66,11 +71,11 @@ http {
 #        }
 
         location / {
-            root   ${CMS_CACHE_PATH_ESC};
+            root   "${CMS_CACHE_PATH_ESC}";
         }
 
         location ~ ^/_errors_/(.*)$ {
-          alias ${SERVICE_HOME_ESC}/config/html/_errors_/$1;
+          alias "${SERVICE_HOME_ESC}/config/html/_errors_/$1";
         }
 
     }

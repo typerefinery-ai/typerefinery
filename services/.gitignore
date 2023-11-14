@@ -2,3 +2,6 @@
 # service status files
 **/*.pid
 **/*.setup
+
+#python packages
+__packages__/

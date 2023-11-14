@@ -14,28 +14,28 @@
     "setuparchive": {
       "win32": {
         "name": "node-v18.6.0-win-x64.zip",
-        "output": "node-v18.6.0-win-x64"
+        "output": "node"
       },
       "darwin": {
         "name": "node-v18.6.0-darwin-x64.tar.gz",
-        "output": "node-v18.6.0-darwin-x64"
+        "output": "node"
       },
       "linux": {
         "name": "node-v18.6.0-linux-x64.tar.gz",
-        "output": "node-v18.6.0-linux-x64"
+        "output": "node"
       }
     },
     "executable": {
-      "win32": "node-v18.6.0-win-x64\\node.exe",
-      "darwin": "node-v18.6.0-darwin-x64/bin/node",
-      "linux": "node-v18.6.0-linux-x64/bin/node",
-      "default": "node-v18.6.0-win-x64\\node.exe"
+      "win32": "node\\node-v18.6.0-win-x64\\node.exe",
+      "darwin": "node/node-v18.6.0-darwin-x64/bin/node",
+      "linux": "node/node-v18.6.0-linux-x64/bin/node",
+      "default": "node\\node-v18.6.0-win-x64\\node.exe"
     },
     "executablecli": {
-      "win32": "node-v18.6.0-darwin-x64\\node_modules\\npm\\bin\\npm-cli.js",
-      "darwin": "node-v18.6.0-darwin-x64/lib/node_modules/npm/bin/npm-cli.js",
-      "linux": "node-v18.6.0-linux-x64/lib/node_modules/npm/bin/npm-cli.js",
-      "default": "node-v18.6.0-win-x64\\node_modules\\npm\\bin\\npm-cli.js"
+      "win32": "node\\node-v18.6.0-darwin-x64\\node_modules\\npm\\bin\\npm-cli.js",
+      "darwin": "node/node-v18.6.0-darwin-x64/lib/node_modules/npm/bin/npm-cli.js",
+      "linux": "node/node-v18.6.0-linux-x64/lib/node_modules/npm/bin/npm-cli.js",
+      "default": "node\\node-v18.6.0-win-x64\\node_modules\\npm\\bin\\npm-cli.js"
     },
     "globalenv": {
       "NODE": "${SERVICE_EXECUTABLE}",

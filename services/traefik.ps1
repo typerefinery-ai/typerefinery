@@ -7,7 +7,7 @@ Param(
   [string]$SERVICE_HOME = ( Join-Path "${PWD}" "${SERVICE_NAME}"),
   [string]$SERVICE_EXE = ( $IsWindows ? "traefik.exe" : "traefik" ),
   [string]$SERVICE_CONFIG = ( Join-Path "${SERVICE_HOME}" "config" "dynamic" "dynamic.yml"),
-  [string]$SERVICE_PROGRAM_PATH = ( Join-Path "${PWD}" "${SERVICE_NAME}" "${OS}" "bin" "${SERVICE_EXE}"),
+  [string]$SERVICE_PROGRAM_PATH = ( Join-Path "${PWD}" "${SERVICE_NAME}" "${OS}" "traefik" "bin" "${SERVICE_EXE}"),
   [string]$SERVICE_EXE_PATH = ( Join-Path "${PWD}" "${SERVICE_NAME}" "${OS}"),
   [string]$SERVICE_CONFIG_PATH = ( Join-Path "${PWD}" "${SERVICE_NAME}" "config" "config"),
   [string]$SERVICE_PLATFORM_ARCHIVE = "${OS}.zip",
@@ -24,7 +24,7 @@ Param(
   # list of command line arguments for treaefik
   [string[]]$SERVICE_COMMAND_ARGS = @(
     "--log.level=DEBUG",
-    "--providers.file.filename=${SERVICE_CONFIG}",
+    "--providers.file.filename=""${SERVICE_CONFIG}""",
     "--api.insecure=true",
     "--api.dashboard=true",
     "--entryPoints.web.address="":${SERVICE_PORT}""",

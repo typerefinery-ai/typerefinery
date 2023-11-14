@@ -3,6 +3,8 @@ config/*
 data/*
 notebooks/*
 user/*
+kernels/*
+jswork/*
 workspaces/*
 runtime/*
 !**/.gitkeep

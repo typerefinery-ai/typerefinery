@@ -15,6 +15,10 @@
       "darwin": "darwin/7zz",
       "linux": "linux/7zz",
       "default": "win32\\7za"
+    },
+    "globalenv": {
+      "ARCHIVE": "${SERVICE_EXECUTABLE}",
+      "ARCHIVE_HOME": "${SERVICE_PATH}"
     }
   }
 }

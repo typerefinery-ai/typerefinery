@@ -9,5 +9,10 @@
     "minimize": "Run in Background",
     "no":"No ",
     "msg": "Are you sure you want to quit?"
+  },
+  "servicemanager": {
+    "stopping": "Stopping",
+    "stoppingmessage": "Stopping all services to save your data...",
+    "confirm": "Ok"
   }
 }

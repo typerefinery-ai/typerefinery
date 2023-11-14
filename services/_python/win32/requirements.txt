@@ -1,9 +1,4 @@
 python-dotenv
-uvicorn[standard]
 parse
-typedb-client
 argparse
 loguru
-websocket-client
-jupyterlab
-stixorm

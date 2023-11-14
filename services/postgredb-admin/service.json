@@ -8,31 +8,42 @@
   "servicetype": 10,
   "execconfig": {
     "execservice": { "id": "python" },
+    "debuglog": true,
     "setup": {
       "win32": [
-        "-m pip install --ignore-installed --use-pep517 --user --target=${SERVICE_PATH}\\__packages__ -r ${SERVICE_PATH}\\requirements.txt",
-        "; copy ${SERVICE_PATH}\\config\\config_local.py ${SERVICE_PATH}\\__packages__\\pgadmin4\\config_local.py"
+        "; pip.exe install --ignore-installed --use-pep517 --user -r requirements.txt",
+        "; copy .\\config\\config_local.py .\\__packages__\\Python311\\site-packages\\pgadmin4\\config_local.py"
       ],
       "darwin": [
-        "-m pip install --ignore-installed --use-pep517 --user --target=${SERVICE_PATH}/__packages__ -r ${SERVICE_PATH}/requirements.txt",
-        "; /bin/cp -r ${SERVICE_PATH}/config/config_local.py ${SERVICE_PATH}/__packages__/pgadmin4/config_local.py"
+        "; pip install --ignore-installed --use-pep517 --user -r ${SERVICE_PATH}/requirements.txt",
+        "; /bin/cp -r ${SERVICE_PATH}/config/config_local.py ${PYTHON_USERBASE_PATH_PACKAGES}/pgadmin4/config_local.py"
       ],
       "linux": [
-        "-m pip install --ignore-installed --use-pep517 --user --target=${SERVICE_PATH}/__packages__ -r ${SERVICE_PATH}/requirements.txt",
-        "; /bin/cp -r ${SERVICE_PATH}/config/config_local.py ${SERVICE_PATH}/__packages__/pgadmin4/config_local.py"
+        "; pip install --ignore-installed --use-pep517 --user -r ${SERVICE_PATH}/requirements.txt",
+        "; /bin/cp -r ${SERVICE_PATH}/config/config_local.py ${PYTHON_USERBASE_PATH_PACKAGES}/pgadmin4/config_local.py"
       ],
       "default": [
-        "-m pip install --ignore-installed --use-pep517 --user --target=${SERVICE_PATH}\\__packages__ -r ${SERVICE_PATH}\\requirements.txt",
-        "; copy ${SERVICE_PATH}\\config\\config_local.py ${SERVICE_PATH}\\__packages__\\pgadmin4\\config_local.py"
+        "; pip.exe install --ignore-installed --use-pep517 --user -r ${SERVICE_PATH}\\requirements.txt",
+        "; copy ${SERVICE_PATH}\\config\\config_local.py ${SERVICE_PATH}\\__packages__\\Python311\\site-packages\\pgadmin4\\config_local.py"
       ]
     },
     "env": {
-      "PYTHONPATH": "${SERVICE_PATH}/__packages__",
       "DATA_DIR": "${SERVICE_DATA_PATH}",
+      "PGADMIN_SCRIPT": "${SERVICE_PATH}\\__packages__\\Python311\\site-packages\\pgadmin4\\pgAdmin4.py",
+      "PGADMIN_SCRIPT_HOME": "${SERVICE_PATH}\\__packages__\\Python311\\site-packages\\pgadmin4",
       "PGADMIN_SERVER_MODE": "OFF",
       "PGADMIN_INT_PORT": "${SERVICE_PORT}",
       "CONSOLE_LOG_LEVEL": "INFO",
-      "FILE_LOG_LEVEL": "INFO"
+      "FILE_LOG_LEVEL": "INFO",
+      "PYTHONPATH": "${PYTHON_HOME}",
+      "PYTHONUSERBASE": "${SERVICE_PATH}\\__packages__",
+      "PATH": [
+        "${NODE_HOME}",
+        "${PYTHON_HOME}",
+        "${PYTHON_SCRIPTS_PATH}",
+        "${PYTHON_USERBASE_PATH_SCRIPTS}",
+        "${SERVICE_PATH}\\__packages__\\Python311\\Scripts"
+      ]
     },
     "datapath": "data",
     "globalenv": {

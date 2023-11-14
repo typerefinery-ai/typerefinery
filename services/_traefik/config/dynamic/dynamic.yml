@@ -104,6 +104,8 @@ http:
       entrypoints:
         - websecure
       tls: true
+      middlewares:
+        - serviceheaders
 
     tms:
       rule: Host(`tms.typerefinery.localhost`)
@@ -218,6 +220,15 @@ http:
         accesscontrolalloworiginlist: "*"
         accesscontrolallowmethods: "GET, POST, PUT, DELETE, OPTIONS"
         accesscontrolallowheaders: "*"
+        contentsecuritypolicy: ";"
+        # customResponseHeaders:
+        #     Content-Security-Policy-Report-Only: >-
+        #       connect-src self;
+        #       default-src none;
+        #       font-src self;
+        #       img-src self;
+        #       script-src self;
+        #       style-src self inline-unsafe;
 
     # Redirect to https
     redirect-to-https:

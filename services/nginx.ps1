@@ -5,9 +5,12 @@ Param(
   [string]$OS = ( $IsWindows ? "win32" : ( $IsMacOS ? "darwin" : "linux" ) ),
   [string]$CPU_ARCH = "x64",
   [string]$SERVICE_HOME = ( Join-Path "${PWD}" "${SERVICE_NAME}"),
+  [string]$SERVICE_EXECUTABLE_HOME = ( Join-Path "${SERVICE_HOME}" "${OS}" ),
+  [string]$SERVICE_EXE = ( $IsWindows ? "nginx.exe" : "nginx" ),
   [string]$SERVICE_BIN = ( $IsWindows ? "" : "bin" ),
-  [string]$SERVICE_PROGRAM_PATH = ( Join-Path "${PWD}" "${SERVICE_NAME}" "${OS}" "${SERVICE_BIN}" "nginx"),
+  [string]$SERVICE_PROGRAM_PATH = ( Join-Path "${PWD}" "${SERVICE_NAME}" "${OS}" "${SERVICE_BIN}" "${SERVICE_EXE}"),
   [string]$SERVICE_CONFIG_PATH = ( Join-Path "${PWD}" "${SERVICE_NAME}" "config"),
+  [string]$SERVICE_LOG_PATH = ( Join-Path "${PWD}" "${SERVICE_NAME}" "config" "logs"),
   [switch]$SETUP = $false,
   [switch]$STOP = $false,
   [switch]$DEBUG = $false
@@ -35,8 +38,11 @@ Function StartServer
 
   Set-Location -Path "${SERVER_HOME}"
 
+  $SERVICE_CONFIG_PATH = $SERVICE_CONFIG_PATH.Replace(" ", "\ ")
+  printSectionLine "SERVICE_CONFIG_PATH: ${SERVICE_CONFIG_PATH}"
   try {
-    Invoke-Expression -Command "${SERVICE_PROGRAM_PATH} -p ${SERVICE_CONFIG_PATH}"
+    # Invoke-Expression -Command "$SERVICE_EXE -?"
+    Invoke-Expression -Command "$SERVICE_EXE -p ""${SERVICE_CONFIG_PATH}"" -c ""${SERVICE_HOME}/config/conf/nginx.conf"" -e ""${SERVICE_LOG_PATH}/nginx-error.log"" "
   } catch {
     printSectionLine "Error: ${_}"
   } finally {
@@ -78,6 +84,13 @@ Function StartSetup
 PrintInfo
 
 printSectionBanner "Starting ${SERVICE_NAME} service"
+
+SetPath "${SERVICE_EXECUTABLE_HOME}"
+SetEnvPath "PATH" "${SERVICE_EXECUTABLE_HOME}"
+
+$SERVICE_LOG_PATH_ESC = $SERVICE_LOG_PATH.Replace(" ", "\ ")
+
+SetEnvVar "SERVICE_LOG_PATH_ESC" "${SERVICE_LOG_PATH_ESC}"
 
 if ( $SETUP ) {
   StartSetup

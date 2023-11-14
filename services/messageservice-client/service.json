@@ -12,17 +12,27 @@
     "setup": {
       "win32": [
         "get-pip.py",
-        "-m pip install --target=${SERVICE_PATH}\\__packages__ -r ${SERVICE_PATH}\\requirements.txt"
+        "; pip.exe install --user -r ${SERVICE_PATH}\\requirements.txt"
       ],
       "darwin": [
-        "-m pip install --target=${SERVICE_PATH}/__packages__ -r ${SERVICE_PATH}/requirements.txt"
+        "; pip install --user -r ${SERVICE_PATH}/requirements.txt"
       ],
       "linux": [
-        "-m pip install --target=${SERVICE_PATH}/__packages__ -r ${SERVICE_PATH}/requirements.txt"
+        "; pip install --user -r ${SERVICE_PATH}/requirements.txt"
       ],
       "default": [
         "get-pip.py",
-        "-m pip install --target=${SERVICE_PATH}\\__packages__ -r ${SERVICE_PATH}\\requirements.txt"
+        "; pip.exe install --user -r ${SERVICE_PATH}\\requirements.txt"
+      ]
+    },
+    "env": {
+      "PYTHONPATH": "${PYTHON_HOME}",
+      "PYTHONUSERBASE": "${PYTHON_USERBASE_PATH}",
+      "PATH": [
+        "${PYTHON_HOME}",
+        "${PYTHON_SCRIPTS_PATH}",
+        "${PYTHON_USERBASE_PATH_SCRIPTS}",
+        "${NODE_HOME}"
       ]
     },
     "commandline": {

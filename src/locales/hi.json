@@ -62,7 +62,21 @@
       },
       "experience": {
         "add-experience": "अनुभव जोड़ें",
+        "delete": {
+          "tooltip": "अनुभव मिटाएं",
+          "title": "अनुभव मिटाएं",
+          "success": "अनुभव मिटाया गया",
+          "reject": "अनुभव मिटाने में असमर्थ",
+          "message": "क्या आप इसे मिटाना चाहते हैं?",
+          "yes": "हाँ",
+          "no": "नहीं"
+        },
         "edit-experience": "अनुभव संपादित करें",
+        "status": {
+          "servicenotrequired": "सेवा की आवश्यकता नहीं है",
+          "serviceinstalling": "सेवा स्थापित हो रही है",
+          "serviceinstalled": "सेवा स्थापित हो गई है"
+        },
         "label": "लेबल",
         "icon": "आइकन",
         "url": "यूआरएल",
@@ -70,6 +84,7 @@
         "iframeconfig": {
           "title": "आईफ्रेम कॉन्फ़िग",
           "name": "एल्गोरिथम का नाम",
+          "csp": "सीएसपी",
           "referrerpolicy": "रेफरर नीति",
           "sandbox": "सैंडबॉक्स",
           "allowfullscreen": "पूर्ण स्क्रीन देखें",

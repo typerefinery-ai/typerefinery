@@ -337,6 +337,7 @@ class ServiceManager {
 
   // start all services
   async startAll(forceInstall = false) {
+    this.#logger.log("starting all services.")
     this.#sortServices()
 
     for (const service of this.#services) {
@@ -372,6 +373,18 @@ class ServiceManager {
       this.#logger.log(`service ${service.id} stopped.`)
     }
     this.#logger.log("all services stopped.")
+  }
+
+  hasRunningServices(): boolean {
+    return this.#services.some((service: Service) => {
+      return service.status === ServiceStatus.STARTED
+    })
+  }
+
+  allServicesStopped(): boolean {
+    return this.#services.every((service: Service) => {
+      return service.status === ServiceStatus.STOPPED
+    })
   }
 }
 
