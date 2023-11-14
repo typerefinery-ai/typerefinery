@@ -425,6 +425,7 @@
         "experienceIcon": "pi pi-briefcase",
         "to": "/home/project",
         "id": "project",
+        "system": true,
         "type": "regular",
         "service": "null",
         "disabled": false,
@@ -470,8 +471,8 @@
       {
         "label": "CMS",
         "id": "cms",
-        "icon": "pi pi-server",
-        "experienceIcon": "pi pi-server",
+        "icon": "pi pi-compass",
+        "experienceIcon": "pi pi-compass",
         "to": "/experience/cms",
         "type": "experimental",
         "service": "cms",
@@ -484,7 +485,7 @@
             "id": "load-data",
             "to": "#",
             "experimental": false,
-            "icon": "pi pi-server"
+            "icon": "pi-compass"
           }
         ]
       },
@@ -504,7 +505,7 @@
             "id": "load-data",
             "to": "#",
             "experimental": false,
-            "icon": "pi pi-server"
+            "icon": "pi pi-th-large"
           }
         ]
       },
@@ -524,7 +525,7 @@
             "id": "load-data",
             "to": "#",
             "experimental": false,
-            "icon": "pi pi-server"
+            "icon": "pi pi-book"
           }
         ]
       }
