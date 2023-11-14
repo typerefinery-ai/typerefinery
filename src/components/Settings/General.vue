@@ -36,19 +36,24 @@
               "
             >
               <div>
-                <p class="text-black">Service not required</p>
+                <p class="text-black">
+                  {{
+                    $t(
+                      `components.setting.experience.status.servicenotrequired`
+                    )
+                  }}
+                </p>
               </div>
             </div>
             <div v-else>
               <div v-if="!servicesLoaded">
                 <p class="text-black">
-                  Services are installing and starting. This may take a few
-                  minutes.
+                  {{ $t(`components.setting.experience.serviceinstalling`) }}
                 </p>
               </div>
               <div v-else>
                 <p class="text-black text-lg mb-3">
-                  Services are installed and running.
+                  {{ $t(`components.setting.experience.serviceinstalled`) }}
                 </p>
               </div>
             </div>
@@ -65,11 +70,20 @@
               @input="handleFeatureToggle($event, slotProps.item.id)"
             />
             <div
+              v-show="isEditableExperience(slotProps.item)"
               v-tooltip="$t(`tooltips.edit-experience`)"
               class="icon-wrapper hover:text-primary"
               @click="editDialogToggle(slotProps.item)"
             >
               <i class="pi pi-pencil"></i>
+            </div>
+            <div
+              v-show="isEditableExperience(slotProps.item)"
+              v-tooltip="$t(`components.setting.experience.delete.tooltip`)"
+              class="icon-wrapper hover:text-primary"
+              @click="removeConfirm(slotProps.item)"
+            >
+              <i class="pi pi-trash"></i>
             </div>
           </div>
         </div>
@@ -131,6 +145,17 @@
       this.listOfServices = await servicesModule.getServices()
     },
     methods: {
+      isEditableExperience(item) {
+        if (item.id === "project") {
+          return false
+        }
+
+        if (item.system == true) {
+          return false
+        }
+
+        return true
+      },
       //FIXME: this should be named something more approprioate as it used to hide component
       fetchlastestServiceWithExperience(experienceId, serviceId) {
         // dont view toggle switch for following experiences as they are default
@@ -183,6 +208,23 @@
         this.editModalPayload = item
         this.type = "UPDATE"
         this.editModalIsOpen = true
+      },
+      removeConfirm(item) {
+        //show confirm dialog
+        this.$confirm.require({
+          message: this.$t("components.setting.experience.delete.message"),
+          header: this.$t("components.setting.experience.delete.title"),
+          acceptLabel: this.$t("components.setting.experience.delete.yes"),
+          rejectLabel: this.$t("components.setting.experience.delete.no"),
+          icon: "pi pi-exclamation-triangle",
+          accept: () => {
+            settingsModule.removeExprience(item.id)
+            this.fetchingLatestExperience()
+          },
+          reject: () => {
+            this.$confirm.close()
+          },
+        })
       },
       editCloseModal() {
         this.editModalIsOpen = false
