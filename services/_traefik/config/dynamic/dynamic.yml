@@ -220,7 +220,7 @@ http:
         accesscontrolalloworiginlist: "*"
         accesscontrolallowmethods: "GET, POST, PUT, DELETE, OPTIONS"
         accesscontrolallowheaders: "*"
-        contentsecuritypolicy: "frame-ancestors 'self' '*' 'http://*:*' 'https://*:*' 'https://*.typerefinery.localhost:*';"
+        contentsecuritypolicy: ";"
         # customResponseHeaders:
         #     Content-Security-Policy-Report-Only: >-
         #       connect-src self;
