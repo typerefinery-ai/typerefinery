@@ -61,7 +61,21 @@
       },
       "experience": {
         "add-experience": "Add Experience",
+        "delete": {
+          "tooltip": "Remove Experience",
+          "title": "Delete Experience",
+          "success": "Experience deleted successfully",
+          "reject": "Could not delete experience",
+          "message": "Are you sure you want to delete this experience?",
+          "yes": "Yes",
+          "no": "No"
+        },
         "edit-experience": "Edit Experience",
+        "status": {
+          "servicenotrequired": "Service not required",
+          "serviceinstalling": "Services are installing and starting. This may take a few minutes.",
+          "serviceinstalled": "Services are installed and running."
+        },
         "label": "Label",
         "icon": "Icon",
         "url": "Url",
@@ -80,6 +94,7 @@
         "service": "Services",
         "placeholder": "Select the service",
         "buttons": {
+          "delete": "Delete",
           "cancel": "Cancel",
           "add": "Add",
           "update": "Update"
