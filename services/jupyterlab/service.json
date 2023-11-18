@@ -8,7 +8,7 @@
   "servicelocation": 10,
   "execconfig": {
     "debuglog": true,
-    "execshell": true,
+    "execshell": false,
     "execcwd": "${SERVICE_HOME}",
     "executable": {
       "win32": "__packages__\\Python311\\Scripts\\jupyter.exe",
@@ -47,7 +47,9 @@
           "${PYTHON_HOME}",
           "${PYTHON_SCRIPTS_PATH}",
           "${PYTHON_USERBASE_PATH_SCRIPTS}",
-          "${SERVICE_PATH}\\__packages__\\Python311\\Scripts"
+          "${SERVICE_PATH}\\__packages__\\Python311\\Scripts",
+          "C:\\WINDOWS\\system32",
+          "C:\\WINDOWS"
         ],
       "JUPYTER_DATA_DIR": "${SERVICE_PATH}",
       "JUPYTERLAB_JSWORK_PATH": "${SERVICE_PATH}\\jswork",
@@ -72,7 +74,8 @@
       "retries": 180
     },
     "depend_on": [
-      "python"
+      "python",
+      "node"
     ]
   },
   "actions": {

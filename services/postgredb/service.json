@@ -9,7 +9,7 @@
   "servicetype": 10,
   "execconfig": {
     "debuglog": true,
-    "execshell": true,
+    "execshell": false,
     "serviceorder": 10,
     "serviceport": 8500,
     "authentication": {
@@ -70,7 +70,9 @@
     "env": {
       "PATH": [
         "${ARCHIVE_HOME}",
-        "${SERVICE_EXECUTABLE_HOME}"
+        "${SERVICE_EXECUTABLE_HOME}",
+        "C:\\WINDOWS\\system32",
+        "C:\\WINDOWS"
       ]
     },
     "globalenv": {

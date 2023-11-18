@@ -12,7 +12,7 @@
       "username": "mongoadmin",
       "password": "mongoadmin"
     },
-    "execshell": true,
+    "execshell": false,
     "execcwd": "${SERVICE_HOME}",
     "serviceorder": 10,
     "serviceport": 8180,
@@ -84,7 +84,9 @@
         "${ARCHIVE_HOME}",
         "${PYTHON_HOME}",
         "${PYTHON_SCRIPTS_PATH}",
-        "${SERVICE_EXECUTABLE_HOME}"
+        "${SERVICE_EXECUTABLE_HOME}",
+        "C:\\WINDOWS\\system32",
+        "C:\\WINDOWS"
       ]
     },
     "globalenv": {

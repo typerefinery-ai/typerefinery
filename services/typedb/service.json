@@ -45,7 +45,9 @@
     "env": {
       "PATH": [
         "${ARCHIVE_HOME}",
-        "${JAVA_HOME}"
+        "${JAVA_HOME}",
+        "C:\\WINDOWS\\system32",
+        "C:\\WINDOWS"
       ]
     },
     "globalenv": {
