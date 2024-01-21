@@ -6,7 +6,7 @@
 const options = {};
 
 options.port = process.env.SERVICE_PORT || 8110
-options.ip = "0.0.0.0"
+// options.ip = "0.0.0.0"
 // options.unixsocket = require('path').join(require('os').tmpdir(), 'app_name');
 // options.unixsocket777 = true;
 // options.config = { name: 'Total.js' };
