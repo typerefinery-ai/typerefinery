@@ -20,7 +20,7 @@
       "default": "index.js"
     },
     "globalenv": {
-      "MESSAGESERVICE_URL": "http://localhost:${SERVICE_PORT}",
+      "MESSAGESERVICE_URL": "http://127.0.0.1:${SERVICE_PORT}",
       "MESSAGESERVICE_PORT": "${SERVICE_PORT}"
     },
     "env": {
