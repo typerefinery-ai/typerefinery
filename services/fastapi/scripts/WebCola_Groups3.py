@@ -8,7 +8,7 @@ sys.path.insert(0, where_am_i+"/__packages__")
 sys.path.append(where_am_i)
 # end of local package imports
 
-from typedb.client import *
+from typedb.driver import *
 from loguru import logger as Logger
 from posixpath import basename
 import argparse
@@ -846,10 +846,10 @@ def group_Grakn(colaGraph, group_def_list, logger: Logger):
 @Logger.catch
 def get_data(dbhost, dbport, dbdatabase, dbquery, logger: Logger):
     typeDBConnect = f'{dbhost}:{dbport}'
-    with TypeDB.core_client(typeDBConnect) as client:
+    with TypeDB.core_driver(typeDBConnect) as client:
         with client.session(dbdatabase, SessionType.DATA) as session:
             with session.transaction(TransactionType.READ) as read_transaction:
-                answer_iterator = read_transaction.query().match(dbquery)
+                answer_iterator = read_transaction.query.match(dbquery)
                 res = collect_answers(answer_iterator, read_transaction, logger)
                 nodes, edges, G_types = convert_res_to_graph(res, logger)
                 colaGraph = convert_res_to_cola(nodes, edges, G_types, logger)

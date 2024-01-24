@@ -1,4 +1,4 @@
-from typedb.client import *
+from typedb.driver import *
 from loguru import logger as Logger
 from posixpath import basename
 import json
@@ -49,10 +49,10 @@ def main(inputfile, outputfile):
 
     outputjson = {}
     typeDBConnect = f"{connection['dbhost']}:{connection['dbport']}"
-    with TypeDB.core_client(typeDBConnect) as client:
+    with TypeDB.core_driver(typeDBConnect) as client:
         with client.session(connection['dbdatabase'], SessionType.DATA) as session:
             with session.transaction(TransactionType.READ) as read_transaction:
-                answer_iterator = read_transaction.query().match(query['dbquery'])
+                answer_iterator = read_transaction.query.match(query['dbquery'])
                 for answer in answer_iterator:
                     dict_answer = answer.map()
                     for key, thing in dict_answer.items():

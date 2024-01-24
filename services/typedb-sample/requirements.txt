@@ -1,2 +1,2 @@
-typedb-client
+typedb-driver
 loguru
