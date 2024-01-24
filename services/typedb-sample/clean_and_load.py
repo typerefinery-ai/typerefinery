@@ -1,4 +1,4 @@
-from typedb.client import *
+from typedb.driver import *
 from loguru import logger
 import json
 import basic_upload as up
@@ -10,7 +10,7 @@ def clean_and_load(server):
     logger.debug("======================== Check if DB Exists and Clean ======================")
     host = server["url"] + ":" + server["port"]
     db_name = server["database"]
-    with TypeDB.core_client(host) as client:
+    with TypeDB.core_driver(host) as client:
         # does the  db exist?
         logger.debug("---- client has started ------")
         db_exists = client.databases().contains(db_name)
@@ -36,7 +36,7 @@ def clean_and_load(server):
         # now start  the schema writing transaction
         with client.session(db_name , SessionType.SCHEMA) as session:
             with session.transaction(TransactionType.WRITE) as write_transaction:
-                define_iterator = write_transaction.query().define(schema_string)
+                define_iterator = write_transaction.query.define(schema_string)
                 # logger.debug(f'Schema Define Statement - {schema_string}')
                 logger.debug(f'::::::::::::::::::::::::::::::::')
                 # logger.debug(f'define iterator -> {define_iterator}')

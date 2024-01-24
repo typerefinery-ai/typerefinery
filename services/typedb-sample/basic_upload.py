@@ -10,7 +10,7 @@ sys.path.append(where_am_i)
 
 import basic_logs as classic
 import datetime
-from typedb.client import *
+from typedb.driver import *
 from loguru import logger
 import argparse
 
@@ -22,7 +22,7 @@ def load_footprint_types(session):
             'insert $d isa footType; $d "#";']
     for foot in footprint_types:
         with session.transaction(TransactionType.WRITE) as write_transaction:
-            insert_iterator = write_transaction.query().insert(foot)
+            insert_iterator = write_transaction.query.insert(foot)
             for concept_map in insert_iterator:
                 concepts = concept_map.concepts()
                 #logger.debug("Inserted an event with name: {0}".format(concepts[0].id))
@@ -30,11 +30,12 @@ def load_footprint_types(session):
         write_transaction.commit()
 
 
+
 def load_classic_logs(session, log, name):
     # setup the log entity
     typeql_insert = 'insert $a isa log, has logName "'+name+'";'
     with session.transaction(TransactionType.WRITE) as write_transaction:
-        insert_iterator = write_transaction.query().insert(typeql_insert)
+        insert_iterator = write_transaction.query.insert(typeql_insert)
         for concept_map in insert_iterator:
             concepts = concept_map.concepts()
             #logger.debug("Inserted an event with name: {0}".format(concepts[0].id))
@@ -56,7 +57,7 @@ def load_classic_logs(session, log, name):
             typeql_insert += 'has traceId "'+name+str(i)+'", has index '+str(j)+';'
             logger.debug('typeql insert {typeql_insert}')
             with session.transaction(TransactionType.WRITE) as write_transaction:
-                insert_iterator = write_transaction.query().insert(typeql_insert)
+                insert_iterator = write_transaction.query.insert(typeql_insert)
                 for concept_map in insert_iterator:
                     concepts = concept_map.concepts()
                     #logger.debug("Inserted an event with name: {0}".format(concepts[0].id))
@@ -87,7 +88,7 @@ def load_classic_logs(session, log, name):
                 typeql_insert += 'has traceId "'+name+str(i)+'", has index '+str(j)+';'
                 typeql_insert += 'insert  $f (owner: $a, input: $b, output: $d) isa follows; '
                 with session.transaction(TransactionType.WRITE) as write_transaction:
-                    insert_iterator = write_transaction.query().insert(typeql_insert)
+                    insert_iterator = write_transaction.query.insert(typeql_insert)
                     for concept_map in insert_iterator:
                         concepts = concept_map.concepts()
                         #logger.debug("Inserted an event with name: {0}".format(concepts[0].id))
@@ -118,7 +119,7 @@ def load_classic_logs(session, log, name):
                 typeql_insert += '  $d isa event, has eventName "TraceStop";'
                 typeql_insert += 'insert  $f (owner: $a, input: $b, output: $d) isa follows; '
                 with session.transaction(TransactionType.WRITE) as write_transaction:
-                    insert_iterator = write_transaction.query().insert(typeql_insert)
+                    insert_iterator = write_transaction.query.insert(typeql_insert)
                     for concept_map in insert_iterator:
                         concept_map_list = concept_map.concepts()
                         for c_m in concept_map_list:
@@ -145,13 +146,13 @@ def load_classic_logs(session, log, name):
 @logger.catch
 def initialiselogs(server):
     typedb_connection = server["url"] + ":" + server["port"]
-    with TypeDB.core_client(typedb_connection) as client:
+    with TypeDB.core_driver(typedb_connection) as client:
         with client.session(server["database"], SessionType.DATA) as session:
             # insert null event
             logger.info(" - insert null event")
             typeql_insert = 'insert  $a isa event, has eventName "TraceStop";'
             with session.transaction(TransactionType.WRITE) as write_transaction:
-                    insert_iterator = write_transaction.query().insert(typeql_insert)
+                    insert_iterator = write_transaction.query.insert(typeql_insert)
                     for concept_map in insert_iterator:
                         concept_map_list = concept_map.concepts()
                         for c_m in concept_map_list:
