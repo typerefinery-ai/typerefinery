@@ -1,0 +1,6 @@
+
+!config/certs/
+config/certs/*
+!**/.gitkeep
+**/bin/
+**/keycloak

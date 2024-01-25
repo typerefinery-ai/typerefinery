@@ -1,0 +1,95 @@
+{
+  "id": "keycloak",
+  "name": "Keycloak Service",
+  "description": "Keycloak 23.0.4",
+  "enabled": true,
+  "status": "30",
+  "icon": "fa-solid fa-passport",
+  "servicelocation": 10,
+  "execconfig": {
+    "serviceorder": 2,
+    "serviceport": 8115,
+    "serviceportsecondary": 8116,
+    "datapath": "/keycloak",
+    "execservice": { "id": "java" },
+    "execshell": false,
+    "execcwd": "${SERVICE_HOME}",
+    "authentication": {
+      "username": "kadmin",
+      "password": "kadmin"
+    },
+    "env": {
+      "PATH": [
+        "${ARCHIVE_HOME}",
+        "${JAVA_HOME}",
+        "${POSTGRE_HOME}"
+      ],
+      "KC_HTTP_PORT": "${SERVICE_PORT}",
+      "JAVA_OPTS_APPEND": "-Djava.net.preferIPv4Stack=true",
+      "KC_LOG": "console,file",
+      "KC_LOG_LEVEL": "debug",
+      "KC_LOG_GELF_LEVEL": "debug",
+      "KC_DB_URL_HOST": "${POSTGRE_HOST}",
+      "KC_DB_URL_PORT": "${POSTGRE_PORT}",
+      "KC_DB": "postgres",
+      "KC_DB_KIND": "postgres",
+      "KC_DB_DIALECT": "org.hibernate.dialect.PostgreSQL10Dialect",
+      "KC_DB_DRIVER": "org.postgresql.Driver",
+      "KC_DB_SCHEMA": "public",
+      "KC_DB_URL": "jdbc:postgresql://${POSTGRE_HOST}:${POSTGRE_PORT}/keycloak",
+      "KC_DB_USERNAME": "${POSTGRE_AUTH_USERNAME}",
+      "KC_DB_PASSWORD": "${POSTGRE_AUTH_PASSWORD}",
+      "KC_CONFIG_KEYSTORE_PASSWORD": "${SERVICE_AUTH_PASSWORD}",
+      "KC_HTTPS_KEY_STORE_PASSWORD": "${SERVICE_AUTH_PASSWORD}",
+      "KC_HTTPS_TRUST_STORE_PASSWORD": "${SERVICE_AUTH_PASSWORD}",
+      "KC_CONFIG_KEYSTORE": "${SERVICE_DATA_PATH}\\conf\\server.keystore",
+      "KC_HOSTNAME": "localhost",
+      "KEYCLOAK_PRODUCTION": "true",
+      "KC_HEALTH_ENABLED": "true",
+      "KC_METRICS_ENABLED": "true",
+      "KC_TRANSACTION_XA_ENABLED": "false",
+      "KC_HOSTNAME_STRICT_HTTPS": "false",
+      "PGPASSWORD": "${POSTGRE_AUTH_PASSWORD}",
+      "PGDATABASE": "keycloak",
+      "PGHOST": "${POSTGRE_AUTH_USERNAME}",
+      "PGPORT": "${POSTGRE_AUTH_PASSWORD}",
+      "PGUSER": "${POSTGRE_AUTH_USERNAME}"
+    },
+    "globalenv": {
+      "KEYCLOAK_PORT": "${SERVICE_PORT}",
+      "KEYCLOAK_ADMIN": "${SERVICE_AUTH_USERNAME}",
+      "KEYCLOAK_ADMIN_PASSWORD": "${SERVICE_AUTH_PASSWORD}",
+      "KEYCLOAK_URL_HEALTH": "http://${SERVICE_HOST}:${SERVICE_PORT}/health",
+      "KEYCLOAK_URL_HEALTH_READY": "http://${SERVICE_HOST}:${SERVICE_PORT}/health/ready",
+      "KEYCLOAK_URL_HEALTH_LIVE": "http://${SERVICE_HOST}:${SERVICE_PORT}/health/live",
+      "KEYCLOAK_URL_METRICS": "http://${SERVICE_HOST}:${SERVICE_PORT}/metrics"
+    },
+    "commandline": {
+      "default": " -Dprogram.name=kc.bat -Xms64m -Xmx512m -XX:MetaspaceSize=96M -XX:MaxMetaspaceSize=256m -D\"file.encoding=UTF-8\" -D\"sun.stdout.encoding=UTF-8\" -D\"sun.err.encoding=UTF-8\" -D\"stdout.encoding=UTF-8\" -D\"stderr.encoding=UTF-8\" -XX:+ExitOnOutOfMemoryError -D\"java.security.egd=file:/dev/urandom\" -XX:+UseParallelGC -XX:MinHeapFreeRatio=10 -XX:MaxHeapFreeRatio=20 -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -XX:FlightRecorderOptions=stackdepth=512 --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.util.concurrent=ALL-UNNAMED --add-opens=java.base/java.security=ALL-UNNAMED -Dkc.home.dir=\"${SERVICE_DATA_PATH}\" -Djboss.server.config.dir=\"${SERVICE_DATA_PATH}\\conf\" -Dkeycloak.theme.dir=\"${SERVICE_DATA_PATH}\\themes\" -Djava.util.logging.manager=org.jboss.logmanager.LogManager -Dquarkus-log-max-startup-records=10000 -cp \"${SERVICE_DATA_PATH}\\lib\\quarkus-run.jar\" io.quarkus.bootstrap.runner.QuarkusEntryPoint start  "
+    },
+    "setup": {
+      "default": [
+        "; keytool -genkeypair -storepass ${SERVICE_AUTH_PASSWORD} -storetype PKCS12 -keyalg RSA -keysize 2048 -dname \"CN=server\" -alias server -ext \"SAN:c=DNS:localhost,DNS:typerefinery.localhost,IP:127.0.0.1\" -keystore \"${SERVICE_DATA_PATH}\\conf\\server.keystore\" ",
+        "; psql -a -l -h ${POSTGRE_HOST} -p ${POSTGRE_PORT} -U ${POSTGRE_AUTH_USERNAME}",
+        "; createdb -e -h ${POSTGRE_HOST} -p ${POSTGRE_PORT} -U ${POSTGRE_AUTH_USERNAME}",
+        "; psql -a -l -h ${POSTGRE_HOST} -p ${POSTGRE_PORT} -U ${POSTGRE_AUTH_USERNAME}",
+        "; java -Dprogram.name=kc.bat -Xms64m -Xmx512m -XX:MetaspaceSize=96M -XX:MaxMetaspaceSize=256m -Dkc.config.built=true -Dkc.config.build-and-exit=true -D\"file.encoding=UTF-8\" -D\"sun.stdout.encoding=UTF-8\" -D\"sun.err.encoding=UTF-8\" -D\"stdout.encoding=UTF-8\" -D\"stderr.encoding=UTF-8\" -XX:+ExitOnOutOfMemoryError -Djava.security.egd=file:/dev/urandom -XX:+UseParallelGC -XX:MinHeapFreeRatio=10 -XX:MaxHeapFreeRatio=20 -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -XX:FlightRecorderOptions=stackdepth=512 --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.util.concurrent=ALL-UNNAMED --add-opens=java.base/java.security=ALL-UNNAMED -Dkc.home.dir=\"${SERVICE_DATA_PATH}\" -Djboss.server.config.dir=\"${SERVICE_DATA_PATH}\\conf\" -Dkeycloak.theme.dir=\"${SERVICE_DATA_PATH}\\themes\" -Djava.util.logging.manager=org.jboss.logmanager.LogManager -Dquarkus-log-max-startup-records=10000 -cp \"${SERVICE_DATA_PATH}\\lib\\quarkus-run.jar\" io.quarkus.bootstrap.runner.QuarkusEntryPoint build "
+      ]
+    },
+    "healthcheck": {
+      "type": "http",
+      "url": "http://127.0.0.1:${SERVICE_PORT}/health/ready",
+      "expected_status": 200,
+      "retries": 180
+    },
+    "setuparchive": {
+      "default": {
+        "name": "keycloak.7z.001",
+        "output": "keycloak"
+      }
+    },
+    "depend_on": [
+      "postgredb"
+    ]
+  }
+}
