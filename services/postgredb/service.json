@@ -33,19 +33,23 @@
     "setup": {
       "win32": [
         "; echo ${SERVICE_AUTH_PASSWORD}>\"${SERVICE_HOME}\\config\\default.password.txt\"",
-        "; initdb.exe -D \"${SERVICE_DATA_PATH}\" -U ${SERVICE_AUTH_USERNAME} --pwfile=\"${SERVICE_HOME}\\config\\default.password.txt\""
+        "; initdb.exe --encoding UTF8 -D \"${SERVICE_DATA_PATH}\" -U ${SERVICE_AUTH_USERNAME} --pwfile=\"${SERVICE_HOME}\\config\\default.password.txt\"",
+        "; psql -c \"create database keycloak\" -h ${SERVICE_HOST} -p ${SERVICE_PORT} -U ${SERVICE_AUTH_USERNAME} "
       ],
       "darwin": [
         "; echo ${SERVICE_AUTH_PASSWORD}>\"${SERVICE_HOME}/config/default.password.txt\"",
-        "; initdb -D \"${SERVICE_DATA_PATH}\" -U ${SERVICE_AUTH_USERNAME} --pwfile=\"${SERVICE_HOME}/config/default.password.txt\""
+        "; initdb --encoding UTF8 -D \"${SERVICE_DATA_PATH}\" -U ${SERVICE_AUTH_USERNAME} --pwfile=\"${SERVICE_HOME}/config/default.password.txt\"",
+        "; psql -c \"create database keycloak\" -h ${SERVICE_HOST} -p ${SERVICE_PORT} -U ${SERVICE_AUTH_USERNAME} "
       ],
       "linux": [
         "; echo ${SERVICE_AUTH_PASSWORD}>\"${SERVICE_HOME}/config/default.password.txt\"",
-        "; \"${SERVICE_EXECUTABLE_HOME}/initdb\" -D \"${SERVICE_DATA_PATH}\" -U ${SERVICE_AUTH_USERNAME} --pwfile=\"${SERVICE_HOME}/config/default.password.txt\""
+        "; initdb --encoding UTF8 -D \"${SERVICE_DATA_PATH}\" -U ${SERVICE_AUTH_USERNAME} --pwfile=\"${SERVICE_HOME}/config/default.password.txt\"",
+        "; psql -c \"create database keycloak\" -h ${SERVICE_HOST} -p ${SERVICE_PORT} -U ${SERVICE_AUTH_USERNAME} "
       ],
       "default": [
         "; echo ${SERVICE_AUTH_PASSWORD}>\"${SERVICE_HOME}\\config\\default.password.txt\"",
-        "; \"${SERVICE_EXECUTABLE_HOME}\\initdb\" -D \"${SERVICE_DATA_PATH}\" -U ${SERVICE_AUTH_USERNAME} --pwfile=\"${SERVICE_HOME}\\config\\default.password.txt\""
+        "; initdb --encoding UTF8 -D \"${SERVICE_DATA_PATH}\" -U ${SERVICE_AUTH_USERNAME} --pwfile=\"${SERVICE_HOME}\\config\\default.password.txt\"",
+        "; psql -c \"create database keycloak\" -h ${SERVICE_HOST} -p ${SERVICE_PORT} -U ${SERVICE_AUTH_USERNAME} "
       ]
     },
     "executable": {
@@ -73,13 +77,17 @@
         "${SERVICE_EXECUTABLE_HOME}",
         "C:\\WINDOWS\\system32",
         "C:\\WINDOWS"
-      ]
+      ],
+      "SERVER_ENCODING": "UTF8",
+      "PGPASSWORD": "${SERVICE_AUTH_PASSWORD}",
+      "PGPASSFILE": "${SERVICE_HOME}\\config\\default.password.txt"
     },
     "globalenv": {
       "POSTGRE_HOST": "${SERVICE_HOST}",
       "POSTGRE_PORT": "${SERVICE_PORT}",
       "POSTGRE_AUTH_USERNAME": "${SERVICE_AUTH_USERNAME}",
-      "POSTGRE_AUTH_PASSWORD": "${SERVICE_AUTH_PASSWORD}"
+      "POSTGRE_AUTH_PASSWORD": "${SERVICE_AUTH_PASSWORD}",
+      "POSTGRE_HOME": "${SERVICE_EXECUTABLE_HOME}"
     },
     "healthcheck": {
       "type": "tcp",
