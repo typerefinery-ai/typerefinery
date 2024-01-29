@@ -18,6 +18,45 @@ http:
       tls: true
       middlewares:
         - serviceheaders
+    keycloak:
+      rule: Host(`auth.typerefinery.localhost`)
+      # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/api`) ) || Host(`api.localhost`)
+      service: keycloak
+      entrypoints:
+        - web
+      middlewares:
+        - error-pages
+        - serviceheaders
+    keycloak-https:
+      rule: Host(`auth.typerefinery.localhost`)
+      # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/api`) ) || Host(`api.localhost`)
+      service: keycloak
+      entrypoints:
+        - websecure
+      tls: true
+      middlewares:
+        - error-pages
+        - serviceheaders
+
+    keycloakadmin:
+      rule: Host(`keycloak.typerefinery.localhost`)
+      # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/api`) ) || Host(`api.localhost`)
+      service: keycloak
+      entrypoints:
+        - web
+      middlewares:
+        - error-pages
+        - keycloakadminserviceheaders
+    keycloakadmin-https:
+      rule: Host(`keycloak.typerefinery.localhost`)
+      # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/api`) ) || Host(`api.localhost`)
+      service: keycloak
+      entrypoints:
+        - websecure
+      tls: true
+      middlewares:
+        - error-pages
+        - keycloakadminserviceheaders
 
     files:
       rule: Host(`files.typerefinery.localhost`)
@@ -26,6 +65,7 @@ http:
       entrypoints:
         - web
       middlewares:
+        - error-pages
         - serviceheaders
     files-https:
       rule: Host(`files.typerefinery.localhost`)
@@ -35,6 +75,7 @@ http:
         - websecure
       tls: true
       middlewares:
+        - error-pages
         - serviceheaders
 
     postgreadmin:
@@ -44,6 +85,7 @@ http:
       entrypoints:
         - web
       middlewares:
+        - error-pages
         - serviceheaders
     postgreadmin-https:
       rule: Host(`pgadmin.typerefinery.localhost`)
@@ -53,6 +95,7 @@ http:
         - websecure
       tls: true
       middlewares:
+        - error-pages
         - serviceheaders
 
     bpmn:
@@ -62,6 +105,7 @@ http:
       entrypoints:
         - web
       middlewares:
+        - error-pages
         - serviceheaders
     bpmn-https:
       rule: Host(`bpmn.typerefinery.localhost`)
@@ -71,6 +115,7 @@ http:
         - websecure
       tls: true
       middlewares:
+        - error-pages
         - serviceheaders
 
     nginx:
@@ -80,6 +125,7 @@ http:
       entrypoints:
         - web
       middlewares:
+        - error-pages
         - serviceheaders
     nginx-https:
       rule: Host(`nginx.typerefinery.localhost`)
@@ -89,6 +135,7 @@ http:
         - websecure
       tls: true
       middlewares:
+        - error-pages
         - serviceheaders
 
     flow:
@@ -97,6 +144,8 @@ http:
       service: flow
       entrypoints:
         - web
+      middlewares:
+        - error-pages
     flow-https:
       rule: Host(`flow.typerefinery.localhost`)
       # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/flow`) ) || Host(`flow.localhost`)
@@ -105,6 +154,7 @@ http:
         - websecure
       tls: true
       middlewares:
+        - error-pages
         - serviceheaders
 
     tms:
@@ -128,6 +178,7 @@ http:
       entrypoints:
         - web
       middlewares:
+        - error-pages
         - serviceheaders
     jupyterlab-https:
       rule: Host(`jupyterlab.typerefinery.localhost`)
@@ -137,6 +188,7 @@ http:
         - websecure
       tls: true
       middlewares:
+        - error-pages
         - serviceheaders
 
     traefikdashboard:
@@ -217,7 +269,23 @@ http:
     # cors
     serviceheaders:
       headers:
-        accesscontrolalloworiginlist: "*"
+        accesscontrolalloworiginlist: "https://cms.typerefinery.localhost:8101, https://flow.typerefinery.localhost:8101, https://api.typerefinery.localhost:8101"
+        accesscontrolallowmethods: "GET, POST, PUT, DELETE, OPTIONS"
+        accesscontrolallowheaders: "*"
+        addvaryheader: true
+        contentsecuritypolicy: ";"
+        # customResponseHeaders:
+        #     Content-Security-Policy-Report-Only: >-
+        #       connect-src self;
+        #       default-src none;
+        #       font-src self;
+        #       img-src self;
+        #       script-src self;
+        #       style-src self inline-unsafe;
+
+    keycloakadminserviceheaders:
+      headers:
+        accesscontrolalloworiginlist: "https://keycloak.typerefinery.localhost, https://auth.typerefinery.localhost"
         accesscontrolallowmethods: "GET, POST, PUT, DELETE, OPTIONS"
         accesscontrolallowheaders: "*"
         contentsecuritypolicy: ";"
@@ -276,6 +344,11 @@ http:
         passHostHeader: true
         servers:
           - url: '{{ env "CMS_URL" }}'
+    keycloak:
+      loadBalancer:
+        passHostHeader: true
+        servers:
+          - url: '{{ env "KEYCLOAK_URL" }}'
     fastapi:
       loadBalancer:
         passHostHeader: true
