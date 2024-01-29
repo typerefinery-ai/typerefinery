@@ -125,6 +125,7 @@ export interface ExecConfig {
   executable?: PlatfromCommandLine
   executablecli?: PlatfromCommandLine
   setuparchive?: {
+    default?: SetupArchive
     win32?: SetupArchive
     darwin?: SetupArchive
     linux?: SetupArchive
@@ -381,7 +382,7 @@ export class Service extends EventEmitter<ServiceEvent> {
         this.#setuparchiveFile = path.join(this.#servicepath, setupArchive.name)
         this.#setuparchiveOutputPath = path.join(
           this.#servicehome,
-          this.platform,
+          this.isArchiveForPlatformDefault ? "" : this.platform,
           setupArchive.output
         )
         this.#servicebinpath = this.#setuparchiveOutputPath
@@ -604,13 +605,21 @@ export class Service extends EventEmitter<ServiceEvent> {
 
   get getArchiveForPlatform(): SetupArchive | undefined {
     if (this.#options.execconfig?.setuparchive) {
-      const platfromSpecificArchive: SetupArchive =
-        this.#options.execconfig?.setuparchive[this.platform]
+      const platfromSpecificArchive: SetupArchive = this.#options.execconfig?.setuparchive[this.platform]
+        ? this.#options.execconfig?.setuparchive[this.platform]
+        : this.#options.execconfig?.setuparchive?.default
 
       if (platfromSpecificArchive) {
         return platfromSpecificArchive
       }
     }
+  }
+
+  get isArchiveForPlatformDefault(): boolean {
+    if (this.#options.execconfig?.setuparchive) {
+      return this.#options.execconfig?.setuparchive?.default ? true : false
+    }
+    return false
   }
 
   get hasSetupArchive(): boolean {
@@ -1965,7 +1974,7 @@ export class Service extends EventEmitter<ServiceEvent> {
           if (process.stdout) {
             // process.stdout.setEncoding("utf8")
             process.stdout.on("data", (data) => {
-              this.#logWrite("XXXXXXXX", data)
+              //this.#logWrite("XXXXXXXX", data)
               this.#handleProcessOutput(data)
             })
             process.stdout.on("end", (data) => {
