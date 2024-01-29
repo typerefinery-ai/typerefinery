@@ -48,13 +48,16 @@
       "TRAEFIK_FILES_URL": "https://files.typerefinery.localhost:${SERVICE_PORT}/",
       "TRAEFIK_BPMN_URL": "https://bpmn.typerefinery.localhost:${SERVICE_PORT}/",
       "TRAEFIK_TRAEFIK_URL": "https://traefik.typerefinery.localhost:${SERVICE_PORT}/",
+      "TRAEFIK_KEYCLOAK_URL": "https://auth.typerefinery.localhost:${SERVICE_PORT}/",
+      "TRAEFIK_KEYCLOAK_ADMIN_URL": "https://keycloak.typerefinery.localhost:${SERVICE_PORT}/",
       "TRAEFIK_HTTP_PORT": "${SERVICE_PORT_SECONDARY}",
       "TRAEFIK_HTTPS_PORT": "${SERVICE_PORT}",
       "TRAEFIK_MONGO_PORT": "8108",
       "TRAEFIK_TYPEDB_PORT": "8109",
       "TRAEFIK_INTERNAL_PORT": "${SERVICE_PORT_CONSOLE}",
       "TRAEFIK_HOST_DOMAIN": "localhost.${CERT_DOMAIN}",
-      "TRAEFIK_HOST_DOMAIN_URL": "localhost.${CERT_DOMAIN}"
+      "TRAEFIK_HOST_DOMAIN_URL": "localhost.${CERT_DOMAIN}",
+      "TRAEFIK_HOST_DOMAIN_SUFFIX": "typerefinery.localhost"
     },
     "commandline": {
       "win32": " --log.level=DEBUG --providers.file.filename=\"${SERVICE_HOME}\\config\\dynamic\\dynamic.yml\" --api.insecure=true --api.dashboard=true --entryPoints.web.address=\":${SERVICE_PORT_SECONDARY}\" --entryPoints.websecure.address=\":${SERVICE_PORT}\" --entryPoints.traefik.address=\":${SERVICE_PORT_CONSOLE}\" --entryPoints.mongo.address=\":${TRAEFIK_MONGO_PORT}\" --entryPoints.typedb.address=\":${TRAEFIK_TYPEDB_PORT}\" --serversTransport.insecureSkipVerify=true",
@@ -69,7 +72,8 @@
       "retries": 180
     },
     "depend_on": [
-      "localcert"
+      "localcert",
+      "nginx"
     ],
     "setuparchive": {
       "win32": {
