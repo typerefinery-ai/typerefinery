@@ -1,6 +1,27 @@
 
 http:
   routers:
+
+    flow:
+      rule: Host(`flow.typerefinery.localhost`)
+      # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/flow`) ) || Host(`flow.localhost`)
+      service: flow
+      entrypoints:
+        - web
+      middlewares:
+      #   - error-pages
+        - serviceheaders
+    flow-https:
+      rule: Host(`flow.typerefinery.localhost`)
+      # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/flow`) ) || Host(`flow.localhost`)
+      service: flow
+      entrypoints:
+        - websecure
+      tls: true
+      middlewares:
+      #   # - error-pages
+        - serviceheaders
+
     fastapi:
       rule: Host(`api.typerefinery.localhost`)
       # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/api`) ) || Host(`api.localhost`)
@@ -125,7 +146,6 @@ http:
       entrypoints:
         - web
       middlewares:
-        - error-pages
         - serviceheaders
     nginx-https:
       rule: Host(`nginx.typerefinery.localhost`)
@@ -138,24 +158,6 @@ http:
         - error-pages
         - serviceheaders
 
-    flow:
-      rule: Host(`flow.typerefinery.localhost`)
-      # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/flow`) ) || Host(`flow.localhost`)
-      service: flow
-      entrypoints:
-        - web
-      middlewares:
-        - error-pages
-    flow-https:
-      rule: Host(`flow.typerefinery.localhost`)
-      # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/flow`) ) || Host(`flow.localhost`)
-      service: flow
-      entrypoints:
-        - websecure
-      tls: true
-      middlewares:
-        - error-pages
-        - serviceheaders
 
     tms:
       rule: Host(`tms.typerefinery.localhost`)
@@ -218,6 +220,20 @@ http:
       tls: true
 
     # http-catchall:
+    #     # attached only to web entryPoint
+    #     entryPoints:
+    #       - "web"
+    #       - "websecure"
+    #     # catchall rule
+    #     rule: "PathPrefix(`/`)"
+    #     service: unavailable
+    #     # lowest possible priority
+    #     # evaluated when no other router is matched
+    #     priority: 1
+    #     middlewares:
+    #       - tocustom404
+
+    # http-catchall:
     #   rule: "HostRegexp(`{host:.+}`)"
     #   entryPoints:
     #     - web
@@ -266,10 +282,15 @@ http:
           # - "500"
           # - "503"
 
+    tocustom404:
+      redirectregex:
+        regex: ^(.*)
+        replacement: https://nginx.typerefinery.localhost:8101/_errors_/404.html
+
     # cors
     serviceheaders:
       headers:
-        accesscontrolalloworiginlist: "https://cms.typerefinery.localhost:8101, https://flow.typerefinery.localhost:8101, https://api.typerefinery.localhost:8101"
+        accesscontrolalloworiginlist: "https://cms.typerefinery.localhost:8101, https://flow.typerefinery.localhost:8101, https://api.typerefinery.localhost:8101, http://cms.typerefinery.localhost:8101, http://flow.typerefinery.localhost:8101, http://api.typerefinery.localhost:8101"
         accesscontrolallowmethods: "GET, POST, PUT, DELETE, OPTIONS"
         accesscontrolallowheaders: "*"
         addvaryheader: true
@@ -339,6 +360,11 @@ http:
           - "Websight-Token"
 
   services:
+    # Service that will always answer a 503 Service Unavailable response
+    unavailable:
+      loadBalancer:
+        servers: {}
+
     cms:
       loadBalancer:
         passHostHeader: true
