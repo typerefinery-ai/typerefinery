@@ -1367,7 +1367,7 @@ export class Service extends EventEmitter<ServiceEvent> {
         }
       } else {
         if (!silent) {
-          this.#warn("service does not have a commandline")
+          this.#warn(`service ${this.name} does not have a commandline`)
         }
       }
     } else {
@@ -1400,7 +1400,7 @@ export class Service extends EventEmitter<ServiceEvent> {
         serviceCommand = this.#getServiceCommand(serviceCommand, this)
       } else {
         if (!silent) {
-          this.#warn("service does not have a commandline")
+          this.#warn(`service ${this.name} does not have a commandline`)
         }
       }
     } else {
