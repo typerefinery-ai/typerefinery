@@ -97,9 +97,10 @@ async def execute_algorithm(request: Request, response: Response, algorithm: Alg
     # get specific request logger
     request_logger = Logger.bind(requestid=requestid)
     # print(json.dumps(algorithm))
-    print(json.dumps(config))
+    configJson = json.loads(config)
+    # print(json.dumps(configJson))
     with open(new_script_input, "w") as script_inpuit:
-      script_inpuit.write(json.dumps(config))
+      script_inpuit.write(json.dumps(configJson))
 
     scripterror = "false"
     # try catch finaly
