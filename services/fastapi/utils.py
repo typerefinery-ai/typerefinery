@@ -78,3 +78,10 @@ class UTILS(object):
       return json[key]
     else:
       return None
+
+  def isJson(possiblejson):
+    try:
+      json.loads(possiblejson)
+    except ValueError as e:
+      return False
+    return True
