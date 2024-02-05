@@ -74,7 +74,7 @@ class AlgorithmModel(BaseModel):
 
 @Logger.catch
 @router.post("/algorithm")
-async def execute_algorithm(request: Request, response: Response, algorithm: AlgorithmModel, config: Annotated[Any,Body()]):
+async def execute_algorithm(request: Request, response: Response, algorithm: AlgorithmModel, config: Annotated[Any, Body()]):
     # generate unique request id
     requestid = f'{datetime.timestamp(datetime.now())}.{str(random.randint(1, 100000))}'
     # get new name for a new script
@@ -96,11 +96,9 @@ async def execute_algorithm(request: Request, response: Response, algorithm: Alg
     logfile_hander = Logger.add(new_script_log, level="INFO", filter=lambda record: record["extra"]["requestid"] == requestid)
     # get specific request logger
     request_logger = Logger.bind(requestid=requestid)
-    # print(json.dumps(algorithm))
-    configJson = json.loads(config)
-    # print(json.dumps(configJson))
+
     with open(new_script_input, "w") as script_inpuit:
-      script_inpuit.write(json.dumps(configJson))
+        script_inpuit.write(json.dumps(config))
 
     scripterror = "false"
     # try catch finaly
