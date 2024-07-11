@@ -2279,8 +2279,9 @@ export class Service extends EventEmitter<ServiceEvent> {
   #errorWrite(type: string, message: any) {
     if (this.#stderr && message) {
       const timestamp = this.#timestamp
+      const serviceId = this.#id
       const newLine = "\n"
-      this.#stderr.write(`${timestamp} ${type.toUpperCase()} ${message}${newLine}`)
+      this.#stderr.write(`${timestamp} ${type.toUpperCase()} ${serviceId} -- ${message}${newLine}`)
     }
   }
 
@@ -2288,8 +2289,9 @@ export class Service extends EventEmitter<ServiceEvent> {
   #logWrite(type: string, message: any) {
     if (this.#stdout && message) {
       const timestamp = this.#timestamp
+      const serviceId = this.#id
       const newLine = "\n"
-      this.#stdout.write(`${timestamp} ${type.toUpperCase()} ${message}${newLine}`)
+      this.#stdout.write(`${timestamp} ${type.toUpperCase()} ${serviceId} -- ${message}${newLine}`)
     }
   }
 
