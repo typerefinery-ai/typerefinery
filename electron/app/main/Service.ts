@@ -92,12 +92,16 @@ export enum ServiceLocation {
 export enum HealthCheckType {
   HTTP = "http",
   TCP = "tcp",
+  FILE = "file",
+  VARIABLE = "variable",
 }
 
 export interface HealthCheck {
   type: HealthCheckType
   url?: string
+  file?: string
   path?: string
+  variable?: string
   interval?: number
   timeout?: number
   retries?: number
@@ -746,7 +750,7 @@ export class Service extends EventEmitter<ServiceEvent> {
     return this.#processEnv
   }
 
-  #handleProcessOutput(log: string) {
+  #handleProcessOutput(log: string, errorLog: boolean = false) {
     if (this.#options.execconfig?.outputvarregex) {
       const logVars: { [key: string]: string } = this.#extractVariablesFromLog(
         log.toString()
@@ -760,10 +764,14 @@ export class Service extends EventEmitter<ServiceEvent> {
         this.emit("globalEnv", this.id, this.#globalEnv)
       }
     }
-    this.#logWrite("info", log)
+    if (errorLog) {
+      this.#errorWrite("error", log)
+    } else {
+      this.#logWrite("info", log)
+    }
   }
 
-  // for each log line check if it matches the regex from the config list of Key/Value list in #options.outputvarregex
+  // for each log line check if it matches the regex from the config list of Key/Value list in #options.outputvarregex("")
   #extractVariablesFromLog(log: string): { [key: string]: string } {
     const envVars = {}
     if (this.#options.execconfig?.outputvarregex) {
@@ -1092,7 +1100,6 @@ export class Service extends EventEmitter<ServiceEvent> {
 
   // register process and run health check
   #register(process: ChildProcess) {
-    this.#process = process
 
     if (process.pid) {
       this.#debug(`creating service pid for service ${this.#id}`)
@@ -1100,7 +1107,10 @@ export class Service extends EventEmitter<ServiceEvent> {
     }
     this.#debug(`registering service exit event ${this.#id}`)
     process.on("data", (data) => {
-      this.#logWrite("----", data)
+      this.#handleProcessOutput(data)
+    })
+    process.on("data", (data) => {
+      this.#handleProcessOutput(data)
     })
     // handle process close this will run always after exit or error
     process.on("close", (code: number, signal: NodeJS.Signals) => {
@@ -1155,6 +1165,15 @@ export class Service extends EventEmitter<ServiceEvent> {
       this.#debug(`starting health check for service ${this.#id}`)
       this.#setStatus(ServiceStatus.HEALTHCHECKWAIT)
       this.#startHealthCheck(this.#healthCheck.retries || 10)
+    } else {
+      this.#debug(`service healtcheck is not defined for service ${this.#id}`)
+      //outputvarregex is not set, set status to completed
+      if (!this.#options.execconfig?.outputvarregex) {
+        //if service is running
+        if (this.#process) {
+          this.#setStatus(ServiceStatus.STARTED)
+        }
+      }
     }
 
     // start monitoring service
@@ -1197,7 +1216,7 @@ export class Service extends EventEmitter<ServiceEvent> {
 
         const processList = Array<string>()
 
-        // for each property get the pid and memory
+        // for each property get the pid and memorymonitorService
         Object.getOwnPropertyNames(this.#processStatsTree).forEach((pid) => {
           const processStats = this.#processStatsTree[pid]
           let memory = "0"
@@ -1605,6 +1624,10 @@ export class Service extends EventEmitter<ServiceEvent> {
         return this.#runHealthCheckHttp()
       } else if (this.#healthCheck.type == HealthCheckType.TCP) {
         return this.#runHealthCheckTcp()
+      } else if (this.#healthCheck.type == HealthCheckType.FILE) {
+        return this.#runHealthCheckFile()
+      } else if (this.#healthCheck.type == HealthCheckType.VARIABLE) {
+        return this.#runHealthCheckVariable()
       }
     }
     return true
@@ -1688,6 +1711,58 @@ export class Service extends EventEmitter<ServiceEvent> {
     }
     return true
   }
+
+  // run health check variable
+  #runHealthCheckVariable(): boolean {
+    if (this.#healthCheck && this.#healthCheck.variable) {
+      const variable = this.#getServiceCommand(this.#healthCheck.variable, this)
+      if (variable) {
+        this.#setStatus(ServiceStatus.STARTED)
+        this.#stopHealthCheck()
+        this.#log(
+          `variable health check success, service status ${this.#statusname(
+            this.#status
+          )}.`
+        )
+        return true
+      } else {
+        this.#log(
+          `variable health check failed, variable ${variable} is not set, service status ${
+            this.#status
+          }`
+        )
+        return false
+      }
+    }
+    return true
+  }
+
+
+  // run health check file
+  #runHealthCheckFile(): boolean {
+    if (this.#healthCheck && this.#healthCheck.file) {
+      const file = this.#getServiceCommand(this.#healthCheck.file, this)
+      if (fs.existsSync(file)) {
+        this.#setStatus(ServiceStatus.STARTED)
+        this.#stopHealthCheck()
+        this.#log(
+          `file health check success, service status ${this.#statusname(
+            this.#status
+          )}.`
+        )
+        return true
+      } else {
+        this.#log(
+          `file health check failed, file ${file} does not exist, service status ${
+            this.#status
+          }`
+        )
+        return false
+      }
+    }
+    return true
+  }
+
 
   // get an open port
   async #getOpenPort(): Promise<number> {
@@ -1956,59 +2031,46 @@ export class Service extends EventEmitter<ServiceEvent> {
             )}, cwd: ${options.cwd}`
           )
 
-          console.log("")
-          console.log(`execCommand: ${execCommand}`)
-          console.log(
+          this.#debug(`execCommand: ${execCommand}`)
+          this.#debug(
             `commandlineArgs: ${JSON.stringify(commandlineArgs, null, 2)}`
           )
-          console.log(`options: ${JSON.stringify(options, null, 2)}`)
-          console.log("")
-          console.log("----")
-          const process = child_process.spawn(
+          this.#debug(`options: ${JSON.stringify(options, null, 2)}`)
+
+          this.#process = child_process.spawn(
             execCommand,
             commandlineArgs,
             options
           )
 
           // monitor console
-          if (process.stdout) {
+          if (this.#process.stdout) {
             // process.stdout.setEncoding("utf8")
-            process.stdout.on("data", (data) => {
-              //this.#logWrite("XXXXXXXX", data)
+            this.#process.stdout.on("data", (data) => {
               this.#handleProcessOutput(data)
             })
-            process.stdout.on("end", (data) => {
+            this.#process.stdout.on("end", (data) => {
               this.#logWrite("info", `output log closed ${data}`)
             })
           }
           // monitor error log
-          if (process.stderr) {
+          if (this.#process.stderr) {
             // process.stderr.setEncoding("utf8")
-            process.stderr.on("data", (data) => {
-              this.#logWrite("error", data)
-              this.#errorWrite("error", data)
+            this.#process.stderr.on("data", (data) => {
+              this.#handleProcessOutput(data, true)
             })
-            process.stderr.on("end", (data) => {
+            this.#process.stderr.on("end", (data) => {
               this.#logWrite("info", `error log closed ${data}`)
             })
           }
-          // const process = child_process.spawn(
-          //   execCommand,
-          //   commandlineArgs,
-          //   options
-          // )
-          console.log("^^^^")
-          console.log("")
-          console.log("")
-          console.log("")
 
           this.#log([
             "spawn",
             process.pid,
             JSON.stringify({
-              spawnfile: process.spawnfile,
-              spawnargs: process.spawnargs,
-              signalCode: process.signalCode,
+              spawnfile: this.#process.spawnfile,
+              spawnargs: this.#process.spawnargs,
+              signalCode: this.#process.signalCode,
               execCommand: execCommand,
               commandline: commandlineArgs,
               cwd: options.cwd,
@@ -2030,12 +2092,12 @@ export class Service extends EventEmitter<ServiceEvent> {
             )
           )
 
-          this.#register(process)
+          this.#register(this.#process)
 
           // if service is utility, wait for it to exit
           if (this.isUtility) {
             this.#log(`service ${this.id} is utility, waiting for exit.`)
-            await this.#waitForProcessExitAsync(process)
+            await this.#waitForProcessExitAsync(this.#process)
             this.#log(`service ${this.id} exited.`)
           }
           // this.#log(`service ${this.id} started and registered.`)
@@ -2215,17 +2277,19 @@ export class Service extends EventEmitter<ServiceEvent> {
 
   // write to service error log
   #errorWrite(type: string, message: any) {
-    if (this.#stderr) {
+    if (this.#stderr && message) {
       const timestamp = this.#timestamp
-      this.#stderr.write(`${timestamp} ${type.toUpperCase()} ${message}\n`)
+      const newLine = "\n"
+      this.#stderr.write(`${timestamp} ${type.toUpperCase()} ${message}${newLine}`)
     }
   }
 
   // write to service log
   #logWrite(type: string, message: any) {
-    if (this.#stdout) {
+    if (this.#stdout && message) {
       const timestamp = this.#timestamp
-      this.#stdout.write(`${timestamp} ${type.toUpperCase()} ${message}\n`)
+      const newLine = "\n"
+      this.#stdout.write(`${timestamp} ${type.toUpperCase()} ${message}${newLine}`)
     }
   }
 
@@ -2618,7 +2682,7 @@ export class Service extends EventEmitter<ServiceEvent> {
             )}`
           )
           this.#errorWrite(
-            "XXX1",
+            "info",
             `execCommand: ${execCommandLine.exe} ${execCommandLine.args.join(" ")} in ${execCommandLine.cwd}`
           )
           await os
