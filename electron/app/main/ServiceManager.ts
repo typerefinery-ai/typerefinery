@@ -6,11 +6,13 @@ import {
   ServiceStatus,
   Service,
 } from "./Service"
-import fs from "fs"
+import fs, { WriteStream } from "fs"
 import glob from "glob"
 import { Logger } from "./Logger"
 import { Writable } from "node:stream"
 import { getPortFree } from "./Utils"
+import { os } from "./Utils"
+import e from "express"
 
 const serviceManagerLog = "servicemanager.log"
 
@@ -20,6 +22,7 @@ interface ServiceManagerEvents {
 }
 
 class ServiceManager {
+  #id = "servicemanager"
   #serviceConfigFile = "service.json"
   #servicesroot: string
   #servicesdataroot: string
@@ -29,9 +32,12 @@ class ServiceManager {
   #serviceManagerEvents: ServiceManagerEvents
   #logger: Logger
   #logsDir: string
-  #logWritable: Writable
-  #logWritablePath: string
+  #stdout: WriteStream
+  #stdoutLogFile: string
+  #stderr: WriteStream
+  #stderrLogFile: string
   #globalenv: { [key: string]: string } = {}
+  #abortController: AbortController
   constructor(
     logsDir: string,
     logger: Logger,
@@ -41,6 +47,7 @@ class ServiceManager {
     serviceManagerEvents: ServiceManagerEvents,
     globalenv: { [key: string]: string } = {}
   ) {
+    this.#abortController = new AbortController()
     this.#logsDir = logsDir
     this.#servicesroot = servicesroot
     this.#servicesdataroot = servicesdataroot
@@ -49,27 +56,122 @@ class ServiceManager {
     this.#serviceEvents = serviceEvents
     this.#serviceManagerEvents = serviceManagerEvents
 
-    this.#logWritablePath = path.join(logsDir, serviceManagerLog)
-    this.#logWritable = fs.createWriteStream(this.#logWritablePath, {
+    // create stderr log file for service executable
+    this.#stderrLogFile = path.join(logsDir, `${this.#id}-error.log`)
+    this.#ensurePathToFile(this.#stderrLogFile)
+    this.#stderr = fs.createWriteStream(this.#stderrLogFile, {
       flags: "a",
       mode: 0o666,
-      highWaterMark: 0,
+      autoClose: true,
+      encoding: "utf8",
+      highWaterMark: 100,
     })
+    this.#stderr.on("error", (err) => {
+      // this.#logger.error(err)
+      this.#logWrite("erorr", JSON.stringify(err))
+    })
+    this.#stderr.on("open", () => {
+      this.#logWrite("info", `log stderr open.`)
+    })
+    this.#stderr.on("finish", () => {
+      this.#logWrite("info", `log stderr finished.`)
+    })
+    this.#log("info", `service error log ${this.#stderr.path}.`)
+    this.#log(`service error log ${this.#stderr.path}`)
 
-    this.#logger.log("service manager log", this.#logWritablePath)
+
+    // create stdout log file for service executable
+    this.#stdoutLogFile = path.join(logsDir, `${this.#id}-console.log`)
+    this.#ensurePathToFile(this.#stdoutLogFile)
+    this.#stdout = fs.createWriteStream(this.#stdoutLogFile, {
+      flags: "a",
+      mode: 0o666,
+      autoClose: true,
+      encoding: "utf8",
+      highWaterMark: 100,
+    })
+    this.#stdout.on("error", (err) => {
+      // this.#logger.error(err)
+      this.#logWrite("erorr", JSON.stringify(err))
+    })
+    this.#stdout.on("open", () => {
+      this.#logWrite("info", `log stdout open.`)
+    })
+    this.#stdout.on("finish", () => {
+      this.#logWrite("info", `log finished.`)
+    })
+    this.#logWrite("info", `service console log ${this.#stdout.path}.`)
+    this.#log(`service console log ${this.#stdout.path}`)
+
     this.#serviceConfigList = []
     this.#globalenv = globalenv
     const startReload = new Date()
-    this.#logger.log("service manager reload start", startReload)
+    this.#log("service manager load start", startReload)
     this.reload()
-    this.#logger.log(
-      "service manager reload end",
+    this.#log(
+      "service manager load end",
       this.elapsedTime(startReload)
     )
+
+    const startAchive = new Date()
+    this.#log("service manager logs archive start", startAchive)
+    //curtrnt logs
+    this.#log(`archiving ${path.dirname(logsDir)}, current logs ${logsDir}`)
+    //archive logs
+    const parentFolder = path.dirname(logsDir)
+    const archiveFolder = path.join(parentFolder, "_archive")
+    this.archiveLogsInFolder(parentFolder, archiveFolder, logsDir)
+    this.#log(
+      "service manager load end",
+      this.elapsedTime(startAchive)
+    )
+
+    this.removeOldLogs(archiveFolder, 30)
+
   }
 
-  get log(): Writable {
-    return this.#logWritable
+  #ensurePathToFile(file: string) {
+    this.#ensurePath(path.dirname(file))
+  }
+
+  #ensurePath(dir: string) {
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true })
+    }
+  }
+
+
+  #log(...args: any[]) {
+    this.#logger.log(args)
+    this.#logWrite("info",args.join(" "))
+  }
+
+  // write to service log
+  #logWrite(type: string, message: any) {
+    if (this.#stdout && message) {
+      const timestamp = this.#timestamp
+      const serviceId = this.#id
+      const newLine = "\n"
+      this.#stdout.write(`${timestamp} ${type.toUpperCase()} ${serviceId} -- ${message}${newLine}`)
+    }
+  }
+
+  // write to service error log
+  #errorWrite(type: string, message: any) {
+    if (this.#stderr && message) {
+      const timestamp = this.#timestamp
+      const serviceId = this.#id
+      const newLine = "\n"
+      this.#stderr.write(`${timestamp} ${type.toUpperCase()} ${serviceId} -- ${message}${newLine}`)
+    }
+  }
+
+  /**
+   * get string timestamp
+   * @returns timestamp
+   */
+  get #timestamp(): string {
+    return new Date().toISOString()
   }
 
   getGlobalEnv(): { [key: string]: string } {
@@ -94,31 +196,31 @@ class ServiceManager {
   async reload(restart = false) {
     const startReload = new Date()
     if (restart) {
-      this.#logger.log(
+      this.#log(
         "service manager stop all",
         this.elapsedTime(startReload)
       )
       await this.stopAll()
     }
 
-    this.#logger.log("service manager clear", this.elapsedTime(startReload))
+    this.#log("service manager clear", this.elapsedTime(startReload))
     this.#clearServices()
-    this.#logger.log(
+    this.#log(
       "service manager load configs",
       this.elapsedTime(startReload)
     )
     this.#loadServiceConfigs()
-    this.#logger.log(
+    this.#log(
       "service manager load services",
       this.elapsedTime(startReload)
     )
     this.#loadServices()
-    this.#logger.log(
+    this.#log(
       "service manager update global env",
       this.elapsedTime(startReload)
     )
     this.#updateGlobalEnv()
-    this.#logger.log(
+    this.#log(
       "service manager sort services",
       this.elapsedTime(startReload)
     )
@@ -126,7 +228,7 @@ class ServiceManager {
 
     // send list of services to app
     if (this.#serviceManagerEvents.sendServiceList) {
-      this.#logger.log(
+      this.#log(
         "service manager send list of services to app",
         this.elapsedTime(startReload)
       )
@@ -135,7 +237,7 @@ class ServiceManager {
 
     // send globalenv to app
     if (this.#serviceManagerEvents.sendGlobalEnv) {
-      this.#logger.log(
+      this.#log(
         "service manager send globalenv to app",
         this.elapsedTime(startReload)
       )
@@ -143,12 +245,12 @@ class ServiceManager {
     }
 
     if (restart) {
-      this.#logger.log(
+      this.#log(
         "service manager send startAll start",
         this.elapsedTime(startReload)
       )
       await this.startAll()
-      this.#logger.log(
+      this.#log(
         "service manager send startAll end",
         this.elapsedTime(startReload)
       )
@@ -176,6 +278,7 @@ class ServiceManager {
 
   // process all service configs and load Service objects
   #loadServices() {
+    this.#log("loading services.")
     this.#serviceConfigList.forEach((serviceConfig: ServiceConfig) => {
       // name, servicepath, servicesroot, servicetype, options
       const service = new Service(
@@ -216,6 +319,7 @@ class ServiceManager {
 
   // find all service.json in services folder recursively
   #findServiceConfigs(servicesPath: string): ServiceConfig[] {
+    this.#log("locating service configs.")
     const serviceConfigList: ServiceConfig[] = []
     const servicesPathResolved = path.resolve(servicesPath)
     const globOptions = {
@@ -277,10 +381,11 @@ class ServiceManager {
 
             serviceConfigList.push(serviceConfig)
           } catch (error) {
-            this.#logger.log("findServiceConfigs", file, error)
+            this.#log("findServiceConfigs", file, error)
           }
         }
       })
+    this.#log(`found service configs: ${serviceConfigList.length}`)
     return serviceConfigList
   }
 
@@ -337,11 +442,11 @@ class ServiceManager {
 
   // start all services
   async startAll(forceInstall = false) {
-    this.#logger.log("starting all services.")
+    this.#log("starting all services.")
     this.#sortServices()
 
     for (const service of this.#services) {
-      this.#logger.log(
+      this.#log(
         `ordered service ${service.id} : ${
           service.options.execconfig?.serviceorder ?? 99
         }`
@@ -352,27 +457,28 @@ class ServiceManager {
     this.getGlobalEnv()
 
     for (const service of this.#services) {
-      this.#logger.log(`starting service ${service.id}`)
+      this.#log(`starting service ${service.id}`)
       await service.start(this.globalEnv, [service.id], true, forceInstall)
       // collect global environment variables from service and add to globalenv in case they have changed
       Object.assign(this.#globalenv, service.globalEnvironmentVariables)
 
-      this.#logger.log(
+      this.#log(
         `service started ${service.id} : ${service.status} : ${service.isSetup}`
       )
     }
-    this.#logger.log("all services started.")
+    this.#log("all services started.")
   }
 
   // stop all services
   async stopAll() {
+    this.#log("stopping all services.")
     this.#sortServices(true)
     for (const service of this.#services) {
-      this.#logger.log(`stopping service ${service.id}`)
+      this.#log(`stopping service ${service.id}`)
       await service.stop()
-      this.#logger.log(`service ${service.id} stopped.`)
+      this.#log(`service ${service.id} stopped.`)
     }
-    this.#logger.log("all services stopped.")
+    this.#log("all services stopped.")
   }
 
   hasRunningServices(): boolean {
@@ -386,6 +492,92 @@ class ServiceManager {
       return service.status === ServiceStatus.STOPPED
     })
   }
+
+  async pack7Zip(folderPath: string, archiveName: string, destination: string, deleteFiles = false) {
+    return new Promise<void>((resolve, reject) => {
+      this.#log(`packing ${folderPath} to ${archiveName}`)
+      const archiveService = this.getService("archive")
+      this.#log(`archive service ${archiveService}`)
+      if (archiveService) {
+        const serviceExec = archiveService.getServiceExecutable()
+        this.#log(`archive service executable ${serviceExec}`)
+        const commandArgs = ["a", "-t7z", archiveName, folderPath, (deleteFiles ? "-sdel" : "")]
+        const executable = this.#getExecCommandRelativeToCWD(serviceExec, destination)
+        this.#log(`archive command ${executable} ${commandArgs.join(" ")}`)
+        const environmentVariables = archiveService.environmentVariables
+        this.#log(`archive environment variables ${JSON.stringify(environmentVariables)}`)
+        //exec path
+        const execPath = environmentVariables["SERVICE_EXECUTABLE_HOME"]
+        this.#log(`archive exec path ${execPath}`)
+        os.runProcess(
+          executable,
+          commandArgs,
+          {
+            signal: this.#abortController.signal,
+            cwd: execPath,
+            // stdio: ["ignore", this.#stdout, this.#stderr],
+            windowsHide: true,
+          }
+        )
+          .then((result) => {
+            this.#log(`shell command ${serviceExec} result -- ${result}`)
+            // resolve()
+          })
+          .catch((err) => {
+            this.#log(`shell command ${serviceExec} error -- ${err}`)
+            // reject()
+          })
+      }
+    })
+  }
+
+  #getExecCommandRelativeToCWD(command: string, cwd: string) {
+    // return path.relative(cwd, command)
+    // let commandFixed = command.replace(cwd, "." + path.sep)
+    // if (!commandFixed.startsWith("." + path.sep)) {
+    //   commandFixed = "." + path.sep + commandFixed
+    // }
+
+    return command.replace(cwd, "." + path.sep)
+  }
+
+  archiveLogsInFolder(parentFolder: string, archiveFolder: string, currentFolder: string) {
+    // for each folder in parent folder that is not current folder create a zip file
+    const folders = fs.readdirSync(parentFolder)
+    const currentFolderName = path.basename(currentFolder)
+    const archiveFolderName = path.basename(archiveFolder)
+    // this.#log('archiveLogsInFolder', parentFolder, archiveFolder, currentFolder, folders, currentFolderName)
+    folders.forEach((folder: string) => {
+      if (folder !== currentFolderName && folder !== archiveFolderName) {
+        const folderPath = path.join(parentFolder, folder)
+        const stats = fs.statSync(folderPath)
+        if (stats.isDirectory()) {
+          const zipFile = path.join(archiveFolder, `${folder}.7z`)
+          this.#log(`archiving ${folder} to ${zipFile}`)
+          this.pack7Zip(folderPath, zipFile, parentFolder, true)
+        }
+      }
+    })
+  }
+
+  // remove old logs
+  removeOldLogs(archiveFolder: string, numberOfDays = 30) {
+    //find all files in archive folder and remove files older than number of days
+    const files = fs.readdirSync(archiveFolder)
+    const currentTime = new Date().getTime()
+    files.forEach((file: string) => {
+      const filePath = path.join(archiveFolder, file)
+      const stats = fs.statSync(filePath)
+      const fileTime = stats.mtime.getTime()
+      const diffTime = currentTime - fileTime
+      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24))
+      if (diffDays > numberOfDays) {
+        this.#log(`removing old log file ${filePath}`)
+        fs.unlinkSync(filePath)
+      }
+    })
+  }
+  
 }
 
 export { type ServiceManagerEvents, ServiceManager }
