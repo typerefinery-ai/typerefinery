@@ -21,6 +21,13 @@ interface ServiceManagerEvents {
   sendGlobalEnv: (globalenv: { [key: string]: string }) => void
 }
 
+export interface ReservedPort {
+  port: number //what is requested
+  serviceId: string
+  type: string
+  status: string,
+  requested: number // what was assigned
+}
 class ServiceManager {
   #id = "servicemanager"
   #serviceConfigFile = "service.json"
@@ -38,6 +45,7 @@ class ServiceManager {
   #stderrLogFile: string
   #globalenv: { [key: string]: string } = {}
   #abortController: AbortController
+  #servicePorts: { [key: string]: ReservedPort } = {}
   constructor(
     logsDir: string,
     logger: Logger,
@@ -408,8 +416,63 @@ class ServiceManager {
     }) as Service
   }
 
-  async getOpenPort(port = 0, host = "localhost") {
-    return await getPortFree(port, host)
+  async #addServicePort(port: any, serviceId: string = "", type: string = "", status: string = "", requested: any) {
+    const reservedPort: ReservedPort = {
+      port: port,
+      serviceId: serviceId,
+      type: type,
+      status: status,
+      requested: requested
+    }
+    this.#servicePorts[port + ""] = reservedPort
+    this.#log(`addServicePort ${JSON.stringify(this.#servicePorts, null, 2)}`)
+  }
+
+  async #updateServicePort(port: any, serviceId: string = "", type: string = "", status: string = "") {
+    if (this.#servicePorts[port + ""]) {
+      this.#servicePorts[port + ""].status = status
+    }
+    this.#log(`updateServicePort ${JSON.stringify(this.#servicePorts, null, 2)}`)
+  }
+
+  async #isServicePortReserved(port: any) {
+    //check if #servicePorts has port
+    return this.#servicePorts[port + ""] ? true : false
+  }
+
+  async #findNotReservedServicePort(port: any) {
+    if (await this.#isServicePortReserved(port)) {
+      return await this.#findNotReservedServicePort(port + 1)
+    }
+    return port
+  }
+
+  async getOpenPort(port = 0, host = "localhost", serviceId = "", type = "") {
+    this.#log(`getOpenPort ${port} ${host} ${serviceId} ${type}`)
+    var freeReservedPort: any = port
+    if (freeReservedPort > 0) {
+      if (this.#servicePorts[port + ""] ? true : false) {
+        //const nextPort = await this.#findNotReservedServicePort(port)
+        freeReservedPort = freeReservedPort + 1
+        for (let i = 0; i < 10; i++) {
+          if (freeReservedPort > 65535) {
+            freeReservedPort = 0
+            break
+          }
+          if (this.#servicePorts[freeReservedPort + ""] ? true : false) {
+            freeReservedPort++
+          } else {
+            break
+          }
+        }
+        const reservedPort: ReservedPort = this.#servicePorts[port + ""]
+        this.#log(`port ${port} is reserved by ${reservedPort.serviceId} as ${reservedPort.type} port, trying next port ${freeReservedPort}.`)
+      }
+    }
+    await this.#addServicePort(freeReservedPort, serviceId, type, "checking", port)
+    freeReservedPort = await getPortFree(freeReservedPort, host)
+    await this.#updateServicePort(freeReservedPort, serviceId, type, "available")
+    return freeReservedPort
   }
 
   #sortServices(reverse = false) {
@@ -577,7 +640,7 @@ class ServiceManager {
       }
     })
   }
-  
+
 }
 
 export { type ServiceManagerEvents, ServiceManager }

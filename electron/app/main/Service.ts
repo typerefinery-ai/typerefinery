@@ -409,14 +409,14 @@ export class Service extends EventEmitter<ServiceEvent> {
     if (this.#serviceport && this.#serviceport > 0) {
       this.#getOpenPort().then((port) => {
         this.#serviceport = isNaN(port) ? -2 : port
-        this.#log(`service ${this.#id} resolved port ${this.#serviceport}.`)
+        this.#logWrite("into",`service ${this.#id} resolved port ${this.#serviceport}.`)
       })
     }
 
     if (this.#serviceportconsole && this.#serviceportconsole > 0) {
       this.#getOpenConsolePort().then((port) => {
         this.#serviceportconsole = isNaN(port) ? -2 : port
-        this.#log(
+        this.#logWrite("into",
           `service ${this.#id} resolved console port ${
             this.#serviceportconsole
           }.`
@@ -427,7 +427,7 @@ export class Service extends EventEmitter<ServiceEvent> {
     if (this.#serviceportsecondary && this.#serviceportsecondary > 0) {
       this.#getOpenSecondaryPort().then((port) => {
         this.#serviceportsecondary = isNaN(port) ? -2 : port
-        this.#log(
+        this.#logWrite("into",
           `service ${this.#id} resolved secondary port ${
             this.#serviceportsecondary
           }.`
@@ -438,7 +438,7 @@ export class Service extends EventEmitter<ServiceEvent> {
     if (this.#serviceportdebug && this.#serviceportdebug > 0) {
       this.#getOpenDebugPort().then((port) => {
         this.#serviceportdebug = isNaN(port) ? -2 : port
-        this.#log(
+        this.#logWrite("into",
           `service ${this.#id} resolved debug port ${this.#serviceportdebug}.`
         )
       })
@@ -1766,34 +1766,50 @@ export class Service extends EventEmitter<ServiceEvent> {
 
   // get an open port
   async #getOpenPort(): Promise<number> {
+    this.#logWrite("into",`service ${this.#id} getting open port ${this.#serviceport}`)
     const port = await this.#serviceManager.getOpenPort(
       this.#serviceport,
-      this.#servicehost
+      this.#servicehost,
+      this.#id,
+      "port"
     )
+    this.#logWrite("into",`service ${this.#id} got open port ${port}`)
     return parseInt(port + "")
   }
   // get an open port
   async #getOpenConsolePort(): Promise<number> {
+    this.#logWrite("into",`service ${this.#id} getting open console port ${this.#serviceportconsole}`)
     const port = await this.#serviceManager.getOpenPort(
       this.#serviceportconsole,
-      this.#servicehost
+      this.#servicehost,
+      this.#id,
+      "console"
     )
+    this.#logWrite("into",`service ${this.#id} got open console port ${port}`)
     return parseInt(port + "")
   }
   // get an open port
   async #getOpenSecondaryPort(): Promise<number> {
+    this.#logWrite("into",`service ${this.#id} getting open secondary port ${this.#serviceportsecondary}`)
     const port = await this.#serviceManager.getOpenPort(
       this.#serviceportsecondary,
-      this.#servicehost
+      this.#servicehost,
+      this.#id,
+      "secondary"
     )
+    this.#logWrite("into",`service ${this.#id} got open secondary port ${port}`)
     return parseInt(port + "")
   }
   // get an open port
   async #getOpenDebugPort(): Promise<number> {
+    this.#logWrite("into",`service ${this.#id} getting open debug port ${this.#serviceportdebug}`)
     const port = await this.#serviceManager.getOpenPort(
       this.#serviceportdebug,
-      this.#servicehost
+      this.#servicehost,
+      this.#id,
+      "debug"
     )
+    this.#logWrite("into",`service ${this.#id} got open debug port ${port}`)
     return parseInt(port + "")
   }
 
