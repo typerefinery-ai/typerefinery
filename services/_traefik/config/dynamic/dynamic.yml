@@ -39,6 +39,45 @@ http:
       tls: true
       middlewares:
         - serviceheaders
+
+    openobserve:
+      rule: Host(`openobserve.typerefinery.localhost`)
+      # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/api`) ) || Host(`api.localhost`)
+      service: openobserve
+      entrypoints:
+        - web
+      middlewares:
+        - serviceheaders
+
+    openobserve-https:
+      rule: Host(`openobserve.typerefinery.localhost`)
+      # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/api`) ) || Host(`api.localhost`)
+      service: openobserve
+      entrypoints:
+        - websecure
+      tls: true
+      middlewares:
+        - serviceheaders
+
+    openobserve-grpc:
+      rule: Host(`openobserve-grpc.typerefinery.localhost`)
+      # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/api`) ) || Host(`api.localhost`)
+      service: openobserve-grpc
+      entrypoints:
+        - web
+      middlewares:
+        - serviceheaders
+
+    openobserve-grpc-https:
+      rule: Host(`openobserve-grpc.typerefinery.localhost`)
+      # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/api`) ) || Host(`api.localhost`)
+      service: openobserve-grpc
+      entrypoints:
+        - websecure
+      tls: true
+      middlewares:
+        - serviceheaders
+
     keycloak:
       rule: Host(`auth.typerefinery.localhost`)
       # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/api`) ) || Host(`api.localhost`)
@@ -290,7 +329,7 @@ http:
     # cors
     serviceheaders:
       headers:
-        accesscontrolalloworiginlist: "https://cms.typerefinery.localhost:8101, https://flow.typerefinery.localhost:8101, https://api.typerefinery.localhost:8101, http://cms.typerefinery.localhost:8101, http://flow.typerefinery.localhost:8101, http://api.typerefinery.localhost:8101"
+        accesscontrolalloworiginlist: "https://cms.typerefinery.localhost:8101, https://flow.typerefinery.localhost:8101, https://api.typerefinery.localhost:8101, http://cms.typerefinery.localhost:8101, http://flow.typerefinery.localhost:8101, http://openobserve.typerefinery.localhost:8101"
         accesscontrolallowmethods: "GET, POST, PUT, DELETE, OPTIONS"
         accesscontrolallowheaders: "*"
         addvaryheader: true
@@ -380,6 +419,19 @@ http:
         passHostHeader: true
         servers:
           - url: '{{ env "API_URL" }}'
+
+    openobserve:
+      loadBalancer:
+        passHostHeader: true
+        servers:
+          - url: '{{ env "OPENOBSERVE_URL" }}'
+
+    openobserve-grpc:
+      loadBalancer:
+        passHostHeader: true
+        servers:
+          - url: '{{ env "OPENOBSERVE_URL_GRPC" }}'
+
     flow:
       loadBalancer:
         passHostHeader: true

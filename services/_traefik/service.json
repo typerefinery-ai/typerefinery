@@ -50,6 +50,7 @@
       "TRAEFIK_TRAEFIK_URL": "https://traefik.typerefinery.localhost:${SERVICE_PORT}/",
       "TRAEFIK_KEYCLOAK_URL": "https://auth.typerefinery.localhost:${SERVICE_PORT}/",
       "TRAEFIK_KEYCLOAK_ADMIN_URL": "https://keycloak.typerefinery.localhost:${SERVICE_PORT}/",
+      "TRAEFIK_OPENOBSERVE_URL": "https://openobserve.typerefinery.localhost:${SERVICE_PORT}/",
       "TRAEFIK_HTTP_PORT": "${SERVICE_PORT_SECONDARY}",
       "TRAEFIK_HTTPS_PORT": "${SERVICE_PORT}",
       "TRAEFIK_MONGO_PORT": "8108",
