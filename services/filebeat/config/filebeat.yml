@@ -16,7 +16,7 @@ filebeat.inputs:
     id: all-logs-collector
     scan_frequency: 1m
     exclude_files: ['combined.log','servicemanager.log']
-    prospector.scanner.exclude_files: ['combined.log','servicemanager-console.log','openobserve-console.log','filebeat-error.log','filebeat-console.log']
+    prospector.scanner.exclude_files: ['combined.log']
     paths:
       - ${SERVICE_LOG_PATH}/*.log
     parsers:
@@ -30,11 +30,12 @@ filebeat.inputs:
       #     patterns:
       #       - '%{TIMESTAMP_ISO8601:timestamp}${SPACE}%{LOGLEVEL:level}${SPACE}%{GREEDYDATA:content}'
       - dissect:
-          tokenizer: "%{timestamp} %{level} %{service} -- %{message}"
+          tokenizer: "%{@timestamp} %{level} %{label} -- %{message}"
           field: "message"
-          target_prefix: "log"
+          target_prefix: ""
+          overwrite_keys: true
       - timestamp:
-          field: "log_timestamp"
+          field: "@timestamp"
           layouts:
             - '2006-01-02T15:04:05Z'
             - '2006-01-02T15:04:05.999Z'
@@ -46,10 +47,10 @@ filebeat.inputs:
             - '2024-07-11T13:25:15.140456+02:00'
             - '2024-07-11T14:25:08.092898400+00:00'
       - decode_json_fields:
-          fields: ["log_message"]
-          # target: "json"
-          # process_array: true
-          max_depth: 3
+          fields: ["message"]
+          target: ""
+          process_array: true
+          max_depth: 4
           add_error_key: false
       # - copy_fields:
       #     fields:
@@ -67,7 +68,7 @@ filebeat.inputs:
           fields: ["message"]
 
   - type: filestream
-    enabled: false
+    enabled: true
     id: json-combined-collector
     paths:
       - ${SERVICE_LOG_PATH}/combined.log
@@ -85,9 +86,10 @@ filebeat.inputs:
     #   #     overwrite_keys: true
       - decode_json_fields:
           fields: ["message"]
-          # target: "json"
-          # process_array: true
-          # max_depth: 3
+          target: ""
+          process_array: true
+          max_depth: 4
+          add_error_key: false
 
 output.elasticsearch:
   hosts: ["${OPENOBSERVE_URL}"]
