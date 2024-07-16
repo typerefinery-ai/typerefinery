@@ -232,6 +232,27 @@ http:
         - error-pages
         - serviceheaders
 
+    widgetdev:
+      rule: Host(`widgetdev.typerefinery.localhost`)
+      # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/flow`) ) || Host(`flow.localhost`)
+      service: widgetdev
+      entrypoints:
+        - web
+      middlewares:
+      #   - error-pages
+        - serviceheaders
+    widgetdev-https:
+      rule: Host(`widgetdev.typerefinery.localhost`)
+      # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/flow`) ) || Host(`flow.localhost`)
+      service: widgetdev
+      entrypoints:
+        - websecure
+      tls: true
+      middlewares:
+      #   # - error-pages
+        - serviceheaders
+
+
     traefikdashboard:
       rule: Host(`traefik.typerefinery.localhost`)
       service: api@internal
@@ -474,6 +495,12 @@ http:
         passHostHeader: true
         servers:
           - url: '{{ env "JUPYTERLAB_URL" }}'
+
+    widgetdev:
+      loadBalancer:
+        passHostHeader: true
+        servers:
+          - url: '{{ env "TRAEFIK_LOCAL_WIDGETDEV_URL" }}'
 
 tcp:
   services:

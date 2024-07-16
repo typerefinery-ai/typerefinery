@@ -58,7 +58,8 @@
       "TRAEFIK_INTERNAL_PORT": "${SERVICE_PORT_CONSOLE}",
       "TRAEFIK_HOST_DOMAIN": "localhost.${CERT_DOMAIN}",
       "TRAEFIK_HOST_DOMAIN_URL": "localhost.${CERT_DOMAIN}",
-      "TRAEFIK_HOST_DOMAIN_SUFFIX": "typerefinery.localhost"
+      "TRAEFIK_HOST_DOMAIN_SUFFIX": "typerefinery.localhost",
+      "TRAEFIK_LOCAL_WIDGETDEV_URL": "http://localhost:4001"
     },
     "commandline": {
       "win32": " --log.level=DEBUG --providers.file.filename=\"${SERVICE_HOME}\\config\\dynamic\\dynamic.yml\" --api.insecure=true --api.dashboard=true --entryPoints.web.address=\":${SERVICE_PORT_SECONDARY}\" --entryPoints.websecure.address=\":${SERVICE_PORT}\" --entryPoints.traefik.address=\":${SERVICE_PORT_CONSOLE}\" --entryPoints.mongo.address=\":${TRAEFIK_MONGO_PORT}\" --entryPoints.typedb.address=\":${TRAEFIK_TYPEDB_PORT}\" --serversTransport.insecureSkipVerify=true",
