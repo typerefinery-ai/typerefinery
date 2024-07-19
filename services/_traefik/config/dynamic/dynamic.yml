@@ -373,7 +373,7 @@ http:
         addvaryheader: true
         # contentsecuritypolicy: "default-src 'self' https://flow.typerefinery.localhost:8101/ ; img-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; font-src 'self'; frame-src 'self'; object-src 'self'; media-src 'self'; child-src 'self'; form-action 'self'; frame-ancestors 'self'; base-uri 'self'; manifest-src 'self'; worker-src 'self'; prefetch-src 'self';"
         # contentsecuritypolicy: "default-src 'self' *.typerefinery.localhost; img-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; connect-src 'self'; font-src 'self'; frame-src 'self'; object-src 'self'; media-src 'self'; child-src 'self'; form-action 'self'; frame-ancestors 'self'; base-uri 'self'; manifest-src 'self'; worker-src 'self';"
-        contentsecuritypolicy: "default-src 'self' https://*.typerefinery.localhost:8101 http://localhost:* https://raw.githubusercontent.com https://*.github.io; frame-src 'self' https://*.typerefinery.localhost:8101 https://*.github.io;  img-src 'self' * data: ; style-src 'self' 'unsafe-inline'; connect-src 'self' https://*.typerefinery.localhost:8101 wss://tms.typerefinery.localhost:8101; "
+        # contentsecuritypolicy: "default-src 'self' https://*.typerefinery.localhost:8101 http://localhost:* https://raw.githubusercontent.com https://*.github.io; frame-src 'self' https://*.typerefinery.localhost:8101 https://*.github.io;  img-src 'self' * data: ; style-src 'self' 'unsafe-inline'; connect-src 'self' https://*.typerefinery.localhost:8101 wss://tms.typerefinery.localhost:8101; "
         # contentsecuritypolicy: ";"
         customRequestHeaders:
           Access-Control-Allow-Origin: "*"
