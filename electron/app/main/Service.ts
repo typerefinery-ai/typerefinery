@@ -659,6 +659,10 @@ export class Service extends EventEmitter<ServiceEvent> {
       command = command.replaceAll(`\${${key}}`, value)
     }
 
+    for (const [key, value] of Object.entries(this.#portmapping)) {
+      command = command.replaceAll(`\${${key}}`, value + "")
+    }
+
     return command
       .replaceAll("${PS}", this.isWindows ? ";" : ":") //path separator
       .replaceAll("${SERVICE_HOME}", service.#servicehome)
@@ -687,17 +691,6 @@ export class Service extends EventEmitter<ServiceEvent> {
           ? service.#servicedatapath.replaceAll("\\", "\\\\")
           : service.#servicedatapath
       ) // escape backslashes for windows
-      .replaceAll(varTemplate(ENV_VAR_NAME_SERVICE_PORT), service.#serviceport + "")
-      .replaceAll(
-        varTemplate(ENV_VAR_NAME_SERVICE_PORT_SECONDARY),
-        service.#serviceportsecondary + ""
-      )
-      .replaceAll(
-        varTemplate(ENV_VAR_NAME_SERVICE_PORT_CONSOLE),
-        service.#serviceportconsole + "")
-      .replaceAll(
-        varTemplate(ENV_VAR_NAME_SERVICE_PORT_DEBUG),
-          service.#serviceportdebug + "")
       .replaceAll("${SERVICE_HOST}", service.#servicehost + "")
       .replaceAll("${SERVICE_LOG_PATH}", service.#logsDir + "")
       .replaceAll(
@@ -2711,7 +2704,11 @@ export class Service extends EventEmitter<ServiceEvent> {
     // find if ports are already used, if used by something else then find new ports
     await this.#initPorts()
 
-    this.#setStatus(ServiceStatus.AVAILABLE)
+    if (this.isEnabled) {
+      this.#setStatus(ServiceStatus.AVAILABLE)
+    } else {
+      this.#setStatus(ServiceStatus.DISABLED)
+    }
   }
 
   async #initPorts() {
