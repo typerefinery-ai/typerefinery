@@ -103,8 +103,10 @@ function getServicePage(service: Service) {
   let portsList = ""
   for (const port in ports) {
     const portData = ports[port]
+    const portLink = portData > 0 ? `<a href="http://localhost:${portData}" target="_blank">${port}</a>` : port
+
     portsList += `<tr class="align-middle">
-      <td>${port}</td>
+      <td>${portLink}</td>
       <td>${portData}</td>
       </tr>`
   }
@@ -214,20 +216,8 @@ function getServicePage(service: Service) {
           <input type="text" value="${serviceStatusName}" readonly class="form-control ${statusBackground}" aria-describedby="inputGroup-sizing-sm">
         </div>
         <div class="input-group input-group-sm mb-1">
-          <span class="input-group-text" id="inputGroup-sizing-sm">URL</span>
+          <span class="input-group-text" id="inputGroup-sizing-sm">Primary Access Port</span>
           <span class="form-control">${serviceLink}</span>
-        </div>
-        <div class="input-group input-group-sm mb-1">
-          <span class="input-group-text" id="inputGroup-sizing-sm">Port</span>
-          <span class="form-control">${service.port}</span>
-        </div>
-        <div class="input-group input-group-sm mb-1">
-          <span class="input-group-text" id="inputGroup-sizing-sm">Port Secondary</span>
-          <span class="form-control">${service.portsecondary}</span>
-        </div>
-        <div class="input-group input-group-sm mb-1">
-          <span class="input-group-text" id="inputGroup-sizing-sm">Port Console</span>
-          <span class="form-control">${service.portconsole}</span>
         </div>
         <div class="input-group input-group-sm mb-1">
           <span class="input-group-text" id="inputGroup-sizing-sm">PID</span>
@@ -339,6 +329,7 @@ function getServicePage(service: Service) {
       </div>
 
       <div class="my-3 p-3 bg-body rounded shadow-sm">
+        <a id="ports"></a>
         <h6 class="border-bottom pb-2 mb-3">Ports</h6>
         <table class="table table-hover">
           <thead class="table-light">
@@ -559,7 +550,7 @@ function getServicesPage(services: Service[], ports: { [key: string]: ReservedPo
     const portData = ports[port]
     portsList += `<tr class="align-middle">
       <td>${portData.port}</td>
-      <td>${portData.service}</td>
+      <td><a href="/service/${portData.service}#ports">${portData.service}</a></td>
       <td>${portData.type}</td>
       <td>${portData.status}</td>
       <td>${portData.requestedPort}</td>
