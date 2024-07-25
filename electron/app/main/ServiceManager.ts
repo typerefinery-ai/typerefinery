@@ -10,11 +10,25 @@ import fs, { WriteStream } from "fs"
 import glob from "glob"
 import { Logger } from "./Logger"
 import { Writable } from "node:stream"
-import { getPortFree } from "./Utils"
+import { getPortFree, checkPortFree, getProcessPathForPID, getProcessPidForPort, stopProcess, tryParseInt } from "./Utils"
 import { os } from "./Utils"
 import e from "express"
+//EventEmitter
+// import { EventEmitter } from "events"
 
 const serviceManagerLog = "servicemanager.log"
+
+const DEFAULT_CONNECTION_MAX_PORT = 65535
+const DEFAULT_SERVICE_ORDER = 99
+const DEFAULT_EVENTS_LISTENERS = 100
+const DEFAULT_PORT_RESOLVE_ATTEMPTS = 10
+
+require('events').EventEmitter.defaultMaxListeners = DEFAULT_EVENTS_LISTENERS
+// require('events').EventEmitter.prototype._maxListeners = 100
+// //increase max listeners
+// EventEmitter.prototype.setMaxListeners(100)
+// const emitter = new EventEmitter()
+// emitter.setMaxListeners(100)
 
 interface ServiceManagerEvents {
   sendServiceList: (serviceConfigList: Service[]) => void
@@ -23,10 +37,10 @@ interface ServiceManagerEvents {
 
 export interface ReservedPort {
   port: number //what is requested
-  serviceId: string
+  service: string
   type: string
   status: string,
-  requested: number // what was assigned
+  requestedPort: number // what was assigned
 }
 class ServiceManager {
   #id = "servicemanager"
@@ -46,6 +60,8 @@ class ServiceManager {
   #globalenv: { [key: string]: string } = {}
   #abortController: AbortController
   #servicePorts: { [key: string]: ReservedPort } = {}
+  #servicePortsMin: number = -1
+  #servicePortsMax: number = -1
   constructor(
     logsDir: string,
     logger: Logger,
@@ -149,9 +165,19 @@ class ServiceManager {
   }
 
 
+  #error(...args: any[]) {
+    this.#logger.log(args)
+    this.#logWrite("error",args.join(" "))
+  }
+
   #log(...args: any[]) {
     this.#logger.log(args)
     this.#logWrite("info",args.join(" "))
+  }
+
+  #warn(...args: any[]) {
+    this.#logger.log(args)
+    this.#logWrite("warn",args.join(" "))
   }
 
   // write to service log
@@ -397,6 +423,10 @@ class ServiceManager {
     return serviceConfigList
   }
 
+  getPorts(): { [key: string]: ReservedPort } {
+    return this.#servicePorts
+  }
+
   // get list of all seervices
   getServices(): Service[] {
     return this.#services
@@ -416,70 +446,231 @@ class ServiceManager {
     }) as Service
   }
 
-  async #addServicePort(port: any, serviceId: string = "", type: string = "", status: string = "", requested: any) {
-    const reservedPort: ReservedPort = {
-      port: port,
-      serviceId: serviceId,
-      type: type,
-      status: status,
-      requested: requested
+  #updatePortStats(port: number) {
+    if (this.#servicePortsMin == -1 || port < this.#servicePortsMin) {
+      this.#servicePortsMin = port
     }
-    this.#servicePorts[port + ""] = reservedPort
-    this.#log(`addServicePort ${JSON.stringify(this.#servicePorts, null, 2)}`)
+    if (this.#servicePortsMax == -1 || port > this.#servicePortsMax) {
+      this.#servicePortsMax = port
+    }
   }
 
-  async #updateServicePort(port: any, serviceId: string = "", type: string = "", status: string = "") {
+  #addServicePort(port: number, serviceId: string = "", type: string = "", status: string = "", requested: number) {
+    this.#updatePortStats(port)
+    const reservedPort: ReservedPort = {
+      port: port,
+      service: serviceId,
+      type: type,
+      status: status,
+      requestedPort: requested
+    }
+    this.#servicePorts[port + ""] = reservedPort
+    this.#log(`addServicePort for ${serviceId} port ${port} status ${status} requested ${requested}, service ports count ${Object.keys(this.#servicePorts).length}`)
+  }
+
+  #updatePortStatus(port: number, status: string) {
     if (this.#servicePorts[port + ""]) {
       this.#servicePorts[port + ""].status = status
     }
-    this.#log(`updateServicePort ${JSON.stringify(this.#servicePorts, null, 2)}`)
   }
 
-  async #isServicePortReserved(port: any) {
-    //check if #servicePorts has port
+  #getPortStatus(port: number): string {
+    return this.#servicePorts[port + ""] ? this.#servicePorts[port + ""].status : ""
+  }
+
+  #updateServicePort(port: number, serviceId: string = "", type: string = "", status: string = "", newPort: number = -1) {
+    //remove old port
+    var oldSatus = ""
+    if (this.#servicePorts[port + ""]) {
+      oldSatus = this.#servicePorts[port + ""].status
+      delete this.#servicePorts[port + ""]
+    }
+
+    this.#addServicePort(newPort, serviceId, type, status, port)
+    this.#warn(`updateServicePort for ${serviceId} port ${newPort} status ${oldSatus} -> ${status}}`)
+  }
+
+  isPortsMapped(ports: { [key: string]: number }): boolean {
+    let isMapped = true
+
+    Object.keys(ports).forEach((key: string) => {
+      const port = ports[key]
+
+      if (port > 0 && this.#getPortStatus(port) != "available") {
+        isMapped = false
+      }
+    })
+
+    return isMapped
+  }
+
+  #isServicePortReserved(port: any) {
+    //check if #servicePorts has entry
     return this.#servicePorts[port + ""] ? true : false
   }
 
-  async #findNotReservedServicePort(port: any) {
-    if (await this.#isServicePortReserved(port)) {
-      return await this.#findNotReservedServicePort(port + 1)
-    }
-    return port
+  #nextServicePort() {
+    return Number(this.#servicePortsMax) + 1
   }
 
-  async getOpenPort(port = 0, host = "localhost", serviceId = "", type = "") {
-    this.#log(`getOpenPort ${port} ${host} ${serviceId} ${type}`)
-    var freeReservedPort: any = port
-    if (freeReservedPort > 0) {
-      if (this.#servicePorts[port + ""] ? true : false) {
-        //const nextPort = await this.#findNotReservedServicePort(port)
-        freeReservedPort = freeReservedPort + 1
-        for (let i = 0; i < 10; i++) {
-          if (freeReservedPort > 65535) {
-            freeReservedPort = 0
-            break
-          }
-          if (this.#servicePorts[freeReservedPort + ""] ? true : false) {
-            freeReservedPort++
-          } else {
-            break
-          }
-        }
+  async reserveServicePort(port: number = 0, host = "localhost", serviceId = "", type = "") {
+    this.#log(`reserveServicePort ${port} ${host} ${serviceId} ${type}`)
+    let requestedPort: number = port
+    let nextReservedPort: number = port
+    let resolvedPort: number = port
+    let isPortReserved = false
+    let isPortResolved = false
+    let useNextMaxPort = false
+    let isPortInUse = false
+    if (requestedPort > 0) {
+
+      //is this port already reserved by another service
+      if (this.#isServicePortReserved(requestedPort)) {
+        nextReservedPort = this.#nextServicePort()
+        this.#addServicePort(nextReservedPort, serviceId, type, "conflict", port)
+        isPortReserved = true
         const reservedPort: ReservedPort = this.#servicePorts[port + ""]
-        this.#log(`port ${port} is reserved by ${reservedPort.serviceId} as ${reservedPort.type} port, trying next port ${freeReservedPort}.`)
+        this.#warn(`service ${serviceId} has declared service port ${type} with value ${port} which is reserved by ${reservedPort.service} as ${reservedPort.type}, trying to find next avilable port ${requestedPort}.`)
+        //this port is taken, try using next port
+        useNextMaxPort = true
+      } else {
+
+        //reserve port for a resolution, first service to reserve port will be the one to use it
+        this.#addServicePort(requestedPort, serviceId, type, "checking", port)
+
+        // //check if port is free
+        // const portCheck = await checkPortFree(requestedPort, host)
+
+        // if (portCheck == requestedPort) {
+        //   isPortInUse = false
+        // } else {
+        //   isPortInUse = true
+        //   this.#warn(`service ${serviceId} has declared service port ${type} with value ${port} which is in use by the system, trying to find next avilable port ${port}.`)
+        // }
+
+        //check if port is free
+        //get pid using port
+        const processPid = await getProcessPidForPort(port, this.#abortController)
+        const isPortUsed = (processPid === "" ? false : true)
+
+        this.#log(`getProcessPidForPort ${serviceId} port ${port} pid ${processPid}. isPortUsed ${isPortUsed}.`)
+        // console.log(`getProcessPidForPort ${serviceId} port ${port} pid ${processPid}. isPortUsed ${isPortUsed}.`)
+
+        this.#updatePortStatus(port, isPortUsed ? "used" : "free")
+
+        //if port is used, check if it is used by same service
+        if (isPortUsed) {
+
+          const processPath = await getProcessPathForPID(port, this.#abortController)
+          this.#log(`getProcessPathForPID ${serviceId} ${port} ${processPath}`)
+          // console.log(`getProcessPathForPID ${serviceId} ${port} ${processPath}`)
+
+          //some other service is using this port, find new port
+          if (processPath == "") {
+            useNextMaxPort = true
+            nextReservedPort = this.#nextServicePort()
+          } else {
+            //is the service using this port the same service
+            const service = this.getService(serviceId)
+            const serviceExecutable = service.getServiceExecutable()
+            const serviceExecutableResolved = path.resolve(serviceExecutable)
+            const processPathResolved = path.resolve(processPath)
+            this.#log(`serviceExecutable ${serviceExecutableResolved} processPath ${processPathResolved}`)
+            // console.log(`serviceExecutable ${serviceExecutableResolved} processPath ${processPathResolved}`)
+            if (serviceExecutableResolved == processPathResolved) {
+              //this port is used by the same service, try to stop the service
+              //is current service PID match
+              const servicePid = service.processid
+              this.#log(`servicePid ${serviceId} ${servicePid}`)
+              if (servicePid > 0 && servicePid == processPid) {
+                //this is the same service, try to stop it
+                await service.stop()
+                //port is now free
+                isPortInUse = false
+              } else {
+
+                const stopService = await stopProcess(processPid, false, this.#abortController)
+                this.#warn(`service stopProcess ${serviceId} ${processPid} output ${stopService}`)
+                if (stopService) {
+                  //service is stopped
+                  isPortInUse = false
+                  //double check
+                  const processPid = await getProcessPidForPort(port, this.#abortController)
+                  if (processPid === "") {
+                    isPortInUse = false
+                  } else {
+                    isPortInUse = true
+                    this.#error(`tried to stop service ${serviceId} ${processPid} but it is still running.`)
+                  }
+                } else {
+                  isPortInUse = true
+                  this.#warn(`could not stop service ${serviceId} ${processPid}.`)
+                }
+              }
+            } else {
+              isPortInUse = true
+              this.#warn(`service ${serviceId} has declared service port ${type} with value ${port} which is in use by another service, trying to find next avilable port ${port}.`)
+            }
+          }
+        } else {
+          isPortInUse = false
+          this.#updatePortStatus(port, "free")
+        }
       }
+    } else {
+      useNextMaxPort = true
+      nextReservedPort = this.#nextServicePort()
     }
-    await this.#addServicePort(freeReservedPort, serviceId, type, "checking", port)
-    freeReservedPort = await getPortFree(freeReservedPort, host)
-    await this.#updateServicePort(freeReservedPort, serviceId, type, "available")
-    return freeReservedPort
+
+    if (useNextMaxPort || isPortReserved || isPortInUse) {
+      // console.log(`useNextMaxPort ${useNextMaxPort} isPortReserved ${isPortReserved} isPortInUse ${isPortInUse} serviceId ${serviceId} port ${port} nextReservedPort ${nextReservedPort}`)
+
+      // try to reserve port for service check DEFAULT_PORT_RESOLVE_ATTEMPTS times
+      let freeReservedPort: number = nextReservedPort
+      for (let i = 0; i < DEFAULT_PORT_RESOLVE_ATTEMPTS; i++) {
+        this.#updatePortStatus(port, "resolve try")
+        freeReservedPort = await getPortFree(freeReservedPort, host)
+        this.#warn(`getPortFree try A ${i} ${serviceId} ${freeReservedPort} next ${this.#nextServicePort()}.`)
+        if (freeReservedPort > 0) {
+          //found free port
+          isPortResolved = true
+          resolvedPort = freeReservedPort
+          this.#updatePortStatus(port, "resolve found")
+          break
+        } else {
+          //if port has been reserved by another service, try next port
+          freeReservedPort = this.#nextServicePort()
+        }
+
+        this.#warn(`getPortFree try B ${i} ${serviceId} ${freeReservedPort}.`)
+        //if port has been reserved by another service, try next port
+        if (this.#isServicePortReserved(freeReservedPort)) {
+          freeReservedPort = this.#nextServicePort()
+          this.#warn(`getPortFree try C ${i} ${serviceId} ${freeReservedPort}.`)
+        } else {
+          isPortResolved = true
+          resolvedPort = freeReservedPort
+          break
+        }
+      }
+    } else {
+      isPortResolved = true
+    }
+
+    if (isPortResolved) {
+      this.#updateServicePort(port, serviceId, type, "available", resolvedPort)
+      return resolvedPort
+    } else {
+      this.#error(`service ${serviceId} could not reserve port ${port} for service ${type}.`)
+      return -1
+    }
   }
 
   #sortServices(reverse = false) {
     if (!reverse) {
       this.#services.sort((service1: Service, service2: Service) => {
-        const serviceorder1 = service1.options.execconfig?.serviceorder ?? 99
-        const serviceorder2 = service2.options.execconfig?.serviceorder ?? 99
+        const serviceorder1 = service1.options.execconfig?.serviceorder ?? DEFAULT_SERVICE_ORDER
+        const serviceorder2 = service2.options.execconfig?.serviceorder ?? DEFAULT_SERVICE_ORDER
         let returnvalue = 0
         // services with lower serviceorder value are started first
         if (serviceorder1 < serviceorder2) {
@@ -511,7 +702,7 @@ class ServiceManager {
     for (const service of this.#services) {
       this.#log(
         `ordered service ${service.id} : ${
-          service.options.execconfig?.serviceorder ?? 99
+          service.options.execconfig?.serviceorder ?? DEFAULT_SERVICE_ORDER
         }`
       )
     }

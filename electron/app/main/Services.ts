@@ -1,6 +1,6 @@
 import express from "express"
-import { type ServiceManagerEvents, ServiceManager } from "./ServiceManager"
-import { Service, ServiceStatus, type ServiceConfig } from "./Service"
+import { type ServiceManagerEvents, ServiceManager, type ReservedPort } from "./ServiceManager"
+import { Service, ServiceStatus, type ServiceConfig  } from "./Service"
 import { Logger } from "./Logger"
 import { dataPath, resourceBinary } from "./Resources"
 import path from "path"
@@ -96,6 +96,18 @@ function escapeHTML(unsafe) {
 
 function getServicePage(service: Service) {
   const serviceDependencies = getServiceDependencies([service.id])
+
+  const ports = service.getPorts()
+
+  //for each key in ports, create a row
+  let portsList = ""
+  for (const port in ports) {
+    const portData = ports[port]
+    portsList += `<tr class="align-middle">
+      <td>${port}</td>
+      <td>${portData}</td>
+      </tr>`
+  }
 
   const execservice = service.options.execconfig?.execservice?.id
     ? " (" + service.options.execconfig?.execservice.id + ")"
@@ -327,6 +339,21 @@ function getServicePage(service: Service) {
       </div>
 
       <div class="my-3 p-3 bg-body rounded shadow-sm">
+        <h6 class="border-bottom pb-2 mb-3">Ports</h6>
+        <table class="table table-hover">
+          <thead class="table-light">
+            <tr>
+              <th scope="col">Name</th>
+              <th scope="col">Port</th>
+            </tr>
+          </thead>
+          <tbody class="table-group-divider">
+          ${portsList}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="my-3 p-3 bg-body rounded shadow-sm">
         <h6 class="border-bottom pb-2 mb-3">Setup Command line</h6>
         <div class="border border-1 bg-secondary-subtle p-3 fs-6">
         <pre><code id="env" style="font-size: 8pt">${JSON.stringify(
@@ -524,8 +551,20 @@ function getServiceDependencies(filterServices: string[] = []) {
   return serviceDependencies
 }
 
-function getServicesPage(services: Service[]) {
+function getServicesPage(services: Service[], ports: { [key: string]: ReservedPort } ) {
   const serviceDependencies = getServiceDependencies()
+  // console.log("ports", JSON.stringify(ports))
+  let portsList = ""
+  for (const port in ports) {
+    const portData = ports[port]
+    portsList += `<tr class="align-middle">
+      <td>${portData.port}</td>
+      <td>${portData.service}</td>
+      <td>${portData.type}</td>
+      <td>${portData.status}</td>
+      <td>${portData.requestedPort}</td>
+      </tr>`
+  }
 
   let servicesList = services
     .map((service) => {
@@ -663,6 +702,23 @@ function getServicesPage(services: Service[]) {
           "\t"
         )}</code></pre>
         </div>
+      </div>
+
+      <div class="my-3 p-3 bg-body rounded shadow-sm">
+        <table class="table table-hover">
+          <thead class="table-light">
+            <tr>
+              <th scope="col">Port</th>
+              <th scope="col">Service</th>
+              <th scope="col">Type</th>
+              <th scope="col">Satus</th>
+              <th scope="col">Requested Port</th>
+            </tr>
+          </thead>
+          <tbody class="table-group-divider">
+          ${portsList}
+          </tbody>
+        </table>
       </div>
 
       <div class="my-3 p-3 bg-body rounded shadow-sm">
@@ -875,7 +931,8 @@ app.post("/exit", function (req, res, next) {
 
 app.get("/services", function (req, res) {
   const services = serviceManager.getServices()
-  res.send(getServicesPage(services))
+  const ports = serviceManager.getPorts()
+  res.send(getServicesPage(services, ports))
 })
 
 app.post("/service/:serviceId/:serviceAction", (req, res, next) => {
