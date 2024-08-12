@@ -111,6 +111,17 @@ function getServicePage(service: Service) {
       </tr>`
   }
 
+  const urls = service.getURLs()
+  let urlsList = ""
+  if (Object.keys(urls).length < 0) {
+    urlsList = "No service URLs configured."
+  } else {
+    for (const url in urls) {
+      const urlData = urls[url]
+      urlsList += `<a class="btn btn-primary" role="button" target="_blank" href="${urlData}">${url.toUpperCase()}</a>`
+    }
+  }
+
   const execservice = service.options.execconfig?.execservice?.id
     ? " (" + service.options.execconfig?.execservice.id + ")"
     : ""
@@ -182,6 +193,13 @@ function getServicePage(service: Service) {
               <small>Status @: ${getTimestamp()}, Refresh in (sec) <span id="refreshInPage">${pageAutoRefreshEverySeconds}</span></small>
             </div>
           </div>
+        </div>
+      </div>
+
+      <div class="my-3 p-3 bg-body rounded shadow-sm">
+        <h6 class="border-bottom pb-2 mb-3">Urls</h6>
+        <div class="input-group input-group-sm mb-1 gap-2">
+          ${urlsList}
         </div>
       </div>
 
@@ -542,7 +560,7 @@ function getServiceDependencies(filterServices: string[] = []) {
   return serviceDependencies
 }
 
-function getServicesPage(services: Service[], ports: { [key: string]: ReservedPort } ) {
+function getServicesPage(services: Service[], ports: { [key: string]: ReservedPort }, urls: { [key: string]: string }) {
   const serviceDependencies = getServiceDependencies()
   // console.log("ports", JSON.stringify(ports))
   let portsList = ""
@@ -555,6 +573,17 @@ function getServicesPage(services: Service[], ports: { [key: string]: ReservedPo
       <td>${portData.status}</td>
       <td>${portData.requestedPort}</td>
       </tr>`
+  }
+
+  //map urls into string buttons
+  let urlsList = ""
+  if (Object.keys(urls).length < 0) {
+    urlsList = "No service URLs configured."
+  } else {
+    for (const url in urls) {
+      const urlData = urls[url]
+      urlsList += `<a class="btn btn-primary" role="button" target="_blank" href="${urlData}">${url.toUpperCase()}</a>`
+    }
   }
 
   let servicesList = services
@@ -656,6 +685,13 @@ function getServicesPage(services: Service[], ports: { [key: string]: ReservedPo
               <small>Status @: ${getTimestamp()}, Refresh in (sec) <span id="refreshInPage">${pageAutoRefreshEverySeconds}</span></small>
             </div>
           </div>
+        </div>
+      </div>
+
+      <div class="my-3 p-3 bg-body rounded shadow-sm">
+        <h6 class="border-bottom pb-2 mb-3">Urls</h6>
+        <div class="input-group input-group-sm mb-1 gap-2">
+        ${urlsList}
         </div>
       </div>
 
@@ -923,7 +959,8 @@ app.post("/exit", function (req, res, next) {
 app.get("/services", function (req, res) {
   const services = serviceManager.getServices()
   const ports = serviceManager.getPorts()
-  res.send(getServicesPage(services, ports))
+  const urls = serviceManager.getURLs()
+  res.send(getServicesPage(services, ports, urls))
 })
 
 app.post("/service/:serviceId/:serviceAction", (req, res, next) => {

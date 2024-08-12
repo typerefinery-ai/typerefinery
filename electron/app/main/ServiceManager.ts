@@ -427,6 +427,18 @@ class ServiceManager {
     return this.#servicePorts
   }
 
+  getURLs(): { [key: string]: string } {
+    //for each service get service urls
+    const urls: { [key: string]: string } = {}
+    this.#services.forEach((service: Service) => {
+      const serviceUrls = service.getURLs()
+      Object.keys(serviceUrls).forEach((key: string) => {
+        urls[key] = serviceUrls[key]
+      })
+    })
+    return urls
+  }
+
   // get list of all seervices
   getServices(): Service[] {
     return this.#services

@@ -165,6 +165,7 @@ export interface ExecConfig {
   serviceportdebug?: number
   servicehost?: string
   portmapping?: { [key: string]: number }
+  urls?: { [key: string]: string }
   healthcheck?: HealthCheck
   debuglog?: boolean
   outputvarregex?: { [key: string]: string } // used to check values of console output stdout key is variable, value is regex
@@ -252,6 +253,7 @@ export class Service extends EventEmitter<ServiceEvent> {
   #servicehost: string = DEFAULT_SERVICE_HOST
   #serviceManager: ServiceManager
   #portmapping: { [key: string]: number } = {}
+  #urls: { [key: string]: string } = {}
   #stdout: WriteStream
   #stdoutLogFile: string
   #stderr: WriteStream
@@ -414,6 +416,8 @@ export class Service extends EventEmitter<ServiceEvent> {
     //get port mapping from config
     this.#portmapping = this.#options.execconfig?.portmapping || {}
 
+    //get service urls from config
+    this.#urls = this.#options.execconfig?.urls || {}
 
     const config = options.execconfig
     if (config) {
@@ -655,53 +659,68 @@ export class Service extends EventEmitter<ServiceEvent> {
       command = command.replaceAll(`\${${key}}`, value)
     }
 
+    //quick exit if no variables in command
+    if (!this.isStringHasVariables(command)) {
+      return command
+    }
+
     for (const [key, value] of Object.entries(this.#processEnv)) {
       command = command.replaceAll(`\${${key}}`, value)
     }
+
+    //quick exit if no variables in command
+    if (!this.isStringHasVariables(command)) {
+      return command
+    }
+
 
     for (const [key, value] of Object.entries(this.#portmapping)) {
       command = command.replaceAll(`\${${key}}`, value + "")
     }
 
+    //quick exit if no variables in command
+    if (!this.isStringHasVariables(command)) {
+      return command
+    }
+
+    const serviceCommandParams = this.#getServiceCommandParams(service)
+    for (const [key, value] of Object.entries(serviceCommandParams)) {
+      command = command.replaceAll(`\${${key}}`, value)
+      //quick exit if no variables in command
+      if (!this.isStringHasVariables(command)) {
+        break
+      }
+    }
+
     return command
-      .replaceAll("${PS}", this.isWindows ? ";" : ":") //path separator
-      .replaceAll("${SERVICE_HOME}", service.#servicehome)
-      .replaceAll(
-        "${SERVICE_HOME_ESC}",
-        this.isWindows
-          ? service.#servicehome.replaceAll("\\", "\\\\")
-          : service.#servicehome
-      ) // escape backslashes for windows
-      .replaceAll("${SERVICE_EXECUTABLE}", service.getServiceExecutable())
-      .replaceAll(
-        "${SERVICE_EXECUTABLE_HOME}",
-        service.getServiceExecutable(true)
-      )
-      .replaceAll(
-        "${SERVICE_EXECUTABLE_CLI}",
-        service.getServiceExecutableCli()
-      )
-      .replaceAll("${SERVICE_PATH}", service.#servicepath)
-      .replaceAll("${SERVICE_BIN_PATH}", service.#servicebinpath)
-      .replaceAll("${EXEC_SERVICE_PATH}", service.#execservicepath)
-      .replaceAll("${SERVICE_DATA_PATH}", service.#servicedatapath)
-      .replaceAll(
-        "${SERVICE_DATA_PATH_ESC}",
-        this.isWindows
-          ? service.#servicedatapath.replaceAll("\\", "\\\\")
-          : service.#servicedatapath
-      ) // escape backslashes for windows
-      .replaceAll("${SERVICE_HOST}", service.#servicehost + "")
-      .replaceAll("${SERVICE_LOG_PATH}", service.#logsDir + "")
-      .replaceAll(
-        "${SERVICE_LOG_PATH_ESC}",
-        this.isWindows
-          ? (service.#logsDir + "").replaceAll("\\", "\\\\")
-          : service.#logsDir + ""
-      )
-      .replaceAll("${SERVICE_AUTH_USERNAME}", service.username)
-      .replaceAll("${SERVICE_AUTH_PASSWORD}", service.password)
-      .replaceAll("${SERVICE_PID_FILE}", service.#servicepidfile)
+  }
+
+  #getServiceCommandParams(service: Service): { [key: string]: string } {
+    return {
+      "PS": this.isWindows ? ";" : ":",
+      "SERVICE_HOME": service.#servicehome,
+      "SERVICE_HOME_ESC": this.isWindows
+        ? service.#servicehome.replaceAll("\\", "\\\\")
+        : service.#servicehome,
+      "SERVICE_EXECUTABLE": service.getServiceExecutable(),
+      "SERVICE_EXECUTABLE_HOME": service.getServiceExecutable(true),
+      "SERVICE_EXECUTABLE_CLI": service.getServiceExecutableCli(),
+      "SERVICE_PATH": service.#servicepath,
+      "SERVICE_BIN_PATH": service.#servicebinpath,
+      "EXEC_SERVICE_PATH": service.#execservicepath,
+      "SERVICE_DATA_PATH": service.#servicedatapath,
+      "SERVICE_DATA_PATH_ESC": this.isWindows
+        ? service.#servicedatapath.replaceAll("\\", "\\\\")
+        : service.#servicedatapath,
+      "SERVICE_HOST": service.#servicehost + "",
+      "SERVICE_LOG_PATH": service.#logsDir + "",
+      "SERVICE_LOG_PATH_ESC": this.isWindows
+        ? (service.#logsDir + "").replaceAll("\\", "\\\\")
+        : service.#logsDir + "",
+      "SERVICE_AUTH_USERNAME": service.username,
+      "SERVICE_AUTH_PASSWORD": service.password,
+      "SERVICE_PID_FILE": service.#servicepidfile,
+    }
   }
 
   get environmentVariables(): { [key: string]: string } {
@@ -2759,6 +2778,18 @@ export class Service extends EventEmitter<ServiceEvent> {
 
   getPorts() {
     return this.#portmapping
+  }
+
+  getURLs() {
+    // for each url in urls, compile the url
+    let urls = {}
+    if (this.#urls && Object.keys(this.#urls).length > 0) {
+      //for each url in urls, compile the url
+      Object.keys(this.#urls).forEach((url) => {
+        urls[url] = this.#getServiceCommand(this.#urls[url], this)
+      })
+    }
+    return urls
   }
 
   /**
