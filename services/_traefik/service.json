@@ -61,6 +61,23 @@
       "TRAEFIK_HOST_DOMAIN_SUFFIX": "typerefinery.localhost",
       "TRAEFIK_LOCAL_WIDGETDEV_URL": "http://localhost:4001"
     },
+    "urls": {
+      "jupyterlab": "${TRAEFIK_JUPYTERLAB_URL}",
+      "nginx": "${TRAEFIK_NGINX_URL}",
+      "flow": "${TRAEFIK_FLOW_URL}",
+      "flowwss": "${TRAEFIK_FLOW_WSS_URL}",
+      "cms": "${TRAEFIK_CMS_URL}",
+      "tms": "${TRAEFIK_TMS_URL}",
+      "tmswss": "${TRAEFIK_TMS_WSS_URL}",
+      "fastapi": "${TRAEFIK_FASTAPI_URL}",
+      "pgadmin": "${TRAEFIK_PGADMIN_URL}",
+      "files": "${TRAEFIK_FILES_URL}",
+      "bpmn": "${TRAEFIK_BPMN_URL}",
+      "traefik": "${TRAEFIK_TRAEFIK_URL}",
+      "keycloak": "${TRAEFIK_KEYCLOAK_URL}",
+      "keycloakadmin": "${TRAEFIK_KEYCLOAK_ADMIN_URL}",
+      "openobserve": "${TRAEFIK_OPENOBSERVE_URL}"
+    },
     "commandline": {
       "win32": " --log.level=DEBUG --providers.file.filename=\"${SERVICE_HOME}\\config\\dynamic\\dynamic.yml\" --api.insecure=true --api.dashboard=true --entryPoints.web.address=\":${SERVICE_PORT_SECONDARY}\" --entryPoints.websecure.address=\":${SERVICE_PORT}\" --entryPoints.traefik.address=\":${SERVICE_PORT_CONSOLE}\" --entryPoints.mongo.address=\":${TRAEFIK_MONGO_PORT}\" --entryPoints.typedb.address=\":${TRAEFIK_TYPEDB_PORT}\" --serversTransport.insecureSkipVerify=true",
       "darwin": " --log.level=DEBUG --providers.file.filename=\"${SERVICE_HOME}/config/dynamic/dynamic.yml\" --api.insecure=true --api.dashboard=true --entryPoints.web.address=\":${SERVICE_PORT_SECONDARY}\" --entryPoints.websecure.address=\":${SERVICE_PORT}\" --entryPoints.traefik.address=\":${SERVICE_PORT_CONSOLE}\" --entryPoints.mongo.address=\":${TRAEFIK_MONGO_PORT}\" --entryPoints.typedb.address=\":${TRAEFIK_TYPEDB_PORT}\" --serversTransport.insecureSkipVerify=true",
