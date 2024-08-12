@@ -566,7 +566,7 @@ function getServicesPage(services: Service[], ports: { [key: string]: ReservedPo
         Object.keys(ServiceStatus)[
           Object.values(ServiceStatus).findIndex((x) => x === service.status)
         ]
-      const configured = service.isSetup ? "configured" : "not configured"
+      const configured = service.isSetup ? "configured" : (service.hasSetup ? "not configured" : "N/A")
       let serviceLink = ""
       if (service.port) {
         serviceLink = `<a href="http://localhost:${service.port}" target="_blank">${service.port}</a>`

@@ -2308,6 +2308,10 @@ export class Service extends EventEmitter<ServiceEvent> {
     return false
   }
 
+  get hasSetup() {
+    return this.#options.execconfig.setup ? true : false
+  }
+
   get isSetup() {
     if (this.#options.execconfig.setup) {
       this.#debug(`setup: ${JSON.stringify(this.#options.execconfig.setup)}`)
