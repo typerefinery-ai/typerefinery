@@ -1675,7 +1675,15 @@ export class Service extends EventEmitter<ServiceEvent> {
       // this.#log(`http health check request ${url.hostname}; url ${url}`)
 
       try {
-        const req = await http.get(url, (res) => {
+        const getOptions = {}
+        //if url is localhost or 127.0.0.1 use ipv4
+        if (
+          url.hostname == DEFAULT_SERVICE_HOST_IP ||
+          url.hostname == DEFAULT_SERVICE_HOST
+        ) {
+          getOptions["family"] = 4
+        }
+        const req = await http.get(url, getOptions, (res) => {
           if (res.statusCode == expected_status) {
             this.#setStatus(ServiceStatus.STARTED)
             this.#stopHealthCheck()
