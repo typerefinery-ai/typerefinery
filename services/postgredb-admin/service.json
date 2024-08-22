@@ -59,7 +59,7 @@
     "serviceport": 8510,
     "healthcheck": {
       "type": "http",
-      "url": "http://localhost:${SERVICE_PORT}/healthcheck",
+      "url": "http://localhost:${SERVICE_PORT}/browser",
       "expected_status": 200,
       "retries": 180
     },

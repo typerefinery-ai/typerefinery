@@ -86,7 +86,7 @@
     },
     "healthcheck": {
       "type": "http",
-      "url": "http://127.0.0.1:${SERVICE_PORT}/health/ready",
+      "url": "http://${SERVICE_HOST}:${SERVICE_PORT}/health/ready",
       "expected_status": 200,
       "retries": 180
     },

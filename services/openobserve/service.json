@@ -42,7 +42,7 @@
     "serviceportsecondary": 8301,
     "healthcheck": {
       "type": "http",
-      "url": "http://127.0.0.1:${SERVICE_PORT}/healthz",
+      "url": "http://${SERVICE_HOST}:${SERVICE_PORT}/healthz",
       "expected_status": 200,
       "retries": 180
     },
