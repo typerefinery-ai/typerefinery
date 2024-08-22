@@ -7,6 +7,7 @@
   "icon": "fa-solid fa-passport",
   "servicelocation": 10,
   "execconfig": {
+    "debuglog": false,
     "serviceorder": 2,
     "serviceport": 8116,
     "serviceportsecondary": 8117,
