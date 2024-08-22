@@ -8,7 +8,16 @@ import { http } from "follow-redirects"
 import net from "net"
 import EventEmitter from "eventemitter3"
 import kill from "tree-kill"
-import { os, getProcessPathForPID, tryParseInt, csvParseRow, timestamp, varTemplate, checkPortFree, getCallStackString } from "./Utils"
+import {
+  os,
+  getProcessPathForPID,
+  tryParseInt,
+  csvParseRow,
+  timestamp,
+  varTemplate,
+  checkPortFree,
+  getCallStackString,
+} from "./Utils"
 import { unpackZip, unpackTarGz } from "@particle/unpack-file"
 import pidusageTree from "pidusage-tree"
 import findProcess from "find-process"
@@ -18,13 +27,12 @@ const COMMAND_LINE_BACKGROUND_PROCESS_SUFFIX = "&"
 const COMMAND_LINE_DIRECTCOMMAND_PREFIX = ";"
 const COMMAND_LINE_ARGUMENT_SEPARATOR = " "
 const DEFAULT_SERVICE_HOST = "localhost"
-const DEFAULT_SERVICE_HOST_IP = "127.0.01"
+const DEFAULT_SERVICE_HOST_IP = "127.0.0.1"
 
 const ENV_VAR_NAME_SERVICE_PORT = "SERVICE_PORT"
 const ENV_VAR_NAME_SERVICE_PORT_SECONDARY = "SERVICE_PORT_SECONDARY"
 const ENV_VAR_NAME_SERVICE_PORT_CONSOLE = "SERVICE_PORT_CONSOLE"
 const ENV_VAR_NAME_SERVICE_PORT_DEBUG = "SERVICE_PORT_DEBUG"
-
 
 export interface CommandLine {
   commandLine: string // original command line
@@ -308,7 +316,8 @@ export class Service extends EventEmitter<ServiceEvent> {
     this.#serviceManager = serviceManager
     this.#id = this.#options.id
     this.#debuglog = this.#options.execconfig?.debuglog || false
-    this.#servicehost = this.#options.execconfig?.servicehost || DEFAULT_SERVICE_HOST
+    this.#servicehost =
+      this.#options.execconfig?.servicehost || DEFAULT_SERVICE_HOST
     this.#healthCheck = this.#options.execconfig?.healthcheck
     this.#execshell = this.#options.execconfig?.execshell || false
     this.#execcwd = this.#options.execconfig?.execcwd || ""
@@ -428,9 +437,12 @@ export class Service extends EventEmitter<ServiceEvent> {
 
       //add static config ports to port mapping
       this.#portmapping[ENV_VAR_NAME_SERVICE_PORT] = this.#serviceport
-      this.#portmapping[ENV_VAR_NAME_SERVICE_PORT_CONSOLE] = this.#serviceportconsole
-      this.#portmapping[ENV_VAR_NAME_SERVICE_PORT_SECONDARY] = this.#serviceportsecondary
-      this.#portmapping[ENV_VAR_NAME_SERVICE_PORT_DEBUG] = this.#serviceportdebug
+      this.#portmapping[ENV_VAR_NAME_SERVICE_PORT_CONSOLE] =
+        this.#serviceportconsole
+      this.#portmapping[ENV_VAR_NAME_SERVICE_PORT_SECONDARY] =
+        this.#serviceportsecondary
+      this.#portmapping[ENV_VAR_NAME_SERVICE_PORT_DEBUG] =
+        this.#serviceportdebug
     }
 
     this.#log(`service port mapping ${JSON.stringify(this.#portmapping)}.`)
@@ -602,7 +614,8 @@ export class Service extends EventEmitter<ServiceEvent> {
 
   get getArchiveForPlatform(): SetupArchive | undefined {
     if (this.#options.execconfig?.setuparchive) {
-      const platfromSpecificArchive: SetupArchive = this.#options.execconfig?.setuparchive[this.platform]
+      const platfromSpecificArchive: SetupArchive = this.#options.execconfig
+        ?.setuparchive[this.platform]
         ? this.#options.execconfig?.setuparchive[this.platform]
         : this.#options.execconfig?.setuparchive?.default
 
@@ -673,7 +686,6 @@ export class Service extends EventEmitter<ServiceEvent> {
       return command
     }
 
-
     for (const [key, value] of Object.entries(this.#portmapping)) {
       command = command.replaceAll(`\${${key}}`, value + "")
     }
@@ -697,29 +709,29 @@ export class Service extends EventEmitter<ServiceEvent> {
 
   #getServiceCommandParams(service: Service): { [key: string]: string } {
     return {
-      "PS": this.isWindows ? ";" : ":",
-      "SERVICE_HOME": service.#servicehome,
-      "SERVICE_HOME_ESC": this.isWindows
+      PS: this.isWindows ? ";" : ":",
+      SERVICE_HOME: service.#servicehome,
+      SERVICE_HOME_ESC: this.isWindows
         ? service.#servicehome.replaceAll("\\", "\\\\")
         : service.#servicehome,
-      "SERVICE_EXECUTABLE": service.getServiceExecutable(),
-      "SERVICE_EXECUTABLE_HOME": service.getServiceExecutable(true),
-      "SERVICE_EXECUTABLE_CLI": service.getServiceExecutableCli(),
-      "SERVICE_PATH": service.#servicepath,
-      "SERVICE_BIN_PATH": service.#servicebinpath,
-      "EXEC_SERVICE_PATH": service.#execservicepath,
-      "SERVICE_DATA_PATH": service.#servicedatapath,
-      "SERVICE_DATA_PATH_ESC": this.isWindows
+      SERVICE_EXECUTABLE: service.getServiceExecutable(),
+      SERVICE_EXECUTABLE_HOME: service.getServiceExecutable(true),
+      SERVICE_EXECUTABLE_CLI: service.getServiceExecutableCli(),
+      SERVICE_PATH: service.#servicepath,
+      SERVICE_BIN_PATH: service.#servicebinpath,
+      EXEC_SERVICE_PATH: service.#execservicepath,
+      SERVICE_DATA_PATH: service.#servicedatapath,
+      SERVICE_DATA_PATH_ESC: this.isWindows
         ? service.#servicedatapath.replaceAll("\\", "\\\\")
         : service.#servicedatapath,
-      "SERVICE_HOST": service.#servicehost + "",
-      "SERVICE_LOG_PATH": service.#logsDir + "",
-      "SERVICE_LOG_PATH_ESC": this.isWindows
+      SERVICE_HOST: service.#servicehost + "",
+      SERVICE_LOG_PATH: service.#logsDir + "",
+      SERVICE_LOG_PATH_ESC: this.isWindows
         ? (service.#logsDir + "").replaceAll("\\", "\\\\")
         : service.#logsDir + "",
-      "SERVICE_AUTH_USERNAME": service.username,
-      "SERVICE_AUTH_PASSWORD": service.password,
-      "SERVICE_PID_FILE": service.#servicepidfile,
+      SERVICE_AUTH_USERNAME: service.username,
+      SERVICE_AUTH_PASSWORD: service.password,
+      SERVICE_PID_FILE: service.#servicepidfile,
     }
   }
 
@@ -818,8 +830,6 @@ export class Service extends EventEmitter<ServiceEvent> {
       SERVICE_AUTH_PASSWORD: this.password,
       SERVICE_PID_FILE: this.#servicepidfile,
     }
-
-
 
     // for each attribute in envVar update is value
     const serviceEnvVar = this.#options.execconfig?.env || {}
@@ -1110,7 +1120,6 @@ export class Service extends EventEmitter<ServiceEvent> {
 
   // register process and run health check
   #register(process: ChildProcess) {
-
     if (process.pid) {
       this.#debug(`creating service pid for service ${this.#id}`)
       this.#createServicePidFile(this.#servicepidfile, process.pid)
@@ -1432,7 +1441,9 @@ export class Service extends EventEmitter<ServiceEvent> {
         if (serviceCommand == "") {
           if (!silent) {
             const caller = getCallStackString()
-            this.#warn(`service commandline is defined but is empty. (${caller})`)
+            this.#warn(
+              `service commandline is defined but is empty. (${caller})`
+            )
           }
         }
         // if service is being executed by a file, expand variables
@@ -1603,7 +1614,7 @@ export class Service extends EventEmitter<ServiceEvent> {
   // retries: 60
   // start_period: 60s
   // start helth check and repeat until retries is 0
-  #startHealthCheck(retries: number) {
+  async #startHealthCheck(retries: number) {
     if (this.#healthCheck && (!this.isStarted || !this.isStopped)) {
       if (retries > 0) {
         this.#log(
@@ -1613,9 +1624,10 @@ export class Service extends EventEmitter<ServiceEvent> {
         )
         const timeoutInterval = this.#healthCheck?.interval || 1000
         const nextRetry = retries - 1
-        const result = this.#runHealthCheck()
+        const result = await this.#runHealthCheck()
         this.#log(`health check result ${result}.`)
         if (result == true) {
+          this.#stopHealthCheck()
           this.#setStatus(ServiceStatus.STARTED)
           return
         }
@@ -1638,23 +1650,23 @@ export class Service extends EventEmitter<ServiceEvent> {
   }
 
   // run health check
-  #runHealthCheck(): boolean {
+  async #runHealthCheck(): Promise<boolean> {
     if (this.#healthCheck) {
       if (this.#healthCheck.type == HealthCheckType.HTTP) {
-        return this.#runHealthCheckHttp()
+        return await this.#runHealthCheckHttp()
       } else if (this.#healthCheck.type == HealthCheckType.TCP) {
-        return this.#runHealthCheckTcp()
+        return await this.#runHealthCheckTcp()
       } else if (this.#healthCheck.type == HealthCheckType.FILE) {
-        return this.#runHealthCheckFile()
+        return await this.#runHealthCheckFile()
       } else if (this.#healthCheck.type == HealthCheckType.VARIABLE) {
-        return this.#runHealthCheckVariable()
+        return await this.#runHealthCheckVariable()
       }
     }
-    return true
+    return false
   }
 
   // run health check http
-  #runHealthCheckHttp(): boolean {
+  async #runHealthCheckHttp(): Promise<boolean> {
     if (this.#healthCheck && this.#healthCheck.url) {
       const urlFixed = this.#getServiceCommand(this.#healthCheck.url, this)
       const url: URL = new URL(urlFixed)
@@ -1663,7 +1675,7 @@ export class Service extends EventEmitter<ServiceEvent> {
       // this.#log(`http health check request ${url.hostname}; url ${url}`)
 
       try {
-        const req = http.get(url, (res) => {
+        const req = await http.get(url, (res) => {
           if (res.statusCode == expected_status) {
             this.#setStatus(ServiceStatus.STARTED)
             this.#stopHealthCheck()
@@ -1672,6 +1684,7 @@ export class Service extends EventEmitter<ServiceEvent> {
                 this.#status
               )}`
             )
+            return true
           } else {
             this.#log(
               `http health check failed with status code ${
@@ -1698,30 +1711,35 @@ export class Service extends EventEmitter<ServiceEvent> {
         return false
       }
     }
-    return true
+    return false
   }
 
   // run health check tcp
-  #runHealthCheckTcp(): boolean {
+  async #runHealthCheckTcp(): Promise<boolean> {
     if (this.#healthCheck && this.#serviceport) {
       let hostname = this.#servicehost
       const port = this.#serviceport
       if (hostname == DEFAULT_SERVICE_HOST) {
         hostname = DEFAULT_SERVICE_HOST_IP
       }
-      const socket = net.createConnection(port, hostname, () => {
-        this.#setStatus(ServiceStatus.STARTED)
+      this.#debug(`tcp health check ${hostname}:${port}`)
+      const socket = net.createConnection(port, hostname)
+      socket.on("connect", (connect) => {
+        this.#debug(`socket open...`)
         this.#stopHealthCheck()
-        this.#log(
+        this.#setStatus(ServiceStatus.STARTED)
+        this.#debug(
           `tcp health check success, service status ${this.#statusname(
             this.#status
           )}.`
         )
-        socket.end()
+        this.#debug(`destroy socket...`)
+        socket.destroy()
+        this.#debug(`socket destroy...`)
         return true
       })
       socket.on("error", (error) => {
-        this.#log(
+        this.#debug(
           `tcp health check failed with error ${error}, service status ${
             this.#status
           }`
@@ -1729,11 +1747,11 @@ export class Service extends EventEmitter<ServiceEvent> {
         return false
       })
     }
-    return true
+    return false
   }
 
   // run health check variable
-  #runHealthCheckVariable(): boolean {
+  async #runHealthCheckVariable(): Promise<boolean> {
     if (this.#healthCheck && this.#healthCheck.variable) {
       const variable = this.#getServiceCommand(this.#healthCheck.variable, this)
       if (variable) {
@@ -1754,12 +1772,11 @@ export class Service extends EventEmitter<ServiceEvent> {
         return false
       }
     }
-    return true
+    return false
   }
 
-
   // run health check file
-  #runHealthCheckFile(): boolean {
+  async #runHealthCheckFile(): Promise<boolean> {
     if (this.#healthCheck && this.#healthCheck.file) {
       const file = this.#getServiceCommand(this.#healthCheck.file, this)
       if (fs.existsSync(file)) {
@@ -1780,7 +1797,7 @@ export class Service extends EventEmitter<ServiceEvent> {
         return false
       }
     }
-    return true
+    return false
   }
 
   //if path has spaces then run process in windows does not work
@@ -2035,8 +2052,8 @@ export class Service extends EventEmitter<ServiceEvent> {
             this.#process.stdout.on("data", (data) => {
               this.#handleProcessOutput(data)
             })
-            this.#process.stdout.on("end", (data) => {
-              this.#logWrite("info", `output log closed ${data}`)
+            this.#process.stdout.on("end", () => {
+              this.#logWrite("info", `output log closed`)
             })
           }
           // monitor error log
@@ -2045,8 +2062,8 @@ export class Service extends EventEmitter<ServiceEvent> {
             this.#process.stderr.on("data", (data) => {
               this.#handleProcessOutput(data, true)
             })
-            this.#process.stderr.on("end", (data) => {
-              this.#logWrite("info", `error log closed ${data}`)
+            this.#process.stderr.on("end", () => {
+              this.#logWrite("info", `error log closed`)
             })
           }
 
@@ -2267,7 +2284,9 @@ export class Service extends EventEmitter<ServiceEvent> {
       const timestamp = this.#timestamp
       const serviceId = this.#id
       const newLine = "\n"
-      this.#stderr.write(`${timestamp} ${type.toUpperCase()} ${serviceId} -- ${message}${newLine}`)
+      this.#stderr.write(
+        `${timestamp} ${type.toUpperCase()} ${serviceId} -- ${message}${newLine}`
+      )
     }
   }
 
@@ -2277,7 +2296,9 @@ export class Service extends EventEmitter<ServiceEvent> {
       const timestamp = this.#timestamp
       const serviceId = this.#id
       const newLine = "\n"
-      this.#stdout.write(`${timestamp} ${type.toUpperCase()} ${serviceId} -- ${message}${newLine}`)
+      this.#stdout.write(
+        `${timestamp} ${type.toUpperCase()} ${serviceId} -- ${message}${newLine}`
+      )
     }
   }
 
@@ -2659,7 +2680,9 @@ export class Service extends EventEmitter<ServiceEvent> {
 
           // execute setup command using service executable
           this.#log(
-            `execCommand: ${execCommandLine.exe} ${execCommandLine.args.join(" ")}`
+            `execCommand: ${execCommandLine.exe} ${execCommandLine.args.join(
+              " "
+            )}`
           )
           this.#log(`execCommand path: ${execCommandLine.cwd}`)
           this.#debug(
@@ -2675,7 +2698,9 @@ export class Service extends EventEmitter<ServiceEvent> {
           )
           this.#errorWrite(
             "info",
-            `execCommand: ${execCommandLine.exe} ${execCommandLine.args.join(" ")} in ${execCommandLine.cwd}`
+            `execCommand: ${execCommandLine.exe} ${execCommandLine.args.join(
+              " "
+            )} in ${execCommandLine.cwd}`
           )
           await os
             .runProcess(execCommandLine.exe, execCommandLine.args, {
@@ -2721,7 +2746,6 @@ export class Service extends EventEmitter<ServiceEvent> {
   }
 
   async #initService() {
-
     let isRunning = false
 
     // find if ports are already used, if used by something else then find new ports
@@ -2746,7 +2770,6 @@ export class Service extends EventEmitter<ServiceEvent> {
 
     // wait for all ports to be mapped
     await this.#waitForPorts()
-
   }
 
   #waitForPorts() {
@@ -2764,15 +2787,12 @@ export class Service extends EventEmitter<ServiceEvent> {
 
   async mapPort(portType: string, port: number) {
     return new Promise((resolve) => {
-      this.#serviceManager.reserveServicePort(
-        port,
-        this.#servicehost,
-        this.#id,
-        portType
-      ).then((newPort) => {
-        this.#portmapping[portType] = newPort
-        resolve(newPort)
-      })
+      this.#serviceManager
+        .reserveServicePort(port, this.#servicehost, this.#id, portType)
+        .then((newPort) => {
+          this.#portmapping[portType] = newPort
+          resolve(newPort)
+        })
     })
   }
 
