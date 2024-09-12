@@ -4,7 +4,8 @@ import { ChildProcess, type SpawnOptions } from "child_process"
 import { type ServiceManager } from "./ServiceManager"
 import { Logger } from "./Logger"
 import fs, { WriteStream } from "fs"
-import { http } from "follow-redirects"
+import pkg from "follow-redirects"
+const { http } = pkg
 import net from "net"
 import EventEmitter from "eventemitter3"
 import kill from "tree-kill"
@@ -128,6 +129,7 @@ export interface HealthCheck {
   tcphost?: string
   start_period?: number
   expected_status?: number
+  cookies?: { [key: string]: string }
 }
 
 export interface CommandConfigEnvSubstitution {
@@ -1671,6 +1673,7 @@ export class Service extends EventEmitter<ServiceEvent> {
       const urlFixed = this.#getServiceCommand(this.#healthCheck.url, this)
       const url: URL = new URL(urlFixed)
       const expected_status = this.#healthCheck.expected_status || 200
+      const cookies: { [key: string]: string } = this.#healthCheck.cookies || {}
 
       // this.#log(`http health check request ${url.hostname}; url ${url}`)
 
@@ -1683,7 +1686,31 @@ export class Service extends EventEmitter<ServiceEvent> {
         ) {
           getOptions["family"] = 4
         }
+
+        // if cookies has keys add them to request headers
+        if (Object.keys(cookies).length > 0) {
+          getOptions["headers"] = {
+            Cookie: Object.keys(cookies)
+              .map((key) => {
+                return key + "=" + cookies[key]
+              })
+              .join("; "),
+          }
+        }
+
         const req = await http.get(url, getOptions, (res) => {
+          // remmeber cookies if any
+          if (Object.keys(cookies).length > 0) {
+            const cookie = res.headers["set-cookie"]
+            if (cookie) {
+              cookie.forEach((c) => {
+                const match = c.match(/([^=]+)=([^;]+)/)
+                if (match && match.length > 0) {
+                  cookies[match[1]] = match[2]
+                }
+              })
+            }
+          }
           if (res.statusCode == expected_status) {
             this.#setStatus(ServiceStatus.STARTED)
             this.#stopHealthCheck()
