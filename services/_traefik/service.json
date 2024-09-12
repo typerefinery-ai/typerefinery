@@ -84,7 +84,7 @@
     },
     "healthcheck": {
       "type": "http",
-      "url": "http://127.0.0.1:${SERVICE_PORT}/dashboard",
+      "url": "http://127.0.0.1:${SERVICE_PORT_CONSOLE}/dashboard",
       "expected_status": 200,
       "retries": 180
     },
