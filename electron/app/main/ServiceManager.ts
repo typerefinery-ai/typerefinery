@@ -10,7 +10,14 @@ import fs, { WriteStream } from "fs"
 import glob from "glob"
 import { Logger } from "./Logger"
 import { Writable } from "node:stream"
-import { getPortFree, checkPortFree, getProcessPathForPID, getProcessPidForPort, stopProcess, tryParseInt } from "./Utils"
+import {
+  getPortFree,
+  checkPortFree,
+  getProcessPathForPID,
+  getProcessPidForPort,
+  stopProcess,
+  tryParseInt,
+} from "./Utils"
 import { os } from "./Utils"
 import e from "express"
 //EventEmitter
@@ -23,7 +30,8 @@ const DEFAULT_SERVICE_ORDER = 99
 const DEFAULT_EVENTS_LISTENERS = 100
 const DEFAULT_PORT_RESOLVE_ATTEMPTS = 10
 
-require('events').EventEmitter.defaultMaxListeners = DEFAULT_EVENTS_LISTENERS
+import { EventEmitter } from "events"
+EventEmitter.defaultMaxListeners = DEFAULT_EVENTS_LISTENERS
 // require('events').EventEmitter.prototype._maxListeners = 100
 // //increase max listeners
 // EventEmitter.prototype.setMaxListeners(100)

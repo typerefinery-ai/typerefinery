@@ -1,4 +1,5 @@
-import { app } from "electron"
+import pkg from "electron"
+const { app } = pkg
 import { existsSync, writeFile, mkdirSync } from "fs"
 import path from "path"
 

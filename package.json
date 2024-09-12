@@ -9,6 +9,7 @@
   "version": "2024.2.5",
   "appWidth": 1366,
   "appHeight": 768,
+  "type": "module",
   "proxy": "http://127.0.0.1:8000",
   "env": {
     "VITE_DEV_SERVER_HOST": "localhost",
@@ -66,9 +67,9 @@
     "report:moveVideos": "echo moveVideos && cp -r cypress/videos cypress/reports/videos 2>/dev/null || true",
     "report:moveData": "echo moveData && cp -r cypress/results/data cypress/reports/data 2>/dev/null || true",
     "posttest": "npm run report:merge && npm run report:generate && npm run report:moveScreenshots && npm run report:moveVideos && npm run report:moveData",
-    "services": "cross-env SERVICES_AUTOSTART=true npx ts-node --esm electron/app/main/Services.ts",
-    "servicesdebug": "cross-env SERVICES_AUTOSTART=false npx ts-node --esm electron/app/main/Services.ts",
-    "servicesprod": "cross-env SERVICES_AUTOSTART=true NODE_ENV=production npx ts-node --esm electron/app/main/Services.ts",
+    "services": "cross-env SERVICES_AUTOSTART=true node --no-warnings=ExperimentalWarning --loader ts-node/esm electron/app/main/Services.ts",
+    "servicesdebug": "cross-env SERVICES_AUTOSTART=false node --no-warnings=ExperimentalWarning --loader ts-node/esm electron/app/main/Services.ts",
+    "servicesprod": "cross-env SERVICES_AUTOSTART=true NODE_ENV=production node --no-warnings=ExperimentalWarning --loader ts-node/esm electron/app/main/Services.ts",
     "prettier": "npx prettier --write src"
   },
   "main": "dist/main/index.cjs",

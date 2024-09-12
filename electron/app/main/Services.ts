@@ -1,12 +1,21 @@
 import express from "express"
-import { type ServiceManagerEvents, ServiceManager, type ReservedPort } from "./ServiceManager"
-import { Service, ServiceStatus, type ServiceConfig  } from "./Service"
+import {
+  type ServiceManagerEvents,
+  ServiceManager,
+  type ReservedPort,
+} from "./ServiceManager"
+import { Service, ServiceStatus, type ServiceConfig } from "./Service"
 import { Logger } from "./Logger"
 import { dataPath, resourceBinary } from "./Resources"
 import path from "path"
-import config from "../../../package.json"
+import config from "../../../package.json" assert { type: "json" }
 import fs from "fs"
 import process from "node:process"
+import { fileURLToPath } from "url"
+import { dirname } from "path"
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
 
 const pageAutoRefreshEverySeconds = 10
 
