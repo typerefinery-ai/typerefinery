@@ -8,7 +8,7 @@
 		"login": "typerefinery",
 		"password": "0c8cecda08d5956802f6aeef085a74ad3160727f5fa77f05c64ba87f8b713160"
 	},
-	"components2": "https://cdn.totaljs.com/flowstream/components/db.json",
+	"components2": "https://typerefinery-ai.github.io/totaljs-flowstreamcomponents/db.json",
 	"darkmode": false,
 	"backup": false
 }
