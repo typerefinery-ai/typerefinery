@@ -27,12 +27,12 @@ directory               (env)    : SERVICE_DATA_PATH
 // Set list of components to use in flows, typerefinery is the default list of components with totaljs as custom.
 // Typerefinery component have group @TypeRefinery making these appear at the top.
 //
-// Own list of components and the structure must be the same as https://cdn.totaljs.com/flowstream/components/db.json
+// Own list of components and the structure must be the same as https://cdn.totaljs.com/flowstream/components/db.json archived version at https://typerefinery-ai.github.io/totaljs-flowstreamcomponents/db.json
 //flowstream_components         : https://typerefinery-ai.github.io/flowcomponents/db.json
 // main
 components                    : https://typerefinery-ai.github.io/flowcomponents/db.json
 // custom
-components2                   : https://cdn.totaljs.com/flowstream/components/db.json
+components2                   : https://typerefinery-ai.github.io/totaljs-flowstreamcomponents/db.json
 
 // #(in kilobytes), set to 10mb
 default_websocket_maxlength : 10000
