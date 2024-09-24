@@ -112,7 +112,10 @@ function getServicePage(service: Service) {
   let portsList = ""
   for (const port in ports) {
     const portData = ports[port]
-    const portLink = portData > 0 ? `<a href="http://localhost:${portData}" target="_blank">${port}</a>` : port
+    const portLink =
+      portData > 0
+        ? `<a href="http://localhost:${portData}" target="_blank">${port}</a>`
+        : port
 
     portsList += `<tr class="align-middle">
       <td>${portLink}</td>
@@ -569,7 +572,11 @@ function getServiceDependencies(filterServices: string[] = []) {
   return serviceDependencies
 }
 
-function getServicesPage(services: Service[], ports: { [key: string]: ReservedPort }, urls: { [key: string]: string }) {
+function getServicesPage(
+  services: Service[],
+  ports: { [key: string]: ReservedPort },
+  urls: { [key: string]: string }
+) {
   const serviceDependencies = getServiceDependencies()
   // console.log("ports", JSON.stringify(ports))
   let portsList = ""
@@ -604,7 +611,11 @@ function getServicesPage(services: Service[], ports: { [key: string]: ReservedPo
         Object.keys(ServiceStatus)[
           Object.values(ServiceStatus).findIndex((x) => x === service.status)
         ]
-      const configured = service.isSetup ? "configured" : (service.hasSetup ? "not configured" : "N/A")
+      const configured = service.isSetup
+        ? "configured"
+        : service.hasSetup
+        ? "not configured"
+        : "N/A"
       let serviceLink = ""
       if (service.port) {
         serviceLink = `<a href="http://localhost:${service.port}" target="_blank">${service.port}</a>`

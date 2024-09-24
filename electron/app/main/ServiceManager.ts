@@ -47,9 +47,10 @@ export interface ReservedPort {
   port: number //what is requested
   service: string
   type: string
-  status: string,
+  status: string
   requestedPort: number // what was assigned
 }
+
 class ServiceManager {
   #id = "servicemanager"
   #serviceConfigFile = "service.json"
@@ -68,8 +69,8 @@ class ServiceManager {
   #globalenv: { [key: string]: string } = {}
   #abortController: AbortController
   #servicePorts: { [key: string]: ReservedPort } = {}
-  #servicePortsMin: number = -1
-  #servicePortsMax: number = -1
+  #servicePortsMin = -1
+  #servicePortsMax = -1
   constructor(
     logsDir: string,
     logger: Logger,
@@ -111,7 +112,6 @@ class ServiceManager {
     this.#log("info", `service error log ${this.#stderr.path}.`)
     this.#log(`service error log ${this.#stderr.path}`)
 
-
     // create stdout log file for service executable
     this.#stdoutLogFile = path.join(logsDir, `${this.#id}-console.log`)
     this.#ensurePathToFile(this.#stdoutLogFile)
@@ -140,10 +140,7 @@ class ServiceManager {
     const startReload = new Date()
     this.#log("service manager load start", startReload)
     this.reload()
-    this.#log(
-      "service manager load end",
-      this.elapsedTime(startReload)
-    )
+    this.#log("service manager load end", this.elapsedTime(startReload))
 
     const startAchive = new Date()
     this.#log("service manager logs archive start", startAchive)
@@ -153,13 +150,9 @@ class ServiceManager {
     const parentFolder = path.dirname(logsDir)
     const archiveFolder = path.join(parentFolder, "_archive")
     this.archiveLogsInFolder(parentFolder, archiveFolder, logsDir)
-    this.#log(
-      "service manager load end",
-      this.elapsedTime(startAchive)
-    )
+    this.#log("service manager load end", this.elapsedTime(startAchive))
 
     this.removeOldLogs(archiveFolder, 30)
-
   }
 
   #ensurePathToFile(file: string) {
@@ -172,20 +165,19 @@ class ServiceManager {
     }
   }
 
-
   #error(...args: any[]) {
     this.#logger.log(args)
-    this.#logWrite("error",args.join(" "))
+    this.#logWrite("error", args.join(" "))
   }
 
   #log(...args: any[]) {
     this.#logger.log(args)
-    this.#logWrite("info",args.join(" "))
+    this.#logWrite("info", args.join(" "))
   }
 
   #warn(...args: any[]) {
     this.#logger.log(args)
-    this.#logWrite("warn",args.join(" "))
+    this.#logWrite("warn", args.join(" "))
   }
 
   // write to service log
@@ -194,7 +186,9 @@ class ServiceManager {
       const timestamp = this.#timestamp
       const serviceId = this.#id
       const newLine = "\n"
-      this.#stdout.write(`${timestamp} ${type.toUpperCase()} ${serviceId} -- ${message}${newLine}`)
+      this.#stdout.write(
+        `${timestamp} ${type.toUpperCase()} ${serviceId} -- ${message}${newLine}`
+      )
     }
   }
 
@@ -204,7 +198,9 @@ class ServiceManager {
       const timestamp = this.#timestamp
       const serviceId = this.#id
       const newLine = "\n"
-      this.#stderr.write(`${timestamp} ${type.toUpperCase()} ${serviceId} -- ${message}${newLine}`)
+      this.#stderr.write(
+        `${timestamp} ${type.toUpperCase()} ${serviceId} -- ${message}${newLine}`
+      )
     }
   }
 
@@ -238,34 +234,22 @@ class ServiceManager {
   async reload(restart = false) {
     const startReload = new Date()
     if (restart) {
-      this.#log(
-        "service manager stop all",
-        this.elapsedTime(startReload)
-      )
+      this.#log("service manager stop all", this.elapsedTime(startReload))
       await this.stopAll()
     }
 
     this.#log("service manager clear", this.elapsedTime(startReload))
     this.#clearServices()
-    this.#log(
-      "service manager load configs",
-      this.elapsedTime(startReload)
-    )
+    this.#log("service manager load configs", this.elapsedTime(startReload))
     this.#loadServiceConfigs()
-    this.#log(
-      "service manager load services",
-      this.elapsedTime(startReload)
-    )
+    this.#log("service manager load services", this.elapsedTime(startReload))
     this.#loadServices()
     this.#log(
       "service manager update global env",
       this.elapsedTime(startReload)
     )
     this.#updateGlobalEnv()
-    this.#log(
-      "service manager sort services",
-      this.elapsedTime(startReload)
-    )
+    this.#log("service manager sort services", this.elapsedTime(startReload))
     this.#sortServices()
 
     // send list of services to app
@@ -475,17 +459,27 @@ class ServiceManager {
     }
   }
 
-  #addServicePort(port: number, serviceId: string = "", type: string = "", status: string = "", requested: number) {
+  #addServicePort(
+    port: number,
+    serviceId = "",
+    type = "",
+    status = "",
+    requested: number
+  ) {
     this.#updatePortStats(port)
     const reservedPort: ReservedPort = {
       port: port,
       service: serviceId,
       type: type,
       status: status,
-      requestedPort: requested
+      requestedPort: requested,
     }
     this.#servicePorts[port + ""] = reservedPort
-    this.#log(`addServicePort for ${serviceId} port ${port} status ${status} requested ${requested}, service ports count ${Object.keys(this.#servicePorts).length}`)
+    this.#log(
+      `addServicePort for ${serviceId} port ${port} status ${status} requested ${requested}, service ports count ${
+        Object.keys(this.#servicePorts).length
+      }`
+    )
   }
 
   #updatePortStatus(port: number, status: string) {
@@ -495,19 +489,29 @@ class ServiceManager {
   }
 
   #getPortStatus(port: number): string {
-    return this.#servicePorts[port + ""] ? this.#servicePorts[port + ""].status : ""
+    return this.#servicePorts[port + ""]
+      ? this.#servicePorts[port + ""].status
+      : ""
   }
 
-  #updateServicePort(port: number, serviceId: string = "", type: string = "", status: string = "", newPort: number = -1) {
+  #updateServicePort(
+    port: number,
+    serviceId = "",
+    type = "",
+    status = "",
+    newPort = -1
+  ) {
     //remove old port
-    var oldSatus = ""
+    let oldSatus = ""
     if (this.#servicePorts[port + ""]) {
       oldSatus = this.#servicePorts[port + ""].status
       delete this.#servicePorts[port + ""]
     }
 
     this.#addServicePort(newPort, serviceId, type, status, port)
-    this.#warn(`updateServicePort for ${serviceId} port ${newPort} status ${oldSatus} -> ${status}}`)
+    this.#warn(
+      `updateServicePort for ${serviceId} port ${newPort} status ${oldSatus} -> ${status}}`
+    )
   }
 
   isPortsMapped(ports: { [key: string]: number }): boolean {
@@ -533,9 +537,14 @@ class ServiceManager {
     return Number(this.#servicePortsMax) + 1
   }
 
-  async reserveServicePort(port: number = 0, host = "localhost", serviceId = "", type = "") {
+  async reserveServicePort(
+    port = 0,
+    host = "localhost",
+    serviceId = "",
+    type = ""
+  ) {
     this.#log(`reserveServicePort ${port} ${host} ${serviceId} ${type}`)
-    let requestedPort: number = port
+    const requestedPort: number = port
     let nextReservedPort: number = port
     let resolvedPort: number = port
     let isPortReserved = false
@@ -543,18 +552,24 @@ class ServiceManager {
     let useNextMaxPort = false
     let isPortInUse = false
     if (requestedPort > 0) {
-
       //is this port already reserved by another service
       if (this.#isServicePortReserved(requestedPort)) {
         nextReservedPort = this.#nextServicePort()
-        this.#addServicePort(nextReservedPort, serviceId, type, "conflict", port)
+        this.#addServicePort(
+          nextReservedPort,
+          serviceId,
+          type,
+          "conflict",
+          port
+        )
         isPortReserved = true
         const reservedPort: ReservedPort = this.#servicePorts[port + ""]
-        this.#warn(`service ${serviceId} has declared service port ${type} with value ${port} which is reserved by ${reservedPort.service} as ${reservedPort.type}, trying to find next avilable port ${requestedPort}.`)
+        this.#warn(
+          `service ${serviceId} has declared service port ${type} with value ${port} which is reserved by ${reservedPort.service} as ${reservedPort.type}, trying to find next avilable port ${requestedPort}.`
+        )
         //this port is taken, try using next port
         useNextMaxPort = true
       } else {
-
         //reserve port for a resolution, first service to reserve port will be the one to use it
         this.#addServicePort(requestedPort, serviceId, type, "checking", port)
 
@@ -570,18 +585,25 @@ class ServiceManager {
 
         //check if port is free
         //get pid using port
-        const processPid = await getProcessPidForPort(port, this.#abortController)
-        const isPortUsed = (processPid === "" ? false : true)
+        const processPid = await getProcessPidForPort(
+          port,
+          this.#abortController
+        )
+        const isPortUsed = processPid === "" ? false : true
 
-        this.#log(`getProcessPidForPort ${serviceId} port ${port} pid ${processPid}. isPortUsed ${isPortUsed}.`)
+        this.#log(
+          `getProcessPidForPort ${serviceId} port ${port} pid ${processPid}. isPortUsed ${isPortUsed}.`
+        )
         // console.log(`getProcessPidForPort ${serviceId} port ${port} pid ${processPid}. isPortUsed ${isPortUsed}.`)
 
         this.#updatePortStatus(port, isPortUsed ? "used" : "free")
 
         //if port is used, check if it is used by same service
         if (isPortUsed) {
-
-          const processPath = await getProcessPathForPID(port, this.#abortController)
+          const processPath = await getProcessPathForPID(
+            port,
+            this.#abortController
+          )
           this.#log(`getProcessPathForPID ${serviceId} ${port} ${processPath}`)
           // console.log(`getProcessPathForPID ${serviceId} ${port} ${processPath}`)
 
@@ -595,7 +617,9 @@ class ServiceManager {
             const serviceExecutable = service.getServiceExecutable()
             const serviceExecutableResolved = path.resolve(serviceExecutable)
             const processPathResolved = path.resolve(processPath)
-            this.#log(`serviceExecutable ${serviceExecutableResolved} processPath ${processPathResolved}`)
+            this.#log(
+              `serviceExecutable ${serviceExecutableResolved} processPath ${processPathResolved}`
+            )
             // console.log(`serviceExecutable ${serviceExecutableResolved} processPath ${processPathResolved}`)
             if (serviceExecutableResolved == processPathResolved) {
               //this port is used by the same service, try to stop the service
@@ -608,28 +632,42 @@ class ServiceManager {
                 //port is now free
                 isPortInUse = false
               } else {
-
-                const stopService = await stopProcess(processPid, false, this.#abortController)
-                this.#warn(`service stopProcess ${serviceId} ${processPid} output ${stopService}`)
+                const stopService = await stopProcess(
+                  processPid,
+                  false,
+                  this.#abortController
+                )
+                this.#warn(
+                  `service stopProcess ${serviceId} ${processPid} output ${stopService}`
+                )
                 if (stopService) {
                   //service is stopped
                   isPortInUse = false
                   //double check
-                  const processPid = await getProcessPidForPort(port, this.#abortController)
+                  const processPid = await getProcessPidForPort(
+                    port,
+                    this.#abortController
+                  )
                   if (processPid === "") {
                     isPortInUse = false
                   } else {
                     isPortInUse = true
-                    this.#error(`tried to stop service ${serviceId} ${processPid} but it is still running.`)
+                    this.#error(
+                      `tried to stop service ${serviceId} ${processPid} but it is still running.`
+                    )
                   }
                 } else {
                   isPortInUse = true
-                  this.#warn(`could not stop service ${serviceId} ${processPid}.`)
+                  this.#warn(
+                    `could not stop service ${serviceId} ${processPid}.`
+                  )
                 }
               }
             } else {
               isPortInUse = true
-              this.#warn(`service ${serviceId} has declared service port ${type} with value ${port} which is in use by another service, trying to find next avilable port ${port}.`)
+              this.#warn(
+                `service ${serviceId} has declared service port ${type} with value ${port} which is in use by another service, trying to find next avilable port ${port}.`
+              )
             }
           }
         } else {
@@ -650,7 +688,9 @@ class ServiceManager {
       for (let i = 0; i < DEFAULT_PORT_RESOLVE_ATTEMPTS; i++) {
         this.#updatePortStatus(port, "resolve try")
         freeReservedPort = await getPortFree(freeReservedPort, host)
-        this.#warn(`getPortFree try A ${i} ${serviceId} ${freeReservedPort} next ${this.#nextServicePort()}.`)
+        this.#warn(
+          `getPortFree try A ${i} ${serviceId} ${freeReservedPort} next ${this.#nextServicePort()}.`
+        )
         if (freeReservedPort > 0) {
           //found free port
           isPortResolved = true
@@ -681,7 +721,9 @@ class ServiceManager {
       this.#updateServicePort(port, serviceId, type, "available", resolvedPort)
       return resolvedPort
     } else {
-      this.#error(`service ${serviceId} could not reserve port ${port} for service ${type}.`)
+      this.#error(
+        `service ${serviceId} could not reserve port ${port} for service ${type}.`
+      )
       return -1
     }
   }
@@ -689,8 +731,10 @@ class ServiceManager {
   #sortServices(reverse = false) {
     if (!reverse) {
       this.#services.sort((service1: Service, service2: Service) => {
-        const serviceorder1 = service1.options.execconfig?.serviceorder ?? DEFAULT_SERVICE_ORDER
-        const serviceorder2 = service2.options.execconfig?.serviceorder ?? DEFAULT_SERVICE_ORDER
+        const serviceorder1 =
+          service1.options.execconfig?.serviceorder ?? DEFAULT_SERVICE_ORDER
+        const serviceorder2 =
+          service2.options.execconfig?.serviceorder ?? DEFAULT_SERVICE_ORDER
         let returnvalue = 0
         // services with lower serviceorder value are started first
         if (serviceorder1 < serviceorder2) {
@@ -767,7 +811,12 @@ class ServiceManager {
     })
   }
 
-  async pack7Zip(folderPath: string, archiveName: string, destination: string, deleteFiles = false) {
+  async pack7Zip(
+    folderPath: string,
+    archiveName: string,
+    destination: string,
+    deleteFiles = false
+  ) {
     return new Promise<void>((resolve, reject) => {
       this.#log(`packing ${folderPath} to ${archiveName}`)
       const archiveService = this.getService("archive")
@@ -775,24 +824,33 @@ class ServiceManager {
       if (archiveService) {
         const serviceExec = archiveService.getServiceExecutable()
         this.#log(`archive service executable ${serviceExec}`)
-        const commandArgs = ["a", "-t7z", archiveName, folderPath, (deleteFiles ? "-sdel" : "")]
-        const executable = this.#getExecCommandRelativeToCWD(serviceExec, destination)
+        const commandArgs = [
+          "a",
+          "-t7z",
+          archiveName,
+          folderPath,
+          deleteFiles ? "-sdel" : "",
+        ]
+        const executable = this.#getExecCommandRelativeToCWD(
+          serviceExec,
+          destination
+        )
         this.#log(`archive command ${executable} ${commandArgs.join(" ")}`)
         const environmentVariables = archiveService.environmentVariables
-        this.#log(`archive environment variables ${JSON.stringify(environmentVariables)}`)
+        this.#log(
+          `archive environment variables ${JSON.stringify(
+            environmentVariables
+          )}`
+        )
         //exec path
         const execPath = environmentVariables["SERVICE_EXECUTABLE_HOME"]
         this.#log(`archive exec path ${execPath}`)
-        os.runProcess(
-          executable,
-          commandArgs,
-          {
-            signal: this.#abortController.signal,
-            cwd: execPath,
-            // stdio: ["ignore", this.#stdout, this.#stderr],
-            windowsHide: true,
-          }
-        )
+        os.runProcess(executable, commandArgs, {
+          signal: this.#abortController.signal,
+          cwd: execPath,
+          // stdio: ["ignore", this.#stdout, this.#stderr],
+          windowsHide: true,
+        })
           .then((result) => {
             this.#log(`shell command ${serviceExec} result -- ${result}`)
             // resolve()
@@ -815,7 +873,11 @@ class ServiceManager {
     return command.replace(cwd, "." + path.sep)
   }
 
-  archiveLogsInFolder(parentFolder: string, archiveFolder: string, currentFolder: string) {
+  archiveLogsInFolder(
+    parentFolder: string,
+    archiveFolder: string,
+    currentFolder: string
+  ) {
     // for each folder in parent folder that is not current folder create a zip file
     const folders = fs.readdirSync(parentFolder)
     const currentFolderName = path.basename(currentFolder)
@@ -851,7 +913,6 @@ class ServiceManager {
       }
     })
   }
-
 }
 
 export { type ServiceManagerEvents, ServiceManager }
