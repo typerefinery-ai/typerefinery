@@ -21,6 +21,7 @@
 
   .welcome-container {
     padding: 1rem;
+    overflow: scroll;
 
     h1 {
       font-size: 2rem;
@@ -37,14 +38,17 @@
       flex: 1;
       overflow: hidden;
       position: relative;
+      flex-wrap: wrap;
 
       .experience {
         padding: 1rem;
         text-align: center;
 
-        .p-card.p-component {
+        .p-card {
           width: 20rem;
           overflow: hidden;
+          padding-top: 1rem;
+          min-height: 180px;
         }
 
         .p-button {
@@ -60,6 +64,7 @@
       flex: 1;
       overflow: hidden;
       position: relative;
+      flex-wrap: wrap;
 
       .service {
         padding: 1rem;
@@ -68,6 +73,8 @@
         .p-card {
           width: 20rem;
           overflow: hidden;
+          padding-top: 1rem;
+          min-height: 200px;
         }
         .p-button {
           width: 100%;
@@ -90,6 +97,8 @@
         .p-card {
           width: 20rem;
           overflow: hidden;
+          padding-top: 1rem;
+          min-height: 200px;
         }
       }
     }
