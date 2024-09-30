@@ -1,4 +1,4 @@
-import * as config from "../../../package.json" assert { type: "json" }
+import pkg from "../../../package.json" assert { type: "json" }
 import portfinder from "portfinder"
 import child_process, { type SpawnOptions } from "node:child_process"
 import fs from "fs"
@@ -14,14 +14,14 @@ export function tryParseInt(text: string, defaultValue: number): number {
 }
 
 export function getConfig(key: string): any {
-  return config[key]
+  return pkg[key]
 }
 
 export function getEnvConfigWithDefault(
   key: string,
   defaultValue: any = undefined
 ): any {
-  return process.env[key] || config.env[key] || defaultValue
+  return process.env[key] || pkg.env[key] || defaultValue
 }
 
 export async function checkPortFree(port: number, host: string) {
