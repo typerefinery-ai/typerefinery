@@ -45,6 +45,8 @@
           @load="onObjLoad()"
         ></iframe>
       </div>
+      <settings v-if="settingsDialogVisible" />
+      <Toast />
     </div>
   </div>
 </template>
@@ -53,15 +55,17 @@
   import { getModule } from "vuex-module-decorators"
   import MenuBar from "@/components/Menu/MenuBar.vue"
   import MainMenu from "@/components/Menu/MainMenu.vue"
-  import Settings from "@/store/Modules/Settings"
-  import Services from "@/store/Modules/Services"
+  import Settings from "@/components/Settings/Settings.vue"
+  import SettingsStore from "@/store/Modules/Settings"
+  import ServicesStore from "@/store/Modules/Services"
+  import Toast from "primevue/toast"
   import { nanoid } from "nanoid"
   import Loader from "./loader.vue"
-  const settingsModule = getModule(Settings)
-  const servicesModule = getModule(Services)
+  const settingsModule = getModule(SettingsStore)
+  const servicesModule = getModule(ServicesStore)
   export default {
     name: "IframeComponent",
-    components: { MenuBar, MainMenu, Loader },
+    components: { Toast, Settings, MenuBar, MainMenu, Loader },
     data() {
       return {
         showMainOverlayMenu: false,
@@ -89,6 +93,11 @@
           allowfullscreen: undefined,
         },
       }
+    },
+    computed: {
+      settingsDialogVisible() {
+        return settingsModule.data.settingsDialogVisible
+      },
     },
     mounted() {
       this.experience = settingsModule.getExperience(this.$route.params.id)

@@ -77,6 +77,9 @@
             </Card>
           </div>
         </div>
+
+        <settings v-if="settingsDialogVisible" />
+        <Toast />
       </div>
     </div>
   </div>
@@ -89,6 +92,8 @@
   import Card from "primevue/card"
   import Button from "primevue/button"
   import TuneIcon from "vue-material-design-icons/Tune.vue"
+  import Toast from "primevue/toast"
+  import Settings from "@/components/Settings/Settings.vue"
 
   import SettingsStore from "@/store/Modules/Settings"
   const settingsModule = getModule(SettingsStore)
@@ -98,7 +103,7 @@
 
   export default {
     name: "Welcome",
-    components: { MenuBar, MainMenu, Card, Button, TuneIcon },
+    components: { Settings, Toast, MenuBar, MainMenu, Card, Button, TuneIcon },
     data() {
       return {
         experiences: [],
@@ -139,6 +144,9 @@
       }
     },
     computed: {
+      settingsDialogVisible() {
+        return settingsModule.data.settingsDialogVisible
+      },
       focusMode() {
         return settingsModule.data.focus
       },
