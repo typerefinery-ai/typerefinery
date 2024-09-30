@@ -6,6 +6,7 @@ import Workflow from "@/views/Workflow.vue"
 // import Chat from "@/components/Chat/index.vue"
 // import Maps from "@/components/Maps/index.vue"
 import IframeComponent from "@/components/IframeComponent/index.vue"
+import Welcome from "@/components/Welcome/index.vue"
 
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
@@ -17,6 +18,11 @@ const router = createRouter({
         default: Home,
         // dialog: Maps,
       },
+    },
+    {
+      path: "/welcome",
+      name: "welcome",
+      component: Welcome,
     },
     //Routing for experiences
     {

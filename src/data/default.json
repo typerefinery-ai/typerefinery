@@ -420,11 +420,11 @@
     ],
     "listOfMenu": [
       {
-        "label": "Project",
+        "label": "TypeRefinery",
         "icon": "pi pi-briefcase",
         "experienceIcon": "pi pi-briefcase",
-        "to": "/home/project",
-        "id": "project",
+        "to": "/welcome",
+        "id": "welcome",
         "system": true,
         "type": "regular",
         "service": "null",

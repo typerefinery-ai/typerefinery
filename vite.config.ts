@@ -57,4 +57,9 @@ export default defineConfig({
     ]
   },
   */
+  build: {
+    watch: {
+      exclude: ["node_modules/**", "dist/**", "test/**"],
+    },
+  },
 })
