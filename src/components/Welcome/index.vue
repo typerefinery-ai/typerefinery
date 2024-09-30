@@ -178,7 +178,7 @@
       this.experiences = await this.getExperiences()
 
       // get all the services
-      // this.services = await this.getServices()
+      this.services = await this.getServices()
     },
     methods: {
       //Onload object tag
