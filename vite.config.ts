@@ -2,7 +2,7 @@
 
 import { defineConfig } from "vite"
 import vue from "@vitejs/plugin-vue"
-import markdown from "vite-plugin-markdown-vue"
+import { plugin as markdown } from "vite-plugin-markdown"
 
 import { fileURLToPath, URL } from "url"
 
