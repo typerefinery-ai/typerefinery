@@ -387,31 +387,31 @@ async def delete_flow(body: FlowModel):
 
 ### GraphQL Interface for this datastore
 
-@strawberry.type
-class Query:
+# @strawberry.type
+# class Query:
 
-    @strawberry.field
-    def project(self, projectid: str) -> ProjectModel:
-      return ProjectUtils.read_project(projectid=projectid, engine=engine)
+#     @strawberry.field
+#     def project(self, projectid: str) -> ProjectModel:
+#       return ProjectUtils.read_project(projectid=projectid, engine=engine)
 
-    @strawberry.field
-    def connection(self, connectionid: str) -> ConnectionModel:
-      return ConnectionUtils.read_connection(connectionid=connectionid, engine=engine)
+#     @strawberry.field
+#     def connection(self, connectionid: str) -> ConnectionModel:
+#       return ConnectionUtils.read_connection(connectionid=connectionid, engine=engine)
 
-    @strawberry.field
-    def queries(self, queryid: str) -> QueryModel:
-      return QueryUtils.read_query(queryid=queryid, engine=engine)
+#     @strawberry.field
+#     def queries(self, queryid: str) -> QueryModel:
+#       return QueryUtils.read_query(queryid=queryid, engine=engine)
 
-    @strawberry.field
-    def theme(self, themeid: str) -> ThemeModel:
-      return ThemeUtils.read_theme(themeid=themeid, engine=engine)
+#     @strawberry.field
+#     def theme(self, themeid: str) -> ThemeModel:
+#       return ThemeUtils.read_theme(themeid=themeid, engine=engine)
 
-    @strawberry.field
-    def flow(self, flowid: str) -> FlowModel:
-      return FlowUtils.read_flow(flowid=flowid, engine=engine)
+#     @strawberry.field
+#     def flow(self, flowid: str) -> FlowModel:
+#       return FlowUtils.read_flow(flowid=flowid, engine=engine)
 
-schema = strawberry.Schema(query=Query)
+# schema = strawberry.Schema(query=Query)
 
-graphql_app = GraphQLRouter(schema)
-router.add_route("/graphql", graphql_app)
-router.add_api_websocket_route("/graphql", graphql_app, name='graphql_app')
+# graphql_app = GraphQLRouter(schema)
+# router.add_route("/graphql", graphql_app)
+# router.add_api_websocket_route("/graphql", graphql_app, name='graphql_app')

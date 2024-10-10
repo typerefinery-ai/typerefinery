@@ -9,8 +9,8 @@ http:
       entrypoints:
         - web
       middlewares:
-      #   - error-pages
         - serviceheaders
+        - error-pages
     flow-https:
       rule: Host(`flow.typerefinery.localhost`)
       # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/flow`) ) || Host(`flow.localhost`)
@@ -19,8 +19,8 @@ http:
         - websecure
       tls: true
       middlewares:
-      #   # - error-pages
         - serviceheaders
+        - error-pages
 
     fastapi:
       rule: Host(`api.typerefinery.localhost`)
@@ -30,6 +30,7 @@ http:
         - web
       middlewares:
         - serviceheaders
+        - error-pages
     fastapi-https:
       rule: Host(`api.typerefinery.localhost`)
       # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/api`) ) || Host(`api.localhost`)
@@ -39,6 +40,49 @@ http:
       tls: true
       middlewares:
         - serviceheaders
+        - error-pages
+
+    openobserve:
+      rule: Host(`openobserve.typerefinery.localhost`)
+      # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/api`) ) || Host(`api.localhost`)
+      service: openobserve
+      entrypoints:
+        - web
+      middlewares:
+        - serviceheaders
+        - error-pages
+
+    openobserve-https:
+      rule: Host(`openobserve.typerefinery.localhost`)
+      # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/api`) ) || Host(`api.localhost`)
+      service: openobserve
+      entrypoints:
+        - websecure
+      tls: true
+      middlewares:
+        - serviceheaders
+        - error-pages
+
+    openobserve-grpc:
+      rule: Host(`openobserve-grpc.typerefinery.localhost`)
+      # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/api`) ) || Host(`api.localhost`)
+      service: openobserve-grpc
+      entrypoints:
+        - web
+      middlewares:
+        - serviceheaders
+        - error-pages
+    openobserve-grpc-https:
+      rule: Host(`openobserve-grpc.typerefinery.localhost`)
+      # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/api`) ) || Host(`api.localhost`)
+      service: openobserve-grpc
+      entrypoints:
+        - websecure
+      tls: true
+      middlewares:
+        - serviceheaders
+        - error-pages
+
     keycloak:
       rule: Host(`auth.typerefinery.localhost`)
       # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/api`) ) || Host(`api.localhost`)
@@ -46,8 +90,8 @@ http:
       entrypoints:
         - web
       middlewares:
-        - error-pages
         - serviceheaders
+        - error-pages
     keycloak-https:
       rule: Host(`auth.typerefinery.localhost`)
       # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/api`) ) || Host(`api.localhost`)
@@ -56,8 +100,8 @@ http:
         - websecure
       tls: true
       middlewares:
-        - error-pages
         - serviceheaders
+        - error-pages
 
     keycloakadmin:
       rule: Host(`keycloak.typerefinery.localhost`)
@@ -66,8 +110,8 @@ http:
       entrypoints:
         - web
       middlewares:
-        - error-pages
         - keycloakadminserviceheaders
+        - error-pages
     keycloakadmin-https:
       rule: Host(`keycloak.typerefinery.localhost`)
       # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/api`) ) || Host(`api.localhost`)
@@ -76,8 +120,8 @@ http:
         - websecure
       tls: true
       middlewares:
-        - error-pages
         - keycloakadminserviceheaders
+        - error-pages
 
     files:
       rule: Host(`files.typerefinery.localhost`)
@@ -86,8 +130,8 @@ http:
       entrypoints:
         - web
       middlewares:
-        - error-pages
         - serviceheaders
+        - error-pages
     files-https:
       rule: Host(`files.typerefinery.localhost`)
       # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/files`) ) || Host(`files.localhost`)
@@ -96,8 +140,8 @@ http:
         - websecure
       tls: true
       middlewares:
-        - error-pages
         - serviceheaders
+        - error-pages
 
     postgreadmin:
       rule: Host(`pgadmin.typerefinery.localhost`)
@@ -106,8 +150,8 @@ http:
       entrypoints:
         - web
       middlewares:
-        - error-pages
         - serviceheaders
+        - error-pages
     postgreadmin-https:
       rule: Host(`pgadmin.typerefinery.localhost`)
       # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/pgadmin`) ) || Host(`pgadmin.localhost`)
@@ -116,8 +160,8 @@ http:
         - websecure
       tls: true
       middlewares:
-        - error-pages
         - serviceheaders
+        - error-pages
 
     bpmn:
       rule: Host(`bpmn.typerefinery.localhost`)
@@ -126,8 +170,8 @@ http:
       entrypoints:
         - web
       middlewares:
-        - error-pages
         - serviceheaders
+        - error-pages
     bpmn-https:
       rule: Host(`bpmn.typerefinery.localhost`)
       # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/bpmn`) ) || Host(`bpmn.localhost`)
@@ -136,8 +180,8 @@ http:
         - websecure
       tls: true
       middlewares:
-        - error-pages
         - serviceheaders
+        - error-pages
 
     nginx:
       rule: Host(`nginx.typerefinery.localhost`)
@@ -147,6 +191,7 @@ http:
         - web
       middlewares:
         - serviceheaders
+        - error-pages
     nginx-https:
       rule: Host(`nginx.typerefinery.localhost`)
       # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/nginx`) ) || Host(`nginx.localhost`)
@@ -155,8 +200,8 @@ http:
         - websecure
       tls: true
       middlewares:
-        - error-pages
         - serviceheaders
+        - error-pages
 
 
     tms:
@@ -165,6 +210,9 @@ http:
       service: tms
       entrypoints:
         - web
+      middlewares:
+        - serviceheaders
+        - error-pages
     tmshttps:
       rule: Host(`tms.typerefinery.localhost`)
       # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/tms`) ) || Host(`tms.localhost`)
@@ -172,6 +220,9 @@ http:
       entrypoints:
         - websecure
       tls: true
+      middlewares:
+        - serviceheaders
+        - error-pages
 
     jupyterlab:
       rule: Host(`jupyterlab.typerefinery.localhost`)
@@ -182,6 +233,7 @@ http:
       middlewares:
         - error-pages
         - serviceheaders
+        - error-pages
     jupyterlab-https:
       rule: Host(`jupyterlab.typerefinery.localhost`)
       # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/nginx`) ) || Host(`nginx.localhost`)
@@ -192,6 +244,28 @@ http:
       middlewares:
         - error-pages
         - serviceheaders
+        - error-pages
+
+    widgetdev:
+      rule: Host(`widgetdev.typerefinery.localhost`)
+      # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/flow`) ) || Host(`flow.localhost`)
+      service: widgetdev
+      entrypoints:
+        - web
+      middlewares:
+        - serviceheaders
+        - error-pages
+    widgetdev-https:
+      rule: Host(`widgetdev.typerefinery.localhost`)
+      # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/flow`) ) || Host(`flow.localhost`)
+      service: widgetdev
+      entrypoints:
+        - websecure
+      tls: true
+      middlewares:
+        - serviceheaders
+        - error-pages
+
 
     traefikdashboard:
       rule: Host(`traefik.typerefinery.localhost`)
@@ -249,8 +323,8 @@ http:
       middlewares:
         # - stripprefix-cms
         # - replacepath-cms
-        - error-pages
         - serviceheaders
+        - error-pages
     cms-https:
       rule: Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) || Host(`cms.typerefinery.localhost`)
       # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/cms`) ) || Host(`cms.localhost`)
@@ -262,8 +336,8 @@ http:
       middlewares:
         # - stripprefix-cms
         # - replacepath-cms
-        - error-pages
         - serviceheaders
+        - error-pages
 
   middlewares:
     default:
@@ -290,12 +364,24 @@ http:
     # cors
     serviceheaders:
       headers:
-        accesscontrolalloworiginlist: "https://cms.typerefinery.localhost:8101, https://flow.typerefinery.localhost:8101, https://api.typerefinery.localhost:8101, http://cms.typerefinery.localhost:8101, http://flow.typerefinery.localhost:8101, http://api.typerefinery.localhost:8101"
-        accesscontrolallowmethods: "GET, POST, PUT, DELETE, OPTIONS"
+        accessControlAllowCredentials: true
+        # accesscontrolalloworigin: "*"
+        accesscontrolalloworiginlist: "*"
+        # accesscontrolalloworiginlist: "https://cms.typerefinery.localhost:8101, https://flow.typerefinery.localhost:8101, https://api.typerefinery.localhost:8101, http://cms.typerefinery.localhost:8101, http://flow.typerefinery.localhost:8101, http://openobserve.typerefinery.localhost:8101"
+        accesscontrolallowmethods: "*"
         accesscontrolallowheaders: "*"
+        accessControlExposeHeaders: "*"
+        accesscontrolmaxage: 100
         addvaryheader: true
-        contentsecuritypolicy: ";"
-        # customResponseHeaders:
+        # contentsecuritypolicy: "default-src 'self' https://flow.typerefinery.localhost:8101/ ; img-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; font-src 'self'; frame-src 'self'; object-src 'self'; media-src 'self'; child-src 'self'; form-action 'self'; frame-ancestors 'self'; base-uri 'self'; manifest-src 'self'; worker-src 'self'; prefetch-src 'self';"
+        # contentsecuritypolicy: "default-src 'self' *.typerefinery.localhost; img-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; connect-src 'self'; font-src 'self'; frame-src 'self'; object-src 'self'; media-src 'self'; child-src 'self'; form-action 'self'; frame-ancestors 'self'; base-uri 'self'; manifest-src 'self'; worker-src 'self';"
+        # contentsecuritypolicy: "default-src 'self' https://*.typerefinery.localhost:8101 http://localhost:* https://raw.githubusercontent.com https://*.github.io; frame-src 'self' https://*.typerefinery.localhost:8101 https://*.github.io;  img-src 'self' * data: ; style-src 'self' 'unsafe-inline'; connect-src 'self' https://*.typerefinery.localhost:8101 wss://tms.typerefinery.localhost:8101; "
+        # contentsecuritypolicy: ";"
+        customRequestHeaders:
+          Access-Control-Allow-Origin: "*"
+        customResponseHeaders:
+          Access-Control-Allow-Origin: "*"
+
         #     Content-Security-Policy-Report-Only: >-
         #       connect-src self;
         #       default-src none;
@@ -303,6 +389,11 @@ http:
         #       img-src self;
         #       script-src self;
         #       style-src self inline-unsafe;
+
+    # scp
+    servicescp:
+      headers:
+        contentsecuritypolicy: "default-src 'none'; img-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; font-src 'self'; frame-src 'self'; object-src 'self'; media-src 'self'; child-src 'self'; form-action 'self'; frame-ancestors 'self'; base-uri 'self'; manifest-src 'self'; worker-src 'self'; prefetch-src 'self';"
 
     keycloakadminserviceheaders:
       headers:
@@ -380,6 +471,19 @@ http:
         passHostHeader: true
         servers:
           - url: '{{ env "API_URL" }}'
+
+    openobserve:
+      loadBalancer:
+        passHostHeader: true
+        servers:
+          - url: '{{ env "OPENOBSERVE_URL" }}'
+
+    openobserve-grpc:
+      loadBalancer:
+        passHostHeader: true
+        servers:
+          - url: '{{ env "OPENOBSERVE_URL_GRPC" }}'
+
     flow:
       loadBalancer:
         passHostHeader: true
@@ -422,6 +526,12 @@ http:
         passHostHeader: true
         servers:
           - url: '{{ env "JUPYTERLAB_URL" }}'
+
+    widgetdev:
+      loadBalancer:
+        passHostHeader: true
+        servers:
+          - url: '{{ env "TRAEFIK_LOCAL_WIDGETDEV_URL" }}'
 
 tcp:
   services:

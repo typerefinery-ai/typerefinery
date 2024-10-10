@@ -1,0 +1,76 @@
+{
+  "id": "openobserve",
+  "name": "OpenObserve",
+  "description": "OpenObserve Logs Traces Metrics v0.10.8-rc4",
+  "version": "v0.10.8-rc4",
+  "enabled": true,
+  "status": "30",
+  "logoutput": "",
+  "icon": "pi pi-globe",
+  "servicelocation": 10,
+  "execconfig": {
+    "debuglog": true,
+    "serviceorder": 3,
+    "executable": {
+      "win32": "openobserve\\openobserve.exe",
+      "darwin": "openobserve/openobserve",
+      "linux": "openobserve/openobserve",
+      "default": "openobserve\\openobserve"
+    },
+    "env": {
+      "PATH": [
+        "${ARCHIVE_HOME}",
+        "C:\\WINDOWS\\system32",
+        "C:\\WINDOWS"
+      ],
+      "ZO_DATA_DIR": "${SERVICE_DATA_PATH}",
+      "ZO_ROOT_USER_EMAIL": "${OPENOBSERVE_ZO_ROOT_USER_EMAIL}",
+      "ZO_ROOT_USER_PASSWORD": "${OPENOBSERVE_ZO_ROOT_USER_PASSWORD}",
+      "ZO_HTTP_PORT": "${SERVICE_PORT}",
+      "ZO_GRPC_PORT": "${SERVICE_PORT_SECONDARY}"
+    },
+    "globalenv": {
+      "OPENOBSERVE_ZO_ROOT_USER_EMAIL": "openobserve@typerefinery.ai",
+      "OPENOBSERVE_ZO_ROOT_USER_PASSWORD": "fWSzmqsZYiPo9MBC",
+      "OPENOBSERVE_FILEBEAT_USER_PASSWORD": "fWSzmqsZYiPo9MBC",
+      "OPENOBSERVE_URL": "http://${SERVICE_HOST}:${SERVICE_PORT}",
+      "OPENOBSERVE_URL_GRPC": "h2c://${SERVICE_HOST}:${SERVICE_PORT_SECONDARY}",
+      "OPENOBSERVE_PORT": "${SERVICE_PORT}",
+      "OPENOBSERVE_PORT_GRPC": "${SERVICE_PORT_SECONDARY}"
+    },
+    "serviceport": 8300,
+    "serviceportsecondary": 8301,
+    "healthcheck": {
+      "type": "http",
+      "url": "http://${SERVICE_HOST}:${SERVICE_PORT}/healthz",
+      "expected_status": 200,
+      "retries": 180
+    },
+    "commandline": {
+      "win32": " --",
+      "darwin": "  --",
+      "linux": " --",
+      "default": " --"
+    },
+    "datapath": "/server/data",
+    "setuparchive": {
+      "win32": {
+        "name": "openobserve.zip",
+        "output": "openobserve"
+      },
+      "darwin": {
+        "name": "openobserve.zip",
+        "output": "openobserve"
+      },
+      "linux": {
+        "name": "openobserve.zip",
+        "output": "openobserve"
+      }
+    },
+    "setup": {
+      "win32": [
+        " -h"
+      ]
+    }
+  }
+}

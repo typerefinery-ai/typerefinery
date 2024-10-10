@@ -1,0 +1,70 @@
+{
+  "id": "filebeat",
+  "name": "Filebeat Log Service",
+  "description": "Filebeat 8.14.2",
+  "version": "8.14.2",
+  "enabled": true,
+  "status": "30",
+  "logoutput": "",
+  "icon": "pi pi-globe",
+  "servicelocation": 10,
+  "execconfig": {
+    "debuglog": true,
+    "serviceorder": 3,
+    "executable": {
+      "win32": "filebeat\\filebeat.exe",
+      "darwin": "filebeat/filebeat",
+      "linux": "filebeat/filebeat",
+      "default": "filebeat\\filebeat"
+    },
+    "env": {
+      "PATH": [
+        "${ARCHIVE_HOME}",
+        "C:\\WINDOWS\\system32",
+        "C:\\WINDOWS"
+      ]
+    },
+    "globalenv": {
+      "FILEBEAT_HOME": "${SERVICE_HOME}"
+    },
+    "outputvarregex": {
+      "FILEBEAT_ENABLED_INPUTS": ".*Loading and starting Inputs completed. Enabled inputs: (\\d+).*"
+    },
+    "healthcheck": {
+      "type": "variable",
+      "variable": "FILEBEAT_ENABLED_INPUTS",
+      "retries": 180
+    },
+    "commandline": {
+      "win32": " run -e -v --path.config ${SERVICE_HOME}\\config --path.home \"${SERVICE_HOME}\\win32\\filebeat\" --path.logs \"${SERVICE_LOG_PATH}\" --path.data \"${SERVICE_DATA_PATH}\"",
+      "darwin": " run --path.config ${SERVICE_HOME}\\config --path.home \"${SERVICE_HOME}\\darwin\\filebeat\" --path.logs \"${SERVICE_LOG_PATH}\" --path.data \"${SERVICE_DATA_PATH}\" ",
+      "linux": " run --path.config ${SERVICE_HOME}\\config --path.home \"${SERVICE_HOME}\\linux\\filebeat\" --path.logs \"${SERVICE_LOG_PATH}\" --path.data \"${SERVICE_DATA_PATH}\" ",
+      "default": " run -e -v --path.config ${SERVICE_HOME}\\config --path.home \"${SERVICE_HOME}\\win32\\filebeat\" --path.logs \"${SERVICE_LOG_PATH}\" --path.data \"${SERVICE_DATA_PATH}\" "
+    },
+    "datapath": "/server/data",
+    "setuparchive": {
+      "win32": {
+        "name": "filebeat.7z",
+        "output": "filebeat"
+      },
+      "darwin": {
+        "name": "filebeat.7z",
+        "output": "filebeat"
+      },
+      "linux": {
+        "name": "filebeat.7z",
+        "output": "filebeat"
+      }
+    },
+    "setup": {
+      "win32": [
+        " run --help",
+        " test config ${SERVICE_HOME}\\config\\filebeat.yml",
+        " test output ${SERVICE_HOME}\\config\\filebeat.yml"
+      ]
+    },
+    "depend_on": [
+      "openobserve"
+    ]
+  }
+}

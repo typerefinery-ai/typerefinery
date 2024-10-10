@@ -37,6 +37,9 @@
       "FILE_LOG_LEVEL": "INFO",
       "PYTHONPATH": "${PYTHON_HOME}",
       "PYTHONUSERBASE": "${SERVICE_PATH}\\__packages__",
+      "PGADMIN_CONFIG_ENHANCED_COOKIE_PROTECTION": "False",
+      "PGADMIN_CONFIG_WTF_CSRF_CHECK_DEFAULT": "False",
+      "PGADMIN_CONFIG_WTF_CSRF_ENABLED": "False",
       "PATH": [
         "${NODE_HOME}",
         "${PYTHON_HOME}",
@@ -59,9 +62,12 @@
     "serviceport": 8510,
     "healthcheck": {
       "type": "http",
-      "url": "http://localhost:${SERVICE_PORT}/healthcheck",
+      "url": "http://127.0.0.1:${SERVICE_PORT}/browser/",
       "expected_status": 200,
-      "retries": 180
+      "retries": 180,
+      "cookies": {
+        "pga4_session": "pga4_session"
+      }
     },
     "depend_on": [
       "python"

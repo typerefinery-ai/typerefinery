@@ -1,12 +1,21 @@
 import express from "express"
-import { type ServiceManagerEvents, ServiceManager } from "./ServiceManager"
+import {
+  type ServiceManagerEvents,
+  ServiceManager,
+  type ReservedPort,
+} from "./ServiceManager"
 import { Service, ServiceStatus, type ServiceConfig } from "./Service"
 import { Logger } from "./Logger"
 import { dataPath, resourceBinary } from "./Resources"
 import path from "path"
-import config from "../../../package.json"
+import config from "../../../package.json" assert { type: "json" }
 import fs from "fs"
 import process from "node:process"
+import { fileURLToPath } from "url"
+import { dirname } from "path"
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
 
 const pageAutoRefreshEverySeconds = 10
 
@@ -97,6 +106,34 @@ function escapeHTML(unsafe) {
 function getServicePage(service: Service) {
   const serviceDependencies = getServiceDependencies([service.id])
 
+  const ports = service.getPorts()
+
+  //for each key in ports, create a row
+  let portsList = ""
+  for (const port in ports) {
+    const portData = ports[port]
+    const portLink =
+      portData > 0
+        ? `<a href="http://localhost:${portData}" target="_blank">${port}</a>`
+        : port
+
+    portsList += `<tr class="align-middle">
+      <td>${portLink}</td>
+      <td>${portData}</td>
+      </tr>`
+  }
+
+  const urls = service.getURLs()
+  let urlsList = ""
+  if (Object.keys(urls).length < 0) {
+    urlsList = "No service URLs configured."
+  } else {
+    for (const url in urls) {
+      const urlData = urls[url]
+      urlsList += `<a class="btn btn-primary" role="button" target="_blank" href="${urlData}">${url.toUpperCase()}</a>`
+    }
+  }
+
   const execservice = service.options.execconfig?.execservice?.id
     ? " (" + service.options.execconfig?.execservice.id + ")"
     : ""
@@ -172,6 +209,13 @@ function getServicePage(service: Service) {
       </div>
 
       <div class="my-3 p-3 bg-body rounded shadow-sm">
+        <h6 class="border-bottom pb-2 mb-3">Urls</h6>
+        <div class="input-group input-group-sm mb-1 gap-2">
+          ${urlsList}
+        </div>
+      </div>
+
+      <div class="my-3 p-3 bg-body rounded shadow-sm">
         <h6 class="border-bottom pb-2 mb-3">Config</h6>
         <div class="input-group input-group-sm mb-1">
           <span class="input-group-text" id="inputGroup-sizing-sm">Id</span>
@@ -202,20 +246,8 @@ function getServicePage(service: Service) {
           <input type="text" value="${serviceStatusName}" readonly class="form-control ${statusBackground}" aria-describedby="inputGroup-sizing-sm">
         </div>
         <div class="input-group input-group-sm mb-1">
-          <span class="input-group-text" id="inputGroup-sizing-sm">URL</span>
+          <span class="input-group-text" id="inputGroup-sizing-sm">Primary Access Port</span>
           <span class="form-control">${serviceLink}</span>
-        </div>
-        <div class="input-group input-group-sm mb-1">
-          <span class="input-group-text" id="inputGroup-sizing-sm">Port</span>
-          <span class="form-control">${service.port}</span>
-        </div>
-        <div class="input-group input-group-sm mb-1">
-          <span class="input-group-text" id="inputGroup-sizing-sm">Port Secondary</span>
-          <span class="form-control">${service.portsecondary}</span>
-        </div>
-        <div class="input-group input-group-sm mb-1">
-          <span class="input-group-text" id="inputGroup-sizing-sm">Port Console</span>
-          <span class="form-control">${service.portconsole}</span>
         </div>
         <div class="input-group input-group-sm mb-1">
           <span class="input-group-text" id="inputGroup-sizing-sm">PID</span>
@@ -324,6 +356,22 @@ function getServicePage(service: Service) {
         <div class="border border-1 bg-secondary-subtle p-3 fs-6">
         <div id="dependencytree"></div>
         </div>
+      </div>
+
+      <div class="my-3 p-3 bg-body rounded shadow-sm">
+        <a id="ports"></a>
+        <h6 class="border-bottom pb-2 mb-3">Ports</h6>
+        <table class="table table-hover">
+          <thead class="table-light">
+            <tr>
+              <th scope="col">Name</th>
+              <th scope="col">Port</th>
+            </tr>
+          </thead>
+          <tbody class="table-group-divider">
+          ${portsList}
+          </tbody>
+        </table>
       </div>
 
       <div class="my-3 p-3 bg-body rounded shadow-sm">
@@ -524,8 +572,35 @@ function getServiceDependencies(filterServices: string[] = []) {
   return serviceDependencies
 }
 
-function getServicesPage(services: Service[]) {
+function getServicesPage(
+  services: Service[],
+  ports: { [key: string]: ReservedPort },
+  urls: { [key: string]: string }
+) {
   const serviceDependencies = getServiceDependencies()
+  // console.log("ports", JSON.stringify(ports))
+  let portsList = ""
+  for (const port in ports) {
+    const portData = ports[port]
+    portsList += `<tr class="align-middle">
+      <td>${portData.port}</td>
+      <td><a href="/service/${portData.service}#ports">${portData.service}</a></td>
+      <td>${portData.type}</td>
+      <td>${portData.status}</td>
+      <td>${portData.requestedPort}</td>
+      </tr>`
+  }
+
+  //map urls into string buttons
+  let urlsList = ""
+  if (Object.keys(urls).length < 0) {
+    urlsList = "No service URLs configured."
+  } else {
+    for (const url in urls) {
+      const urlData = urls[url]
+      urlsList += `<a class="btn btn-primary" role="button" target="_blank" href="${urlData}">${url.toUpperCase()}</a>`
+    }
+  }
 
   let servicesList = services
     .map((service) => {
@@ -536,7 +611,11 @@ function getServicesPage(services: Service[]) {
         Object.keys(ServiceStatus)[
           Object.values(ServiceStatus).findIndex((x) => x === service.status)
         ]
-      const configured = service.isSetup ? "configured" : "not configured"
+      const configured = service.isSetup
+        ? "configured"
+        : service.hasSetup
+        ? "not configured"
+        : "N/A"
       let serviceLink = ""
       if (service.port) {
         serviceLink = `<a href="http://localhost:${service.port}" target="_blank">${service.port}</a>`
@@ -630,6 +709,13 @@ function getServicesPage(services: Service[]) {
       </div>
 
       <div class="my-3 p-3 bg-body rounded shadow-sm">
+        <h6 class="border-bottom pb-2 mb-3">Urls</h6>
+        <div class="input-group input-group-sm mb-1 gap-2">
+        ${urlsList}
+        </div>
+      </div>
+
+      <div class="my-3 p-3 bg-body rounded shadow-sm">
         <table class="table table-hover">
           <thead class="table-light">
             <tr>
@@ -663,6 +749,23 @@ function getServicesPage(services: Service[]) {
           "\t"
         )}</code></pre>
         </div>
+      </div>
+
+      <div class="my-3 p-3 bg-body rounded shadow-sm">
+        <table class="table table-hover">
+          <thead class="table-light">
+            <tr>
+              <th scope="col">Port</th>
+              <th scope="col">Service</th>
+              <th scope="col">Type</th>
+              <th scope="col">Satus</th>
+              <th scope="col">Requested Port</th>
+            </tr>
+          </thead>
+          <tbody class="table-group-divider">
+          ${portsList}
+          </tbody>
+        </table>
       </div>
 
       <div class="my-3 p-3 bg-body rounded shadow-sm">
@@ -875,7 +978,9 @@ app.post("/exit", function (req, res, next) {
 
 app.get("/services", function (req, res) {
   const services = serviceManager.getServices()
-  res.send(getServicesPage(services))
+  const ports = serviceManager.getPorts()
+  const urls = serviceManager.getURLs()
+  res.send(getServicesPage(services, ports, urls))
 })
 
 app.post("/service/:serviceId/:serviceAction", (req, res, next) => {

@@ -77,7 +77,7 @@
         //     }
 
         // console.warn(result);
-        this.$router.push("/home/project")
+        this.$router.push("/")
       },
     },
     // mounted()

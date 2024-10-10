@@ -1,3 +1,4 @@
 server/*
 !server/.gitkeep
-
+java/
+cache/

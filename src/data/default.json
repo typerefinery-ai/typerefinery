@@ -420,11 +420,11 @@
     ],
     "listOfMenu": [
       {
-        "label": "Project",
+        "label": "TypeRefinery",
         "icon": "pi pi-briefcase",
         "experienceIcon": "pi pi-briefcase",
-        "to": "/home/project",
-        "id": "project",
+        "to": "/welcome",
+        "id": "welcome",
         "system": true,
         "type": "regular",
         "service": "null",
@@ -528,6 +528,19 @@
             "icon": "pi pi-book"
           }
         ]
+      },
+      {
+        "label": "Stix Viz",
+        "icon": "pi pi-star",
+        "id": "jupyterlab",
+        "to": "/experience/jupyterlab",
+        "type": "experimental",
+        "service": "cms",
+        "disabled": false,
+        "url": "${TRAEFIK_CMS_URL}/content/typerefinery-showcase/pages/os-triage/forms/vizandform-local.html",
+        "urlfomatted": "",
+        "enabled": true,
+        "subMenu": []
       }
     ]
   },
