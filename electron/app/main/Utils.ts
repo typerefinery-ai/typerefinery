@@ -1,4 +1,4 @@
-import pkg from "../../../package.json" assert { type: "json" };
+import pkg from "../../../package.json"
 import portfinder from "portfinder"
 import child_process, { type SpawnOptions } from "node:child_process"
 import fs from "fs"
@@ -35,7 +35,6 @@ export async function checkPortFree(port: number, host: string) {
     })
 }
 
-
 export async function getPortFree(port: number, host: string) {
   return portfinder
     .getPortPromise({ host: host, port: port })
@@ -47,9 +46,13 @@ export async function getPortFree(port: number, host: string) {
     })
 }
 
-export async function stopProcess(pid: any, force: boolean = false, abortController: AbortController) {
-  var processCommand = ""
-  var forceFlag = ""
+export async function stopProcess(
+  pid: any,
+  force = false,
+  abortController: AbortController
+) {
+  let processCommand = ""
+  let forceFlag = ""
   //if windows use powershell to get process
   if (os.isWindows) {
     forceFlag = force ? "-Force" : ""
@@ -60,7 +63,7 @@ export async function stopProcess(pid: any, force: boolean = false, abortControl
   }
 
   //execute command
-  var stopped = false
+  let stopped = false
   await os.runCommandWithCallBack(
     processCommand,
     [],
@@ -69,7 +72,7 @@ export async function stopProcess(pid: any, force: boolean = false, abortControl
       if (data) {
         const stopOutput = data.trim()
         if (os.isWindows) {
-          var stopOutputJson = JSON.parse(data)
+          const stopOutputJson = JSON.parse(data)
           if (stopOutputJson["HasExited"]) {
             stopped = true
             return stopped
@@ -94,9 +97,12 @@ export async function stopProcess(pid: any, force: boolean = false, abortControl
  * @param abortController to cancel the process
  * @returns pid using a port
  */
-export async function getProcessPidForPort(port: number, abortController: AbortController) {
+export async function getProcessPidForPort(
+  port: number,
+  abortController: AbortController
+) {
   var processPid = ""
-  var processCommand = ""
+  let processCommand = ""
   //if windows use powershell to get process
   if (os.isWindows) {
     processCommand = `powershell -Command "Get-NetTCPConnection -LocalPort ${port} -State Listen -ErrorAction SilentlyContinue | Select-Object -Property OwningProcess | ConvertTo-Json" `
@@ -115,7 +121,7 @@ export async function getProcessPidForPort(port: number, abortController: AbortC
         processPid = data.trim()
         if (processPid) {
           if (os.isWindows) {
-            var dataJson = JSON.parse(data)
+            let dataJson = JSON.parse(data)
             //if dataJson is array, get first item
             if (Array.isArray(dataJson)) {
               dataJson = dataJson[0]
@@ -126,7 +132,6 @@ export async function getProcessPidForPort(port: number, abortController: AbortC
               return processPid
             }
           }
-
         }
         return processPid
       }
@@ -142,9 +147,12 @@ export async function getProcessPidForPort(port: number, abortController: AbortC
  * @param abortController to cancel the process
  * @returns process path using a port
  */
-export async function getProcessPathForPID(pid: number, abortController: AbortController) {
+export async function getProcessPathForPID(
+  pid: number,
+  abortController: AbortController
+) {
   var processPath = ""
-  var processCommand = ""
+  let processCommand = ""
   //if windows use powershell to get process
   if (os.isWindows) {
     processCommand = `powershell -Command "Get-Process -Id ${pid} | Select-Object -Property Path | ConvertTo-Json "`
@@ -162,7 +170,7 @@ export async function getProcessPathForPID(pid: number, abortController: AbortCo
     (data) => {
       if (data) {
         if (os.isWindows) {
-          var dataJson = JSON.parse(data)
+          const dataJson = JSON.parse(data)
           if (dataJson["Path"]) {
             processPath = dataJson["Path"]
             return processPath
@@ -306,75 +314,75 @@ export function csvParseRow(data: string) {
   return fields
 }
 
-  /**
-   *
-   * @param template template string
-   * @param args arguments to be replaced in template
-   * @returns interpolated string
-   */
+/**
+ *
+ * @param template template string
+ * @param args arguments to be replaced in template
+ * @returns interpolated string
+ */
 export function updateTemplateVars(
-    template: string,
-    args: { [key: string]: string }
-  ): string {
-    if (typeof args !== "object") {
-      return template
-    }
-    try {
-      return new Function(
-        "return `" + template.replace(/\$\{(.+?)\}/g, "${this.$1}") + "`;"
-      ).call(args)
-    } catch (e) {
-      // ES6 syntax not supported
-    }
-    Object.keys(args).forEach((key) => {
-      template = template.replace(
-        new RegExp("\\$\\{" + key + "\\}", "g"),
-        args[key]
-      )
-    })
+  template: string,
+  args: { [key: string]: string }
+): string {
+  if (typeof args !== "object") {
     return template
   }
-
-  /**
-   * get string timestamp
-   * @returns timestamp
-   */
-  export function timestamp(): string {
-    return new Date().toISOString()
+  try {
+    return new Function(
+      "return `" + template.replace(/\$\{(.+?)\}/g, "${this.$1}") + "`;"
+    ).call(args)
+  } catch (e) {
+    // ES6 syntax not supported
   }
+  Object.keys(args).forEach((key) => {
+    template = template.replace(
+      new RegExp("\\$\\{" + key + "\\}", "g"),
+      args[key]
+    )
+  })
+  return template
+}
 
-  /*
+/**
+ * get string timestamp
+ * @returns timestamp
+ */
+export function timestamp(): string {
+  return new Date().toISOString()
+}
+
+/*
   compile a templarte string for var
   */
-  export function varTemplate(name: string): string {
-    return "${" + name + "}"
-  }
+export function varTemplate(name: string): string {
+  return "${" + name + "}"
+}
 
-  export function getCallerName() {
-    const error = new Error();
-    if (error) {
-      if (error.stack) {
-        const stack = error.stack.split('\n');
-        // The second item in the stack array is the calling function
-        const callerStackLine = stack[2];
-        const callerNameMatch = callerStackLine.match(/at (\w+)/);
-        if (callerNameMatch) {
-            return callerNameMatch[1];
-        }
+export function getCallerName() {
+  const error = new Error()
+  if (error) {
+    if (error.stack) {
+      const stack = error.stack.split("\n")
+      // The second item in the stack array is the calling function
+      const callerStackLine = stack[2]
+      const callerNameMatch = callerStackLine.match(/at (\w+)/)
+      if (callerNameMatch) {
+        return callerNameMatch[1]
       }
     }
-    return null;
   }
+  return null
+}
 
-  export function getCallStackString() {
-    const error = new Error();
-    if (error && error.stack) {
-      const stack = error.stack.split('\n').slice(2); // Slice to remove 'Error' and the call to getCallStack itself
-      const functionNames = stack.map(line => {
-          const match = line.match(/at (\w+)/);
-          return match ? match[1] : 'anonymous';
-      });
-      return functionNames.join(' -> ');
-    }
-    return "anonymous";
+export function getCallStackString() {
+  const error = new Error()
+  if (error && error.stack) {
+    const stack = error.stack.split("\n").slice(2) // Slice to remove 'Error' and the call to getCallStack itself
+    const functionNames = stack.map((line) => {
+      const match = line.match(/at (\w+)/)
+      return match ? match[1] : "anonymous"
+    })
+    return functionNames.join(" -> ")
   }
+  return "anonymous"
+}
