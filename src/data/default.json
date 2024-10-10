@@ -528,6 +528,19 @@
             "icon": "pi pi-book"
           }
         ]
+      },
+      {
+        "label": "Stix Viz",
+        "icon": "pi pi-star",
+        "id": "jupyterlab",
+        "to": "/experience/jupyterlab",
+        "type": "experimental",
+        "service": "cms",
+        "disabled": false,
+        "url": "${TRAEFIK_CMS_URL}/content/typerefinery-showcase/pages/os-triage/forms/vizandform-local.html",
+        "urlfomatted": "",
+        "enabled": true,
+        "subMenu": []
       }
     ]
   },
