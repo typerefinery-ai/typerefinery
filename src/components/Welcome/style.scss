@@ -20,7 +20,7 @@
   }
 
   .welcome-container {
-    padding: 1rem;
+    padding: 0.5rem;
     overflow: scroll;
 
     h1 {
@@ -41,11 +41,11 @@
       flex-wrap: wrap;
 
       .experience {
-        padding: 1rem;
+        padding: 0.5rem;
         text-align: center;
 
         .p-card {
-          width: 20rem;
+          width: 15rem;
           overflow: hidden;
           padding-top: 1rem;
           min-height: 180px;
@@ -67,11 +67,11 @@
       flex-wrap: wrap;
 
       .service {
-        padding: 1rem;
+        padding: 0.5rem;
         text-align: center;
 
         .p-card {
-          width: 20rem;
+          width: 15rem;
           overflow: hidden;
           padding-top: 1rem;
           min-height: 200px;
@@ -91,11 +91,11 @@
       position: relative;
 
       .config {
-        padding: 1rem;
+        padding: 0.5rem;
         text-align: center;
 
         .p-card {
-          width: 20rem;
+          width: 15rem;
           overflow: hidden;
           padding-top: 1rem;
           min-height: 200px;
