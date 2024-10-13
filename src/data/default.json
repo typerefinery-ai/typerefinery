@@ -428,50 +428,13 @@
         "system": true,
         "type": "regular",
         "service": "null",
-        "disabled": false,
-        "subMenu": [
-          {
-            "id": "new-project",
-            "icon": "pi pi-book",
-            "to": "#",
-            "experimental": false
-          },
-          {
-            "id": "new-query",
-            "icon": "pi pi-file",
-            "to": "#",
-            "experimental": false
-          },
-          {
-            "id": "new-connection",
-            "icon": "pi pi-server",
-            "to": "#",
-            "experimental": false
-          },
-          {
-            "id": "new-theme",
-            "icon": "pi pi-server",
-            "to": "#",
-            "experimental": false
-          },
-          {
-            "id": "new-transformer",
-            "icon": "pi pi-cog",
-            "to": "#",
-            "experimental": true
-          },
-          {
-            "id": "new-algorithm",
-            "icon": "pi pi-cog",
-            "to": "#",
-            "experimental": true
-          }
-        ]
+        "disabled": false
       },
       {
         "label": "CMS",
         "id": "cms",
         "icon": "pi pi-compass",
+        "colour": "lavender",
         "experienceIcon": "pi pi-compass",
         "to": "/experience/cms",
         "type": "experimental",
@@ -479,19 +442,12 @@
         "disabled": false,
         "url": "${TRAEFIK_CMS_URL}",
         "urlfomatted": "",
-        "enabled": true,
-        "subMenu": [
-          {
-            "id": "load-data",
-            "to": "#",
-            "experimental": false,
-            "icon": "pi-compass"
-          }
-        ]
+        "enabled": true
       },
       {
         "label": "Flow",
         "icon": "pi pi-th-large",
+        "colour": "aquamarine",
         "id": "totaljs",
         "to": "/experience/totaljs",
         "type": "experimental",
@@ -499,19 +455,12 @@
         "disabled": false,
         "url": "${TRAEFIK_FLOW_URL}",
         "urlfomatted": "",
-        "enabled": true,
-        "subMenu": [
-          {
-            "id": "load-data",
-            "to": "#",
-            "experimental": false,
-            "icon": "pi pi-th-large"
-          }
-        ]
+        "enabled": true
       },
       {
         "label": "Jupyter Lab",
         "icon": "pi pi-book",
+        "colour": "antiquewhite",
         "id": "jupyterlab",
         "to": "/experience/jupyterlab",
         "type": "experimental",
@@ -519,19 +468,12 @@
         "disabled": false,
         "url": "${TRAEFIK_JUPYTERLAB_URL}",
         "urlfomatted": "",
-        "enabled": true,
-        "subMenu": [
-          {
-            "id": "load-data",
-            "to": "#",
-            "experimental": false,
-            "icon": "pi pi-book"
-          }
-        ]
+        "enabled": true
       },
       {
         "label": "Stix Viz",
         "icon": "pi pi-star",
+        "colour": "gold",
         "id": "stixviz",
         "to": "/experience/stixviz",
         "type": "experimental",
@@ -539,8 +481,7 @@
         "disabled": false,
         "url": "${TRAEFIK_CMS_URL}/content/typerefinery-showcase/pages/os-triage/forms/vizandform-local.html",
         "urlfomatted": "",
-        "enabled": true,
-        "subMenu": []
+        "enabled": true
       }
     ]
   },
