@@ -2,3 +2,4 @@ server/*
 !server/.gitkeep
 java/
 cache/
+config/
