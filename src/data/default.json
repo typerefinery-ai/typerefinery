@@ -532,8 +532,8 @@
       {
         "label": "Stix Viz",
         "icon": "pi pi-star",
-        "id": "jupyterlab",
-        "to": "/experience/jupyterlab",
+        "id": "stixviz",
+        "to": "/experience/stixviz",
         "type": "experimental",
         "service": "cms",
         "disabled": false,
