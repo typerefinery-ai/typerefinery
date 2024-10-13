@@ -22,7 +22,7 @@
             :key="experience.id"
             class="experience"
           >
-            <Card>
+            <Card :style="experience.style">
               <template #header>
                 <i :class="experience.icon"></i>
               </template>
@@ -191,7 +191,13 @@
       // get all the experiences
       async getExperiences() {
         console.log("get experiences")
-        return settingsModule.data.listOfMenu
+        var experiences = settingsModule.data.listOfMenu.map((item) => {
+          return {
+            ...item,
+            style: item.colour ? { backgroundColor: item.colour } : {},
+          }
+        })
+        return experiences
       },
       // get all the services
       async getServices() {

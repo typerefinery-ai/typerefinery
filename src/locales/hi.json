@@ -79,6 +79,7 @@
         },
         "label": "लेबल",
         "icon": "आइकन",
+        "colour": "रंग",
         "url": "यूआरएल",
         "urlformatted": "यूआरएल (फॉर्मेटेड)",
         "iframeconfig": {
