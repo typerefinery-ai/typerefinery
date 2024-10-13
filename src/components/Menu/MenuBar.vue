@@ -21,9 +21,9 @@
       <i v-if="theme === 'light'" class="pi pi-sun font-bold"></i>
       <i v-else class="pi pi-moon"></i>
     </menu-item>
-    <menu-item tooltip="toggle-focus" :on-click="toggleFocus">
+    <!-- <menu-item tooltip="toggle-focus" :on-click="toggleFocus">
       <focus-icon :size="18" />
-    </menu-item>
+    </menu-item> -->
     <menu-item tooltip="profile" :on-click="openSettings">
       <span v-if="nickname" class="mr-1">{{ nickname }}</span>
       <user-icon :size="18" />
