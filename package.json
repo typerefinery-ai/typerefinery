@@ -42,7 +42,7 @@
     "electron": "wait-on -c .waiton.json --verbose http-get://localhost:3000 && cross-env NODE_ENV=dev electron ./dist/main/index.cjs",
     "electron:pack": "electron-builder --dir",
     "electron:dev": "concurrently -k \"npm run build && npm run dev\" \"npm run services\" \"wait-on -c .waiton.json http-get://localhost:3001/services/status && npm run electron:run\"",
-    "electron:builder": "electron-builder",
+    "electron:builder": "cross-env DEBUG=electron-builder electron-builder",
     "electron:start": "npm run build && npm run electron:run",
     "electron:run": "electron ./dist/main/index.cjs",
     "electron:debug": "electron ./dist/main/index.cjs --inspect=5858",
@@ -220,7 +220,7 @@
   },
   "build": {
     "appId": "typerfinery",
-    "copyright": "Copyright © 2022 ${author}",
+    "copyright": "Copyright © 2024 ${author}",
     "asar": true,
     "mac": {
       "category": "public.app-category.utilities",
@@ -232,14 +232,16 @@
     },
     "nsis": {
       "menuCategory": false,
-      "oneClick": false,
+      "oneClick": true,
       "perMachine": false,
-      "allowToChangeInstallationDirectory": true,
+      "allowToChangeInstallationDirectory": false,
       "deleteAppDataOnUninstall": false,
       "runAfterFinish": true,
       "installerHeaderIcon": "dist/main/assets/icon.ico",
       "installerIcon": "dist/main/assets/icon.ico",
-      "uninstallerIcon": "dist/main/assets/icon.ico"
+      "uninstallerIcon": "dist/main/assets/icon.ico",
+      "license": "LICENSE.md",
+      "include": "installer.nsh"
     },
     "squirrelWindows": {
       "iconUrl": "https://github.com/typerefinery-ai/typerefinery/blob/develop/electron/static/assets/icon.ico?raw=true",
@@ -247,14 +249,16 @@
     },
     "nsisWeb": {
       "menuCategory": false,
-      "oneClick": false,
+      "oneClick": true,
       "perMachine": false,
-      "allowToChangeInstallationDirectory": true,
+      "allowToChangeInstallationDirectory": false,
       "deleteAppDataOnUninstall": false,
-      "runAfterFinish": true,
+      "runAfterFinish": false,
       "installerHeaderIcon": "dist/main/assets/icon.ico",
       "installerIcon": "dist/main/assets/icon.ico",
-      "uninstallerIcon": "dist/main/assets/icon.ico"
+      "uninstallerIcon": "dist/main/assets/icon.ico",
+      "license": "LICENSE.md",
+      "include": "installer.nsh"
     },
     "linux": {
       "target": "AppImage"
@@ -280,6 +284,9 @@
       "!services/*/linux/**/*",
       "!services/*/darwin/**/*",
       "services/*/${platform}/**/*"
+    ],
+    "extraResources": [
+      "install/**/*"
     ],
     "publish": {
       "provider": "github",
