@@ -133,13 +133,15 @@ for /f "delims=" %%o in ('jq -c "to_entries[]" "%source%"') do (
         if errorlevel 1 (
             echo Adding key "!key!" to the temp file...
             (
-                echo { "!key!":
-                type value.txt
-                echo }
-            ) > pair.json
+                echo { > pair.json
+                echo ^{TAB}"!key!": >> pair.json
+                type value.txt >> pair.json
+                echo } >> pair.json
+            )
 
             jq -s ".[0] * .[1]" "%temp%" pair.json > "%temp%.tmp" && move /Y "%temp%.tmp" "%temp%"
             del pair.json
+            echo Key "!key!" added successfully.
         ) else (
             echo Key "!key!" already exists, skipping.
             echo.
@@ -152,7 +154,7 @@ for /f "delims=" %%o in ('jq -c "to_entries[]" "%source%"') do (
 
 echo Merging updated objects into "%target%"...
 echo.
-jq -s "add" "%target%" "%temp%" > "%target%.tmp" && move /Y "%target%.tmp" "%target%"
+jq --tab -s "add" "%target%" "%temp%" > "%target%.tmp" && move /Y "%target%.tmp" "%target%"
 
 echo Cleaning up temporary files...
 echo.
@@ -160,3 +162,7 @@ del key.txt value.txt target_keys.txt "%temp%"
 
 echo All matching objects inserted successfully!
 echo.
+
+timeout 5
+
+exit /b 0
