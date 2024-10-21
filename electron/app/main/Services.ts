@@ -8,7 +8,7 @@ import { Service, ServiceStatus, type ServiceConfig } from "./Service"
 import { Logger } from "./Logger"
 import { dataPath, resourceBinary } from "./Resources"
 import path from "path"
-import config from "../../../package.json" assert { type: "json" }
+import pkg from "../../../package.json" assert { type: "json" }
 import fs from "fs"
 import process from "node:process"
 import { fileURLToPath } from "url"
@@ -24,7 +24,7 @@ const APPDATA =
   process.env.APPDATA || (process.platform === "darwin" ? "/Users" : "/home")
 
 let logsDir = isProduction
-  ? path.join(APPDATA, config.name, "logs")
+  ? path.join(APPDATA, pkg.name, "logs")
   : path.join(__dirname, "../../../logs")
 
 // create a new logs sub directory with date timestamp everytime the app starts
@@ -35,7 +35,10 @@ const dateStr = date
   .replace(/.Z/g, "")
   .replace(/T/g, "_")
 logsDir = path.join(logsDir, dateStr)
-fs.mkdirSync(logsDir, { recursive: true })
+// check if logs directory exists, if not create it
+if (!fs.existsSync(logsDir)) {
+  fs.mkdirSync(logsDir, { recursive: true })
+}
 
 const servicePort = 3001
 
@@ -47,7 +50,7 @@ logger.log("isProduction", isProduction)
 
 const servicesPath = path.join(__dirname, "../../../services")
 const servicesUserDataPath = isProduction
-  ? path.join(APPDATA, config.name, "services")
+  ? path.join(APPDATA, pkg.name, "services")
   : path.join(__dirname, "../../../services")
 logger.log("services path", servicesPath)
 logger.log("services data path", servicesUserDataPath)

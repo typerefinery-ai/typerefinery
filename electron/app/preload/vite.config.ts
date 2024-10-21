@@ -1,7 +1,7 @@
 import { join } from "path"
 import { builtinModules } from "module"
 import { defineConfig } from "vite"
-import pkg from "../../../package.json"
+import pkg from "../../../package.json" assert { type: "json" }
 
 export default defineConfig({
   root: __dirname,

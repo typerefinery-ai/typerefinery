@@ -1,4 +1,4 @@
-import pkg from "../../../package.json"
+import pkg from "../../../package.json" assert { type: "json" }
 import portfinder from "portfinder"
 import child_process, { type SpawnOptions } from "node:child_process"
 import fs from "fs"
