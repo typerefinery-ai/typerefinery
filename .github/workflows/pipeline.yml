@@ -45,7 +45,7 @@ jobs:
 
     strategy:
       matrix:
-        node: [18.20.4]
+        node: [20.9.0]
         os: [
           # macos-latest,
           # ubuntu-latest,
@@ -198,7 +198,7 @@ jobs:
       NODE_ENV: develop
     strategy:
       matrix:
-        node: [18.20.4]
+        node: [20.9.0]
         os: [
           # macos-latest,
           # ubuntu-latest,
