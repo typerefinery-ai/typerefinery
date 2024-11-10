@@ -8,7 +8,7 @@ import { Service, ServiceStatus, type ServiceConfig } from "./Service"
 import { Logger } from "./Logger"
 import { dataPath, resourceBinary } from "./Resources"
 import path from "path"
-import pkg from "../../../package.json" assert { type: "json" }
+import pkg from "../../../package.json"
 import fs from "fs"
 import process from "node:process"
 import { fileURLToPath } from "url"
