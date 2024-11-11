@@ -120,7 +120,6 @@ logger.log(
 if (!isDev) {
   // run auto update
   updateElectronApp({
-    repo: "typerefinery-ai/typerefinery",
     updateInterval: "1 hour",
   })
 }
