@@ -8,7 +8,6 @@ import { Service, ServiceStatus, type ServiceConfig } from "./Service"
 import { Logger } from "./Logger"
 import { dataPath, resourceBinary } from "./Resources"
 import path from "path"
-import pkg from "../../../package.json"
 import fs from "fs"
 import process from "node:process"
 import { fileURLToPath } from "url"
@@ -22,6 +21,11 @@ const pageAutoRefreshEverySeconds = 10
 const isProduction = process.env.NODE_ENV === "production"
 const APPDATA =
   process.env.APPDATA || (process.platform === "darwin" ? "/Users" : "/home")
+
+// load json package file from '../../../package.json'
+const pkg = JSON.parse(
+  fs.readFileSync(path.join(__dirname, "../../../package.json"), "utf8")
+)
 
 let logsDir = isProduction
   ? path.join(APPDATA, pkg.name, "logs")

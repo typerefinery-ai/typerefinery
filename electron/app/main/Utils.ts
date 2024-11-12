@@ -1,9 +1,14 @@
-import pkg from "../../../package.json"
 import portfinder from "portfinder"
 import child_process, { type SpawnOptions } from "node:child_process"
+import path from "path"
 import fs from "fs"
 import http, { type RequestOptions } from "node:http"
 import e from "express"
+
+// load json package file from '../../../package.json'
+const pkg = JSON.parse(
+  fs.readFileSync(path.join(__dirname, "../../../package.json"), "utf8")
+)
 
 export function tryParseInt(text: string, defaultValue: number): number {
   try {

@@ -1,6 +1,12 @@
 import { builtinModules } from "module"
 import { defineConfig } from "vite"
-import pkg from "../../../package.json"
+
+import path from "path"
+import fs from "fs"
+// load json package file from '../../../package.json'
+const pkg = JSON.parse(
+  fs.readFileSync(path.join(__dirname, "../../../package.json"), "utf8")
+)
 
 export default defineConfig({
   root: __dirname,
