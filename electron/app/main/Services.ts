@@ -22,10 +22,8 @@ const isProduction = process.env.NODE_ENV === "production"
 const APPDATA =
   process.env.APPDATA || (process.platform === "darwin" ? "/Users" : "/home")
 
-// load json package file from '../../../package.json'
-const pkg = JSON.parse(
-  fs.readFileSync(path.join(__dirname, "../../../package.json"), "utf8")
-)
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const pkg = require("../../../package.json")
 
 let logsDir = isProduction
   ? path.join(APPDATA, pkg.name, "logs")

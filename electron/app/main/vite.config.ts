@@ -1,12 +1,9 @@
 import { builtinModules } from "module"
 import { defineConfig } from "vite"
 
-import path from "path"
-import fs from "fs"
-// load json package file from '../../../package.json'
-const pkg = JSON.parse(
-  fs.readFileSync(path.join(__dirname, "../../../package.json"), "utf8")
-)
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const pkg = require("../../../package.json")
+
 
 export default defineConfig({
   root: __dirname,
