@@ -1,8 +1,6 @@
 import { builtinModules } from "module"
 import { defineConfig } from "vite"
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const pkg = require("../../../package.json")
+import pkg from "../../../package.json"
 
 
 export default defineConfig({

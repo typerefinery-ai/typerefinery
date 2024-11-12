@@ -12,6 +12,7 @@ import fs from "fs"
 import process from "node:process"
 import { fileURLToPath } from "url"
 import { dirname } from "path"
+import pkg from "../../../package.json"
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
@@ -21,9 +22,6 @@ const pageAutoRefreshEverySeconds = 10
 const isProduction = process.env.NODE_ENV === "production"
 const APPDATA =
   process.env.APPDATA || (process.platform === "darwin" ? "/Users" : "/home")
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const pkg = require("../../../package.json")
 
 let logsDir = isProduction
   ? path.join(APPDATA, pkg.name, "logs")

@@ -4,8 +4,7 @@ import path from "path"
 import fs from "fs"
 import http, { type RequestOptions } from "node:http"
 import e from "express"
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const pkg = require("../../../package.json")
+import pkg from "../../../package.json"
 
 export function tryParseInt(text: string, defaultValue: number): number {
   try {

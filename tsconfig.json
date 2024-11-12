@@ -16,6 +16,7 @@
     "useDefineForClassFields": true,
     "experimentalDecorators": true,
     "suppressImplicitAnyIndexErrors": true,
+    "resolveJsonModule": true,
     "importsNotUsedAsValues": "preserve",
     "importHelpers": true,
     "sourceMap": true,
