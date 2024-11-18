@@ -6,7 +6,7 @@
   "electronWindowTitle": "TypeRefinery",
   "companyName": "TypeRefinery.ai",
   "author": "TypeRefinery.ai",
-  "version": "2024.11.12",
+  "version": "2024.11.18",
   "appWidth": 1366,
   "appHeight": 768,
   "type": "module",
@@ -288,23 +288,18 @@
       "!services/*/linux/**/*",
       "!services/*/darwin/**/*",
       "services/*/${platform}/**/*",
-
       "!services/java/win32/**",
       "services/java/win32/win32.zip",
       "!services/java/darwin/**",
       "services/java/darwin/darwin.zip",
       "!services/java/linux/**",
       "services/java/linux/linux.zip",
-
       "!services/_keycloak/win32/**",
-
       "!services/_localcert/data/**",
-
       "!services/_node/win32/**",
       "services/_node/win32/node-v18.6.0-win-x64.zip",
       "!services/_node/darwin/**",
       "services/_node/darwin/node-v18.6.0-darwin-x64.tar.gz",
-
       "!services/_python/win32/**/Lib/",
       "!services/_python/win32/**/Scripts/",
       "!services/_python/win32/**/etc/",
@@ -312,19 +307,16 @@
       "!services/_python/win32/**/__packages__/",
       "!services/_python/win32/python/",
       "services/_python/win32/**/.gitkeep",
-
       "services/_traefik/config/certs/",
       "!services/_traefik/config/certs/*",
       "services/_traefik/**/.gitkeep",
       "!services/_traefik/**/bin/",
       "!services/_traefik/**/traefik",
-
       "!services/cms/server/*",
       "services/cms/server/.gitkeep",
       "!services/cms/java/",
       "!services/cms/cache/",
       "!services/cms/config/",
-
       "!services/fastapi/__user__",
       "!services/fastapi/__pycache__",
       "!services/fastapi/__packages__",
@@ -336,17 +328,14 @@
       "services/fastapi/generated/createsvg/.gitkeep",
       "!services/fastapi/logs/",
       "!services/fastapi/database.db",
-
       "services/filebeat/**/.gitkeep",
       "!services/filebeat/**/filebeat",
       "!services/filebeat/**/server",
-
       "!services/file/node_modules/",
       "!services/file/.idea",
       "!services/file/data",
       "services/file/**/.gitkeep",
       "services/file/**/README.md",
-
       "!services/jupyterlab/config/*",
       "!services/jupyterlab/data/*",
       "!services/jupyterlab/notebooks/*",
@@ -358,23 +347,18 @@
       "services/jupyterlab/**/.gitkeep",
       "!services/jupyterlab/notebook_secret",
       "!services/jupyterlab/nbsignatures.db",
-
       "!services/messageservice-client/__pycache__/",
       "!services/messageservice-client/__packages__/",
-
       "!services/mongo/database/*",
       "services/mongo/database/.gitkeep",
       "!services/mongo/**/bin/",
-
       "serices/nginx/config/logs",
       "!serices/nginx/config/logs/*.log",
       "!serices/nginx/config/temp/*_temp",
       "!serices/nginx/config/conf/nginx.conf",
-
       "serices/openobserve/**/.gitkeep",
       "!serices/openobserve**/openobserve",
       "!serices/openobserve**/server",
-
       "!services/postgredb/database/*",
       "services/postgredb/database/.gitkeep",
       "!services/postgredb/**/bin/",
@@ -384,12 +368,10 @@
       "!services/postgredb/**/share/",
       "!services/postgredb/**/symbols/",
       "!services/postgredb/config/default.password.txt",
-
       "!services/postgredb-admin/__pycache__",
       "!services/postgredb-admin/__packages__",
       "!services/postgredb-admin/data/*",
       "services/postgredb-admin/data/.gitkeep",
-
       "!services/totaljs-flow/.DS_Store",
       "!services/totaljs-flow/node_modules/",
       "!services/totaljs-flow/tmp/",
@@ -405,12 +387,10 @@
       "!services/totaljs-flow/package-lock.json",
       "!services/totaljs-flow/database/database.json",
       "!services/totaljs-flow/databases/",
-
       "!services/totaljs-messageservice/tmp/",
       "!services/totaljs-messageservice/index.js.json",
       "!services/totaljs-messageservice/index.js.overload",
       "!services/totaljs-messageservice/logs/",
-
       "!services/typedb/**/server/data/**/*",
       "!services/typedb/**/server/*",
       "!services/typedb/**/console/*",
@@ -418,15 +398,11 @@
       "!services/typedb/**/typedb",
       "!services/typedb/**/LICENSE",
       "services/typedb/**/.gitkeep",
-
       "!services/typedb-init/init.tql",
-
       "!services/typedb-sample/__pycache__/",
       "!services/typedb-sample/__packages__/",
-
       "!services/wsecho/__pycache__/",
       "!services/wsecho/__packages__/"
-
     ],
     "extraResources": [
       "install/**/*"
