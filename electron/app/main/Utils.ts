@@ -4,7 +4,7 @@ import path from "path"
 import fs from "fs"
 import http, { type RequestOptions } from "node:http"
 import e from "express"
-import pkg from "../../../package.json"
+import pkg from "../../../package.json" assert { type: "json" }
 
 export function tryParseInt(text: string, defaultValue: number): number {
   try {
