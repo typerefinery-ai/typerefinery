@@ -123,6 +123,10 @@ logger.log(`app.isPackaged: ${app.isPackaged}`)
 logger.log(`pkg.repository.url: ${pkg.repository.url}`)
 //getConfig("productName")
 logger.log(`getConfig("productName"): ${getConfig("productName")}`)
+// app.getName()
+logger.log(`app.getName(): ${app.getName()}`)
+// app.getAppPath()
+logger.log(`app.getAppPath(): ${app.getAppPath()}`)
 
 if (!isDev) {
   // run auto update
