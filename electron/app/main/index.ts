@@ -34,8 +34,9 @@ import ElectronWindowState from "electron-window-state"
 import { t } from "i18next"
 import { type AppIPC, sharedAppIpc } from "../preload/ipc"
 import { Service } from "./Service"
+import pkg from "../../../package.json" assert { type: "json" }
 
-import updateElectronApp from "update-electron-app"
+import { updateElectronApp, UpdateSourceType } from "update-electron-app"
 
 // add support for self signed certificates
 app.commandLine.appendSwitch("ignore-certificate-errors", "true")
@@ -120,7 +121,13 @@ logger.log(
 if (!isDev) {
   // run auto update
   updateElectronApp({
+    updateSource: {
+      type: UpdateSourceType.ElectronPublicUpdateService,
+      repo: pkg.repository.url,
+      host: pkg.repository.url,
+    },
     updateInterval: "1 hour",
+    logger: logger,
   })
 }
 
