@@ -34,7 +34,7 @@ import ElectronWindowState from "electron-window-state"
 import { t } from "i18next"
 import { type AppIPC, sharedAppIpc } from "../preload/ipc"
 import { Service } from "./Service"
-import pkg from "../../../package.json" assert { type: "json" }
+import pkg from "../../../package.json"
 
 import { updateElectronApp, UpdateSourceType } from "update-electron-app"
 
@@ -117,6 +117,12 @@ logger.log(
     "production"
   )}`
 )
+
+logger.log(`app.isPackaged: ${app.isPackaged}`)
+// pkg.repository.url
+logger.log(`pkg.repository.url: ${pkg.repository.url}`)
+//getConfig("productName")
+logger.log(`getConfig("productName"): ${getConfig("productName")}`)
 
 if (!isDev) {
   // run auto update
