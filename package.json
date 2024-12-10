@@ -280,6 +280,7 @@
       "output": "dist_electron"
     },
     "extraFiles": [
+      "package.json",
       "services/**/*",
       "!services/*/*.setup",
       "!services/*/*.pid",
