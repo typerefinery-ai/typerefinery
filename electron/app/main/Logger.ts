@@ -1,8 +1,9 @@
 // import { get } from "node:http"
 import * as winston from "winston"
+import { type ILogger } from "update-electron-app"
 const { combine, timestamp, label, json } = winston.format
 
-export class Logger {
+export class Logger implements ILogger {
   readonly #service: string
   readonly #logger: winston.Logger
   readonly #logsDir: string
@@ -54,6 +55,13 @@ export class Logger {
 
   debug(...args: any[]) {
     this.#logger.log("debug", JSON.stringify(args))
+    // if (this.#isDev) {
+    //   console.log(...args)
+    // }
+  }
+
+  info(...args: any[]) {
+    this.#logger.log("info", JSON.stringify(args))
     // if (this.#isDev) {
     //   console.log(...args)
     // }
