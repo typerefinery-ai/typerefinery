@@ -12,11 +12,7 @@ import fs from "fs"
 import process from "node:process"
 import { fileURLToPath } from "url"
 import { dirname } from "path"
-
-//import package.json
-import { createRequire } from "node:module"
-const require = createRequire(import.meta.url)
-const pkg = require("../../../package.json")
+import pkg from "../../../package.json"
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
