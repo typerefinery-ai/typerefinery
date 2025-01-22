@@ -62,3 +62,21 @@ function makesure(filepath: string): string {
     return filepath
   }
 }
+
+export function staticAsset(...segments: string[]): string {
+  return app.isPackaged
+    ? path.join(process.resourcesPath, "app", ...segments)
+    : path.join(process.cwd(), "public", ...segments)
+}
+
+export function getNewLogPath(name: string): string {
+  const logsDir = dataPath(name)
+  // create a new logs sub directory with date timestamp everytime the app starts
+  const date = new Date()
+  const dateStr = date
+    .toISOString()
+    .replace(/:/g, "-")
+    .replace(/.Z/g, "")
+    .replace(/T/g, "_")
+  return path.join(logsDir, dateStr)
+}
