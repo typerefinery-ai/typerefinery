@@ -362,17 +362,17 @@
       "NODE_HOME": "C:\\projects\\typerefinery-ai\\typerefinery\\services\\_node\\win32\\node-v18.6.0-win-x64",
       "NPM": "C:\\projects\\typerefinery-ai\\typerefinery\\services\\_node\\win32\\node-v18.6.0-darwin-x64\\node_modules\\npm\\bin\\npm-cli.js",
       "PYTHON": "C:\\projects\\typerefinery-ai\\typerefinery\\services\\_python\\win32\\python.exe",
-      "TRAEFIK_NGINX_URL": "https://nginx.typerefinery.localhost:8101/",
-      "TRAEFIK_FLOW_URL": "https://flow.typerefinery.localhost:8101/",
+      "TRAEFIK_NGINX_URL": "https://nginx.typerefinery.localhost:8101",
+      "TRAEFIK_FLOW_URL": "https://flow.typerefinery.localhost:8101",
       "TRAEFIK_FLOW_WSS_URL": "wss://flow.typerefinery.localhost:8101",
-      "TRAEFIK_CMS_URL": "https://cms.typerefinery.localhost:8101/",
-      "TRAEFIK_TMS_URL": "https://tms.typerefinery.localhost:8101/",
+      "TRAEFIK_CMS_URL": "https://cms.typerefinery.localhost:8101",
+      "TRAEFIK_TMS_URL": "https://tms.typerefinery.localhost:8101",
       "TRAEFIK_TMS_WSS_URL": "wss://tms.typerefinery.localhost:8101",
-      "TRAEFIK_FASTAPI_URL": "https://api.typerefinery.localhost:8101/",
-      "TRAEFIK_PGADMIN_URL": "https://pgadmin.typerefinery.localhost:8101/",
-      "TRAEFIK_FILES_URL": "https://files.typerefinery.localhost:8101/",
-      "TRAEFIK_BPMN_URL": "https://bpmn.typerefinery.localhost:8101/",
-      "TRAEFIK_TRAEFIK_URL": "https://traefik.typerefinery.localhost:8101/",
+      "TRAEFIK_FASTAPI_URL": "https://api.typerefinery.localhost:8101",
+      "TRAEFIK_PGADMIN_URL": "https://pgadmin.typerefinery.localhost:8101",
+      "TRAEFIK_FILES_URL": "https://files.typerefinery.localhost:8101",
+      "TRAEFIK_BPMN_URL": "https://bpmn.typerefinery.localhost:8101",
+      "TRAEFIK_TRAEFIK_URL": "https://traefik.typerefinery.localhost:8101",
       "TRAEFIK_HTTP_PORT": "8100",
       "TRAEFIK_HTTPS_PORT": "8101",
       "TRAEFIK_MONGO_PORT": "8108",
@@ -428,50 +428,13 @@
         "system": true,
         "type": "regular",
         "service": "null",
-        "disabled": false,
-        "subMenu": [
-          {
-            "id": "new-project",
-            "icon": "pi pi-book",
-            "to": "#",
-            "experimental": false
-          },
-          {
-            "id": "new-query",
-            "icon": "pi pi-file",
-            "to": "#",
-            "experimental": false
-          },
-          {
-            "id": "new-connection",
-            "icon": "pi pi-server",
-            "to": "#",
-            "experimental": false
-          },
-          {
-            "id": "new-theme",
-            "icon": "pi pi-server",
-            "to": "#",
-            "experimental": false
-          },
-          {
-            "id": "new-transformer",
-            "icon": "pi pi-cog",
-            "to": "#",
-            "experimental": true
-          },
-          {
-            "id": "new-algorithm",
-            "icon": "pi pi-cog",
-            "to": "#",
-            "experimental": true
-          }
-        ]
+        "disabled": false
       },
       {
         "label": "CMS",
         "id": "cms",
         "icon": "pi pi-compass",
+        "colour": "lavender",
         "experienceIcon": "pi pi-compass",
         "to": "/experience/cms",
         "type": "experimental",
@@ -479,19 +442,12 @@
         "disabled": false,
         "url": "${TRAEFIK_CMS_URL}",
         "urlfomatted": "",
-        "enabled": true,
-        "subMenu": [
-          {
-            "id": "load-data",
-            "to": "#",
-            "experimental": false,
-            "icon": "pi-compass"
-          }
-        ]
+        "enabled": true
       },
       {
         "label": "Flow",
         "icon": "pi pi-th-large",
+        "colour": "aquamarine",
         "id": "totaljs",
         "to": "/experience/totaljs",
         "type": "experimental",
@@ -499,19 +455,12 @@
         "disabled": false,
         "url": "${TRAEFIK_FLOW_URL}",
         "urlfomatted": "",
-        "enabled": true,
-        "subMenu": [
-          {
-            "id": "load-data",
-            "to": "#",
-            "experimental": false,
-            "icon": "pi pi-th-large"
-          }
-        ]
+        "enabled": true
       },
       {
         "label": "Jupyter Lab",
         "icon": "pi pi-book",
+        "colour": "antiquewhite",
         "id": "jupyterlab",
         "to": "/experience/jupyterlab",
         "type": "experimental",
@@ -519,28 +468,20 @@
         "disabled": false,
         "url": "${TRAEFIK_JUPYTERLAB_URL}",
         "urlfomatted": "",
-        "enabled": true,
-        "subMenu": [
-          {
-            "id": "load-data",
-            "to": "#",
-            "experimental": false,
-            "icon": "pi pi-book"
-          }
-        ]
+        "enabled": true
       },
       {
         "label": "Stix Viz",
         "icon": "pi pi-star",
-        "id": "jupyterlab",
-        "to": "/experience/jupyterlab",
+        "colour": "gold",
+        "id": "stixviz",
+        "to": "/experience/stixviz",
         "type": "experimental",
         "service": "cms",
         "disabled": false,
         "url": "${TRAEFIK_CMS_URL}/content/typerefinery-showcase/pages/os-triage/forms/vizandform-local.html",
         "urlfomatted": "",
-        "enabled": true,
-        "subMenu": []
+        "enabled": true
       }
     ]
   },

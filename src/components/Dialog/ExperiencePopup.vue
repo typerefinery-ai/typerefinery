@@ -51,6 +51,12 @@
         <InputText id="icon" v-model="icon" />
       </div>
       <div class="field">
+        <label for="colour">{{
+          $t(`components.setting.experience.colour`)
+        }}</label>
+        <InputText id="colour" v-model="colour" />
+      </div>
+      <div class="field">
         <label for="url">{{ $t(`components.setting.experience.url`) }}</label>
         <InputText id="url" v-model="url" @input="formatUrl" />
       </div>
@@ -285,6 +291,7 @@
       if (this.type === "UPDATE") {
         this.label = this.payload.label
         this.icon = this.payload.icon
+        this.colour = this.payload.colour
         this.url = this.payload.url
         this.service = this.payload.service
         this.iframeconfig = this.payload.iframeconfig || {
@@ -302,6 +309,7 @@
         this.addElements = true
         this.label = ""
         this.icon = ""
+        this.colour = ""
         this.url = ""
         this.service = ""
         this.iframeconfig = {
@@ -357,6 +365,7 @@
           ...this.payload,
           label: this.label,
           icon: this.icon,
+          colour: this.colour,
           url: this.url,
           service: this.service,
           iframeconfig: {
@@ -381,6 +390,7 @@
             label: this.label,
             id: id,
             icon: this.icon,
+            colour: this.colout,
             experienceIcon: this.icon,
             to: `/experience/${id}`,
             type: "experimental",

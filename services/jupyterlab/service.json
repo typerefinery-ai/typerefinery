@@ -23,7 +23,8 @@
         "; python.exe -c \"import site; print(site.getsitepackages())\"",
         "; pip.exe install --upgrade --use-pep517 --user -r ${SERVICE_PATH}\\requirements.txt",
         "; pip.exe uninstall -y terminado",
-        " lab build",
+        "; npm i",
+        "; xcopy \"${PYTHONUSERBASE}/share/jupyter/lab\" \"${JUPYTERLAB_DIR}\" /E /H /C /I",
         "; npm install -g ijavascript",
         "; ijsinstall --spec-path=full --working-dir=${JUPYTERLAB_JSWORK_PATH}",
         " kernelspec list"

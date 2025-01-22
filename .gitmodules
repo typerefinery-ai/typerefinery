@@ -1,0 +1,4 @@
+[submodule "services/fastapi/generated/os-triage/dialect_data"]
+	path = services/fastapi/generated/os-triage/dialect_data
+	url = https://github.com/os-threat/stix2-dialect-definitions.git
+	branch = main

@@ -1,0 +1,5 @@
+{
+  "f1cxea001wp51d": { "id": "f1cxea001wp51d", "name": "Object 1" },
+  "f1cxea002wp51d": { "id": "f1cxea002wp51d", "name": "Object 2" },
+  "invalidObject": { "id": "f1cxea003wp51d", "name": "Invalid Object" }
+}

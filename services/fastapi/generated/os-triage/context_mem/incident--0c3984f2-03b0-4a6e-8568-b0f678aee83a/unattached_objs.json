@@ -1,0 +1,264 @@
+[
+  {
+    "id": "software--3974613c-1980-5209-8f08-17920a04da04",
+    "type": "software",
+    "original": {
+      "type": "software",
+      "spec_version": "2.1",
+      "id": "software--3974613c-1980-5209-8f08-17920a04da04",
+      "name": "evil.exe"
+    },
+    "icon": "software",
+    "name": "Software",
+    "heading": "Software -> evil.exe",
+    "description": ""
+  },
+  {
+    "id": "file--e7c7ddeb-d693-53e7-bcd8-f40951888120",
+    "type": "file",
+    "original": {
+      "type": "file",
+      "spec_version": "2.1",
+      "id": "file--e7c7ddeb-d693-53e7-bcd8-f40951888120",
+      "hashes": {
+        "SHA-256": "fe90a7e910cb3a4739bed9180e807e93fa70c90f25a8915476f5e4bfbac681db"
+      },
+      "name": "evil.exe"
+    },
+    "icon": "file",
+    "name": "File",
+    "heading": "File -> evil.exe",
+    "description": "<br>Hashes -> <br>  - SHA-256 -> fe90a7e910cb3a4739bed9180e807e93fa70c90f25a8915476f5e4bfbac681db"
+  },
+  {
+    "id": "process--561c2e4f-edaa-4fb2-813a-48535f495b4e",
+    "type": "process",
+    "original": {
+      "type": "process",
+      "spec_version": "2.1",
+      "id": "process--561c2e4f-edaa-4fb2-813a-48535f495b4e",
+      "pid": 1221,
+      "created_time": "2023-01-20T14:11:25.55Z",
+      "command_line": "./gedit-bin --destroy-alll",
+      "image_ref": "file--e7c7ddeb-d693-53e7-bcd8-f40951888120"
+    },
+    "icon": "process",
+    "name": "Process",
+    "heading": "Process",
+    "description": "Process ID -> 1221, Command Line -> ./gedit-bin --destroy-alll"
+  },
+  {
+    "id": "user-account--47df6d33-0005-5b45-9875-e7a609b12e9b",
+    "type": "user-account",
+    "original": {
+      "type": "user-account",
+      "spec_version": "2.1",
+      "id": "user-account--47df6d33-0005-5b45-9875-e7a609b12e9b",
+      "account_login": "sthor",
+      "account_type": "unix",
+      "display_name": "silly thor"
+    },
+    "icon": "user-account",
+    "name": "User Account",
+    "heading": "User Account",
+    "description": "<br>Display Name -> silly thor<br>Account Type -> unix<br>Login String ->sthor"
+  },
+  {
+    "id": "email-addr--a7155ffe-8ea7-563a-a54c-e94e23ec50c8",
+    "type": "email-addr",
+    "original": {
+      "type": "email-addr",
+      "spec_version": "2.1",
+      "id": "email-addr--a7155ffe-8ea7-563a-a54c-e94e23ec50c8",
+      "value": "silly@mycompany.com",
+      "belongs_to_ref": "user-account--47df6d33-0005-5b45-9875-e7a609b12e9b"
+    },
+    "icon": "email-addr",
+    "name": "Email Address",
+    "heading": "Email Address",
+    "description": "<br>Value -> silly@mycompany.com"
+  },
+  {
+    "id": "user-account--74f5352e-ea3f-526c-8430-1cbb9ccd3109",
+    "type": "user-account",
+    "original": {
+      "type": "user-account",
+      "spec_version": "2.1",
+      "id": "user-account--74f5352e-ea3f-526c-8430-1cbb9ccd3109",
+      "account_login": "sguy",
+      "account_type": "unix",
+      "display_name": "strange guy"
+    },
+    "icon": "user-account",
+    "name": "User Account",
+    "heading": "User Account",
+    "description": "<br>Display Name -> strange guy<br>Account Type -> unix<br>Login String ->sguy"
+  },
+  {
+    "id": "email-addr--b8048a91-def8-5ef7-8cd3-a7b3db9278e5",
+    "type": "email-addr",
+    "original": {
+      "type": "email-addr",
+      "spec_version": "2.1",
+      "id": "email-addr--b8048a91-def8-5ef7-8cd3-a7b3db9278e5",
+      "value": "strange@mycompany.com",
+      "belongs_to_ref": "user-account--74f5352e-ea3f-526c-8430-1cbb9ccd3109"
+    },
+    "icon": "email-addr",
+    "name": "Email Address",
+    "heading": "Email Address",
+    "description": "<br>Value -> strange@mycompany.com"
+  },
+  {
+    "id": "user-account--5aaaa4e2-0974-5ab4-9069-41a16197f0ff",
+    "type": "user-account",
+    "original": {
+      "type": "user-account",
+      "spec_version": "2.1",
+      "id": "user-account--5aaaa4e2-0974-5ab4-9069-41a16197f0ff",
+      "account_login": "dguy",
+      "account_type": "unix",
+      "display_name": "dumbo guy"
+    },
+    "icon": "user-account",
+    "name": "User Account",
+    "heading": "User Account",
+    "description": "<br>Display Name -> dumbo guy<br>Account Type -> unix<br>Login String ->dguy"
+  },
+  {
+    "id": "email-addr--30d9a416-203b-55c8-b796-8eb65ab5275e",
+    "type": "email-addr",
+    "original": {
+      "type": "email-addr",
+      "spec_version": "2.1",
+      "id": "email-addr--30d9a416-203b-55c8-b796-8eb65ab5275e",
+      "value": "dumbo@mycompany.com",
+      "belongs_to_ref": "user-account--5aaaa4e2-0974-5ab4-9069-41a16197f0ff"
+    },
+    "icon": "email-addr",
+    "name": "Email Address",
+    "heading": "Email Address",
+    "description": "<br>Value -> dumbo@mycompany.com"
+  },
+  {
+    "id": "email-message--a9579bb2-e221-5df3-92bd-d452bd9b6d23",
+    "type": "email-message",
+    "original": {
+      "type": "email-message",
+      "spec_version": "2.1",
+      "id": "email-message--a9579bb2-e221-5df3-92bd-d452bd9b6d23",
+      "is_multipart": false,
+      "date": "2020-10-19T01:01:01Z",
+      "from_ref": "email-addr--b8048a91-def8-5ef7-8cd3-a7b3db9278e5",
+      "to_refs": [
+        "email-addr--a7155ffe-8ea7-563a-a54c-e94e23ec50c8"
+      ],
+      "subject": "we are coming for you"
+    },
+    "icon": "email-message",
+    "name": "Email Message",
+    "heading": "Email Message",
+    "description": "<br>Subject -> we are coming for you, Date -> 2020-10-19T01:01:01Z"
+  },
+  {
+    "id": "observed-data--58b23029-49bc-474a-9e66-f0d30dd5f6cc",
+    "type": "observed-data",
+    "original": {
+      "type": "observed-data",
+      "spec_version": "2.1",
+      "id": "observed-data--58b23029-49bc-474a-9e66-f0d30dd5f6cc",
+      "created": "2024-09-10T07:12:18.732958Z",
+      "modified": "2024-09-10T07:12:18.732958Z",
+      "first_observed": "2020-10-19T01:01:01Z",
+      "last_observed": "2020-10-19T01:01:01Z",
+      "number_observed": 1,
+      "object_refs": [
+        "email-addr--a7155ffe-8ea7-563a-a54c-e94e23ec50c8",
+        "user-account--47df6d33-0005-5b45-9875-e7a609b12e9b",
+        "url--3279c7de-8f91-5c1a-99d9-d6546c6c41f7",
+        "relationship--45423e23-b53e-4c31-9c0d-aefd2663d16c",
+        "email-message--a9579bb2-e221-5df3-92bd-d452bd9b6d23",
+        "email-addr--b8048a91-def8-5ef7-8cd3-a7b3db9278e5",
+        "user-account--74f5352e-ea3f-526c-8430-1cbb9ccd3109",
+        "email-addr--30d9a416-203b-55c8-b796-8eb65ab5275e",
+        "user-account--5aaaa4e2-0974-5ab4-9069-41a16197f0ff",
+        "relationship--0371e7c0-b837-4464-b571-056b6b1e0ae7",
+        "relationship--e99b913a-d853-41e4-9bb5-89ead940f534"
+      ]
+    },
+    "icon": "observed-data",
+    "name": "Observed Data",
+    "heading": "Observed Data",
+    "description": "<br>First Observed -> 2020-10-19T01:01:01Z, Last Observed -> 2020-10-19T01:01:01Z"
+  },
+  {
+    "id": "identity--7eed84d7-28db-425a-8808-7935e7560ca9",
+    "type": "identity",
+    "original": {
+      "type": "identity",
+      "spec_version": "2.1",
+      "id": "identity--7eed84d7-28db-425a-8808-7935e7560ca9",
+      "created": "2024-09-10T07:12:18.745951Z",
+      "modified": "2024-09-10T07:12:18.745951Z",
+      "name": "Microsoft Exchange",
+      "description": "Microsoft Exchange Server",
+      "identity_class": "system"
+    },
+    "icon": "identity-system",
+    "name": "Software System",
+    "heading": "Software System - Microsoft Exchange",
+    "description": "<br>Microsoft Exchange Server<br><br>"
+  },
+  {
+    "id": "indicator--fea6918c-6fd8-4f33-ac2c-9a68c61e568f",
+    "type": "indicator",
+    "original": {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--fea6918c-6fd8-4f33-ac2c-9a68c61e568f",
+      "created": "2024-09-10T07:12:18.75496Z",
+      "modified": "2024-09-10T07:12:18.75496Z",
+      "name": "Suspicious Email",
+      "indicator_types": [
+        "unknown"
+      ],
+      "pattern": "[email-addr:value = 'silly@mycompany.com' AND email:subject = 'we are coming for you']",
+      "pattern_type": "stix",
+      "pattern_version": "2.1",
+      "valid_from": "2024-09-10T07:12:18.75496Z"
+    },
+    "icon": "indicator",
+    "name": "Indicator",
+    "heading": "Indicator - Suspicious Email",
+    "description": "<br>Pattern Type -> stixIndicator Types -> ['unknown']<br>Pattern -> [email-addr:value = 'silly@mycompany.com' AND email:subject = 'we are coming for you']"
+  },
+  {
+    "id": "sighting--95e54efd-3b3a-4ed2-9645-9ef11b550444",
+    "type": "sighting",
+    "original": {
+      "type": "sighting",
+      "spec_version": "2.1",
+      "id": "sighting--95e54efd-3b3a-4ed2-9645-9ef11b550444",
+      "created": "2024-09-10T07:12:18.771654Z",
+      "modified": "2024-09-10T07:12:18.771654Z",
+      "sighting_of_ref": "indicator--fea6918c-6fd8-4f33-ac2c-9a68c61e568f",
+      "observed_data_refs": [
+        "observed-data--58b23029-49bc-474a-9e66-f0d30dd5f6cc"
+      ],
+      "extensions": {
+        "extension-definition--0d76d6d9-16ca-43fd-bd41-4f800ba8fc43": {
+          "extension_type": "property-extension"
+        },
+        "sighting-context": {
+          "name": "Exchange",
+          "description": "query from:silly@mycompany.com, subject:we are coming for you",
+          "value": "[silly@mycompany.com, strange@mycompany.com, dumbo@mycompany.com]"
+        }
+      }
+    },
+    "icon": "sighting-context",
+    "name": "Sighting-Context",
+    "heading": "Sighting-Context",
+    "description": "Sighting of indicator<br>"
+  }
+]

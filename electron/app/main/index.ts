@@ -34,8 +34,9 @@ import ElectronWindowState from "electron-window-state"
 import { t } from "i18next"
 import { type AppIPC, sharedAppIpc } from "../preload/ipc"
 import { Service } from "./Service"
+import pkg from "../../../package.json"
 
-import updateElectronApp from "update-electron-app"
+import { updateElectronApp, UpdateSourceType } from "update-electron-app"
 
 // add support for self signed certificates
 app.commandLine.appendSwitch("ignore-certificate-errors", "true")
@@ -117,11 +118,26 @@ logger.log(
   )}`
 )
 
+logger.log(`app.isPackaged: ${app.isPackaged}`)
+// pkg.repository.url
+logger.log(`pkg.repository.url: ${pkg.repository.url}`)
+//getConfig("productName")
+logger.log(`getConfig("productName"): ${getConfig("productName")}`)
+// app.getName()
+logger.log(`app.getName(): ${app.getName()}`)
+// app.getAppPath()
+logger.log(`app.getAppPath(): ${app.getAppPath()}`)
+
 if (!isDev) {
   // run auto update
   updateElectronApp({
-    repo: "typerefinery-ai/typerefinery",
+    updateSource: {
+      type: UpdateSourceType.ElectronPublicUpdateService,
+      repo: pkg.repository.url,
+      host: pkg.repository.url,
+    },
     updateInterval: "1 hour",
+    logger: logger,
   })
 }
 

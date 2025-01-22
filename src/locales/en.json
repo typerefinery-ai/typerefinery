@@ -78,6 +78,7 @@
         },
         "label": "Label",
         "icon": "Icon",
+        "colour": "Colour",
         "url": "Url",
         "urlformatted": "Url Fromatted",
         "iframeconfig": {

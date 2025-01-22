@@ -11,7 +11,7 @@
     "serviceorder": 2,
     "serviceport": 8116,
     "serviceportsecondary": 8117,
-    "datapath": "/keycloak",
+    "datapath": "keycloak",
     "execservice": { "id": "java" },
     "execshell": false,
     "execcwd": "${SERVICE_HOME}",
@@ -77,7 +77,7 @@
     },
     "setup": {
       "default": [
-        "; keytool -genkeypair -storepass ${SERVICE_AUTH_PASSWORD} -storetype PKCS12 -keyalg RSA -keysize 2048 -dname \"CN=server\" -alias server -ext \"SAN:c=DNS:localhost,DNS:typerefinery.localhost,IP:127.0.0.1\" -keystore \"${SERVICE_DATA_PATH}\\conf\\server.keystore\" ",
+        "; keytool.exe -genkeypair -storepass ${SERVICE_AUTH_PASSWORD} -storetype PKCS12 -keyalg RSA -keysize 2048 -dname \"CN=server\" -alias server -ext \"SAN:c=DNS:localhost,DNS:typerefinery.localhost,IP:127.0.0.1\" -keystore \"${SERVICE_DATA_PATH}\\conf\\server.keystore\" ",
         "; psql -a -l -h ${POSTGRE_HOST} -p ${POSTGRE_PORT} -U ${POSTGRE_AUTH_USERNAME}",
         "; createdb -e -h ${POSTGRE_HOST} -p ${POSTGRE_PORT} -U ${POSTGRE_AUTH_USERNAME}",
         "; psql -a -l -h ${POSTGRE_HOST} -p ${POSTGRE_PORT} -U ${POSTGRE_AUTH_USERNAME}",
@@ -91,7 +91,15 @@
       "retries": 180
     },
     "setuparchive": {
-      "default": {
+      "win32": {
+        "name": "keycloak.7z.001",
+        "output": "keycloak"
+      },
+      "darwin": {
+        "name": "keycloak.7z.001",
+        "output": "keycloak"
+      },
+      "linux": {
         "name": "keycloak.7z.001",
         "output": "keycloak"
       }
