@@ -231,6 +231,7 @@ http:
       entrypoints:
         - web
       middlewares:
+        - error-pages
         - serviceheaders
         - error-pages
     jupyterlab-https:
@@ -241,6 +242,7 @@ http:
         - websecure
       tls: true
       middlewares:
+        - error-pages
         - serviceheaders
         - error-pages
 
