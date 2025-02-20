@@ -119,40 +119,43 @@ def setup_relationship(obj):
     relation_edges = []
     # setup edges to connect without SRO object
     relation_replacement_edge = {}
-    relation_replacement_edge["stix-id"] = obj["id"]
+    relation_replacement_edge["stix-id"] = obj_orig["id"]
     relation_replacement_edge["type"] = "relationship"
-    relation_replacement_edge["name"] = obj["relationship_type"]
-    relation_replacement_edge["source"] = obj["source_ref"]
-    relation_replacement_edge["target"] = obj["target_ref"]
-    relation_replacement_edge["id"] = obj["source_ref"] + '-' + obj["target_ref"]
+    relation_replacement_edge["name"] = obj_orig["relationship_type"]
+    relation_replacement_edge["source"] = obj_orig["source_ref"]
+    relation_replacement_edge["target"] = obj_orig["target_ref"]
+    relation_replacement_edge["id"] = obj_orig["source_ref"] + '-' + obj_orig["target_ref"]
     relation_replacement_edges.append(relation_replacement_edge)
     # setup source to SRO
     relation_edge = {}
-    relation_edge["stix-id"] = obj["id"]
+    relation_edge["stix-id"] = obj_orig["id"]
     relation_edge["type"] = "relationship"
-    relation_edge["name"] = obj["relationship_type"]
-    relation_edge["source"] = obj["source_ref"]
-    relation_edge["target"] = obj["id"]
-    relation_edge["id"] = obj["source_ref"] + '-' + obj["id"]
+    relation_edge["name"] = obj_orig["relationship_type"]
+    relation_edge["source"] = obj_orig["source_ref"]
+    relation_edge["target"] = obj_orig["id"]
+    relation_edge["id"] = obj_orig["source_ref"] + '-' + obj_orig["id"]
     relation_edges.append(relation_edge)
     # setup SRO to target
     relation_edge = {}
-    relation_edge["stix-id"] = obj["id"]
+    relation_edge["stix-id"] = obj_orig["id"]
     relation_edge["type"] = "relationship"
-    relation_edge["name"] = obj["relationship_type"]
-    relation_edge["source"] = obj["id"]
-    relation_edge["target"] = obj["target_ref"]
-    relation_edge["id"] = obj["id"] + '-' + obj["target_ref"]
+    relation_edge["name"] = obj_orig["relationship_type"]
+    relation_edge["source"] = obj_orig["id"]
+    relation_edge["target"] = obj_orig["target_ref"]
+    relation_edge["id"] = obj_orig["id"] + '-' + obj_orig["target_ref"]
     relation_edges.append(relation_edge)
     # sort out node
     node = {}
-    node["id"] = obj["id"]
-    node["original"] = copy.deepcopy(obj)
-    node["name"] = obj["relationship_type"].title()
-    node['heading'] = obj["relationship_type"].title() + ' - SRO'
+    node["id"] = obj_orig["id"]
+    node["original"] = copy.deepcopy(obj_orig)
+    node["name"] = obj_orig["relationship_type"].title()
+    node['heading'] = obj_orig["relationship_type"].title() + ' - SRO'
     node['description'] = '<br>' + source_role.title() + ' -> ' + source_type.title() + '<br>' + target_role.title() + ' -> ' + target_type.title()
     node["type"] = "relationship"
     node["icon"] = "relationship"
+    node["object_form"] = "relationship"
+    node["object_group"] = "sro-forms"
+    node["object_family"] = "stix-forms"
     nodes.append((node))
     return nodes, relation_edges, relation_replacement_edges
 
@@ -210,6 +213,9 @@ def setup_sighting(obj, nodes, edges):
     node["name"] = sighting_type.title()
     node['heading'] = sighting_type.title()
     node['description'] = description
+    node["object_form"] = "sighting"
+    node["object_group"] = "sro-forms"
+    node["object_family"] = "stix-forms"
     nodes.append(node)
     return nodes, edges
 
@@ -307,8 +313,12 @@ def sdo_icon(stix_object, node):
     heading = name + " - SDO"
     icon_type = ""
     description = ""
+    object_form = ""
+    object_group = "sdo-forms"
+    object_family = ""
     attack_object = False if not stix_object.get("x_mitre_version", False) else True
     if attack_object:
+        object_family = "attack-forms"
         attack_type = ""
         sub_technique = False if not stix_object.get("x_mitre_is_subtechnique", False) else True
         if sdo_type[:7] == "x-mitre":
@@ -317,50 +327,60 @@ def sdo_icon(stix_object, node):
             heading = "ATT&CK Matrix - " + name
             if sdo_type == "x-mitre-matrix":
                 aname = stix_object.get("name", "")
+                object_form = "matrix"
                 aversion = stix_object.get("x_mitre_version", "")
                 heading = "ATT&CK Matrix - " + aname + " - v" + aversion
                 description = '<br>' + stix_object.get("description", "")
             elif sdo_type == "x-mitre-tactic":
                 aname = stix_object.get("name", "")
+                object_form = "tactic"
                 T_id = stix_object.get("external_references", [{}])[0].get("external_id", "")
                 heading = "ATT&CK Tactic - " + aname + " - " + T_id
                 description = '<br>' + stix_object.get("description", "")
             elif sdo_type == "x-mitre-collection":
                 aname = stix_object.get("name", "")
+                object_form = "collection"
                 aversion = stix_object.get("x_mitre_version", "")
                 heading = "ATT&CK Collection - " + aname + " - v" + aversion
                 description = '<br>' + stix_object.get("description", "")
             elif sdo_type == "x-mitre-data-source":
                 aname = stix_object.get("name", "")
+                object_form = "data-source"
                 T_id = stix_object.get("external_references", [{}])[0].get("external_id", "")
                 heading = "ATT&CK Data Source - " + aname + " - " + T_id
                 description = '<br>' + stix_object.get("description", "")
             elif sdo_type == "x-mitre-data-component":
                 aname = stix_object.get("name", "")
+                object_form = "data-component"
                 heading = "ATT&CK Data Source - " + aname
                 description = '<br>' + stix_object.get("description", "")
             elif sdo_type == "x-mitre-asset":
                 description = '<br>' + "ATT&CK Asset"
+                object_form = ""
         elif sdo_type == "attack-pattern":
             T_id = stix_object.get("external_references", [{}])[0].get("external_id", "")
             description = '<br>' + stix_object.get("description", "")
             name = "Technique"
             attack_type = "technique"
             heading = name + ' - ' + T_id + " - ATT&CK"
+            object_form = "technique"
             if sub_technique:
                 attack_type = "subtechnique"
                 name = "Sub-Technique"
                 heading = name + ' - ' + T_id + " - ATT&CK"
+                object_form = "sub-technique"
         elif sdo_type == "course-of-action":
             M_id = stix_object.get("external_references", [{}])[0].get("external_id", "")
             description = '<br>' + stix_object.get("description", "")
             attack_type = "mitigation"
+            object_form = "mitigation"
             name = "Mitigation"
             heading = name + ' - ' + M_id + " - ATT&CK"
         elif sdo_type == "intrusion-set":
             G_id = stix_object.get("external_references", [{}])[0].get("external_id", "")
             G_name = stix_object.get("external_references", [{}])[1].get("source_name", "")
             description = '<br>' + stix_object.get("description", "")
+            object_form = "attack-group"
             attack_type = "group"
             name = "Group"
             heading = name + ' - ' + G_id + ' - ' + G_name + " - ATT&CK"
@@ -369,10 +389,15 @@ def sdo_icon(stix_object, node):
             aname = stix_object.get("name", "")
             description = '<br>' + stix_object.get("description", "")
             attack_type = "software"
+            if sdo_type == "malware":
+                object_form = "software-malware"
+            else:
+                object_form = "software-tool"
             name = "Software"
             heading = "ATT&CK Software - " + aname + " - " + S_id
         elif sdo_type == "campaign":
             attack_type = "campaign"
+            object_form = "attack-campaign"
             aname = stix_object.get("name", "")
             description = '<br>' + stix_object.get("description", "")
             name = "Campaign"
@@ -380,6 +405,7 @@ def sdo_icon(stix_object, node):
         else:
             attack_type = "unknown"
             name = "Unknown"
+            object_form = "default"
             heading = name + " - ATT&CK"
 
         if "attack-" in attack_type:
@@ -389,9 +415,11 @@ def sdo_icon(stix_object, node):
         icon_type = attack_type
 
     else:
+        object_family = "stix-forms"
         if sdo_type == "attack-pattern":
             icon_type = sdo_type
             aname = stix_object.get("name", "")
+            object_form = ""
             a_description = stix_object.get("description", "")
             al_list = stix_object.get("aliases", [])
             kill_list = stix_object.get("kill_chain_phases", [])
@@ -412,6 +440,7 @@ def sdo_icon(stix_object, node):
             al_list = stix_object.get("aliases", [])
             objective  = stix_object.get("objective", "")
             name = "Campaign"
+            object_form = "campaign"
             heading = name + " - " + aname
             if a_description:
                 description = "<br>" + a_description
@@ -424,12 +453,14 @@ def sdo_icon(stix_object, node):
             aname = stix_object.get("name", "")
             a_description = stix_object.get("description", "")
             name = "Course of Action"
+            object_form = "course-of-action"
             heading = name + " - " + aname
             if a_description:
                 description = "<br>" + a_description
         elif sdo_type == "grouping":
             icon_type = sdo_type
             aname = stix_object.get("name", "")
+            object_form = "grouping"
             a_description = stix_object.get("description", "")
             context  = stix_object.get("context", "")
             name = "Grouping"
@@ -440,6 +471,7 @@ def sdo_icon(stix_object, node):
             if context:
                 description += "<br>OS_Triage -> " + str(context)
         elif sdo_type == "identity":
+            object_form = "identity"
             if "extensions" in stix_object:
                 icon_type = "identity-contact"
                 aname = stix_object.get("name", "")
@@ -535,6 +567,7 @@ def sdo_icon(stix_object, node):
                         heading = name + " - " + aname
         elif sdo_type == "incident":
             icon_type = "incident"
+            object_form = "incident"
             aname = str.title(stix_object.get("name", ""))
             a_description = stix_object.get("description", "")
             name = "Std Incident"
@@ -568,6 +601,7 @@ def sdo_icon(stix_object, node):
             pattern_type  = stix_object.get("pattern_type", "")
             types = stix_object.get("indicator_types", [])
             name = "Indicator"
+            object_form = "indicator"
             heading = name
             if aname:
                 heading += " - " + aname
@@ -582,6 +616,7 @@ def sdo_icon(stix_object, node):
         elif sdo_type == "infrastructure":
             icon_type = sdo_type
             aname = stix_object.get("name", "")
+            object_form = "infrastructure"
             a_description = stix_object.get("description", "")
             types = stix_object.get("infrastructure_types", "")
             kill_list = stix_object.get("kill_chain_phases", [])
@@ -599,6 +634,7 @@ def sdo_icon(stix_object, node):
         elif sdo_type == "intrusion-set":
             icon_type = sdo_type
             aname = stix_object.get("name", "")
+            object_form = "intrusion-set"
             a_description = stix_object.get("description", "")
             resource_level  = stix_object.get("resource_level", "")
             goals = stix_object.get("goals", [])
@@ -621,6 +657,7 @@ def sdo_icon(stix_object, node):
         elif sdo_type == "location":
             icon_type = sdo_type
             aname = stix_object.get("name", "")
+            object_form = "location"
             a_description = stix_object.get("description", "")
             region = stix_object.get("region", "")
             country = stix_object.get("country", "")
@@ -649,6 +686,7 @@ def sdo_icon(stix_object, node):
         elif sdo_type == "malware":
             icon_type = "malware"
             aname = stix_object.get("name", "")
+            object_form = "malware"
             type_list = stix_object.get("malware_types", [])
             sample_list = stix_object.get("sample_refs", [])
             if type_list:
@@ -670,6 +708,7 @@ def sdo_icon(stix_object, node):
                 heading = name + " - " + aname
         elif sdo_type == "malware-analysis":
             icon_type = sdo_type
+            object_form = "malware-analysis"
             modules  = stix_object.get("modules ", [])
             analysis_engine_version = stix_object.get("analysis_engine_version", "")
             analysis_definition_version = stix_object.get("analysis_definition_version", "")
@@ -702,6 +741,7 @@ def sdo_icon(stix_object, node):
                     description += ", Definition Version -> " + analysis_definition_version
         elif sdo_type == "note":
             icon_type = sdo_type
+            object_form = "note"
             abstract = stix_object.get("abstract", "")
             content = stix_object.get("content", "")
             object_refs = stix_object.get("object_refs", [])
@@ -720,6 +760,7 @@ def sdo_icon(stix_object, node):
                 description += "<br>Applies to -> " + str(obj_list)
         elif sdo_type == "observed-data":
             icon_type = sdo_type
+            object_form = "observed-data"
             first_observed = stix_object.get("first_observed", None)
             last_observed = stix_object.get("last_observed", None)
             number_observed   = stix_object.get("number_observed ", None)
@@ -743,6 +784,7 @@ def sdo_icon(stix_object, node):
                 description += ", Last Observed -> " + last_observed
         elif sdo_type == "opinion":
             icon_type = sdo_type
+            object_form = "opinion"
             opinion = stix_object.get("opinion", "")
             authors  = stix_object.get("authors", [])
             explanation = stix_object.get("explanation", "")
@@ -761,6 +803,7 @@ def sdo_icon(stix_object, node):
                 description += "<br>Reported by -> " + str(authors)
         elif sdo_type == "report":
             icon_type = sdo_type
+            object_form = "report"
             aname = stix_object.get("name", "")
             a_description = stix_object.get("description", "")
             published = stix_object.get("published", None)
@@ -781,6 +824,7 @@ def sdo_icon(stix_object, node):
                 description += "<br>Published on -> " + published
         elif sdo_type == "threat-actor":
             icon_type = sdo_type
+            object_form = "threat-actor"
             aname = stix_object.get("name", "")
             a_description = stix_object.get("description", "")
             sophistication = stix_object.get("sophistication", "")
@@ -804,6 +848,7 @@ def sdo_icon(stix_object, node):
         elif sdo_type == "tool":
             icon_type = sdo_type
             aname = stix_object.get("name", "")
+            object_form = "tool"
             a_description = stix_object.get("description", "")
             kill_list = stix_object.get("kill_chain_phases", [])
             tool_version = stix_object.get("tool_version", "")
@@ -822,6 +867,7 @@ def sdo_icon(stix_object, node):
         elif sdo_type == "vulnerability":
             icon_type = sdo_type
             aname = stix_object.get("name", "")
+            object_form = "vulnerability"
             a_description = stix_object.get("description", "")
             external_references = stix_object.get("external_references", [])
             name = "Vulnerability"
@@ -834,6 +880,8 @@ def sdo_icon(stix_object, node):
                 description += "<br>" + str.title(external_references[0]['kill_chain_name'].replace("_", " "))
         elif sdo_type == "event":
             icon_type = sdo_type
+            object_form = "event"
+            object_family = "extension-forms"
             aname = stix_object.get("name", "")
             a_description = stix_object.get("description", "")
             goal = stix_object.get("goal", "")
@@ -848,6 +896,8 @@ def sdo_icon(stix_object, node):
             if goal:
                 description += "<br>Goal -> " + goal
         elif sdo_type == "impact":
+            object_form = "impact"
+            object_family = "extension-forms"
             if "extensions" in stix_object:
                 for key, value in stix_object["extensions"].items():
                     if key == "extension-definition--7cc33dd6-f6a1-489b-98ea-522d351d71b9":
@@ -974,7 +1024,11 @@ def sdo_icon(stix_object, node):
                 name = icon_type
                 heading = name
                 description = heading
+                object_form = "impact"
+                object_family = "extension-forms"
         elif sdo_type == "sequence":
+            object_form = "sequence"
+            object_family = "extension-forms"
             if stix_object["step_type"] == "start_step" or stix_object["step_type"] == "end_step":
                 icon_type = "step-terminal"
                 seq_type = stix_object.get("sequence_type", "")
@@ -1003,6 +1057,8 @@ def sdo_icon(stix_object, node):
                 heading = name + ' for ' + str.title(seq_type)
         elif sdo_type == "task":
             icon_type = sdo_type
+            object_form = "task"
+            object_family = "extension-forms"
             aname = stix_object.get("name", "")
             outcome = stix_object.get("outcome", "")
             impacted_entity_counts = stix_object.get("impacted_entity_counts", [])
@@ -1036,6 +1092,9 @@ def sdo_icon(stix_object, node):
     node["name"] = name
     node["heading"] = heading
     node["description"] = description
+    node["object_form"] = object_form
+    node["object_group"] = object_group
+    node["object_family"] = object_family
     return node
 
 
@@ -1045,12 +1104,17 @@ def sco_icon(stix_object, node):
     heading = ""
     icon_type = ""
     description = ""
+    object_form = ""
+    object_group = "sco-forms"
+    object_family = "stix-forms"
     if sco_type == "anecdote":
         icon_type = sco_type
         value = stix_object.get("value", "")
         report_date = stix_object.get("report_date", None)
         name = "Anecdote"
         heading = name
+        object_form = "anecdote"
+        object_family = "extension-forms"
         if report_date:
             heading += " -> " + str(report_date)
         description += "/Statement -> " + value
@@ -1062,6 +1126,7 @@ def sco_icon(stix_object, node):
         encryption_algorithm = stix_object.get("encryption_algorithm", "")
         decryption_key = stix_object.get("priority", None)
         name = "Artifact"
+        object_form = "artifact"
         heading = name
         if mime_type:
             heading += " -> " + mime_type
@@ -1077,6 +1142,7 @@ def sco_icon(stix_object, node):
                 description += "<br>  - " + k + " -> " + str(v)
     elif sco_type == "autonomous-system":
         icon_type = sco_type
+        object_form = "autonomous-system"
         aname = stix_object.get("name", "")
         number = stix_object.get("number", None)
         rir = stix_object.get("rir", "")
@@ -1088,6 +1154,7 @@ def sco_icon(stix_object, node):
         if rir:
             description += "<br>Regional Internet Registry (RIR) -> " + rir
     elif sco_type == "directory":
+        object_form = "directory"
         icon_type = sco_type
         path = stix_object.get("path", "")
         path_enc = stix_object.get("path_enc", "")
@@ -1107,6 +1174,7 @@ def sco_icon(stix_object, node):
             description += "<br>Accessed" + atime
     elif sco_type == "domain-name":
         icon_type = "domain"
+        object_form = "domain-name"
         value = stix_object.get("value", "")
         resolves_to_refs = stix_object.get("resolves_to_refs", [])
         name = "Domain Name"
@@ -1115,6 +1183,7 @@ def sco_icon(stix_object, node):
             heading += " -> " + value
     elif sco_type == "email-addr":
         icon_type = sco_type
+        object_form = "email-addr"
         value = stix_object.get("value", "")
         display_name = stix_object.get("display_name", "")
         name = "Email Address"
@@ -1124,6 +1193,7 @@ def sco_icon(stix_object, node):
         description += "<br>Value -> " + value
     elif sco_type == "email-message":
         icon_type = "email-message"
+        object_form = icon_type
         content_type = stix_object.get("content_type", "")
         received_lines = stix_object.get("received_lines", [])
         body = stix_object.get("body", "")
@@ -1161,6 +1231,7 @@ def sco_icon(stix_object, node):
                     description += "<br> - " + str(v)
     elif sco_type == "file":
         icon_type = "file"
+        object_form = "file"
         aname = stix_object.get("name", "")
         hashes = stix_object.get("hashes", {})
         name_enc = stix_object.get("name_enc", "")
@@ -1244,30 +1315,35 @@ def sco_icon(stix_object, node):
                     description += "<br>Number of Streams -> " + len(alt_list)
     elif sco_type == "ipv4-addr":
         icon_type = sco_type
+        object_form = sco_type
         value = stix_object.get("value", "")
         name = "IPv4 Address"
         heading = name
         description += "<br>Value -> " + value
     elif sco_type == "ipv6-addr":
         icon_type = sco_type
+        object_form = sco_type
         value = stix_object.get("value", "")
         name = "IPv6 Address"
         heading = name
         description += "<br>Value -> " + value
     elif sco_type == "mac-addr":
         icon_type = sco_type
+        object_form = sco_type
         value = stix_object.get("value", "")
         name = "MAC Address"
         heading = name
         description += "<br>Value -> " + value
     elif sco_type == "mutex":
         icon_type = sco_type
+        object_form = sco_type
         aname = stix_object.get("name", "")
         name = "Mutex"
         heading = name
         description += "<br>Name -> " + aname
     elif sco_type == "network-traffic":
         icon_type = "network-traffic"
+        object_form = sco_type
         protocols = stix_object.get("protocols", [])
         ipfix = stix_object.get("ipfix", {})
         name = "Network Traffic"
@@ -1311,6 +1387,7 @@ def sco_icon(stix_object, node):
 
     elif sco_type == "process":
         icon_type = sco_type
+        object_form = sco_type
         pid = stix_object.get("pid", "")
         cwd = stix_object.get("cwd", "")
         command_line = stix_object.get("command_line", "")
@@ -1364,6 +1441,7 @@ def sco_icon(stix_object, node):
                     description += "<br>Service Status -> " + start_type
     elif sco_type == "software":
         icon_type = sco_type
+        object_form = sco_type
         aname = stix_object.get("name", "")
         cpe = stix_object.get("cpe", "")
         swid = stix_object.get("swid", "")
@@ -1383,12 +1461,14 @@ def sco_icon(stix_object, node):
             description += ", Version" + version
     elif sco_type == "url":
         icon_type = sco_type
+        object_form = sco_type
         value = stix_object.get("value", "")
         name = "URL"
         heading = name
         description += "<br>Value -> " + value
     elif sco_type == "user-account":
         icon_type = sco_type
+        object_form = sco_type
         user_id = stix_object.get("user_id", "")
         credential = stix_object.get("credential", "")
         account_login = stix_object.get("account_login", "")
@@ -1413,6 +1493,7 @@ def sco_icon(stix_object, node):
                 heading = name
     elif sco_type == "windows-registry-key":
         key = stix_object.get("key", "")
+        object_form = sco_type
         values = stix_object.get("values", [])
         name = "Windows Registry Key"
         heading = name
@@ -1432,6 +1513,7 @@ def sco_icon(stix_object, node):
                 if data:
                     description += ", Registry Data -> " + data
     elif sco_type == "x509-certificate":
+        object_form = sco_type
         issuer = stix_object.get("issuer", "")
         subject = stix_object.get("subject", "")
         name = "X.509 Certificate"
@@ -1446,6 +1528,9 @@ def sco_icon(stix_object, node):
     node["name"] = name
     node["heading"] = heading
     node["description"] = description
+    node["object_form"] = object_form
+    node["object_group"] = object_group
+    node["object_family"] = object_family
     return node
 
 
@@ -1454,6 +1539,9 @@ def meta_icon(stix_object, node):
     name = "Marking"
     heading = "Marking"
     icon_type = "marking"
+    object_form = "marking"
+    object_group = "meta-forms"
+    object_family = "stix-forms"
     description = ""
     type = stix_object.get("definition_type", "")
     if type == "tlp":
@@ -1469,5 +1557,8 @@ def meta_icon(stix_object, node):
     node["name"] = name
     node["heading"] = heading
     node["description"] = description
+    node["object_form"] = object_form
+    node["object_group"] = object_group
+    node["object_family"] = object_family
     return node
 
