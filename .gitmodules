@@ -2,3 +2,9 @@
 	path = services/fastapi/generated/os-triage/dialect_data
 	url = https://github.com/os-threat/stix2-dialect-definitions.git
 	branch = main
+[submodule "services/fastapi/generated/os-triage/common_files"]
+	path = services/fastapi/generated/os-triage/common_files
+	url = https://github.com/os-threat/stix2-common.git
+[submodule "services/fastapi/generated/os-triage/context_mem"]
+	path = services/fastapi/generated/os-triage/context_mem
+	url = https://github.com/os-threat/stix2-demo-context.git
