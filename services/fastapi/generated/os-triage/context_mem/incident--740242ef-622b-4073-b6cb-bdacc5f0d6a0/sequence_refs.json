@@ -1,0 +1,80 @@
+[
+  {
+    "id": "sequence--1d05f338-deed-40e3-a6cf-ef36586568b6",
+    "type": "sequence",
+    "original": {
+      "type": "sequence",
+      "spec_version": "2.1",
+      "id": "sequence--1d05f338-deed-40e3-a6cf-ef36586568b6",
+      "created": "2025-04-07T05:05:36.501Z",
+      "modified": "2025-04-07T05:05:36.501Z",
+      "sequenced_object": "event--275ad284-17d2-4909-8e79-bd5e4966f24a",
+      "sequence_type": "event",
+      "step_type": "single_step",
+      "extensions": {
+        "extension-definition--be0c7c79-1961-43db-afde-637066a87a64": {
+          "extension_type": "new-sdo"
+        }
+      }
+    },
+    "icon": "step-single",
+    "name": "Single Step",
+    "heading": "Single Step for Event",
+    "description": "",
+    "object_form": "sequence",
+    "object_group": "sdo-forms",
+    "object_family": "extension-forms"
+  },
+  {
+    "id": "sequence--46db5197-9b39-4436-bfe3-e3f0ce487a86",
+    "type": "sequence",
+    "original": {
+      "type": "sequence",
+      "spec_version": "2.1",
+      "id": "sequence--46db5197-9b39-4436-bfe3-e3f0ce487a86",
+      "created": "2025-04-07T05:05:36.740Z",
+      "modified": "2025-04-07T05:05:36.740Z",
+      "sequenced_object": "task--eb0fb645-db1e-4015-9a95-168891ce42d1",
+      "sequence_type": "task",
+      "step_type": "single_step",
+      "extensions": {
+        "extension-definition--be0c7c79-1961-43db-afde-637066a87a64": {
+          "extension_type": "new-sdo"
+        }
+      }
+    },
+    "icon": "step-single",
+    "name": "Single Step",
+    "heading": "Single Step for Task",
+    "description": "",
+    "object_form": "sequence",
+    "object_group": "sdo-forms",
+    "object_family": "extension-forms"
+  },
+  {
+    "id": "sequence--cb5f3f59-2983-4c38-b3d5-68619e18890e",
+    "type": "sequence",
+    "original": {
+      "type": "sequence",
+      "spec_version": "2.1",
+      "id": "sequence--cb5f3f59-2983-4c38-b3d5-68619e18890e",
+      "created": "2025-04-07T05:11:14.443Z",
+      "modified": "2025-04-07T05:11:14.443Z",
+      "sequenced_object": "task--c87fa465-1115-4f0b-ae1e-adae77478395",
+      "sequence_type": "task",
+      "step_type": "single_step",
+      "extensions": {
+        "extension-definition--be0c7c79-1961-43db-afde-637066a87a64": {
+          "extension_type": "new-sdo"
+        }
+      }
+    },
+    "icon": "step-single",
+    "name": "Single Step",
+    "heading": "Single Step for Task",
+    "description": "",
+    "object_form": "sequence",
+    "object_group": "sdo-forms",
+    "object_family": "extension-forms"
+  }
+]

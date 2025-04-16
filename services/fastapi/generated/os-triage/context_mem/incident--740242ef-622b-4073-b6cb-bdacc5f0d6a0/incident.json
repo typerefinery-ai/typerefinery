@@ -1,0 +1,66 @@
+[
+  {
+    "id": "incident--740242ef-622b-4073-b6cb-bdacc5f0d6a0",
+    "type": "incident",
+    "original": {
+      "type": "incident",
+      "spec_version": "2.1",
+      "id": "incident--740242ef-622b-4073-b6cb-bdacc5f0d6a0",
+      "created": "2025-04-07T05:05:35.601Z",
+      "modified": "2025-04-07T05:05:35.601Z",
+      "name": "potential phishing",
+      "extensions": {
+        "extension-definition--ef765651-680c-498d-9894-99799f2fa126": {
+          "extension_type": "property-extension",
+          "investigation_status": "new",
+          "incident_types": [
+            "dissemination-phishing-emails"
+          ],
+          "other_object_refs": [
+            "email-addr--eb38d07e-6ba8-56c1-b107-d4db4aacf212",
+            "email-addr--4722424c-7012-56b0-84d5-01d076fc547b",
+            "user-account--597ad4d4-35ba-585d-8f6d-134a75032f9b",
+            "identity--9ff40376-63a4-4707-be1b-aa704dcf8434",
+            "identity--0e005516-4d26-45b7-a00b-332fe63966d5",
+            "url--3279c7de-8f91-5c1a-99d9-d6546c6c41f7",
+            "email-message--6090e3d4-1fa8-5b36-9d2d-4a66d824995d",
+            "relationship--b64d5201-c859-4836-baf9-433e716d90f5",
+            "observed-data--d57bc077-bc07-4a7e-87b4-0a8e12d17e41",
+            "indicator--d586cbe7-fcc4-439a-9725-203498cadb01",
+            "sighting--f5761565-2d07-403d-bee6-239da328db3d",
+            "identity--c0f33394-c5d9-4e1f-8b65-f6cae8351831",
+            "anecdote--e1298bc0-818e-5cdb-9154-eac37c8e260f",
+            "observed-data--4f7efda4-cf47-441f-b361-8c32bd443358",
+            "sighting--7982108a-d6cf-46c2-8859-e9aa32d37970"
+          ],
+          "event_refs": [
+            "event--275ad284-17d2-4909-8e79-bd5e4966f24a"
+          ],
+          "sequence_refs": [
+            "sequence--1d05f338-deed-40e3-a6cf-ef36586568b6",
+            "sequence--46db5197-9b39-4436-bfe3-e3f0ce487a86",
+            "sequence--cb5f3f59-2983-4c38-b3d5-68619e18890e"
+          ],
+          "sequence_start_refs": [
+            "sequence--7c959362-f670-4946-8f45-692f3c438b11",
+            "sequence--97c09570-82f9-401e-acd6-2b5cc7ee6b42"
+          ],
+          "task_refs": [
+            "task--eb0fb645-db1e-4015-9a95-168891ce42d1",
+            "task--c87fa465-1115-4f0b-ae1e-adae77478395"
+          ],
+          "impact_refs": [
+            "impact--369a95ac-0a8b-4710-95aa-f052c9550590"
+          ]
+        }
+      }
+    },
+    "icon": "incident-ext",
+    "name": "Incident Extension",
+    "heading": "Incident Extension",
+    "description": "",
+    "object_form": "incident",
+    "object_group": "sdo-forms",
+    "object_family": "stix-forms"
+  }
+]
