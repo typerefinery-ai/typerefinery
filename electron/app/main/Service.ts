@@ -35,6 +35,8 @@ const ENV_VAR_NAME_SERVICE_PORT_SECONDARY = "SERVICE_PORT_SECONDARY"
 const ENV_VAR_NAME_SERVICE_PORT_CONSOLE = "SERVICE_PORT_CONSOLE"
 const ENV_VAR_NAME_SERVICE_PORT_DEBUG = "SERVICE_PORT_DEBUG"
 
+//TODO: Need to mark services that are sensitive to sleep events and what action to take, eg restart the service.
+
 export interface CommandLine {
   commandLine: string // original command line
   exe: string // executableChildProcess
