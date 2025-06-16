@@ -30,7 +30,7 @@ You can follow this guide to get you started [Setup Your Windows Devbox Like a P
 
 ```sh
 # clone the project
-git clone https://github.com/typerefinery-ai/typerefinery.git
+git clone --recursive https://github.com/typerefinery-ai/typerefinery.git
 
 # enter the project directory
 cd typerefinery
@@ -40,6 +40,12 @@ npm install
 
 # develop
 npm run electron:dev
+```
+
+If you want to update the submodules, you can run the following command:
+
+```sh
+git submodule update --init --recursive
 ```
 
 ## Recommended IDE Setup
