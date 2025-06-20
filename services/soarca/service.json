@@ -1,0 +1,50 @@
+{
+  "id": "soarca",
+  "name": "SOARCA Service",
+  "version": "1.0.0",
+  "description": "SOARCA",
+  "enabled": true,
+  "status": "30",
+  "logoutput": "",
+  "icon": "pi pi-globe",
+  "helpurl": "https://cossas.github.io/SOARCA/docs/installation-configuration/",
+  "sourceurl": "https://github.com/COSSAS/SOARCA",
+  "servicetype": 10,
+  "servicelocation": 10,
+  "execconfig": {
+    "debuglog": true,
+    "serviceport": 8999,
+    "execshell": false,
+    "execcwd": "${SERVICE_HOME}",
+    "executable": {
+      "win32": "soarca\\SOARCA.exe",
+      "default": "soarca\\SOARCA.exe"
+    },
+    "globalenv": {
+      "SOARCA_HOST_URL": "http://localhost:${SERVICE_PORT}",
+      "SOARCA_PORT": "${SERVICE_PORT}"
+    },
+    "env": {
+      "PATH": "${SERVICE_EXECUTABLE_HOME}",
+      "PORT": "${SERVICE_PORT}"
+    },
+    "commandline": {
+      "win32": " --",
+      "darwin": "  --",
+      "linux": " --",
+      "default": " --"
+    },
+    "healthcheck": {
+      "type": "http",
+      "url": "http://127.0.0.1:${SERVICE_PORT}/coa",
+      "expected_status": 200,
+      "retries": 180
+    },
+    "setuparchive": {
+      "win32": {
+        "name": "win32.zip",
+        "output": "soarca"
+      }
+    }
+  }
+}

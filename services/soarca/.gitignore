@@ -1,0 +1,8 @@
+
+!config/certs/
+config/certs/*
+!**/.gitkeep
+**/bin/
+**/traefik
+
+soarca/
