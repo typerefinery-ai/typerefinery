@@ -4,7 +4,7 @@ Param(
   [string]$CURRENT_PATH = "${PWD}",
   [string]$OS = ( $IsWindows ? "win32" : ( $IsMacOS ? "darwin" : "linux" ) ),
   [string]$CPU_ARCH = "x64",
-  [string]$NODE_VERSION = "v18.6.0",
+  [string]$NODE_VERSION = "v24.2.0",
   [string]$NODE_SERVICE_NAME = "_node",
   [string]$NODE_OS = ( $IsWindows ? "win" : ( $IsMacOS ? "darwin" : "linux" ) ),
   [string]$NODE_BIN = ( $IsWindows ? "" : "bin" ),

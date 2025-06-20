@@ -1,6 +1,6 @@
 Param(
-  [string]$APP_NAME = "Files Service",
-  [string]$SERVICE_NAME = "files",
+  [string]$APP_NAME = "Cacao Roaster",
+  [string]$SERVICE_NAME = "cacao-roaster",
   [string]$CURRENT_PATH = "${PWD}",
   [string]$OS = ( $IsWindows ? "win32" : ( $IsMacOS ? "darwin" : "linux" ) ),
   [string]$CPU_ARCH = "x64",
@@ -10,12 +10,13 @@ Param(
   [string]$NODE_BIN = ( $IsWindows ? "" : "bin" ),
   [string]$NODE_PLATFORM_HOME = "node-${NODE_VERSION}-${NODE_OS}-${CPU_ARCH}",
   [string]$NODE_PLATFORM_ARCHIVE = ( $IsWindows ? "${NODE_PLATFORM_HOME}.zip" : "${NODE_PLATFORM_HOME}.tar.gz" ) ,
-  [string]$NODE_PROGRAM_PATH = ( Join-Path "${PWD}" "${NODE_SERVICE_NAME}" "node-${NODE_VERSION}-${NODE_OS}-${CPU_ARCH}" "${NODE_BIN}" "node"),
-  [string]$NPM_PROGRAM_PATH = ( Join-Path "${PWD}" "${NODE_SERVICE_NAME}" "node-${NODE_VERSION}-${NODE_OS}-${CPU_ARCH}" "${NODE_BIN}" "npm"),
-  [string]$SERVICE_HOME = ( Join-Path "${PWD}" "${SERVICE_NAME}"),
-  [string]$SERVER_HOME = ( Join-Path "${PWD}" "${SERVICE_NAME}"),
+  [string]$NODE_PROGRAM_PATH = ( Join-Path "${PWD}" "${NODE_SERVICE_NAME}" $OS "node" "node-${NODE_VERSION}-${NODE_OS}-${CPU_ARCH}" "${NODE_BIN}" "node"),
+  [string]$NPM_PROGRAM_PATH = ( Join-Path "${PWD}" "${NODE_SERVICE_NAME}" $OS "node" "node-${NODE_VERSION}-${NODE_OS}-${CPU_ARCH}" "${NODE_BIN}" "npm"),
+  [string]$NPX_PROGRAM_PATH = ( Join-Path "${PWD}" "${NODE_SERVICE_NAME}" $OS "node" "node-${NODE_VERSION}-${NODE_OS}-${CPU_ARCH}" "${NODE_BIN}" "npx"),
+  [string]$SERVICE_HOME = ( Join-Path "${PWD}" "${SERVICE_NAME}" "win32" "cacao-roaster" "cacao-roaster-1.3.0"),
+  [string]$SERVER_HOME = ( Join-Path "${PWD}" "${SERVICE_NAME}" "win32" "cacao-roaster" "cacao-roaster-1.3.0"),
   [string]$SERVICE_DATA_PATH = "./data",
-  [string]$SERVICE_PORT = "8199",
+  [string]$SERVICE_PORT = "8999",
   [switch]$SETUP = $false,
   [switch]$DEBUG = $false
 )
@@ -40,6 +41,7 @@ Function PrintInfo
   printSectionLine "SERVICE_PORT: ${SERVICE_PORT}"
   printSectionLine "NODE_PROGRAM_PATH: ${NODE_PROGRAM_PATH}"
   printSectionLine "NPM_PROGRAM_PATH: ${NPM_PROGRAM_PATH}"
+  printSectionLine "NPX_PROGRAM_PATH: ${NPX_PROGRAM_PATH}"
   printSectionLine "SETUP: ${SETUP}"
   printSectionLine "DEBUG: ${DEBUG}"
 
@@ -56,7 +58,7 @@ Function StartServer
   try {
     Invoke-Expression -Command "${NODE_PROGRAM_PATH} -v"
     Invoke-Expression -Command "${NPM_PROGRAM_PATH} -v"
-    Invoke-Expression -Command "${NODE_PROGRAM_PATH} .\\bin\\node-file-manager-esm.mjs --log -d ${SERVICE_DATA_PATH} -p ${SERVICE_PORT}"
+    Invoke-Expression -Command "${NPX_PROGRAM_PATH} serve ."
   } finally {
     Set-Location -Path "${CURRENT_PATH}"
   }

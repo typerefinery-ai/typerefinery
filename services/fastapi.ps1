@@ -14,7 +14,7 @@ Param(
   [string]$PYTHON_USERBASE_PATH_SCRIPTS = ( Join-Path "${PYTHON_USERBASE_PATH}" "Python311" "Scripts"),
   [string]$PYTHON_USERBASE_PATH_PACKAGES = ( Join-Path "${PYTHON_USERBASE_PATH}" "Python311" "site-packages"),
   [string]$SERVER_REQUIREMENTS = ( Join-Path "${SERVER_HOME}" "requirements.txt" ),
-  [string]$NODE_VERSION = "v18.6.0",
+  [string]$NODE_VERSION = "v24.2.0",
   [string]$NODE_SERVICE_NAME = "_node",
   [string]$NODE_OS = ( $IsWindows ? "win" : ( $IsMacOS ? "darwin" : "linux" ) ),
   [string]$NODE_BIN = ( $IsWindows ? "" : "bin" ),

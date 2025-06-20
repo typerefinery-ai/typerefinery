@@ -60,14 +60,14 @@ app.add_middleware(
 
 
 Logger.add(os.path.join(CONFIG.APP_LOG_LOCATION, f"{__name__}.py.log"), rotation="1 day")
-NODE_HOME_FOLDER_NAME = "node-v18.6.0-win-x64"
+NODE_HOME_FOLDER_NAME = "node-v24.2.0-win-x64"
 # set NODE_HOME_FOLDER_NAME based on OS for windows, linux and darwin
 if os.name == "nt":
-  NODE_HOME_FOLDER_NAME = "node-v18.6.0-win-x64"
+  NODE_HOME_FOLDER_NAME = "node-v24.2.0-win-x64"
 elif os.name == "posix":
-  NODE_HOME_FOLDER_NAME = "node-v18.6.0-linux-x64"
+  NODE_HOME_FOLDER_NAME = "node-v24.2.0-linux-x64"
 elif os.name == "darwin":
-  NODE_HOME_FOLDER_NAME = "node-v18.6.0-darwin-x64"
+  NODE_HOME_FOLDER_NAME = "node-v24.2.0-darwin-x64"
 
 CONFIG.APP_SERVICE_NODE_LOCATION = os.getenv("NODE_HOME", os.path.abspath(os.path.join(CONFIG.APP_SCRIPT_PATH, "..", "_node", NODE_HOME_FOLDER_NAME)))
 NODE_EXECUTABLE_FILENAME = "node.exe"
