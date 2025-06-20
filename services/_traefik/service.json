@@ -51,6 +51,8 @@
       "TRAEFIK_KEYCLOAK_URL": "https://auth.typerefinery.localhost:${SERVICE_PORT}",
       "TRAEFIK_KEYCLOAK_ADMIN_URL": "https://keycloak.typerefinery.localhost:${SERVICE_PORT}",
       "TRAEFIK_OPENOBSERVE_URL": "https://openobserve.typerefinery.localhost:${SERVICE_PORT}",
+      "TRAEFIK_COCAO_ROASTER_URL": "https://cacao-roaster.typerefinery.localhost:${SERVICE_PORT}",
+      "TRAEFIK_SOARCA_URL": "https://soarca.typerefinery.localhost:${SERVICE_PORT}",
       "TRAEFIK_HTTP_PORT": "${SERVICE_PORT_SECONDARY}",
       "TRAEFIK_HTTPS_PORT": "${SERVICE_PORT}",
       "TRAEFIK_MONGO_PORT": "8108",
@@ -74,7 +76,9 @@
       "traefik": "${TRAEFIK_TRAEFIK_URL}",
       "keycloak": "${TRAEFIK_KEYCLOAK_URL}",
       "keycloakadmin": "${TRAEFIK_KEYCLOAK_ADMIN_URL}",
-      "openobserve": "${TRAEFIK_OPENOBSERVE_URL}"
+      "openobserve": "${TRAEFIK_OPENOBSERVE_URL}",
+      "cacao-roaster": "${TRAEFIK_COCAO_ROASTER_URL}",
+      "soarca": "${TRAEFIK_SOARCA_URL}"
     },
     "commandline": {
       "win32": " --log.level=DEBUG --providers.file.filename=\"${SERVICE_HOME}\\config\\dynamic\\dynamic.yml\" --api.insecure=true --api.dashboard=true --entryPoints.web.address=\":${SERVICE_PORT_SECONDARY}\" --entryPoints.websecure.address=\":${SERVICE_PORT}\" --entryPoints.traefik.address=\":${SERVICE_PORT_CONSOLE}\" --entryPoints.mongo.address=\":${TRAEFIK_MONGO_PORT}\" --entryPoints.typedb.address=\":${TRAEFIK_TYPEDB_PORT}\" --serversTransport.insecureSkipVerify=true",

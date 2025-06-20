@@ -339,6 +339,48 @@ http:
         - serviceheaders
         - error-pages
 
+    cacao-roaster:
+      rule: Host(`cacao-roaster.typerefinery.localhost`)
+      # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/cacao-roaster`) ) || Host(`cacao-roaster.localhost`)
+      service: cacao-roaster
+      entryPoints:
+        - web
+      middlewares:
+        - serviceheaders
+        - error-pages
+
+    cacao-roaster-https:
+      rule: Host(`cacao-roaster.typerefinery.localhost`)
+      # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/cacao-roaster`) ) || Host(`cacao-roaster.localhost`)
+      service: cacao-roaster
+      entryPoints:
+        - websecure
+      tls: true
+      middlewares:
+        - serviceheaders
+        - error-pages
+
+    soarca:
+      rule: Host(`soarca.typerefinery.localhost`)
+      # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/soarca`) ) || Host(`soarca.localhost`)
+      service: soarca
+      entryPoints:
+        - web
+      middlewares:
+        - serviceheaders
+        - error-pages
+
+    soarca-https:
+      rule: Host(`soarca.typerefinery.localhost`)
+      # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/soarca`) ) || Host(`soarca.localhost`)
+      service: soarca
+      entryPoints:
+        - websecure
+      tls: true
+      middlewares:
+        - serviceheaders
+        - error-pages
+
   middlewares:
     default:
       chain:
@@ -532,6 +574,18 @@ http:
         passHostHeader: true
         servers:
           - url: '{{ env "TRAEFIK_LOCAL_WIDGETDEV_URL" }}'
+
+    cacao-roaster:
+      loadBalancer:
+        passHostHeader: true
+        servers:
+          - url: '{{ env "COCAO_ROASTER_URL" }}'
+
+    soarca:
+      loadBalancer:
+        passHostHeader: true
+        servers:
+          - url: '{{ env "SOARCA_URL" }}'
 
 tcp:
   services:
