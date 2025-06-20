@@ -1,6 +1,6 @@
 {
   "id": "node",
-  "name": "Node v18.6.0",
+  "name": "Node v24.2.0",
   "description": "Portable node version.",
   "enabled": true,
   "status": "30",
@@ -13,29 +13,29 @@
     "serviceorder": 1,
     "setuparchive": {
       "win32": {
-        "name": "node-v18.6.0-win-x64.zip",
+        "name": "node-v24.2.0-win-x64.zip",
         "output": "node"
       },
       "darwin": {
-        "name": "node-v18.6.0-darwin-x64.tar.gz",
+        "name": "node-v24.2.0-darwin-x64.tar.gz",
         "output": "node"
       },
       "linux": {
-        "name": "node-v18.6.0-linux-x64.tar.gz",
+        "name": "node-v24.2.0-linux-x64.tar.gz",
         "output": "node"
       }
     },
     "executable": {
-      "win32": "node\\node-v18.6.0-win-x64\\node.exe",
-      "darwin": "node/node-v18.6.0-darwin-x64/bin/node",
-      "linux": "node/node-v18.6.0-linux-x64/bin/node",
-      "default": "node\\node-v18.6.0-win-x64\\node.exe"
+      "win32": "node\\node-v24.2.0-win-x64\\node.exe",
+      "darwin": "node/node-v24.2.0-darwin-x64/bin/node",
+      "linux": "node/node-v24.2.0-linux-x64/bin/node",
+      "default": "node\\node-v24.2.0-win-x64\\node.exe"
     },
     "executablecli": {
-      "win32": "node\\node-v18.6.0-darwin-x64\\node_modules\\npm\\bin\\npm-cli.js",
-      "darwin": "node/node-v18.6.0-darwin-x64/lib/node_modules/npm/bin/npm-cli.js",
-      "linux": "node/node-v18.6.0-linux-x64/lib/node_modules/npm/bin/npm-cli.js",
-      "default": "node\\node-v18.6.0-win-x64\\node_modules\\npm\\bin\\npm-cli.js"
+      "win32": "node\\node-v24.2.0-darwin-x64\\node_modules\\npm\\bin\\npm-cli.js",
+      "darwin": "node/node-v24.2.0-darwin-x64/lib/node_modules/npm/bin/npm-cli.js",
+      "linux": "node/node-v24.2.0-linux-x64/lib/node_modules/npm/bin/npm-cli.js",
+      "default": "node\\node-v24.2.0-win-x64\\node_modules\\npm\\bin\\npm-cli.js"
     },
     "globalenv": {
       "NODE": "${SERVICE_EXECUTABLE}",
