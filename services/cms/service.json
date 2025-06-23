@@ -33,7 +33,8 @@
       "totaljs-flow",
       "totaljs-messageservice",
       "mongo",
-      "nginx"
+      "nginx",
+      "files"
     ],
     "env": {
       "PATH": [
