@@ -30,6 +30,7 @@
       "retries": 180
     },
     "depend_on": [
+      "traefik",
       "totaljs-flow",
       "totaljs-messageservice",
       "mongo",
