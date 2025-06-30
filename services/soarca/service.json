@@ -45,6 +45,9 @@
         "name": "win32.zip",
         "output": "soarca"
       }
-    }
+    },
+    "depend_on": [
+      "traefik"
+    ]
   }
 }

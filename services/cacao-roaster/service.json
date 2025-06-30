@@ -61,6 +61,7 @@
       "retries": 180
     },
     "depend_on": [
+      "traefik",
       "node",
       "soarca"
     ]
