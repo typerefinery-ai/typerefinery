@@ -22,7 +22,9 @@
                 "npm install",
                 "npx husky uninstall",
                 "npm uninstall husky",
-                "npm install serve --save-dev"              ],
+                "npm install serve --save-dev",
+                "npm run build"
+              ],
       "darwin": ["; ${NODE} ${NODE_HOME}\\node_modules\\npm\\bin\\npm-cli.js install"],
       "linux": ["; ${NODE} ${NODE_HOME}\\node_modules\\npm\\bin\\npm-cli.js} install"],
       "default": ["node -e \"require('child_process').exec('npm install', (e, so, se) => { if(e) throw e; console.log(so); console.error(se); })\"",
@@ -36,20 +38,20 @@
     },
     "datapath": "./data",
     "env": {
-      "SOARCA_END_POINT": "${SOARCA_HOST_URL}",
+      "SOARCA_END_POINT": "${SOARCA_URL}",
       "PATH": [
         "${NODE_HOME}"
       ]
     },
     "globalenv": {
-      "COCAO_ROASTER_HOST_URL": "http://localhost:${SERVICE_PORT}",
+      "COCAO_ROASTER_URL": "http://localhost:${SERVICE_PORT}",
       "CACAO_ROASTER_PORT": "${SERVICE_PORT}"
     },
     "commandline": {
-      "win32": " serve . -l ${SERVICE_PORT}",
-      "darwin": " serve . -l ${SERVICE_PORT}",
-      "linux": " serve . -l ${SERVICE_PORT}",
-      "default": " serve . -l ${SERVICE_PORT}"
+      "win32": " serve dist -l ${SERVICE_PORT}",
+      "darwin": " serve dist -l ${SERVICE_PORT}",
+      "linux": " serve dist -l ${SERVICE_PORT}",
+      "default": " serve dist -l ${SERVICE_PORT}"
     },
     "serviceport": 8990,
     "healthcheck": {

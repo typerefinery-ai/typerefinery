@@ -21,7 +21,7 @@
       "default": "soarca\\SOARCA.exe"
     },
     "globalenv": {
-      "SOARCA_HOST_URL": "http://localhost:${SERVICE_PORT}",
+      "SOARCA_URL": "http://localhost:${SERVICE_PORT}/coa/",
       "SOARCA_PORT": "${SERVICE_PORT}"
     },
     "env": {
