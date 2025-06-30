@@ -601,14 +601,18 @@ class ServiceManager {
         //if port is used, check if it is used by same service
         if (isPortUsed) {
           const processPath = await getProcessPathForPID(
-            port,
+            Number(processPid),
             this.#abortController
           )
-          this.#log(`getProcessPathForPID ${serviceId} ${port} ${processPath}`)
-          // console.log(`getProcessPathForPID ${serviceId} ${port} ${processPath}`)
+          this.#log(
+            `getProcessPathForPID for service ${serviceId} with PID ${processPath} at ${processPath}`
+          )
 
           //some other service is using this port, find new port
           if (processPath == "") {
+            this.#warn(
+              `service with PID ${processPid} has empty process [${processPath}] could be system service using this port, trying to find next avilable port ${port}.`
+            )
             useNextMaxPort = true
             nextReservedPort = this.#nextServicePort()
           } else {
@@ -671,11 +675,15 @@ class ServiceManager {
             }
           }
         } else {
+          this.#log(`service ${serviceId} port ${port} is free.`)
           isPortInUse = false
           this.#updatePortStatus(port, "free")
         }
       }
     } else {
+      this.#warn(
+        `service ${serviceId} is requesting random port as its set to ${port}.`
+      )
       useNextMaxPort = true
       nextReservedPort = this.#nextServicePort()
     }
