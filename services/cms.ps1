@@ -14,7 +14,7 @@ Param(
   [string]$JAVA_OS = ( $IsWindows ? "win32" : ( $IsMacOS ? "darwin" : "linux" ) ),
   [string]$JAVA_SERVICE_NAME = "_java",
   [string]$JAVA_BIN = ( $IsWindows ? "" : "bin" ),
-  [string]$JAVA_PROGRAM_PATH = ( Join-Path "${PWD}" "${JAVA_SERVICE_NAME}" "${JAVA_OS}" "jre17" "bin" "java"),
+  [string]$JAVA_PROGRAM_PATH = ( Join-Path "${PWD}" "${JAVA_SERVICE_NAME}" "${JAVA_OS}" "java" "bin" "java"),
   [switch]$SETUP = $false,
   [switch]$DEBUG = $false
 )

@@ -4,7 +4,7 @@ Param(
   [string]$CURRENT_PATH = "${PWD}",
   [string]$OS = ( $IsWindows ? "win32" : ( $IsMacOS ? "darwin" : "linux" ) ),
   [string]$CPU_ARCH = "x64",
-  [string]$JAVA_HOME = ( Join-Path "${PWD}" "_java" "${OS}"  "jre17"),
+  [string]$JAVA_HOME = ( Join-Path "${PWD}" "_java" "${OS}"  "java"),
   [string]$SERVICE_HOME = ( Join-Path "${PWD}" "${SERVICE_NAME}"),
   [string]$SERVER_HOME = ( Join-Path "${PWD}" "${SERVICE_NAME}"),
   [string]$SCRIPT_PATH = ( Join-Path "${SERVICE_HOME}" "init.tql"),
