@@ -1,5 +1,7 @@
 # allow importing of service local packages
 import os
+from pathlib import Path
+from typing import Final, Sequence
 from config import CONFIG
 CONFIG = CONFIG(os.path.dirname(os.path.abspath(__file__)))
 # end of local package imports
@@ -84,6 +86,52 @@ CONFIG.APP_SERVICE_NPM_EXECUTABLE = os.getenv("NPM", os.path.join(CONFIG.APP_SER
 
 Logger.info(CONFIG.toString())
 
+GENERATED_FOLDER_NAME: Final[str] = "generated"
+ALGORITHM_FOLDER_NAME: Final[str] = "algorithm"
+ALGORITHM_CLEANUP_PATTERNS: Final[Sequence[str]] = ("*.py", "*.py.*")
+
+def cleanup_generated_workspace(user_data_location: str) -> None:
+    """
+    Purge previously generated algorithm artefacts before the service handles requests.
+    """
+    # Short-circuit when there is no configured user data location.
+    if user_data_location == "":
+        Logger.warning("Skipping generated workspace cleanup: user data location is empty.")
+        return
+
+    # Resolve the workspace path to guard against traversal issues.
+    base_path = Path(user_data_location).resolve()
+    generated_root = (base_path / GENERATED_FOLDER_NAME).resolve()
+
+    # Ensure the generated path actually lives under the configured base path.
+    try:
+        base_path_relative = generated_root.relative_to(base_path)
+        Logger.debug(f"Validated generated workspace path: {base_path_relative}")
+    except ValueError:
+        Logger.warning(f"Skipping cleanup because generated path {generated_root} escapes the user data directory {base_path}.")
+        return
+
+    # If nothing has been generated yet, exit quietly.
+    if not generated_root.exists():
+        Logger.info(f"No generated workspace found at {generated_root}.")
+        return
+
+    algorithm_root = generated_root / ALGORITHM_FOLDER_NAME
+    if not algorithm_root.exists():
+        Logger.info(f"Algorithm workspace not present at {algorithm_root}.")
+        return
+
+    for pattern in ALGORITHM_CLEANUP_PATTERNS:
+        for target in algorithm_root.glob(pattern):
+            try:
+                if target.is_file():
+                    target.unlink()
+                    Logger.info(f"Removed generated algorithm artefact {target.name}.")
+                else:
+                    Logger.debug(f"Skipping non-file target during cleanup: {target}")
+            except OSError as error:
+                Logger.error(f"Failed to remove {target}: {error}")
+
 # import modules
 from internal import admin
 from routers import utils
@@ -105,3 +153,11 @@ app.include_router(datastore.router)
 app.include_router(flow.router)
 app.include_router(messageservice.router)
 app.include_router(webproxy.router)
+
+@app.on_event("startup")
+async def purge_generated_workspaces() -> None:
+    """
+    Delete stale generated artefacts on service startup to control disk usage.
+    """
+    # Perform the cleanup using the currently configured user data directory.
+    cleanup_generated_workspace(CONFIG.APP_USER_DATA_LOCATION)
