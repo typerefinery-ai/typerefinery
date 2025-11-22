@@ -248,7 +248,6 @@ http:
 
     widgetdev:
       rule: Host(`widgetdev.typerefinery.localhost`)
-      # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/flow`) ) || Host(`flow.localhost`)
       service: widgetdev
       entrypoints:
         - web
@@ -257,7 +256,6 @@ http:
         - error-pages
     widgetdev-https:
       rule: Host(`widgetdev.typerefinery.localhost`)
-      # rule: ( Host(`{{ env "TRAEFIK_HOST_DOMAIN" }}`) && PathPrefix(`/flow`) ) || Host(`flow.localhost`)
       service: widgetdev
       entrypoints:
         - websecure
@@ -266,6 +264,41 @@ http:
         - serviceheaders
         - error-pages
 
+    widgetdevcomposer:
+      rule: Host(`widgetdevcomposer.typerefinery.localhost`)
+      service: widgetdevcomposer
+      entrypoints:
+        - web
+      middlewares:
+        - serviceheaders
+        - error-pages
+    widgetdevcomposer-https:
+      rule: Host(`widgetdevcomposer.typerefinery.localhost`)
+      service: widgetdevcomposer
+      entrypoints:
+        - websecure
+      tls: true
+      middlewares:
+        - serviceheaders
+        - error-pages
+
+    widgetdevoverview:
+      rule: Host(`widgetdevoverview.typerefinery.localhost`)
+      service: widgetdevoverview
+      entrypoints:
+        - web
+      middlewares:
+        - serviceheaders
+        - error-pages
+    widgetdevoverview-https:
+      rule: Host(`widgetdevoverview.typerefinery.localhost`)
+      service: widgetdevoverview
+      entrypoints:
+        - websecure
+      tls: true
+      middlewares:
+        - serviceheaders
+        - error-pages
 
     traefikdashboard:
       rule: Host(`traefik.typerefinery.localhost`)
@@ -574,6 +607,19 @@ http:
         passHostHeader: true
         servers:
           - url: '{{ env "TRAEFIK_LOCAL_WIDGETDEV_URL" }}'
+
+    widgetdevcomposer:
+      loadBalancer:
+        passHostHeader: true
+        servers:
+          - url: '{{ env "TRAEFIK_LOCAL_WIDGETDEV_COMPOSER_URL" }}'
+
+    widgetdevoverview:
+      loadBalancer:
+        passHostHeader: true
+        servers:
+          - url: '{{ env "TRAEFIK_LOCAL_WIDGETDEV_OVERVIEW_URL" }}'
+
 
     cacao-roaster:
       loadBalancer:

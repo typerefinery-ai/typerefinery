@@ -61,7 +61,9 @@
       "TRAEFIK_HOST_DOMAIN": "localhost.${CERT_DOMAIN}",
       "TRAEFIK_HOST_DOMAIN_URL": "localhost.${CERT_DOMAIN}",
       "TRAEFIK_HOST_DOMAIN_SUFFIX": "typerefinery.localhost",
-      "TRAEFIK_LOCAL_WIDGETDEV_URL": "http://localhost:4001"
+      "TRAEFIK_LOCAL_WIDGETDEV_URL": "http://localhost:4001",
+      "TRAEFIK_LOCAL_WIDGETDEV_COMPOSER_URL": "http://localhost:4005",
+      "TRAEFIK_LOCAL_WIDGETDEV_OVERVIEW_URL": "http://localhost:4008"
     },
     "urls": {
       "jupyterlab": "${TRAEFIK_JUPYTERLAB_URL}",
