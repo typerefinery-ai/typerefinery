@@ -9,10 +9,12 @@ Param(
   [string]$NODE_BIN = ( $IsWindows ? "" : "bin" ),
   [string]$NODE_PLATFORM_HOME = "node-${NODE_VERSION}-${NODE_OS}-${CPU_ARCH}",
   [string]$NODE_PLATFORM_ARCHIVE = ( $IsWindows ? "${NODE_PLATFORM_HOME}.zip" : "${NODE_PLATFORM_HOME}.tar.gz" ) ,
-  [string]$NODE_PROGRAM_PATH = ( Join-Path "${PWD}" "${SERVICE_NAME}" "node-${NODE_VERSION}-${NODE_OS}-${CPU_ARCH}" "${NODE_BIN}" "node"),
-  [string]$NPM_PROGRAM_PATH = ( Join-Path "${PWD}" "${SERVICE_NAME}" "node-${NODE_VERSION}-${NODE_OS}-${CPU_ARCH}" "${NODE_BIN}" "npm"),
+  [string]$NODE_PROGRAM_PATH = ( Join-Path "${PWD}" "${SERVICE_NAME}" "node" "node-${NODE_VERSION}-${NODE_OS}-${CPU_ARCH}" "${NODE_BIN}" "node"),
+  [string]$NPM_PROGRAM_PATH = ( Join-Path "${PWD}" "${SERVICE_NAME}" "node" "node-${NODE_VERSION}-${NODE_OS}-${CPU_ARCH}" "${NODE_BIN}" "npm"),
   [string]$SERVICE_HOME = ( Join-Path "${PWD}" "${SERVICE_NAME}"),
-  [string]$SERVER_HOME = ( Join-Path "${PWD}" "${SERVICE_NAME}" "node-${NODE_VERSION}-${NODE_OS}-${CPU_ARCH}"),
+  [string]$SERVICE_INSTALL_HOME = ( Join-Path "${PWD}" "${SERVICE_NAME}" "$OS" "node"),
+  [string]$SERVICE_INSTALL_ARCHIVE = ( Join-Path "${PWD}" "${SERVICE_NAME}" "$OS" "${NODE_PLATFORM_ARCHIVE}" ),
+  [string]$SERVER_HOME = ( Join-Path "${PWD}" "${SERVICE_NAME}" "node" "node-${NODE_VERSION}-${NODE_OS}-${CPU_ARCH}"),
   [string]$ARCHIVE_HOME = ( Join-Path "${PWD}" "_archive"),
   [string]$ARCHIVE_PROGRAM = ( $IsWindows ? "7za.exe" : "7zz" ),
   [string]$ARCHIVE_PROGRAM_PATH = ( Join-Path "${PWD}" "_archive" "$OS" "${ARCHIVE_PROGRAM}" ),
@@ -58,12 +60,14 @@ Function StartServer
 
 Function StartSetup
 {
-  Set-Location -Path ${SERVICE_HOME}
+  Set-Location -Path ${SERVICE_INSTALL_HOME}
+  Write-Host "SERVICE_INSTALL_HOME: ${SERVICE_INSTALL_HOME}"
+  Write-Host (Get-Location).Path
   if ($IsWindows) {
     Invoke-Expression -Command "${ARCHIVE_PROGRAM_PATH} -?"
-    Invoke-Expression -Command "${ARCHIVE_PROGRAM_PATH} x -aoa ${NODE_PLATFORM_ARCHIVE}"
+    Invoke-Expression -Command "${ARCHIVE_PROGRAM_PATH} x -aoa ${SERVICE_INSTALL_ARCHIVE}"
   } else {
-    Invoke-Expression -Command "${ARCHIVE_PROGRAM_PATH} x -y ${NODE_PLATFORM_ARCHIVE}"
+    Invoke-Expression -Command "${ARCHIVE_PROGRAM_PATH} x -y ${SERVICE_INSTALL_ARCHIVE}"
     Invoke-Expression -Command "${ARCHIVE_PROGRAM_PATH} x -aoa ${NODE_PLATFORM_HOME}.tar -bb3"
   }
   Set-Location -Path "${CURRENT_PATH}"
