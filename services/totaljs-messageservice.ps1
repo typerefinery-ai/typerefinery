@@ -10,7 +10,7 @@ Param(
   [string]$NODE_BIN = ( $IsWindows ? "" : "bin" ),
   [string]$NODE_PLATFORM_HOME = "node-${NODE_VERSION}-${NODE_OS}-${CPU_ARCH}",
   [string]$NODE_PLATFORM_ARCHIVE = ( $IsWindows ? "${NODE_PLATFORM_HOME}.zip" : "${NODE_PLATFORM_HOME}.tar.gz" ) ,
-  [string]$NODE_PATH = ( Join-Path "${PWD}" "${NODE_SERVICE_NAME}" $OS "node-${NODE_VERSION}-${NODE_OS}-${CPU_ARCH}" "${NODE_BIN}"),
+  [string]$NODE_PATH = ( Join-Path "${PWD}" "${NODE_SERVICE_NAME}" $OS "node" "node-${NODE_VERSION}-${NODE_OS}-${CPU_ARCH}" "${NODE_BIN}"),
   [string]$NODE_PROGRAM_PATH = ( Join-Path "${NODE_PATH}" "node"),
   [string]$NPM_PROGRAM_PATH = ( Join-Path "${NODE_PATH}" "npm"),
   [string]$SERVICE_HOME = ( Join-Path "${PWD}" "${SERVICE_NAME}"),
