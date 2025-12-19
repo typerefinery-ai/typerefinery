@@ -41,7 +41,9 @@
       "retries": 180
     },
     "depend_on": [
-      "python"
+      "python",
+      "typedb",
+      "totaljs-flow"
     ]
   }
 }

@@ -1,5 +1,5 @@
 import re
-from fastapi import APIRouter, Response, Request, Body, Form
+from fastapi import APIRouter, Response, Request, Body, Form, Query
 from loguru import logger as Logger
 import json
 import os
@@ -120,6 +120,37 @@ async def flow_export(flowid: str, request: Request, response: Response):
     service_reponse = requests.get(service_url_proxy, timeout=1)
     return Response(content=json.dumps(service_reponse.json()), media_type="application/json", status_code=service_reponse.status_code)
 
+## pause/resume flow for a given flowid
+@Logger.catch
+@router.get("/flow/pause/{flowid}")
+async def flow_pause(flowid: str, is_paused: str = Query(..., alias="is")):
+    """
+    Pause or resume a flow.
+    
+    Args:
+        flowid: The flow identifier
+        is_paused: String value "1" (pause) or "0" (resume) - passed as query parameter "is"
+    """
+    # Use the is_paused value directly (should be "1" or "0")
+    service_url_proxy = f"{CONFIG.FLOW_HOST}{CONFIG.FLOW_API}/streams_pause/{flowid}?is={is_paused}"
+    Logger.info(f"proxy flow: {service_url_proxy}")
+    
+    try:
+        service_response = requests.get(service_url_proxy, timeout=1)
+        return Response(
+            content=json.dumps(service_response.json()),
+            media_type="application/json",
+            status_code=service_response.status_code
+        )
+    except requests.exceptions.RequestException as e:
+        Logger.error(f"Error pausing flow {flowid}: {str(e)}")
+        return Response(
+            content=json.dumps({"error": "Failed to pause/resume flow", "details": str(e)}),
+            media_type="application/json",
+            status_code=500
+        )
+
+
 ## export flow content for a given flowid from flowstream
 @Logger.catch
 @router.get("/flow/read/{flowid}")
@@ -149,6 +180,38 @@ async def flow_update(request: Request, response: Response, body: dict = Body(..
     Logger.info(f"proxy flow: {service_url_proxy}")
     service_reponse = requests.post(service_url_proxy , data=body, timeout=1)
     return Response(content=json.dumps(service_reponse.json()), media_type="application/json", status_code=service_reponse.status_code)
+
+## save flow meta into flowstream for a given flowid
+@Logger.catch
+@router.post("/flow/save/{flowid}")
+async def flow_save(flowid: str, request: Request, response: Response, body: dict = Body(...)):
+    """
+    Save flow metadata for a specific flow.
+    
+    Args:
+        flowid: The flow identifier
+        body: Flow metadata to save
+    """
+    # Ensure flowid is included in the body data
+    body_with_id = {**body, "id": flowid}
+    service_url_proxy = f"{CONFIG.FLOW_HOST}{CONFIG.FLOW_API}/stream_save/"
+    Logger.info(f"proxy flow: {service_url_proxy}")
+    
+    try:
+        service_response = requests.post(service_url_proxy, data=body_with_id, timeout=1)
+        return Response(
+            content=json.dumps(service_response.json()),
+            media_type="application/json",
+            status_code=service_response.status_code
+        )
+    except requests.exceptions.RequestException as e:
+        Logger.error(f"Error saving flow {flowid}: {str(e)}")
+        return Response(
+            content=json.dumps({"error": "Failed to save flow", "details": str(e)}),
+            media_type="application/json",
+            status_code=500
+        )
+
 
 # {
 #     "icon": "fa fa-satellite",
