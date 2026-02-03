@@ -10,7 +10,7 @@ Param(
   [string]$SERVICE_CACHE_PATH = ( Join-Path "${PWD}" "${SERVICE_NAME}" "config" "cache"),
   [string]$SERVICE_REPOSITORY_PATH = ( Join-Path "${PWD}" "${SERVICE_NAME}" "config" "cache"),
   [string]$SERVICE_JAR_PATH = ( Join-Path "${PWD}" "${SERVICE_NAME}" "config" "org.apache.sling.feature.launcher.jar"),
-  [string]$SERVICE_FEATURE_PATH = ( Join-Path "${PWD}" "${SERVICE_NAME}" "config" "cache" "pl" "ds" "luna" "luna-distribution" "2.0.0" "luna-distribution-2.0.0-websight-cms-luna.slingosgifeature"),
+  # [string]$SERVICE_FEATURE_PATH = ( Join-Path "${PWD}" "${SERVICE_NAME}" "config" "cache" "pl" "ds" "luna" "luna-distribution" "2.0.0" "luna-distribution-2.0.0-websight-cms-luna.slingosgifeature"),
   [string]$JAVA_OS = ( $IsWindows ? "win32" : ( $IsMacOS ? "darwin" : "linux" ) ),
   [string]$JAVA_SERVICE_NAME = "_java",
   [string]$JAVA_BIN = ( $IsWindows ? "" : "bin" ),
