@@ -2,6 +2,7 @@ Param(
   [string]$APP_NAME = "BPMN Client",
   [string]$SERVICE_NAME = "bpmn-client",
   [string]$CURRENT_PATH = "${PWD}",
+
   [string]$OS = ( $IsWindows ? "win32" : ( $IsMacOS ? "darwin" : "linux" ) ),
   [string]$CPU_ARCH = "x64",
   [string]$NODE_VERSION = "v24.2.0",
@@ -12,8 +13,9 @@ Param(
   [string]$NPM_EXT = ( $IsWindows ? ".cmd" : "" ),
   [string]$NODE_PLATFORM_HOME = "node-${NODE_VERSION}-${NODE_OS}-${CPU_ARCH}",
   [string]$NODE_PLATFORM_ARCHIVE = ( $IsWindows ? "${NODE_PLATFORM_HOME}.zip" : "${NODE_PLATFORM_HOME}.tar.gz" ) ,
-  [string]$NODE_PROGRAM_PATH = ( Join-Path "${PWD}" "${NODE_SERVICE_NAME}" "node-${NODE_VERSION}-${NODE_OS}-${CPU_ARCH}" "${NODE_BIN}" "node$NODE_EXT" ),
-  [string]$NPM_PROGRAM_PATH = ( Join-Path "${PWD}" "${NODE_SERVICE_NAME}" "node-${NODE_VERSION}-${NODE_OS}-${CPU_ARCH}" "${NODE_BIN}" "npm$NPM_EXT" ),
+  [string]$NODE_PROGRAM_PATH = ( Join-Path "${PWD}" "${NODE_SERVICE_NAME}" $OS "node" "node-${NODE_VERSION}-${NODE_OS}-${CPU_ARCH}" "${NODE_BIN}" "node$NODE_EXT" ),
+  [string]$NPM_PROGRAM_PATH = ( Join-Path "${PWD}" "${NODE_SERVICE_NAME}" $OS "node" "node-${NODE_VERSION}-${NODE_OS}-${CPU_ARCH}" "${NODE_BIN}" "npm$NPM_EXT" ),
+
   [string]$SERVICE_HOME = ( Join-Path "${PWD}" "${SERVICE_NAME}"),
   [string]$SERVER_HOME = ( Join-Path "${PWD}" "${SERVICE_NAME}"),
   [string]$SERVICE_DATA_PATH = "./database",
