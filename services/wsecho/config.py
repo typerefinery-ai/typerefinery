@@ -5,9 +5,10 @@ import json
 class CONFIG(object):
 
   def __init__(self, path):
+    service_manager_port = os.environ.get("SERVICE_MANAGER_PORT", "30000")
     self._config = {
       "origins_schemas": [ "http", "https" ],
-      "origins_ports": [ "3000", "3001", "8000", "8001" ],
+      "origins_ports": [ "3000", service_manager_port, "8000", "8001" ],
       "origins_hosts": [ "localhost"],
       "allow_credentials": True,
       "allow_methods": ["*"],
@@ -143,4 +144,3 @@ class CONFIG(object):
   @APP_SERVICE_NPM_EXECUTABLE.setter
   def APP_SERVICE_NPM_EXECUTABLE(self, val):
     self.set('APP_SERVICE_NPM_EXECUTABLE', val)
-

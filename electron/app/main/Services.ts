@@ -12,10 +12,15 @@ import fs from "fs"
 import process from "node:process"
 import { fileURLToPath } from "url"
 import { dirname } from "path"
+import dotenv from "dotenv"
 import pkg from "../../../package.json"
+import { getEnvConfigWithDefault, tryParseInt } from "./Utils"
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
+
+// Keep the standalone service dashboard aligned with the repo's shared .env settings.
+dotenv.config()
 
 const pageAutoRefreshEverySeconds = 10
 
@@ -40,7 +45,10 @@ if (!fs.existsSync(logsDir)) {
   fs.mkdirSync(logsDir, { recursive: true })
 }
 
-const servicePort = 3001
+const servicePort = tryParseInt(
+  getEnvConfigWithDefault("SERVICE_MANAGER_PORT", "30000"),
+  30000
+)
 
 const logger = new Logger(logsDir, "services")
 

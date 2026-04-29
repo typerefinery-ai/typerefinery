@@ -31,7 +31,8 @@
       "debug"
     ],
     "LOCAL_SERVICES_PATH": "./services",
-    "LOCAL_SERVICES_USERDATA_PATH": "services"
+    "LOCAL_SERVICES_USERDATA_PATH": "services",
+    "SERVICE_MANAGER_PORT": 30000
   },
   "scripts": {
     "build:typescript": "vue-tsc --noEmit",
@@ -45,7 +46,7 @@
     "dev": "vite --host localhost",
     "electron": "wait-on -c .waiton.json --verbose http-get://localhost:3000 && cross-env NODE_ENV=dev electron ./dist/main/index.cjs",
     "electron:pack": "electron-builder --dir",
-    "electron:dev": "concurrently -k \"npm run build && npm run dev\" \"npm run services\" \"wait-on -c .waiton.json http-get://localhost:3001/services/status && npm run electron:run\"",
+    "electron:dev": "concurrently -k \"npm run build && npm run dev\" \"npm run services\" \"npm run services:wait && npm run electron:run\"",
     "electron:builder": "cross-env DEBUG=electron-builder electron-builder",
     "electron:start": "npm run build && npm run electron:run",
     "electron:run": "electron ./dist/main/index.cjs",
@@ -58,7 +59,7 @@
     "preview:watch": "concurrently -k \"vite preview --port 3000 --host 0.0.0.0\" \"vite build --watch\"",
     "preview:ci": "concurrently -k \"cross-env BROWSER=none npm run services\" \"cross-env BROWSER=none npm run preview\"",
     "preview:wait:ci": "concurrently -k \"cross-env BROWSER=none npm run services\" \"cross-env BROWSER=none npm run delayed-client\"",
-    "delayed-client": "wait-on -c .waiton.json --verbose http-get://localhost:3001/services/status && npm run preview",
+    "delayed-client": "npm run services:wait && npm run preview",
     "test:e2e:ci2": "start-server-and-test preview 8080 'cypress run'",
     "test:e2e:ci3": "start-server-and-test dev2 http-get://localhost:3000 test:ci",
     "test:e2e:ci": "concurrently -k \"cross-env BROWSER=none npm run preview\" \"wait-on -c .waiton.json http://localhost:8080 && cypress run\"",
@@ -75,6 +76,7 @@
     "services": "cross-env SERVICES_AUTOSTART=true tsx electron/app/main/Services.ts",
     "servicesdebug": "cross-env SERVICES_AUTOSTART=false tsx electron/app/main/Services.ts",
     "servicesprod": "cross-env SERVICES_AUTOSTART=true NODE_ENV=production tsx electron/app/main/Services.ts",
+    "services:wait": "node scripts/wait-for-service-manager.mjs",
     "prettier": "npx prettier --write src"
   },
   "main": "dist/main/index.cjs",
