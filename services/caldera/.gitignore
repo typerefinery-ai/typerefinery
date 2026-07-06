@@ -1,0 +1,5 @@
+_work/
+data/
+.env
+package/
+*.log

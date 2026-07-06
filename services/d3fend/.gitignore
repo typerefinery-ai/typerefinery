@@ -1,0 +1,17 @@
+# local build workspace
+_work/
+
+# local source checkout used during packaging
+source/
+
+# local extracted runtime used during testing
+app/
+
+# temporary package inspection/output
+package/
+
+# local packaged server copy
+server.js
+
+# temp logs
+*.log

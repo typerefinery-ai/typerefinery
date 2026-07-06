@@ -1,0 +1,37 @@
+{
+  "/" : {
+    "path" : "/",
+    "adminConsoleUrl" : "/admin",
+    "security" : {
+      "module" : "EMBEDED",
+      "config" : {
+        "users" : [ {
+          "username" : "admin",
+          "password" : "pwd",
+          "roles" : [ "admin" ]
+        } ]
+      }
+    },
+    "restUsers" : [ {
+      "username" : "api_user",
+      "password" : "typerefinery",
+      "permissions" : [
+        "rest_getPaths",
+        "rest_getAppInfo",
+        "rest_getConfig",
+        "rest_setConfig",
+        "rest_createApp",
+        "rest_removeApp",
+        "rest_getApps",
+        "rest_getStats"
+      ]
+    } ]
+  },
+  "/welcome" : {
+    "path" : "/welcome",
+    "webFolder" : "${webswing.rootDir}/welcome",
+    "name" : "Welcome page",
+    "swingConfig" : {
+    }
+  }
+}

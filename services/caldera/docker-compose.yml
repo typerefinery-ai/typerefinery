@@ -1,0 +1,8 @@
+services:
+  caldera:
+    image: ${CALDERA_IMAGE}
+    restart: unless-stopped
+    ports:
+      - "${HOST_PORT}:8888"
+    volumes:
+      - ./data:/usr/src/app/data

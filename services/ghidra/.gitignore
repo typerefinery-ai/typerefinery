@@ -1,0 +1,6 @@
+_work/
+win32/
+ghidra/
+release/
+package/
+*.log

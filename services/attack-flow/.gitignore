@@ -1,0 +1,19 @@
+# local build workspace
+_work/
+
+# local source checkout used during packaging
+source/
+
+# local extracted runtime used during testing
+app/
+
+# temporary package inspection/output
+package/
+
+# local packaged server copy
+server.js
+
+# node/npm temp files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

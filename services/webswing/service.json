@@ -1,0 +1,57 @@
+{
+  "id": "webswing",
+  "name": "Webswing",
+  "description": "Web UI host for Java desktop applications.",
+  "enabled": true,
+  "status": "-1",
+  "logoutput": "",
+  "icon": "pi pi-globe",
+  "servicelocation": 10,
+  "execconfig": {
+    "debuglog": true,
+    "serviceorder": 30,
+    "setuparchive": {
+      "win32": {
+        "name": "webswing-assembly-20.2.3-distribution.zip",
+        "archiveUrl": "https://repo1.maven.org/maven2/org/webswing/webswing-assembly/20.2.3/webswing-assembly-20.2.3-distribution.zip",
+        "output": "webswing"
+      }
+    },
+    "setup": {
+      "win32": [
+        "; powershell.exe -ExecutionPolicy Bypass -File \"${SERVICE_HOME}\\configure.ps1\" -ArchiveRoot \"${SERVICE_HOME}\\win32\\webswing\" -ConfigRoot \"${SERVICE_HOME}\\config\""
+      ]
+    },
+    "executable": {
+      "win32": "..\\run-webswing.bat",
+      "default": "..\\run-webswing.bat"
+    },
+    "execcwd": "${SERVICE_HOME}",
+    "env": {
+      "PATH": [
+        "${JAVA_HOME}",
+        "C:\\WINDOWS\\system32",
+        "C:\\WINDOWS",
+        "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0"
+      ]
+    },
+    "outputvarregex": {
+      "WEBSWING_INSTALL_DIR": "WEBSWING_INSTALL_DIR=(.*)"
+    },
+    "globalenv": {
+      "WEBSWING_URL": "http://localhost:${SERVICE_PORT}",
+      "WEBSWING_ADMIN_URL": "http://localhost:${SERVICE_PORT}/admin"
+    },
+    "serviceport": 8080,
+    "healthcheck": {
+      "type": "http",
+      "url": "http://${SERVICE_HOST}:${SERVICE_PORT}/",
+      "expected_status": 200,
+      "retries": 180
+    },
+    "depend_on": [
+      "java",
+      "ghidra"
+    ]
+  }
+}

@@ -1,0 +1,4 @@
+_work/
+package/
+.env
+*.log

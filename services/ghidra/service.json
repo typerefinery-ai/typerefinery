@@ -1,0 +1,43 @@
+{
+  "id": "ghidra",
+  "name": "NSA Ghidra",
+  "description": "Utility installer for Ghidra plus Webswing registration.",
+  "enabled": true,
+  "status": "-1",
+  "logoutput": "",
+  "icon": "pi pi-cog",
+  "servicetype": 50,
+  "servicelocation": 10,
+  "execconfig": {
+    "debuglog": true,
+    "serviceorder": 25,
+    "execcwd": "${SERVICE_HOME}",
+    "setuparchive": {
+      "win32": {
+        "name": "ghidra_12.0.4_PUBLIC_20260303.zip",
+        "archiveUrl": "https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_12.0.4_build/ghidra_12.0.4_PUBLIC_20260303.zip",
+        "output": "ghidra"
+      }
+    },
+    "setup": {
+      "win32": [
+        "; powershell.exe -ExecutionPolicy Bypass -File \"${SERVICE_HOME}\\setup.ps1\" -ArchiveRoot \"${SERVICE_HOME}\\win32\\ghidra\" -WebswingServiceRoot \"${SERVICE_HOME}\\..\\webswing\""
+      ]
+    },
+    "env": {
+      "PATH": [
+        "C:\\WINDOWS\\system32",
+        "C:\\WINDOWS",
+        "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0"
+      ]
+    },
+    "outputvarregex": {
+      "GHIDRA_INSTALL_DIR": "GHIDRA_INSTALL_DIR=(.*)",
+      "GHIDRA_JAVA_HOME": "GHIDRA_JAVA_HOME=(.*)",
+      "GHIDRA_JAVA_EXECUTABLE": "GHIDRA_JAVA_EXECUTABLE=(.*)"
+    },
+    "globalenv": {
+      "GHIDRA_ARCHIVE_URL": "https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_12.0.4_build/ghidra_12.0.4_PUBLIC_20260303.zip"
+    }
+  }
+}

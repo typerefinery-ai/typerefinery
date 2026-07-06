@@ -1,0 +1,26 @@
+{
+  "/ghidra": {
+    "swingSessionTimeout": 3600,
+    "allowStealSession": true,
+    "path": "/ghidra",
+    "security": {
+      "module": "INHERITED"
+    },
+    "name": "NSA Ghidra",
+    "swingConfig": {
+      "vmArgs": "-Djava.system.class.loader=ghidra.GhidraClassLoader -Dfile.encoding=UTF8 -Duser.country=US -Duser.language=en -Duser.variant= -Dsun.java2d.d3d=false -Djdk.tls.client.protocols=TLSv1.2,TLSv1.3 -Dpython.console.encoding=UTF-8 -Dlog4j.skipJansi=true -Xshare:off -Djavax.xml.accessExternalDTD= -Djavax.xml.accessExternalSchema= -Djavax.xml.accessExternalStylesheet= --enable-native-access=ALL-UNNAMED",
+      "launcherConfig": {
+        "mainClass": "ghidra.Ghidra",
+        "args": "ghidra.GhidraRun"
+      },
+      "homeDir": "D:/projects/typerefinery-ai/typerefinery/services/ghidra/win32/ghidra/ghidra_12.0.4_PUBLIC",
+      "jreExecutable": "C:/data/apps/#dev/jdk/jdk-21.0.7/bin//java.exe",
+      "classPathEntries": [
+        "D:/projects/typerefinery-ai/typerefinery/services/ghidra/win32/ghidra/ghidra_12.0.4_PUBLIC/Ghidra/Framework/Utility/lib/Utility.jar"
+      ],
+      "userDir": "${user.dir}/userdata/ghidra/${user}",
+      "launcherType": "Desktop"
+    },
+    "sessionMode": "CONTINUE_FOR_USER"
+  }
+}
