@@ -5,7 +5,7 @@ import { type ServiceManager } from "./ServiceManager"
 import { Logger } from "./Logger"
 import fs, { WriteStream } from "fs"
 import pkg from "follow-redirects"
-const { http } = pkg
+const { http, https } = pkg
 import net from "net"
 import EventEmitter from "eventemitter3"
 import kill from "tree-kill"
@@ -189,6 +189,7 @@ export interface ExecConfig {
 export interface SetupArchive {
   name: string
   output: string
+  archiveUrl?: string
 }
 
 export interface ExecService {
@@ -2513,6 +2514,20 @@ export class Service extends EventEmitter<ServiceEvent> {
     const isSetupStateFile = os.isPathExist(this.#setupstatefile)
     // extract setuparchive before setup
     if (this.#setuparchiveFile) {
+      const setupArchive = this.getArchiveForPlatform
+      // if archiveUrl is set and setuparchive file does not exist, download it
+      if (setupArchive?.archiveUrl && !os.isPathExist(this.#setuparchiveFile)) {
+        this.#setStatus(ServiceStatus.INSTALLING)
+        this.#log(
+          `downloading setup archive ${setupArchive.archiveUrl} into ${
+            this.#setuparchiveFile
+          }.`
+        )
+        await this.#downloadSetupArchive(
+          setupArchive.archiveUrl,
+          this.#setuparchiveFile
+        )
+      }
       if (!os.isPathExist(this.#setuparchiveOutputPath) || force) {
         this.#setStatus(ServiceStatus.EXTRACTING)
         this.#log(
@@ -2780,6 +2795,80 @@ export class Service extends EventEmitter<ServiceEvent> {
         this.#setStatus(ServiceStatus.AVAILABLE)
       }
     }
+  }
+
+  /**
+   * download setup archive from url to destination
+   * @param archiveUrl url of archive to download
+   * @param destination path where to download the archive
+   * @returns promise that resolves when download is complete
+   */
+  async #downloadSetupArchive(archiveUrl: string, destination: string) {
+    return new Promise<void>((resolve, reject) => {
+      try {
+        this.#ensurePathToFile(destination)
+        const url = new URL(archiveUrl)
+        const client = url.protocol === "https:" ? https : http
+        const file = fs.createWriteStream(destination, {
+          flags: "w",
+          mode: 0o666,
+          autoClose: true,
+        })
+
+        file.on("error", (error) => {
+          this.#log(`error writing downloaded archive ${destination}: ${error}`)
+          try {
+            file.close()
+          } catch {
+            this.#log(`error closing file stream for ${destination}`)
+          }
+          reject(error)
+        })
+
+        const request = client.get(url, (response) => {
+          if (
+            response.statusCode &&
+            response.statusCode >= 200 &&
+            response.statusCode < 300
+          ) {
+            response.pipe(file)
+            file.on("finish", () => {
+              file.close()
+              this.#log(
+                `downloaded setup archive ${archiveUrl} to ${destination}.`
+              )
+              resolve()
+            })
+            return
+          }
+
+          try {
+            file.close()
+          } catch {
+            this.#log(`error closing file stream for ${destination}`)
+          }
+          fs.rmSync(destination, { force: true })
+          reject(
+            new Error(
+              `download failed for ${archiveUrl} with status ${response.statusCode}`
+            )
+          )
+        })
+
+        request.on("error", (error) => {
+          this.#log(`error downloading archive ${archiveUrl}: ${error}`)
+          try {
+            file.close()
+          } catch {
+            this.#log(`error closing file stream for ${destination}`)
+          }
+          fs.rmSync(destination, { force: true })
+          reject(error)
+        })
+      } catch (error) {
+        reject(error)
+      }
+    })
   }
 
   async #initService() {
